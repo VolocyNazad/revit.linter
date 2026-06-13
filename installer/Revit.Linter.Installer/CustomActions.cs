@@ -37,9 +37,9 @@ public static class CustomActions
         try
         {
             string filePath = GetManifestPath();
-            if (System.IO.File.Exists(filePath))
+            if (File.Exists(filePath))
             {
-                System.IO.File.Delete(filePath);
+                File.Delete(filePath);
                 session.Log($"Manifest removed successfully from: {filePath}");
             }
             else
