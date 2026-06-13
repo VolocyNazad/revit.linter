@@ -43,18 +43,6 @@ public class Program
                             "*.*")
                         ))
                 ),
-                new Dir(
-                    @"%Desktop%",
-                    new ExeFileShortcut(
-                        "Revit.Linter",
-                        @"[INSTALLDIR]Revit.Linter\Revit.Linter.exe", arguments: "") { WorkingDirectory = "[INSTALLDIR]" }
-                ),
-                new Dir(
-                    @"%ProgramMenu%",
-                    new ExeFileShortcut(
-                        "Revit.Linter",
-                        @"[INSTALLDIR]Revit.Linter\Revit.Linter.exe", arguments: "") { WorkingDirectory = "[INSTALLDIR]" }
-                ),
             ],
             RegValues = [
             ],
