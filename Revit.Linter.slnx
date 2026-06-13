@@ -3,6 +3,9 @@
     <BuildType Name="Debug 2021.1.9" />
     <BuildType Name="Debug 2023.0.0" />
     <BuildType Name="Debug 2025.0.0" />
+    <BuildType Name="Release 2021.1.9" />
+    <BuildType Name="Release 2023.0.0" />
+    <BuildType Name="Release 2025.0.0" />
     <Platform Name="Any CPU" />
     <Platform Name="x64" />
   </Configurations>
