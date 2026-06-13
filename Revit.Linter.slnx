@@ -1,0 +1,68 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug 2021.1.9" />
+    <BuildType Name="Debug 2023.0.0" />
+    <BuildType Name="Debug 2025.0.0" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/diagnostics/">
+    <Project Path="src/Revit.Linter.CollisionDiagnostics/Revit.Linter.CollisionDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.ElementDiagnostics/Revit.Linter.ElementDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.DocumentDiagnostics/Revit.Linter.DocumentDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.ParameterElementDiagnostics/Revit.Linter.ParameterElementDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.UserDiagnostics/Revit.Linter.UserDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/others/">
+    <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.ElementAccentor/Revit.Linter.ElementAccentor.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.Languages/Revit.Linter.Languages.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="README.md" />
+    <File Path="TODO.txt" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/todo/">
+    <Project Path="src/Revit.Linter.BackgroundDiagnostic/Revit.Linter.BackgroundDiagnostic.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/ui/">
+    <Project Path="src/Revit.Linter.DiagnosticListPresenter/Revit.Linter.DiagnosticListPresenter.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.DiagnosticReportPresenter/Revit.Linter.DiagnosticReportPresenter.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="src/Revit.Linter.Diagnostic/Revit.Linter.Diagnostic.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="src/Revit.Linter.DiagnosticReportProvider/Revit.Linter.DiagnosticReportProvider.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="src/Revit.Linter/Revit.Linter.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

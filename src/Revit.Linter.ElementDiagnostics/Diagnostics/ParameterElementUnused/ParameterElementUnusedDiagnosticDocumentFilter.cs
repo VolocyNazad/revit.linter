@@ -1,0 +1,11 @@
+﻿using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
+
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
+
+internal sealed class ParameterElementUnusedDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
+{
+    public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ParameterElementUnused;
+
+    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+}
