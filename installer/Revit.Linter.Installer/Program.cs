@@ -108,7 +108,7 @@ public static class CustomActions
     }
 
     [CustomAction]
-    public static ActionResult CloseProcesses(Session session)
+    public static ActionResult CloseProcesses(Session _)
     {
         try {
             foreach (var process in Process.GetProcessesByName("Revit.Linter"))
