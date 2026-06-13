@@ -36,7 +36,7 @@ public class Program
             //BackgroundImage = ,
             //BannerImage = ,
             Dirs = [
-                new InstallDir($@"%AppDataFolder%\{AddinName}",
+                new InstallDir($@"%AppDataFolder%\{AddinName}\{RevitVersion}",
                     new Dir("sources", new Files(
                         Path.Combine(
                             solutionPath,

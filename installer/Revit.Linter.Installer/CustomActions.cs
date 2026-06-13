@@ -19,7 +19,7 @@ public static class CustomActions
             {
                 Name = AddinName,
                 FullClassName = $"{AddinName}.InitExternalApplication",
-                Assembly = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{AddinName}\sources\{AddinName}.dll",
+                Assembly = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{AddinName}\{RevitVersion}\sources\{AddinName}.dll",
                 VendorId = Vendor,
                 VendorDescription = Vendor,
             };
