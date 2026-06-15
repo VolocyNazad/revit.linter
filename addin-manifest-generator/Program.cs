@@ -9,7 +9,7 @@ var platform = "x64";
 string TryGetSolutionDirectoryPath(string? currentPath = null)
 {
 	DirectoryInfo? directory = new(currentPath ?? Directory.GetCurrentDirectory());
-	while (directory != null && directory.GetFiles("*.sln").Length == 0)
+	while (directory != null && directory.GetFiles("*.slnx").Length == 0)
 		directory = directory.Parent;
 	if (directory is null) throw new InvalidOperationException("Solution directory not found");
 	return directory.FullName;
