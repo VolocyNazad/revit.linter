@@ -28,26 +28,9 @@
 
 	<!-- Автоматически генерируем констант для всех версий -->
 	<PropertyGroup>
-		<!-- Базовые константы -->
-		<DefineConstants Condition="'$(MajorRevitVersion)' != ''">VERSION_$(MajorRevitVersion)</DefineConstants>
 
 		<!-- IS константы для конкретных годов -->
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2011'">$(DefineConstants);IS2011</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2012'">$(DefineConstants);IS2012</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2013'">$(DefineConstants);IS2013</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2014'">$(DefineConstants);IS2014</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2015'">$(DefineConstants);IS2015</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2016'">$(DefineConstants);IS2016</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2017'">$(DefineConstants);IS2017</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2018'">$(DefineConstants);IS2018</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2019'">$(DefineConstants);IS2019</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2020'">$(DefineConstants);IS2020</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2021'">$(DefineConstants);IS2021</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2022'">$(DefineConstants);IS2022</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2023'">$(DefineConstants);IS2023</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2024'">$(DefineConstants);IS2024</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2025'">$(DefineConstants);IS2025</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' == '2026'">$(DefineConstants);IS2026</DefineConstants>
+		<DefineConstants Condition="'$(MajorRevitVersion)' != ''">$(DefineConstants);IS$(MajorRevitVersion)</DefineConstants>
 
 		<!-- BEFORE константы для всех годов -->
 		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2012">$(DefineConstants);BEFORE2012</DefineConstants>
