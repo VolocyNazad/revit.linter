@@ -5,7 +5,7 @@ namespace Revit.Linter.Installer;
 
 public static class CustomActions
 {
-    private const string RevitVersion = "2021";
+    private const string RevitVersion = "2025";
     private const string AddinName = "Revit.Linter";
     private const string Vendor = "VolocyNazad";
 
