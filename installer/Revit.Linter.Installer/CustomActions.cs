@@ -54,20 +54,6 @@ public static class CustomActions
         }
     }
 
-    [CustomAction]
-    public static ActionResult CloseProcesses(Session session)
-    {
-        try {
-            foreach (var process in Process.GetProcessesByName(AddinName))
-                process.Kill();
-            session.Log($"Processes closed");
-            return ActionResult.Success;
-        } catch (Exception ex) {
-            session.Log($"Failed close processes: {ex.Message}");
-            return ActionResult.Success;
-        }
-    }
-
     private static string GetManifestPath()
     {
         string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

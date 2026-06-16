@@ -58,11 +58,6 @@ public class Program
                      When.Before,
                      Step.LaunchConditions,
                      Condition.Installed),
-                new ManagedAction(CustomActions.CloseProcesses,
-                    Return.check,
-                    When.Before,
-                    Step.LaunchConditions,
-                    Condition.Installed)
             ],
         };
         project.RemoveDialogsBetween(NativeDialogs.WelcomeDlg, NativeDialogs.InstallDirDlg);
