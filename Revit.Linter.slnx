@@ -13,10 +13,10 @@
     <Project Path="src/Revit.Linter.CollisionDiagnostics/Revit.Linter.CollisionDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.ElementDiagnostics/Revit.Linter.ElementDiagnostics.csproj">
+    <Project Path="src/Revit.Linter.DocumentDiagnostics/Revit.Linter.DocumentDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.DocumentDiagnostics/Revit.Linter.DocumentDiagnostics.csproj">
+    <Project Path="src/Revit.Linter.ElementDiagnostics/Revit.Linter.ElementDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ParameterElementDiagnostics/Revit.Linter.ParameterElementDiagnostics.csproj">
@@ -53,6 +53,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportPresenter/Revit.Linter.DiagnosticReportPresenter.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.DialogPresenter/Revit.Linter.DialogPresenter.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>
