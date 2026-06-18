@@ -11,7 +11,7 @@
     xmlns:viewModels="clr-namespace:Revit.Linter.DiagnosticReportPresenter.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticReportViewModel}}"
     d:DesignHeight="450"
-    d:DesignWidth="1200"
+    d:DesignWidth="1400"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -189,7 +189,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Severity}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </materialDesign:Chip.ContextMenu>
                                 </materialDesign:Chip>
@@ -216,7 +217,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Code}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
@@ -236,7 +238,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Message}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </FlowDocumentScrollViewer.ContextMenu>
                                 </FlowDocumentScrollViewer>
@@ -252,7 +255,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding DocumentTitle}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </TextBlock.ContextMenu>
                                     <Run Text="{Binding DocumentTitle}" />

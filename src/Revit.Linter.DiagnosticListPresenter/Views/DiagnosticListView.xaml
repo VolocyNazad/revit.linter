@@ -83,13 +83,22 @@
                 </DataGrid.Resources>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding CheckAllCommand}" Header="Check all" />
-                        <MenuItem Command="{Binding UncheckAllCommand}" Header="Uncheck all" />
+                        <MenuItem
+                            Command="{Binding CheckAllCommand}"
+                            Header="Check all"
+                            Icon="{materialDesign:PackIcon Kind=CheckboxMultipleOutline}" />
+                        <MenuItem
+                            Command="{Binding UncheckAllCommand}"
+                            Header="Uncheck all"
+                            Icon="{materialDesign:PackIcon Kind=CheckboxMultipleBlankOutline}" />
                         <Separator />
                         <MenuItem Command="{Binding CheckVisibleCommand}" Header="Check visible" />
                         <MenuItem Command="{Binding UncheckVisibleCommand}" Header="Uncheck visible" />
                         <Separator />
-                        <MenuItem Command="{Binding InvertAllCommand}" Header="Invert all" />
+                        <MenuItem
+                            Command="{Binding InvertAllCommand}"
+                            Header="Invert all"
+                            Icon="{materialDesign:PackIcon Kind=SwapHorizontal}" />
                         <MenuItem Command="{Binding InvertVisibleCommand}" Header="Invert visible" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
@@ -130,7 +139,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Code}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
@@ -146,7 +156,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Severity}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </ComboBox.ContextMenu>
                                 </ComboBox>
@@ -176,7 +187,8 @@
                                             <MenuItem
                                                 Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
                                                 CommandParameter="{Binding Description}"
-                                                Header="Copy" />
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
                                         </ContextMenu>
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
