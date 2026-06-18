@@ -1,4 +1,5 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
+﻿using CommunityToolkit.Mvvm.Input;
+using Revit.Linter.Core.Abstractions.Models;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -10,11 +11,14 @@ internal sealed class DiagnosticReportItemViewModel
     public required DiagnosticSeverity Severity { get; init; }
     public required string Code { get; init; }
     public required string DocumentTitle { get; init; }
+    public required object? Target { get; init; }
     public required bool IsObsolete { get; init; }
     public required string ObsoleteDescription { get; init; }
     public required string Template { get; init; }
     public required Dictionary<string, object> Args { get; init; }
     public required Action<int> AccentElementDelegate { get; init; }
+    public required IEnumerable<FixViewModel>? Fixes { get; init; }
+
     public FlowDocument Message => CreateFlowDocument();
 
     private FlowDocument CreateFlowDocument()
@@ -162,4 +166,15 @@ internal sealed class DiagnosticReportItemViewModel
         Hyperlink
     }
     sealed record TextPart(InlineType Type, string Text);
+}
+
+internal sealed partial class FixViewModel
+{
+    public required object Icon { get; init; }
+    public required string Title { get; init; }
+    public required Func<CancellationToken, Task> FixDelegate { get; init; }
+
+    [RelayCommand]
+    private async Task Fix(CancellationToken cancellationToken)
+        => await FixDelegate(cancellationToken);
 }

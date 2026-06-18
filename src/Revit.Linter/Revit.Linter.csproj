@@ -128,19 +128,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Revit.Linter.BackgroundDiagnostic\Revit.Linter.BackgroundDiagnostic.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.DiagnosticListPresenter\Revit.Linter.DiagnosticListPresenter.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter\Revit.Linter.DiagnosticReportPresenter.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
-	  <ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.BackgroundDiagnostic\Revit.Linter.BackgroundDiagnostic.csproj" />
+		<ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticListPresenter\Revit.Linter.DiagnosticListPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter\Revit.Linter.DiagnosticReportPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
+		<PackageReference Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.6" />
 	</ItemGroup>
 
 	<ItemGroup>

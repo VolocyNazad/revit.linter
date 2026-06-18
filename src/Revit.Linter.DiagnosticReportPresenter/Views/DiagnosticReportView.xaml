@@ -142,10 +142,50 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
+                <DataGrid.RowStyle>
+                    <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="DataGridRow">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding Fixes}">
+                                    <ContextMenu.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                            <Setter Property="Header" Value="{Binding Title}" />
+                                            <Setter Property="Command" Value="{Binding FixCommand}" />
+                                            <Setter Property="Icon" Value="{Binding Icon}"/>
+                                        </Style>
+                                    </ContextMenu.ItemContainerStyle>
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Resources>
                     <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DataTemplate.Resources>
+                                    <Style x:Key="HasFixesPackIconStyle" TargetType="{x:Type materialDesign:PackIcon}">
+                                        <Setter Property="Foreground" Value="#FFB74D" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Fixes}" Value="{x:Null}">
+                                                <Setter Property="Foreground" Value="Transparent" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataTemplate.Resources>
+                                <materialDesign:PackIcon
+                                    Width="12"
+                                    Height="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Idea"
+                                    Style="{StaticResource HasFixesPackIconStyle}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

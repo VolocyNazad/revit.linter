@@ -1,11 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MaterialDesignThemes.Wpf;
 using Revit.Context.Abstractions.Services;
+using Revit.Events.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
+using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using System.Collections.ObjectModel;
@@ -14,6 +17,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media;
 using TextRange = System.Windows.Documents.TextRange;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
@@ -21,36 +25,45 @@ namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 [XamlConstructor]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
+    private readonly IDialog _dialog;
+    private readonly IAsyncExternalEvent _externalEvent;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
     private readonly IDiagnosticService _diagnosticService;
+    private readonly IEnumerable<IElementFix> _elementFixes;
+    private readonly IEnumerable<IDocumentFix> _documentFixes;
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IEnumerable<IAccentElementsService> accentElementsServices,
-            IDiagnosticService diagnosticService,
-            IDiagnosticReportReceiver diagnosticReportReceiver) : base(revitContext)
+            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IDialog dialog,
+            IDiagnosticService diagnosticService, IEnumerable<IAccentElementsService> accentElementsServices,
+            IDiagnosticReportReceiver diagnosticReportReceiver,
+            IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(revitContext)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
+        _externalEvent = externalEvent;
+        _dialog = dialog;
         _diagnosticService = diagnosticService;
+        _elementFixes = elementFixes;
+        _documentFixes = documentFixes;
 
         Collection = [];
     }
 
     [ObservableProperty]
-    private ObservableCollection<DiagnosticReportItemViewModel> _collection = null!;
+    public partial ObservableCollection<DiagnosticReportItemViewModel> Collection { get; private set; } = null!;
     partial void OnCollectionChanged(ObservableCollection<DiagnosticReportItemViewModel> value)
         => InitializeCollectionView();
 
     [ObservableProperty]
-    private CollectionViewSource? _collectionViewSource;
+    public partial CollectionViewSource? CollectionViewSource { get; private set; }
 
     [ObservableProperty]
-    private string _searchField = string.Empty;
+    public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
 
     [ObservableProperty]
-    private string _diagnosticTime = string.Empty;
+    public partial string DiagnosticTime { get; private set; } = string.Empty;
 
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> SeverityFilters { get; set; } = [];
@@ -81,7 +94,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     }
 
     [ObservableProperty]
-    private bool _onActiveViewMode = false;
+    public partial bool OnActiveViewMode { get; set; } = false;
 
     #region [RunDiagnostic] Command - Запустить диагностику  
 
@@ -267,11 +280,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         //todo viewModel.Message.ToString() возвращает не в том формате, что виден пользователю
         ;
 
-    private void Remove(DiagnosticReportItemViewModel item)
-    {
-        Collection.Remove(item);
-        RefreshFilters();
-    }
     private void ClearReport()
     {
         Collection.Clear();
@@ -311,15 +319,168 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         await base.OnDeinitializing(cancellationToken);
         _diagnosticReportReceiver.DiagnosticReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
     }
+
+
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, MessageSentEventArgs e)
     {
         DiagnosticReport report = e.Report;
+
+        List<FixViewModel>? fixes = null;
+        if (report.Target is Element element)
+            fixes = _elementFixes
+                .Where(i => i.Identity.Code == report.Code)
+                .SelectMany(i =>
+                {
+                    List<FixViewModel> fixes = [];
+                    FixViewModel fix = new()
+                    {
+                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+                        Title = i.Value,
+                        FixDelegate = async (cancellationToken) =>
+                        {
+                            bool hasErrors = false;
+                            if (!element.IsValidObject) return;
+                            await _externalEvent.Raise(uiapp =>
+                            {
+                                using Transaction transaction = new(report.Document, i.Value);
+                                transaction.Start();
+                                try
+                                {
+                                    bool result = i.Excecute(element);
+                                    if (!result) hasErrors = true;
+                                }
+                                catch (Exception)
+                                {
+                                    hasErrors = true;
+                                }
+                                transaction.Commit();
+                            });
+                            if (hasErrors)
+                                await _dialog.Show("Something went wrong", cancellationToken);
+                        }
+                    };
+                    fixes.Add(fix);
+
+                    FixViewModel fixAll = new()
+                    {
+                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+                        Title = $"{i.Value} (All)",
+                        FixDelegate = async (cancellationToken) =>
+                        {
+                            bool hasErrors = false;
+                            var sameReportItems = Collection.Where(i => i.Code == report.Code).ToList();
+                            await _externalEvent.Raise(uiapp =>
+                            {
+                                using Transaction transaction = new(report.Document, $"{i.Value} (All)");
+                                transaction.Start();
+                                foreach (var reportItem in sameReportItems)
+                                {
+                                    if (reportItem.Target is null) continue;
+                                    Element element = (Element)reportItem.Target;
+                                    if (!element.IsValidObject) continue;
+                                    try
+                                    {
+                                        bool result = i.Excecute(element);
+                                        if (!result) hasErrors = true;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        hasErrors = true;
+                                    }
+                                }
+                                transaction.Commit();
+                            });
+                            if (hasErrors)
+                                await _dialog.Show("Something went wrong");
+
+                        }
+                    };
+                    fixes.Add(fixAll);
+
+                    return fixes;
+                }).ToList();
+        else if (report.Target is Document document)
+            fixes = _documentFixes
+                .Where(i => i.Identity.Code == report.Code)
+                .SelectMany(i =>
+                {
+                    List<FixViewModel> fixes = [];
+                    FixViewModel fix = new()
+                    {
+                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+                        Title = i.Value,
+                        FixDelegate = async (cancellationToken) =>
+                        {
+                            bool hasErrors = false;
+                            if (!document.IsValidObject) return;
+                            await _externalEvent.Raise(uiapp =>
+                            {
+                                using Transaction transaction = new(report.Document, i.Value);
+                                transaction.Start();
+                                try
+                                {
+                                    bool result = i.Excecute(document);
+                                    if (!result) hasErrors = true;
+                                }
+                                catch (Exception)
+                                {
+                                    hasErrors = true;
+                                }
+                                transaction.Commit();
+                            }); 
+                            if (hasErrors)
+                                await _dialog.Show("Something went wrong", cancellationToken);
+                        }
+                    };
+                    fixes.Add(fix);
+
+                    FixViewModel fixAll = new()
+                    {
+                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+                        Title = $"{i.Value} (All)",
+                        FixDelegate = async (cancellationToken) =>
+                        {
+                            bool hasErrors = false;
+                            var sameReportItems = Collection.Where(i => i.Code == report.Code).ToList();
+                            await _externalEvent.Raise(uiapp =>
+                            {
+                                using Transaction transaction = new(report.Document, $"{i.Value} (All)");
+                                transaction.Start();
+                                foreach (var reportItem in sameReportItems)
+                                {
+                                    if (reportItem.Target is null) continue;
+                                    Document document = (Document)reportItem.Target;
+                                    if (!document.IsValidObject) continue;
+                                    try
+                                    {
+                                        bool result = i.Excecute(document);
+                                        if (!result) hasErrors = true;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        hasErrors = true;
+                                    }
+                                }
+                                transaction.Commit();
+                            });
+                            if (hasErrors)
+                                await _dialog.Show("Something went wrong");
+
+                        }
+                    };
+                    fixes.Add(fixAll);
+
+                    return fixes;
+                }).ToList();
+
         DiagnosticReportItemViewModel item = new() {
             Code = report.Code,
             Template = report.Message.Format,
+            Target = report.Target,
+            Fixes = fixes,
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
-            DocumentTitle = report.DocumentTitle,
+            DocumentTitle = report.Document.Title,
             AccentElementDelegate = (i) => SelectElement(i),
             IsObsolete = report.IsObsolete,
             ObsoleteDescription = report.ObsoleteDescription,

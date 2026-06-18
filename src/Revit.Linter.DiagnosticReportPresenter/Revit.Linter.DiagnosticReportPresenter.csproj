@@ -104,12 +104,14 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="VolocyNazad.Revit.Context" Version="$(MajorRevitVersion).0.6" />
+		<PackageReference Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.BackgroundDiagnostic\Revit.Linter.BackgroundDiagnostic.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 	</ItemGroup>
 

@@ -125,7 +125,7 @@ internal sealed class DiagnosticService(
                 messageArgs = [("duration", stopwatch.Elapsed.TotalMilliseconds), ("documentTitle", document.Title)];
             }
             DiagnosticReportMessage diagnosticReportMessage = new(diagnosticId.MessageFormat, messageArgs);
-            DiagnosticReport diagnosticReport = new(diagnosticId.Code, diagnosticIdOverrides.Severity, document.Title, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
+            DiagnosticReport diagnosticReport = new(diagnosticId.Code, diagnosticIdOverrides.Severity, document, document, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
             diagnosticReportSender.Send(diagnosticReport);
         }
     }
@@ -164,7 +164,7 @@ internal sealed class DiagnosticService(
                 DiagnosticReportMessage diagnosticReportMessage = new(
                     diagnosticId.MessageFormat, messageArgs);
                 DiagnosticReport diagnosticReport = new(
-                    diagnosticId.Code, diagnosticIdOverrides.Severity, document.Title, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
+                    diagnosticId.Code, diagnosticIdOverrides.Severity, document, element, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
                 diagnosticReportSender.Send(diagnosticReport);
             }
         }
@@ -192,7 +192,7 @@ internal sealed class DiagnosticService(
                 ("documentTitle", document.Title),
                 ("elementids", failureMessage.GetFailingElements()),
                 ("details", failureMessage.GetDescriptionText()));
-            DiagnosticReport diagnosticReport = new("RVT", severity, document.Title, diagnosticReportMessage, false);
+            DiagnosticReport diagnosticReport = new("RVT", severity, document, null, diagnosticReportMessage, false);
             diagnosticReportSender.Send(diagnosticReport);
         }
     }
