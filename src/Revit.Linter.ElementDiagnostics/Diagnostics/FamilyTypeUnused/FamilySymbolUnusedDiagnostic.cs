@@ -5,14 +5,18 @@ namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyTypeUnused;
 
 internal sealed class FamilySymbolUnusedDiagnostic : IElementDiagnostic
 {
-    private readonly ElementFilter familyInstanceFilter = new ElementClassFilter(typeof(FamilyInstance));
+    private readonly ElementFilter filter = new LogicalOrFilter(
+        new ElementIsElementTypeFilter(true), 
+        new ElementIsElementTypeFilter(false)
+    );
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilySymbolUnused;
 
     public DiagnosticResult Execute(Document document, View? view, Element targetElement)
     {
-        var family = (FamilySymbol)targetElement;
-        var instances = family.GetDependentElements(familyInstanceFilter);
-        return instances.Any() ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        var familySymbol = (FamilySymbol)targetElement;
+        var hasInstances = familySymbol.GetDependentElements(filter)
+            .Any(id => document.GetElement(id).GetTypeId() == familySymbol.Id);
+        return hasInstances ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
     }
 }

@@ -13,6 +13,7 @@ internal sealed class FamilyUnusedDiagnostic : IElementDiagnostic
     {
         var family = (Family)targetElement;
         var instances = family.GetDependentElements(familyInstanceFilter);
+        var id = family.Id.IntegerValue;
         return instances.Any() ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
     }
 }

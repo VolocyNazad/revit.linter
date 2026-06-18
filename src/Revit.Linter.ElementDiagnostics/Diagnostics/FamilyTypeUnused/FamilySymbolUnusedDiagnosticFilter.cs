@@ -7,5 +7,8 @@ internal sealed class FamilySymbolUnusedDiagnosticFilter : IElementDiagnosticFil
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilySymbolUnused;
 
-    public bool IsRelevantFor(Document document, Element element) => element is FamilySymbol;
+    public bool IsRelevantFor(Document document, Element element) 
+        => element is FamilySymbol familySymbol
+        // todo С профилсями проблемы (не понятно как проверять их использование. Например в импостах витражей)
+        && familySymbol.Category?.Id.IntegerValue != (int)BuiltInCategory.OST_ProfileFamilies;
 }
