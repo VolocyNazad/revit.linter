@@ -7,7 +7,7 @@ internal sealed class DeteteUnusedFamily : IElementFix
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
 
-    public string Value => "Удалить неиспользуемое семейство.";
+    public string Value => "Удалить неиспользуемое семейство";
     public bool Excecute(Element targetElement)
         => targetElement.Document.Delete(targetElement.Id).Any();
 }
