@@ -112,6 +112,10 @@
 		</Content>
 	</ItemGroup>
 
+	<PropertyGroup Condition="'$(IsNet8)' == 'true'">
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
 		<MinVerAutoIncrement>minor</MinVerAutoIncrement>
