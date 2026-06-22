@@ -6,7 +6,7 @@ public sealed class BindingProxy : Freezable
 {
     public static readonly DependencyProperty DataContextProperty
         = DependencyProperty.Register(
-            "DataContext",
+            nameof(FrameworkElement.DataContext),
             typeof(object),
             typeof(BindingProxy));
 
