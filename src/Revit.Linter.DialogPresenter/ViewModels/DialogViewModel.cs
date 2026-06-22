@@ -32,7 +32,6 @@ internal sealed partial class DialogViewModel : ObservableObject, IDialog
             Owner = _revitContext.UIApplication!.MainWindowHandle
         };
 
-
         window.ShowDialog();
 
         return Task.CompletedTask;
