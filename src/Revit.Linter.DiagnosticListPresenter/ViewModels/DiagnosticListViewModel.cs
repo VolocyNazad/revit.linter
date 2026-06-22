@@ -18,19 +18,19 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IEnumerable<DocumentDiagnosticIdOverrides> _documentDiagnosticIdOverrides;
 
     [ObservableProperty]
-    private ObservableCollection<DiagnosticItemViewModel> _collection = null!;
+    public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;
     partial void OnCollectionChanged(ObservableCollection<DiagnosticItemViewModel> value)
         => InitializeCollectionView();
 
     [ObservableProperty]
-    private CollectionViewSource? _collectionViewSource;
+    public partial CollectionViewSource? CollectionViewSource { get; private set; }
 
     [ObservableProperty]
-    private string _searchField = string.Empty;
+    public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
 
     [ObservableProperty]
-    private IEnumerable<IDiagnosticListFilter> _filters = [];
+    public partial IEnumerable<IDiagnosticListFilter> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
         IEnumerable<IDiagnosticListFilter>? oldValue, IEnumerable<IDiagnosticListFilter> newValue)
     {
