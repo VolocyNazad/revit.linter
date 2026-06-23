@@ -151,7 +151,7 @@
                                         <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
                                             <Setter Property="Header" Value="{Binding Title}" />
                                             <Setter Property="Command" Value="{Binding FixCommand}" />
-                                            <Setter Property="Icon" Value="{Binding Icon}"/>
+                                            <Setter Property="Icon" Value="{Binding Icon}" />
                                         </Style>
                                     </ContextMenu.ItemContainerStyle>
                                 </ContextMenu>
@@ -269,7 +269,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <FlowDocumentScrollViewer
-                                    Width="1300"
+                                    Width="1800"
                                     Document="{Binding Message}"
                                     HorizontalScrollBarVisibility="Disabled"
                                     VerticalScrollBarVisibility="Disabled">

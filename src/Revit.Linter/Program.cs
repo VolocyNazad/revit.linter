@@ -13,9 +13,11 @@ using Revit.Linter.DialogPresenter.DI;
 using Revit.Linter.DocumentDiagnostics.DI;
 using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementDiagnostics.DI;
+using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.Infrastructure.Exceptions;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.UserDiagnostics.DI;
+using Revit.MediatR.DI;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
 using System.Reflection;
@@ -42,14 +44,14 @@ internal sealed class Program
 #endif
             .ConfigureServices((_, services) => services
                 .AddLocalization(i => i.ResourcesPath = "Resources")
-                .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddElementAccentor()
+                .AddRevitContext().AddEvents().AddMediatR().AddTransactionMemoryCache().AddElementAccentor()
                 .AddDiagnosticModule().AddBackgroundDiagnosticModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
                 .AddCollisionDiagnostics()
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule()
-                .AddDiagnosticReportPresenterModule().AddDiagnosticListPresenterModule().AddDialogModule())
+                .AddDiagnosticReportPresenterModule().AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule())
         ;
 
 }

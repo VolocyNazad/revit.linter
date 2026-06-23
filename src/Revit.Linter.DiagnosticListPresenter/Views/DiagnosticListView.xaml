@@ -165,7 +165,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
-                        Width="250"
+                        Width="*"
                         Header="Description"
                         SortMemberPath="Description">
                         <DataGridTemplateColumn.CellTemplate>

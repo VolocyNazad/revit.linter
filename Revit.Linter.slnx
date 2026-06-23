@@ -1,11 +1,11 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Debug 2021.1.9" />
-    <BuildType Name="Debug 2023.0.0" />
-    <BuildType Name="Debug 2025.0.0" />
-    <BuildType Name="Release 2021.1.9" />
-    <BuildType Name="Release 2023.0.0" />
-    <BuildType Name="Release 2025.0.0" />
+    <BuildType Name="Debug_2021.1.9" />
+    <BuildType Name="Debug_2023.0.0" />
+    <BuildType Name="Debug_2025.0.0" />
+    <BuildType Name="Release_2021.1.9" />
+    <BuildType Name="Release_2023.0.0" />
+    <BuildType Name="Release_2025.0.0" />
     <Platform Name="Any CPU" />
     <Platform Name="x64" />
   </Configurations>
@@ -39,6 +39,8 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
     <File Path="README.md" />
     <File Path="TODO.txt" />
   </Folder>
@@ -56,6 +58,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.DialogPresenter/Revit.Linter.DialogPresenter.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.FixReportPresenter/Revit.Linter.FixReportPresenter.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

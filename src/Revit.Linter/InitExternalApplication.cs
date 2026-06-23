@@ -2,13 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Revit.Context.Abstractions.Services;
+using Revit.Linter.DiagnosticListPresenter.Views;
+using Revit.Linter.DiagnosticReportPresenter.Views;
+using Revit.Linter.FixReportPresenter.Views;
 using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
-using Revit.Linter.Views;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.Reflection;
-using System.Windows.Controls;
 
 namespace Revit.Linter;
 
@@ -22,6 +23,8 @@ internal sealed class InitExternalApplication : ExternalApplication
         InitializeRevitContext();
         InitializeRevitTransactionCache();
         RegisterDiagnosticReportDockablePane();
+        RegisterFixReportDockablePane();
+        RegisterDiagnosticListDockablePane();
 
         string tabName = "Volocy";
         try
@@ -33,6 +36,8 @@ internal sealed class InitExternalApplication : ExternalApplication
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, "Diagnostic");
 
         AddShowHideErrorListCommand(panel);
+        AddShowHideFixListCommand(panel);
+        AddShowHideDiagnosticListCommand(panel);
         AddOpenConfigurationFolderCommand(panel);
     }
 
@@ -52,6 +57,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         panel.AddItem(buttonData);
     }
+
     private void AddShowHideErrorListCommand(RibbonPanel panel)
     {
         string assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -68,27 +74,68 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         panel.AddItem(buttonData);
     }
+
+    private void AddShowHideFixListCommand(RibbonPanel panel)
+    {
+        string assemblyPath = Assembly.GetExecutingAssembly().Location;
+        PushButtonData buttonData = new(
+            "ShowHideFixListButton",
+            "Show/Hide fix",
+            assemblyPath,
+            typeof(ShowHideFixListCommand).FullName
+        );
+        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
+        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
+        //buttonData.ToolTip = "";
+        //buttonData.LongDescription = ""; // todo add icons
+
+        panel.AddItem(buttonData);
+    }
+
+    private void AddShowHideDiagnosticListCommand(RibbonPanel panel)
+    {
+        string assemblyPath = Assembly.GetExecutingAssembly().Location;
+        PushButtonData buttonData = new(
+            "ShowHideDiagnosticListButton",
+            "Show/Hide diagnostic",
+            assemblyPath,
+            typeof(ShowHideDiagnosticListCommand).FullName
+        );
+        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
+        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
+        //buttonData.ToolTip = "";
+        //buttonData.LongDescription = ""; // todo add icons
+
+        panel.AddItem(buttonData);
+    }
+
     private void InitializeRevitContext()
         => Program.Provider.GetRequiredService<IRevitContextInitializer>().Initialize(Application);
+
     private void InitializeRevitTransactionCache()
         => Program.Provider.GetRequiredService<IRevitTransactionMemoryCacheInitializer>().Initialize();
+
     private void RegisterDiagnosticReportDockablePane()
     {
-        var view = new MainView();
+        var view = Program.Provider.GetRequiredService<DiagnosticReportView>();
         var paneProvider = new DiagnosticReportDockablePaneProvider(view);
         var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
-        Application.RegisterDockablePane(DiagnosticPaneUtils.PaneId, localizer["diagnosticReport_dockablePane_title"], paneProvider);
+        Application.RegisterDockablePane(DiagnosticReportPaneUtils.PaneId, localizer["diagnosticReport_dockablePane_title"], paneProvider);
     }
-}
 
-public class DiagnosticReportDockablePaneProvider(UserControl uiControl) : IDockablePaneProvider
-{
-    public void SetupDockablePane(DockablePaneProviderData data)
+    private void RegisterFixReportDockablePane()
     {
-        data.FrameworkElement = uiControl;
-        data.InitialState = new()
-        {
-            DockPosition = DockPosition.Bottom,
-        };
+        var view = Program.Provider.GetRequiredService<FixReportView>();
+        var paneProvider = new FixReportDockablePaneProvider(view);
+        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+        Application.RegisterDockablePane(FixReportPaneUtils.PaneId, localizer["fixReport_dockablePane_title"], paneProvider);
+    }
+
+    private void RegisterDiagnosticListDockablePane()
+    {
+        var view = Program.Provider.GetRequiredService<DiagnosticListView>();
+        var paneProvider = new DiagnosticListDockablePaneProvider(view);
+        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+        Application.RegisterDockablePane(DiagnosticListPaneUtils.PaneId, localizer["diagnosticList_dockablePane_title"], paneProvider);
     }
 }

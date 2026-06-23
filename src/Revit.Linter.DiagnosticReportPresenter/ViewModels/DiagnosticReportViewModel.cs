@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
+using MediatR;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
@@ -8,9 +9,11 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
-using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
+using Revit.Linter.FixReportPresenter.Abstractions;
+using Revit.Linter.FixReportPresenter.Models;
+using Revit.MediatR.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -25,8 +28,8 @@ namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 [XamlConstructor]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
-    private readonly IDialog _dialog;
-    private readonly IAsyncExternalEvent _externalEvent;
+    private readonly IMediator _mediator;
+    private readonly IFixReportSender _fixReportDialog;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
     private readonly IDiagnosticService _diagnosticService;
@@ -34,15 +37,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IEnumerable<IDocumentFix> _documentFixes;
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IDialog dialog,
+            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IFixReportSender fixReportDialog, IMediator mediator,
             IDiagnosticService diagnosticService, IEnumerable<IAccentElementsService> accentElementsServices,
             IDiagnosticReportReceiver diagnosticReportReceiver,
             IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(revitContext)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
-        _externalEvent = externalEvent;
-        _dialog = dialog;
+        _fixReportDialog = fixReportDialog;
+        _mediator = mediator;
         _diagnosticService = diagnosticService;
         _elementFixes = elementFixes;
         _documentFixes = documentFixes;
@@ -332,67 +335,66 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 .SelectMany(i =>
                 {
                     List<FixViewModel> fixes = [];
-                    FixViewModel fix = new()
-                    {
-                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+
+                    var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
+                    var icon = new PackIcon {
+                        Kind = PackIconKind.Idea,
+                        Foreground = new SolidColorBrush(iconColor)
+                    };
+                    var doc = report.Document;
+
+                    FixViewModel fix = new() {
+                        Icon = icon,
                         Title = i.Value,
-                        FixDelegate = async (cancellationToken) =>
-                        {
-                            bool hasErrors = false;
+                        FixDelegate = async (cancellationToken) => {
+                            if (doc is null or { IsValidObject: false }) return;
+
                             if (!element.IsValidObject) return;
-                            await _externalEvent.Raise(uiapp =>
-                            {
-                                using Transaction transaction = new(report.Document, i.Value);
-                                transaction.Start();
-                                try
-                                {
-                                    bool result = i.Excecute(element);
-                                    if (!result) hasErrors = true;
-                                }
-                                catch (Exception)
-                                {
-                                    hasErrors = true;
-                                }
-                                transaction.Commit();
-                            });
-                            if (hasErrors)
-                                await _dialog.Show("Something went wrong", cancellationToken);
+
+                            string transactionName = i.Value;
+                            LambdaExternalEventTransactionCommand command = new(
+                                doc, transactionName, async (_, _) => i.Excecute(element));
+                            var response = await _mediator.Send(command);
+
+                            if (response is { Result: false } or { HasError: true })
+                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
                         }
                     };
                     fixes.Add(fix);
 
-                    FixViewModel fixAll = new()
-                    {
-                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
-                        Title = $"{i.Value} (All)",
-                        FixDelegate = async (cancellationToken) =>
-                        {
-                            bool hasErrors = false;
-                            var sameReportItems = Collection.Where(i => i.Code == report.Code).ToList();
-                            await _externalEvent.Raise(uiapp =>
-                            {
-                                using Transaction transaction = new(report.Document, $"{i.Value} (All)");
-                                transaction.Start();
-                                foreach (var reportItem in sameReportItems)
-                                {
-                                    if (reportItem.Target is null) continue;
-                                    Element element = (Element)reportItem.Target;
-                                    if (!element.IsValidObject) continue;
-                                    try
-                                    {
-                                        bool result = i.Excecute(element);
-                                        if (!result) hasErrors = true;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        hasErrors = true;
-                                    }
-                                }
-                                transaction.Commit();
-                            });
-                            if (hasErrors)
-                                await _dialog.Show("Something went wrong");
+                    FixViewModel fixAll = new() {
+                        Icon = icon,
+                        Title = $"{i.Value} (all)",
+                        FixDelegate = async (cancellationToken) => {
+                            if (doc is null or { IsValidObject: false }) return;
 
+                            string transactionName = $"{i.Value} (all)";
+                            LambdaExternalEventTransactionCommand command = new(
+                                doc, transactionName, async (_, _) => {
+                                    bool hasErrors = false;
+                                    foreach (var reportItem in Collection)
+                                    {
+                                        if (reportItem.Code != report.Code) continue;
+                                        if (reportItem.Target is null) continue;
+
+                                        Element element = (Element)reportItem.Target;
+
+                                        if (!element.IsValidObject) continue;
+
+                                        try {
+                                            bool result = i.Excecute(element);
+                                            if (!result) hasErrors = true;
+                                        }
+                                        catch (Exception) {
+                                            hasErrors = true;
+                                        }
+                                    }
+                                    return !hasErrors;
+                                });
+                            var response = await _mediator.Send(command);
+
+                            if (response is { Result: false } or { HasError: true })
+                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
                         }
                     };
                     fixes.Add(fixAll);
@@ -402,75 +404,30 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         else if (report.Target is Document document)
             fixes = _documentFixes
                 .Where(i => i.Identity.Code == report.Code)
-                .SelectMany(i =>
+                .Select(i =>
                 {
-                    List<FixViewModel> fixes = [];
-                    FixViewModel fix = new()
-                    {
-                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
+                    var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
+                    var icon = new PackIcon {
+                        Kind = PackIconKind.Idea,
+                        Foreground = new SolidColorBrush(iconColor)
+                    }; 
+
+                    FixViewModel fix = new() {
+                        Icon = icon,
                         Title = i.Value,
-                        FixDelegate = async (cancellationToken) =>
-                        {
-                            bool hasErrors = false;
-                            if (!document.IsValidObject) return;
-                            await _externalEvent.Raise(uiapp =>
-                            {
-                                using Transaction transaction = new(report.Document, i.Value);
-                                transaction.Start();
-                                try
-                                {
-                                    bool result = i.Excecute(document);
-                                    if (!result) hasErrors = true;
-                                }
-                                catch (Exception)
-                                {
-                                    hasErrors = true;
-                                }
-                                transaction.Commit();
-                            }); 
-                            if (hasErrors)
-                                await _dialog.Show("Something went wrong", cancellationToken);
+                        FixDelegate = async (cancellationToken) => {
+                            if (document is null or { IsValidObject: false }) return;
+
+                            string transactionName = i.Value;
+                            LambdaExternalEventTransactionCommand command = new(
+                                document, transactionName, async (_, _) => i.Excecute(document));
+                            var response = await _mediator.Send(command);
+
+                            if (response is { Result: false } or { HasError: true })
+                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
                         }
                     };
-                    fixes.Add(fix);
-
-                    FixViewModel fixAll = new()
-                    {
-                        Icon = new PackIcon { Kind = PackIconKind.Idea, Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D)) },
-                        Title = $"{i.Value} (All)",
-                        FixDelegate = async (cancellationToken) =>
-                        {
-                            bool hasErrors = false;
-                            var sameReportItems = Collection.Where(i => i.Code == report.Code).ToList();
-                            await _externalEvent.Raise(uiapp =>
-                            {
-                                using Transaction transaction = new(report.Document, $"{i.Value} (All)");
-                                transaction.Start();
-                                foreach (var reportItem in sameReportItems)
-                                {
-                                    if (reportItem.Target is null) continue;
-                                    Document document = (Document)reportItem.Target;
-                                    if (!document.IsValidObject) continue;
-                                    try
-                                    {
-                                        bool result = i.Excecute(document);
-                                        if (!result) hasErrors = true;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        hasErrors = true;
-                                    }
-                                }
-                                transaction.Commit();
-                            });
-                            if (hasErrors)
-                                await _dialog.Show("Something went wrong");
-
-                        }
-                    };
-                    fixes.Add(fixAll);
-
-                    return fixes;
+                    return fix;
                 }).ToList();
 
         DiagnosticReportItemViewModel item = new() {

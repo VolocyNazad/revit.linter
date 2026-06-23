@@ -1,0 +1,18 @@
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="MaterialDesignThemes" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
+		<PackageReference Include="XamlConstructor">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+</Project>

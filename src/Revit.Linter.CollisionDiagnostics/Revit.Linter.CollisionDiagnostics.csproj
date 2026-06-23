@@ -1,107 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<Platforms>x64</Platforms>
-		<Configurations>Debug 2021.1.4;Debug 2021.1.9;Debug 2023.0.0;Debug 2025.0.0;Release 2011.0.0;Release 2011.0.1;Release 2012.0.0;Release 2012.0.1;Release 2013.0.0;Release 2013.0.1;Release 2014.0.0;Release 2014.0.1;Release 2015.0.0;Release 2015.0.1;Release 2016.0.0;Release 2016.0.1;Release 2016.0.2;Release 2017.0.0;Release 2017.0.1;Release 2017.0.2;Release 2018.0.0;Release 2018.0.1;Release 2018.0.2;Release 2019.0.0;Release 2019.0.1;Release 2020.0.0;Release 2020.0.1;Release 2021.0.0;Release 2021.1.4;Release 2021.1.9;Release 2022.0.0;Release 2022.1.0;Release 2023.0.0;Release 2024.0.0;Release 2024.2.0;Release 2025.0.0;Release 2026.0.0;Debug 2021.1.9</Configurations>
-		<RevitVersion>$(Configuration.Split(' ')[1])</RevitVersion>
-		<MajorRevitVersion>$(RevitVersion.Split('.')[0])</MajorRevitVersion>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<IsNet8 Condition="'$(MajorRevitVersion)' == '2025'">true</IsNet8>
-		<IsNet8 Condition="'$(MajorRevitVersion)' == '2026'">true</IsNet8>
-		<IsNet8 Condition="'$(IsNet8)' == ''">false</IsNet8>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<IsDebug Condition="$(Configuration.StartsWith('Debug'))">true</IsDebug>
-		<IsDebug Condition="'$(IsDebug)' == ''">false</IsDebug>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(IsNet8)' == 'true'">
-		<TargetFramework>net8.0-windows</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(IsNet8)' != 'true'">
-		<TargetFramework>net48</TargetFramework>
-	</PropertyGroup>
-
-	<!-- Автоматически генерируем констант для всех версий -->
-	<PropertyGroup>
-
-		<!-- IS константы для конкретных годов -->
-		<DefineConstants Condition="'$(MajorRevitVersion)' != ''">$(DefineConstants);IS$(MajorRevitVersion)</DefineConstants>
-
-		<!-- BEFORE константы для всех годов -->
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2012">$(DefineConstants);BEFORE2012</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2013">$(DefineConstants);BEFORE2013</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2014">$(DefineConstants);BEFORE2014</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2015">$(DefineConstants);BEFORE2015</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2016">$(DefineConstants);BEFORE2016</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2017">$(DefineConstants);BEFORE2017</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2018">$(DefineConstants);BEFORE2018</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2019">$(DefineConstants);BEFORE2019</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2020">$(DefineConstants);BEFORE2020</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2021">$(DefineConstants);BEFORE2021</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2022">$(DefineConstants);BEFORE2022</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2023">$(DefineConstants);BEFORE2023</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2024">$(DefineConstants);BEFORE2024</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2025">$(DefineConstants);BEFORE2025</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2026">$(DefineConstants);BEFORE2026</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &lt;= 2027">$(DefineConstants);BEFORE2027</DefineConstants>
-
-		<!-- AFTER константы для всех версий -->
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2011">$(DefineConstants);AFTER2011</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2012">$(DefineConstants);AFTER2012</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2013">$(DefineConstants);AFTER2013</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2014">$(DefineConstants);AFTER2014</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2015">$(DefineConstants);AFTER2015</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2016">$(DefineConstants);AFTER2016</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2017">$(DefineConstants);AFTER2017</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2018">$(DefineConstants);AFTER2018</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2019">$(DefineConstants);AFTER2019</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2020">$(DefineConstants);AFTER2020</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2021">$(DefineConstants);AFTER2021</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2022">$(DefineConstants);AFTER2022</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2023">$(DefineConstants);AFTER2023</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2024">$(DefineConstants);AFTER2024</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2025">$(DefineConstants);AFTER2025</DefineConstants>
-		<DefineConstants Condition="'$(MajorRevitVersion)' != '' and $(MajorRevitVersion) &gt;= 2026">$(DefineConstants);AFTER2026</DefineConstants>
-
-		<!-- Константы для типа конфигурации -->
-		<DefineConstants Condition="$(Configuration.StartsWith('Debug'))">$(DefineConstants);DEBUG</DefineConstants>
-		<DefineConstants Condition="$(Configuration.StartsWith('Release'))">$(DefineConstants);RELEASE</DefineConstants>
-	</PropertyGroup>
-
-	<!-- Вывод -->
-	<Target Condition="'$(IsDebug)' == 'true'" Name="PrintDefines" AfterTargets="Build">
-		<Message Text="=== Configuration Info ===" Importance="high" />
-		<Message Text="Configuration: $(Configuration)" Importance="high" />
-		<Message Text="MajorRevitVersion: $(MajorRevitVersion)" Importance="high" />
-		<Message Text="DefineConstants: $(DefineConstants)" Importance="high" />
-	</Target>
-
-	<PropertyGroup Condition="'$(IsDebug)' == 'true'">
-		<Optimize>False</Optimize>
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(IsDebug)' != 'true'">
-		<Optimize>True</Optimize>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-	</PropertyGroup>
-
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
-		<PackageReference Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion)" />
-		<PackageReference Include="YamlDotNet" Version="18.0.0" />
-		<PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" Version="$(MajorRevitVersion).0.6" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+		<PackageReference Include="Revit_All_Main_Versions_API_x64"/>
+		<PackageReference Include="YamlDotNet"/>
+		<PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache"/>
 	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
 	</ItemGroup>
-
 </Project>
