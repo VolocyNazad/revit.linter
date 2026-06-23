@@ -1,0 +1,17 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="WixSharp.Core" Version="2.12.2" />
+		<PackageVersion Include="WixSharp.Msi.Core" Version="2.12.2" />
+		<PackageVersion Include="WixToolset.UI.wixext" Version="6.0.2" />
+		<PackageVersion Include="PolySharp" Version="1.16.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<GlobalPackageReference  Include="PolySharp">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</GlobalPackageReference >
+	</ItemGroup>
+</Project>

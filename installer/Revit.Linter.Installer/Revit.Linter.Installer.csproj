@@ -18,9 +18,9 @@
 	</ItemGroup>-->
 
 	<ItemGroup>
-		<PackageReference Include="WixSharp.Core" Version="2.12.2" />
-		<PackageReference Include="WixSharp.Msi.Core" Version="2.12.2" />
-		<PackageReference Include="WixToolset.UI.wixext" Version="6.0.2" />
+		<PackageReference Include="WixSharp.Core" />
+		<PackageReference Include="WixSharp.Msi.Core" />
+		<PackageReference Include="WixToolset.UI.wixext" />
 	</ItemGroup>
 
 </Project>

@@ -76,7 +76,7 @@ project.BuildMsi();
 static string TryGetSolutionDirectoryPath(string? currentPath = null)
 {
     DirectoryInfo? directory = new(currentPath ?? Directory.GetCurrentDirectory());
-    while (directory != null && directory.GetFiles("*.slnx").Length == 0)
+    while (directory != null && directory.GetFiles("Revit.Linter.slnx").Length == 0)
         directory = directory.Parent;
     return directory!.FullName;
 }
