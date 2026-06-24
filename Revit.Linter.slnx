@@ -42,7 +42,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="nuget.config" />
     <File Path="README.md" />
-    <File Path="TODO.txt" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/todo/">
