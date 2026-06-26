@@ -78,7 +78,7 @@ internal sealed class DiagnosticService(
         try
         {
             var elements = elementIds.Select(document.GetElement).ToList();
-            AddElementtDiagnostics(document, elements, view);
+            AddElementDiagnostics(document, elements, view);
 
             return DiagnosticServiceResult.Success;
         }
@@ -94,7 +94,7 @@ internal sealed class DiagnosticService(
         {
             AddHandleFailures(document); // todo Учитывать вид
             AddDocumentDiagnostics(document);
-            AddElementtDiagnostics(document, view);
+            AddElementDiagnostics(document, view);
 
             return DiagnosticServiceResult.Success;
         }
@@ -130,14 +130,14 @@ internal sealed class DiagnosticService(
         }
     }
 
-    private void AddElementtDiagnostics(Document document, View? view)
+    private void AddElementDiagnostics(Document document, View? view)
     {
         IList<Element> elements = view is null
             ? new FilteredElementCollector(document).WherePasses(elementFilter).ToElements()
             : new FilteredElementCollector(document, view.Id).WherePasses(elementFilter).ToElements();
-        AddElementtDiagnostics(document, elements, view);
+        AddElementDiagnostics(document, elements, view);
     }
-    private void AddElementtDiagnostics(Document document, IEnumerable<Element> elements, View? view)
+    private void AddElementDiagnostics(Document document, IEnumerable<Element> elements, View? view)
     {
         foreach ((ElementDiagnosticId diagnosticId, ElementDiagnosticIdOverrides diagnosticIdOverrides, IElementDiagnosticFilter diagnosticFilter, IElementDiagnosticDocumentFilter diagnosticDocumentFilter, IElementDiagnostic diagnostic) in ElementDiagnosticInfo)
         {
