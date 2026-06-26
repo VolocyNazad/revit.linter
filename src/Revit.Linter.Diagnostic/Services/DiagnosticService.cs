@@ -4,6 +4,7 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
+using Revit.Linter.StatusBar.Services;
 using System.Diagnostics;
 
 namespace Revit.Linter.Diagnostic.Services;
@@ -139,8 +140,13 @@ internal sealed class DiagnosticService(
     }
     private void AddElementDiagnostics(Document document, IEnumerable<Element> elements, View? view)
     {
+        using RevitProgressBar revitProgressBar = new();
+        revitProgressBar.SetMaximumValue(ElementDiagnosticInfo.Count);
+
         foreach ((ElementDiagnosticId diagnosticId, ElementDiagnosticIdOverrides diagnosticIdOverrides, IElementDiagnosticFilter diagnosticFilter, IElementDiagnosticDocumentFilter diagnosticDocumentFilter, IElementDiagnostic diagnostic) in ElementDiagnosticInfo)
         {
+            revitProgressBar.Increment();
+
             if (!diagnosticDocumentFilter.IsRelevantFor(document)) continue;
             foreach (Element element in elements)
             {
@@ -151,14 +157,16 @@ internal sealed class DiagnosticService(
                 stopwatch.Stop();
                 if (diagnosticResult.Verdict == DiagnosticVerdict.Valid) continue;
                 (string, object)[] messageArgs;
-                if (diagnosticResult.MessageArgs is not null) {
+                if (diagnosticResult.MessageArgs is not null)
+                {
                     messageArgs = diagnosticResult.MessageArgs
                         .Select(i => (i.Key, i.Value))
                         .Append(("duration", stopwatch.Elapsed.TotalMilliseconds))
                         .Append(("elementId", element.Id))
                         .Append(("elementName", element.Name)).ToArray(); // todo Оптимизировать
                 }
-                else {
+                else
+                {
                     messageArgs = [("duration", stopwatch.Elapsed.TotalMilliseconds), ("elementId", element.Id), ("elementName", element.Name)];
                 }
                 DiagnosticReportMessage diagnosticReportMessage = new(
@@ -168,6 +176,7 @@ internal sealed class DiagnosticService(
                 diagnosticReportSender.Send(diagnosticReport);
             }
         }
+
     }
     private void AddHandleFailures(Document document)
     {

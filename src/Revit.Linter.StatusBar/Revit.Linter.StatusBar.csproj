@@ -1,0 +1,10 @@
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="CommunityToolkit.Mvvm"/>
+	</ItemGroup>
+</Project>

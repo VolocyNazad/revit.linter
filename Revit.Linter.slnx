@@ -36,6 +36,9 @@
     <Project Path="src/Revit.Linter.Languages/Revit.Linter.Languages.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.StatusBar/Revit.Linter.StatusBar.csproj" Id="a3f1bbfe-dc59-485f-861e-17251e7fb9ff">
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
