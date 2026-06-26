@@ -1,37 +1,41 @@
 ﻿using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI.Events;
-using Revit.Context.Abstractions.Services;
+using Revit.Async;
+using Revit.Events.Abstractions.Services;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 
 [XamlConstructor, AutoConstructor]
 internal abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
-    protected readonly IRevitContext _revitContext;
+    protected readonly IAsyncExternalEvent _externalEvent;
 
     protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
-        Application app = _revitContext.Application!;
-        app.DocumentClosed += DocumentClosed;
-        app.DocumentOpened += DocumentOpened;
-        app.DocumentCreated += DocumentCreated;
-        app.DocumentChanged += DocumentChanged;
-        app.FamilyLoadedIntoDocument += FamilyLoadedIntoDocument;
-        UIApplication uiapp = _revitContext.UIApplication!;
-        uiapp.ViewActivated += ViewActivated;
-        uiapp.ViewActivated += DocumentFocusChanged;
+        await RevitTask.RunAsync(uiapp => {
+            uiapp.ViewActivated += ViewActivated;
+            uiapp.ViewActivated += DocumentFocusChanged;
+            var app = uiapp.Application;
+            app.DocumentClosed += DocumentClosed;
+            app.DocumentOpened += DocumentOpened;
+            app.DocumentCreated += DocumentCreated;
+            app.DocumentChanged += DocumentChanged;
+            app.FamilyLoadedIntoDocument += FamilyLoadedIntoDocument;
+        });
+
     }
     protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
-        Application app = _revitContext.Application!;
-        app.DocumentClosed -= DocumentClosed;
-        app.DocumentOpened -= DocumentOpened;
-        app.DocumentCreated -= DocumentCreated;
-        app.DocumentChanged -= DocumentChanged;
-        app.FamilyLoadedIntoDocument -= FamilyLoadedIntoDocument;
-        UIApplication uiapp = _revitContext.UIApplication!;
-        uiapp.ViewActivated -= ViewActivated;
-        uiapp.ViewActivated -= DocumentFocusChanged;
+        await RevitTask.RunAsync(uiapp => {
+            uiapp.ViewActivated -= ViewActivated;
+            uiapp.ViewActivated -= DocumentFocusChanged;
+            var app = uiapp.Application;
+            app.DocumentClosed -= DocumentClosed;
+            app.DocumentOpened -= DocumentOpened;
+            app.DocumentCreated -= DocumentCreated;
+            app.DocumentChanged -= DocumentChanged;
+            app.FamilyLoadedIntoDocument -= FamilyLoadedIntoDocument;
+        });
     }
 
     private async void FamilyLoadedIntoDocument(object? sender, FamilyLoadedIntoDocumentEventArgs e) => OnRevitChanged();
@@ -47,5 +51,5 @@ internal abstract partial class RevitInteractionViewModel : InitializableObserva
         OnRevitChanged();
     }
 
-    protected abstract void OnRevitChanged(); 
+    protected abstract void OnRevitChanged();
 }

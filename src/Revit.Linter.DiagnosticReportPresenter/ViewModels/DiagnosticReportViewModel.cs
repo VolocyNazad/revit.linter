@@ -29,6 +29,7 @@ namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
     private readonly IMediator _mediator;
+    private readonly IRevitContext _revitContext;
     private readonly IFixReportSender _fixReportDialog;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
@@ -40,10 +41,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IRevitContext revitContext, IAsyncExternalEvent externalEvent, IFixReportSender fixReportDialog, IMediator mediator,
             IDiagnosticService diagnosticService, IEnumerable<IAccentElementsService> accentElementsServices,
             IDiagnosticReportReceiver diagnosticReportReceiver,
-            IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(revitContext)
+            IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(externalEvent)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
+        _revitContext = revitContext;
         _fixReportDialog = fixReportDialog;
         _mediator = mediator;
         _diagnosticService = diagnosticService;
@@ -262,7 +264,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void InitializeCollectionView()
     {
-        CollectionViewSource = new() {
+        CollectionViewSource = new()
+        {
             Source = Collection
         };
 
@@ -316,6 +319,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         await base.OnInitializing(cancellationToken);
         _diagnosticReportReceiver.DiagnosticReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
+
+        RunDiagnosticCommand.NotifyCanExecuteChanged();
+        ShowElementCommand.NotifyCanExecuteChanged();
+        SelectElementCommand.NotifyCanExecuteChanged();
+        IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
+        CutViewByElementCommand.NotifyCanExecuteChanged();
     }
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
@@ -410,7 +419,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     var icon = new PackIcon {
                         Kind = PackIconKind.Idea,
                         Foreground = new SolidColorBrush(iconColor)
-                    }; 
+                    };
 
                     FixViewModel fix = new() {
                         Icon = icon,
@@ -451,6 +460,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
         CutViewByElementCommand.NotifyCanExecuteChanged();
-        //ClearReport();
+        ClearReport();
     }
 }

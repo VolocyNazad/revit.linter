@@ -16,6 +16,7 @@
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.MediatR" />
+		<PackageReference Include="Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.BackgroundDiagnostic\Revit.Linter.BackgroundDiagnostic.csproj" />

@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
 using Revit.Linter.DiagnosticReportPresenter.Views;
@@ -19,6 +20,8 @@ internal sealed class InitExternalApplication : ExternalApplication
 {
     public override void OnStartup()
     {
+        RevitTask.Initialize(Application);
+
         AssemblyLoadService.LoadAssemblies();
         InitializeRevitContext();
         InitializeRevitTransactionCache();
@@ -63,7 +66,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideErrorListButton",
-            "Show/Hide diagnostic",
+            "Show/Hide errors",
             assemblyPath,
             typeof(ShowHideErrorListCommand).FullName
         );
@@ -80,7 +83,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideFixListButton",
-            "Show/Hide fix",
+            "Show/Hide fixes",
             assemblyPath,
             typeof(ShowHideFixListCommand).FullName
         );
@@ -97,7 +100,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideDiagnosticListButton",
-            "Show/Hide diagnostic",
+            "Show/Hide diagnostics",
             assemblyPath,
             typeof(ShowHideDiagnosticListCommand).FullName
         );

@@ -11,7 +11,7 @@ public abstract partial class InitializableObservableObject : ObservableObject
 
     /// <summary> Инициализировать </summary>
     [RelayCommand(CanExecute = nameof(CanInitialize))]
-    private async Task Initialize(CancellationToken cancellationToken)
+    private async Task Initialize(CancellationToken cancellationToken = default)
     {
         await OnInitializing(cancellationToken);
         _initialized = true;
@@ -25,7 +25,7 @@ public abstract partial class InitializableObservableObject : ObservableObject
 
     /// <summary> Деинициализировать </summary>
     [RelayCommand(CanExecute = nameof(CanDeinitialize))]
-    private async Task Deinitialize(CancellationToken cancellationToken)
+    private async Task Deinitialize(CancellationToken cancellationToken = default)
     {
         await OnDeinitializing(cancellationToken);
         _initialized = false;
