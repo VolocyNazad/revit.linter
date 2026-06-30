@@ -1,6 +1,12 @@
-﻿namespace Revit.Linter.DiagnosticReportPresenter.Views;
+﻿using Revit.Linter.DiagnosticReportPresenter.ViewModels;
+
+namespace Revit.Linter.DiagnosticReportPresenter.Views;
 
 public sealed partial class DiagnosticReportView
 {
-    public DiagnosticReportView() => InitializeComponent();
+    public DiagnosticReportView(IServiceProvider serviceProvider)
+    {
+        ServiceLocator.Initialize(serviceProvider);
+        InitializeComponent();
+    }
 }

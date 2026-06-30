@@ -16,6 +16,7 @@ using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.Infrastructure.Exceptions;
 using Revit.Linter.ParameterElementDiagnostics.DI;
+using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.MediatR.DI;
 using Revit.TransactionMemoryCache.DI;
@@ -51,7 +52,8 @@ internal sealed class Program
                 .AddCollisionDiagnostics()
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule()
-                .AddDiagnosticReportPresenterModule().AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule())
+                .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
+                .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule())
         ;
 
 }

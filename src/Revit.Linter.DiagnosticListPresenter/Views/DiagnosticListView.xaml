@@ -31,6 +31,7 @@
                     <x:Type TypeName="core:DiagnosticSeverity" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <viewModels:ServiceLocator x:Key="ServiceLocator" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -43,8 +44,9 @@
         VerticalAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
         VerticalContentAlignment="Stretch">
-        <DockPanel Grid.Column="1">
+        <DockPanel>
             <DockPanel Height="50" DockPanel.Dock="Top">
+                <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
                 <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"

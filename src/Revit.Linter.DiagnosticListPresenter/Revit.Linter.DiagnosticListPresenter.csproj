@@ -3,12 +3,12 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MaterialDesignThemes"/>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf"/>
-		<PackageReference Include="Revit_All_Main_Versions_API_x64"/>
-		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection"/>
-		<PackageReference Include="CommunityToolkit.Mvvm"/>
+		<PackageReference Include="MaterialDesignThemes" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="XamlConstructor">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,5 +16,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 	</ItemGroup>
 </Project>

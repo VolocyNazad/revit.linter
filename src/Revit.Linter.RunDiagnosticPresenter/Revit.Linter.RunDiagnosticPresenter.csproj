@@ -5,17 +5,25 @@
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
 		<PackageReference Include="XamlConstructor">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="VolocyNazad.Revit.Context" />
+		<PackageReference Include="VolocyNazad.Revit.Events" />
+		<PackageReference Include="VolocyNazad.Revit.MediatR" />
+		<PackageReference Include="Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="DI\" />
 	</ItemGroup>
 
 </Project>

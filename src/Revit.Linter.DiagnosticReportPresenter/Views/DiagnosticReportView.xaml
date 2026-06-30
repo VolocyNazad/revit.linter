@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:DebugConverter x:Key="DebugConverter" />
+            <viewModels:ServiceLocator x:Key="ServiceLocator" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -37,31 +38,7 @@
         VerticalContentAlignment="Stretch">
         <DockPanel>
             <DockPanel Height="50" DockPanel.Dock="Top">
-                <ToggleButton
-                    Width="35"
-                    Height="35"
-                    Margin="10,5,5,5"
-                    materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Pause,
-                                                                                          Size=30}"
-                    Background="Transparent"
-                    Content="{materialDesign:PackIcon Kind=Play,
-                                                      Size=30}"
-                    DockPanel.Dock="Left"
-                    Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
-                    IsChecked="True"
-                    IsEnabled="false"
-                    Style="{StaticResource MaterialDesignActionToggleButton}" />
-                <Button
-                    Width="35"
-                    Height="35"
-                    Margin="5"
-                    d:Command="{x:Null}"
-                    Command="{Binding RunDiagnosticCommand}"
-                    Content="{materialDesign:PackIcon Kind=Play,
-                                                      Size=30}"
-                    DockPanel.Dock="Left"
-                    Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="{Binding DiagnosticTime}" />
+                <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"
@@ -93,17 +70,6 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-                <Rectangle
-                    Width="1"
-                    Margin="0,5"
-                    VerticalAlignment="Stretch"
-                    DockPanel.Dock="Left"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
-                <CheckBox
-                    Margin="10,0,10,0"
-                    Content="On active view"
-                    DockPanel.Dock="Left"
-                    IsChecked="{Binding OnActiveViewMode}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"

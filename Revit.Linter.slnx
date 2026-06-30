@@ -56,6 +56,9 @@
     <Project Path="src/Revit.Linter.DiagnosticListPresenter/Revit.Linter.DiagnosticListPresenter.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.DiagnosticReportPresenter.Interactions/Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" Id="82e25b80-70d3-4253-badb-6fbaf24e5721">
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportPresenter/Revit.Linter.DiagnosticReportPresenter.csproj">
       <Platform Project="x64" />
     </Project>
@@ -64,6 +67,9 @@
     </Project>
     <Project Path="src/Revit.Linter.FixReportPresenter/Revit.Linter.FixReportPresenter.csproj">
       <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.RunDiagnosticPresenter/Revit.Linter.RunDiagnosticPresenter.csproj" Id="ce7df23e-c72d-4cba-991a-5e98768f34f8">
+      <Platform Solution="*|x64" Project="x64" />
     </Project>
   </Folder>
   <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">

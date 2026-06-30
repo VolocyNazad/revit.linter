@@ -16,14 +16,30 @@ using Revit.Linter.FixReportPresenter.Models;
 using Revit.MediatR.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Revit.Linter.DiagnosticReportPresenter.Interactions;
 using TextRange = System.Windows.Documents.TextRange;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
+
+internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPresenter
+{
+    public void Clear()
+    {
+        Collection.Clear();
+        ClearFilters();
+    }
+
+
+    public void Refresh()
+    {
+        RefreshFilters();
+    }
+
+}
 
 [XamlConstructor]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
@@ -33,13 +49,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IFixReportSender _fixReportDialog;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
-    private readonly IDiagnosticService _diagnosticService;
     private readonly IEnumerable<IElementFix> _elementFixes;
     private readonly IEnumerable<IDocumentFix> _documentFixes;
 
     public DiagnosticReportViewModel(
             IRevitContext revitContext, IAsyncExternalEvent externalEvent, IFixReportSender fixReportDialog, IMediator mediator,
-            IDiagnosticService diagnosticService, IEnumerable<IAccentElementsService> accentElementsServices,
+            IEnumerable<IAccentElementsService> accentElementsServices,
             IDiagnosticReportReceiver diagnosticReportReceiver,
             IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(externalEvent)
     {
@@ -48,7 +63,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _revitContext = revitContext;
         _fixReportDialog = fixReportDialog;
         _mediator = mediator;
-        _diagnosticService = diagnosticService;
         _elementFixes = elementFixes;
         _documentFixes = documentFixes;
 
@@ -66,9 +80,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
-
-    [ObservableProperty]
-    public partial string DiagnosticTime { get; private set; } = string.Empty;
 
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> SeverityFilters { get; set; } = [];
@@ -97,39 +108,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 filter.PropertyChanged += Filter_PropertyChanged;
         RefreshCollectionView();
     }
-
-    [ObservableProperty]
-    public partial bool OnActiveViewMode { get; set; } = false;
-
-    #region [RunDiagnostic] Command - Запустить диагностику  
-
-    /// <summary> Запустить диагностику </summary>
-    [RelayCommand(CanExecute = nameof(CanRunDiagnostic))]
-    private async Task RunDiagnostic(CancellationToken cancellationToken = default)
-    {
-        var stopwatch = Stopwatch.StartNew();
-        RunDiagnostic();
-        DiagnosticTime = $"{stopwatch.Elapsed.Seconds} sec.";
-        stopwatch.Stop();
-    }
-
-    private void RunDiagnostic()
-    {
-        ClearReport();
-
-        Document? targetDocument = _revitContext.ActiveDocument;
-        if (targetDocument is null) return;
-
-        View? targetView = OnActiveViewMode ? targetDocument.ActiveView : null;
-
-        _diagnosticService.Excecute(targetDocument, targetView);
-
-        RefreshFilters();
-    }
-
-    private bool CanRunDiagnostic() => _revitContext.ActiveDocument is { IsFamilyDocument: false };
-
-    #endregion
 
     #region [ShowElement] Command - Показать элемент  
 
@@ -286,11 +264,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         //todo viewModel.Message.ToString() возвращает не в том формате, что виден пользователю
         ;
 
-    private void ClearReport()
-    {
-        Collection.Clear();
-        ClearFilters();
-    }
     private void ClearFilters()
     {
         SeverityFilters = [];
@@ -320,7 +293,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         await base.OnInitializing(cancellationToken);
         _diagnosticReportReceiver.DiagnosticReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
 
-        RunDiagnosticCommand.NotifyCanExecuteChanged();
         ShowElementCommand.NotifyCanExecuteChanged();
         SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
@@ -332,6 +304,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticReportReceiver.DiagnosticReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
     }
 
+    protected override void OnRevitChanged() {
+        ShowElementCommand.NotifyCanExecuteChanged();
+        SelectElementCommand.NotifyCanExecuteChanged();
+        IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
+        CutViewByElementCommand.NotifyCanExecuteChanged();
+        Clear();
+    }
 
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, MessageSentEventArgs e)
     {
@@ -454,12 +433,4 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Collection.Add(item);
     }
 
-    protected override void OnRevitChanged() {
-        RunDiagnosticCommand.NotifyCanExecuteChanged();
-        ShowElementCommand.NotifyCanExecuteChanged();
-        SelectElementCommand.NotifyCanExecuteChanged();
-        IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
-        CutViewByElementCommand.NotifyCanExecuteChanged();
-        ClearReport();
-    }
 }

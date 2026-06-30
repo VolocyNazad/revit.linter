@@ -1,6 +1,12 @@
-﻿namespace Revit.Linter.FixReportPresenter.Views;
+﻿using Revit.Linter.FixReportPresenter.ViewModels;
 
-public partial class FixReportView
+namespace Revit.Linter.FixReportPresenter.Views;
+
+public sealed partial class FixReportView
 {
-    public FixReportView() => InitializeComponent();
+    public FixReportView(IServiceProvider serviceProvider)
+    {
+        ServiceLocator.Initialize(serviceProvider);
+        InitializeComponent();
+    }
 }

@@ -22,6 +22,7 @@
                     SecondaryColor="DeepOrange" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <viewModels:ServiceLocator x:Key="ServiceLocator" />
         </ResourceDictionary>
     </UserControl.Resources>
     <materialDesign:ColorZone
@@ -29,14 +30,46 @@
         VerticalAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
         VerticalContentAlignment="Stretch">
-        <DataGrid
-            d:ItemsSource="{d:SampleData ItemCount=2}"
-            AutoGenerateColumns="False"
-            CanUserAddRows="False"
-            ItemsSource="{Binding Collection}">
-            <DataGrid.Resources>
-                <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
-            </DataGrid.Resources>
-        </DataGrid>
+        <DockPanel>
+            <DockPanel Height="50" DockPanel.Dock="Top">
+                <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
+                <!--<Button
+                    Content="{materialDesign:PackIcon Kind=FilterPlus,
+                                                      Size=20}"
+                    DockPanel.Dock="Right"
+                    IsEnabled="False"
+                    Style="{StaticResource MaterialDesignIconButton}" />
+                <TextBox
+                    Width="200"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    materialDesign:HintAssist.Hint="Search"
+                    materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                    materialDesign:TextFieldAssist.LeadingIcon="Search"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding SearchField, UpdateSourceTrigger=LostFocus}" />
+                <TextBlock
+                    Margin="5"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Text="Diagnostics:" />-->
+                <!--<UIElement />-->
+            </DockPanel>
+            <Rectangle
+                Height="1"
+                HorizontalAlignment="Stretch"
+                DockPanel.Dock="Top"
+                Fill="{DynamicResource MaterialDesignDivider}" />
+            <DataGrid
+                d:ItemsSource="{d:SampleData ItemCount=2}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                ItemsSource="{Binding Collection}">
+                <DataGrid.Resources>
+                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                </DataGrid.Resources>
+            </DataGrid>
+        </DockPanel>
     </materialDesign:ColorZone>
 </UserControl>
