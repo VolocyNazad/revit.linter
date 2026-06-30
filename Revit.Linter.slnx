@@ -81,6 +81,9 @@
   <Project Path="src/Revit.Linter.DiagnosticReportProvider/Revit.Linter.DiagnosticReportProvider.csproj">
     <Platform Project="x64" />
   </Project>
+  <Project Path="src/Revit.Linter.FixReportProvider/Revit.Linter.FixReportProvider.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="src/Revit.Linter/Revit.Linter.csproj">
     <Platform Project="x64" />
   </Project>

@@ -270,6 +270,24 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run d:Text="Created" Text="{Binding Created}" />
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding Created}"
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

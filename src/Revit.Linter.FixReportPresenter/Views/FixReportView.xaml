@@ -25,6 +25,11 @@
             <viewModels:ServiceLocator x:Key="ServiceLocator" />
         </ResourceDictionary>
     </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding InitializeCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <materialDesign:ColorZone
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
@@ -33,7 +38,7 @@
         <DockPanel>
             <DockPanel Height="50" DockPanel.Dock="Top">
                 <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
-                <!--<Button
+                <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"
                     DockPanel.Dock="Right"
@@ -53,8 +58,8 @@
                     Margin="5"
                     VerticalAlignment="Center"
                     DockPanel.Dock="Right"
-                    Text="Diagnostics:" />-->
-                <!--<UIElement />-->
+                    Text="Fixes:" />
+                <UIElement />
             </DockPanel>
             <Rectangle
                 Height="1"
@@ -65,10 +70,69 @@
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
-                ItemsSource="{Binding Collection}">
+                ItemsSource="{Binding CollectionViewSource.View}">
                 <DataGrid.Resources>
                     <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run d:Text="Code" Text="{Binding Code}" />
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding Code}"
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Message" SortMemberPath="Message">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <FlowDocumentScrollViewer
+                                    Width="1800"
+                                    Document="{Binding Message}"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Disabled">
+                                    <FlowDocumentScrollViewer.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding Message}"
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+                                        </ContextMenu>
+                                    </FlowDocumentScrollViewer.ContextMenu>
+                                </FlowDocumentScrollViewer>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center">
+                <Run d:Text="Created" Text="{Binding Created}" />
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                            Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
+                            CommandParameter="{Binding Created}"
+                            Header="Copy"
+                            Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
     </materialDesign:ColorZone>

@@ -14,4 +14,7 @@ namespace Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 /// <param name="IsObsolete"> Указывает, это отчет об устаревшей проверке или нет </param>
 /// <param name="ObsoleteDescription"> Описание причины устаревания </param>
 public sealed record DiagnosticReport(
-    string Code, DiagnosticSeverity Severity, Document Document, object? Target, DiagnosticReportMessage Message, bool IsObsolete, string ObsoleteDescription = "");
+    string Code, DiagnosticSeverity Severity, Document Document, object? Target, DiagnosticReportMessage Message, bool IsObsolete, string ObsoleteDescription = "")
+{
+    public DateTime Created { get; } = DateTime.Now;
+}

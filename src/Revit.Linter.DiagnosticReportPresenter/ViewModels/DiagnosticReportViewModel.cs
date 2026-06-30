@@ -6,13 +6,14 @@ using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.DiagnosticReportPresenter.Interactions;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
-using Revit.Linter.FixReportPresenter.Abstractions;
-using Revit.Linter.FixReportPresenter.Models;
+using Revit.Linter.FixReportProvider.Abstractions.Models;
+using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.MediatR.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -20,7 +21,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Revit.Linter.DiagnosticReportPresenter.Interactions;
 using TextRange = System.Windows.Documents.TextRange;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
@@ -38,7 +38,6 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     {
         RefreshFilters();
     }
-
 }
 
 [XamlConstructor]
@@ -46,14 +45,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 {
     private readonly IMediator _mediator;
     private readonly IRevitContext _revitContext;
-    private readonly IFixReportSender _fixReportDialog;
+    private readonly IFixReportSender _fixReportSender;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
     private readonly IEnumerable<IElementFix> _elementFixes;
     private readonly IEnumerable<IDocumentFix> _documentFixes;
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IFixReportSender fixReportDialog, IMediator mediator,
+            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IFixReportSender fixReportSender, IMediator mediator,
             IEnumerable<IAccentElementsService> accentElementsServices,
             IDiagnosticReportReceiver diagnosticReportReceiver,
             IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes) : base(externalEvent)
@@ -61,7 +60,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
         _revitContext = revitContext;
-        _fixReportDialog = fixReportDialog;
+        _fixReportSender = fixReportSender;
         _mediator = mediator;
         _elementFixes = elementFixes;
         _documentFixes = documentFixes;
@@ -312,12 +311,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Clear();
     }
 
-    private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, MessageSentEventArgs e)
+    private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, DiagnosticMessageSentEventArgs e)
     {
         DiagnosticReport report = e.Report;
 
         List<FixViewModel>? fixes = null;
-        if (report.Target is Element element)
+        if (report.Target is Element element) {
+            var elementId = element.Id;
             fixes = _elementFixes
                 .Where(i => i.Identity.Code == report.Code)
                 .SelectMany(i =>
@@ -345,7 +345,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             var response = await _mediator.Send(command);
 
                             if (response is { Result: false } or { HasError: true })
-                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code, 
+                                        new("Something went wrong while attempting to fix the element with id: '{elementId}'.", ("elementId", elementId))));
+                            else
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code, 
+                                        new("The element with id: '{elementId}' has been successfully corrected.", ("elementId", elementId))));
                         }
                     };
                     fixes.Add(fix);
@@ -382,14 +390,24 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             var response = await _mediator.Send(command);
 
                             if (response is { Result: false } or { HasError: true })
-                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code,
+                                        new("Something went wrong while attempting to fix the elements.")));
+                            else
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code,
+                                        new("The elements has been successfully corrected.")));
                         }
                     };
                     fixes.Add(fixAll);
 
                     return fixes;
                 }).ToList();
-        else if (report.Target is Document document)
+        }
+        else if (report.Target is Document document) {
+            string documentTitle = document.Title;
             fixes = _documentFixes
                 .Where(i => i.Identity.Code == report.Code)
                 .Select(i =>
@@ -412,13 +430,23 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             var response = await _mediator.Send(command);
 
                             if (response is { Result: false } or { HasError: true })
-                                await _fixReportDialog.Send([new FixReportInfo { Message = "Something went wrong" }], cancellationToken);
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code,
+                                        new("Something went wrong while attempting to fix the document with id: '{documentTitle}'.", ("documentTitle", documentTitle))));
+                            else
+                                _fixReportSender.Send(
+                                    new FixReport(
+                                        i.Identity.Code,
+                                        new("The document with id: '{documentTitle}' has been successfully corrected.", ("documentTitle", documentTitle))));
                         }
                     };
                     return fix;
                 }).ToList();
+        }
 
         DiagnosticReportItemViewModel item = new() {
+            Created = report.Created,
             Code = report.Code,
             Template = report.Message.Format,
             Target = report.Target,
@@ -426,7 +454,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
             DocumentTitle = report.Document.Title,
-            AccentElementDelegate = (i) => SelectElement(i),
+            AccentElementDelegate = i => SelectElement(i),
             IsObsolete = report.IsObsolete,
             ObsoleteDescription = report.ObsoleteDescription,
         };

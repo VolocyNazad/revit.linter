@@ -18,6 +18,7 @@ internal sealed class DiagnosticReportItemViewModel
     public required Dictionary<string, object> Args { get; init; }
     public required Action<int> AccentElementDelegate { get; init; }
     public required IEnumerable<FixViewModel>? Fixes { get; init; }
+    public required DateTime Created { get; init; }
 
     public FlowDocument Message => CreateFlowDocument();
 

@@ -43,6 +43,10 @@
 		<PackageReference Include="Revit.Async" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
+		<PackageReference Include="SonarAnalyzer.CSharp">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="VolocyNazad.AssemblyResolver" />
 		<PackageReference Include="MinVer" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
@@ -64,6 +68,7 @@
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
 	</ItemGroup>
