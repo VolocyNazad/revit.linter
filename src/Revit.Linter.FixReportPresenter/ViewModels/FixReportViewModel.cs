@@ -119,8 +119,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-       => args.Accepted = true
-       && args.Item is FixReportItemViewModel viewModel
+       => args.Accepted = args.Item is FixReportItemViewModel viewModel
        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
        && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase))

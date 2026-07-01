@@ -3,6 +3,7 @@ using Revit.Linter.Languages.Languages;
 using StringToExpression;
 using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
+using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.UserDiagnostics;
 
@@ -17,11 +18,11 @@ public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
             Expression body = Language.Parse(formula);
             return Expression.Lambda<Func<ElementFilter>>(body).Compile();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            logger.LogWarning("Collision diagnostic formula compilation error.");
+            logger.LogWarning(ex, "Collision diagnostic formula compilation error.");
             // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
-            throw;
+            return ElementFilterUtils.EmptyFilter;
         }
     }
     private static GrammerDefinition[] AllLanguageDefinitions()

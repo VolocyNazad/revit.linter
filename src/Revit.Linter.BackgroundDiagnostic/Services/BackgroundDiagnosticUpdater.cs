@@ -83,6 +83,6 @@ public class BackgroundDiagnosticService(
         return text;
     }
 
-    private record RegisteredUpdaterInfo(string DocumentTitle, UpdaterId UpdaterId);
+    private sealed record RegisteredUpdaterInfo(string DocumentTitle, UpdaterId UpdaterId);
 }
 

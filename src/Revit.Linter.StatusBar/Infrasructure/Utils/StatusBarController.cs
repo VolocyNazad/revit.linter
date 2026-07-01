@@ -8,19 +8,13 @@ namespace Revit.Linter.StatusBar.Infrasructure.Utils;
 /// <summary>
 /// StatusBarController
 /// </summary>
-internal sealed class StatusBarController
+internal static class StatusBarController
 {
-    private static readonly Grid RootGrid;
-    private static readonly DialogBarControl InternalControl;
-    private static ContentPresenter? _controlPresenter;
-
-    static StatusBarController()
-    {
-        RootGrid = MainWindow.getMainWnd().FindChild<Grid>("rootGrid") 
-            ?? throw new InvalidOperationException("Cannot find root grid in Revit UI");
-        InternalControl = RootGrid.FindChild<DialogBarControl>("statusBar") 
+    private static readonly Grid RootGrid = MainWindow.getMainWnd().FindChild<Grid>("rootGrid") 
+        ?? throw new InvalidOperationException("Cannot find root grid in Revit UI");
+    private static readonly DialogBarControl InternalControl = RootGrid.FindChild<DialogBarControl>("statusBar")
             ?? throw new InvalidOperationException("Cannot find internal control in Revit UI");
-    }
+    private static ContentPresenter? _controlPresenter;
 
     /// <summary>
     /// Default StatusBar is visible

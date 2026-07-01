@@ -43,11 +43,8 @@ public static class LogicalOperatorDefinitionDefinitions
                         method:typeof(EqualsUtils).GetMethod(
                             nameof(EqualsUtils.InternalEquals),
                             [typeof(object), typeof(object)])!,
-                        arguments:
-                        [
-                            Expression.Convert(left, typeof(object)),
-                            Expression.Convert(right, typeof(object))
-                        ]
+                        Expression.Convert(left, typeof(object)),
+                        Expression.Convert(right, typeof(object))
                     )),
             new BinaryOperatorDefinition(
                 name:  NameDictionary["NOTEQUALS"],
@@ -58,11 +55,8 @@ public static class LogicalOperatorDefinitionDefinitions
                         method:typeof(EqualsUtils).GetMethod(
                             nameof(EqualsUtils.InternalNotEquals),
                             [typeof(object), typeof(object)])!,
-                        arguments:
-                        [
-                            Expression.Convert(left, typeof(object)),
-                            Expression.Convert(right, typeof(object))
-                        ]
+                        Expression.Convert(left, typeof(object)),
+                        Expression.Convert(right, typeof(object))
                     )),
 
             new BinaryOperatorDefinition(

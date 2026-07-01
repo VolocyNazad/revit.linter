@@ -15,7 +15,7 @@ internal sealed partial class DiagnosticReportActualFilterViewModel : Observable
 
     public int Count { get; init; }
 
-    public bool IsValid(DiagnosticReportItemViewModel item) => item.IsObsolete == false;
+    public bool IsValid(DiagnosticReportItemViewModel item) => !item.IsObsolete;
 
     public override string ToString() => $"{Count} Actual";
 }

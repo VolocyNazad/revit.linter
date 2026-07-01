@@ -1,6 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+﻿using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
 
@@ -20,10 +18,10 @@ internal sealed class ParameterElementUnusedDiagnostic(
                     new ElementIsElementTypeFilter(false),
                     new ElementIsElementTypeFilter(true))).ToElements())
             ?? throw new InvalidOperationException($"Failed to get object from cache.");
-        foreach (var element in elements)
-        {
-            if (element.get_Parameter(definition) is not null) return new(DiagnosticVerdict.Valid);
-        }
-        return new(DiagnosticVerdict.NotValid);
+
+
+        return elements.Any(i => i.get_Parameter(definition) is not null) 
+            ? new(DiagnosticVerdict.Valid) 
+            : new(DiagnosticVerdict.NotValid);
     }
 }

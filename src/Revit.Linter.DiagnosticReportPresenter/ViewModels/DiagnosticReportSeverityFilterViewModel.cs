@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Revit.Linter.Core.Abstractions.Models;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 

@@ -28,7 +28,7 @@ internal sealed partial class DialogViewModel : ObservableObject, IDialog
             DataContext = this,
         };
 
-        WindowInteropHelper helper = new(window) {
+        WindowInteropHelper _ = new(window) {
             Owner = _revitContext.UIApplication!.MainWindowHandle
         };
 

@@ -2,19 +2,20 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
 
 namespace Revit.Linter;
 
 [Transaction(TransactionMode.Manual)]
 public class OpenConfigurationFolderCommand : ExternalCommand
 {
-    private IServiceProvider Provider => Program.Provider;
+    private static IServiceProvider Provider => Program.Provider;
     private ILogger Logger => field 
         ??= Provider.GetRequiredService<ILogger<OpenConfigurationFolderCommand>>();
+    private IDialog Dialog => field ??= Provider.GetRequiredService<IDialog>();
 
     public override void Execute()
     {
@@ -30,7 +31,7 @@ public class OpenConfigurationFolderCommand : ExternalCommand
         {
             string message = "Open configuration folder failed.";
             Logger.LogError(ex, message);
-            MessageBox.Show(message); // todo use custom dialog
+            Dialog.Show(message);
         }
     }
 }

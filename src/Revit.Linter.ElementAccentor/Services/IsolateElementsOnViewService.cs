@@ -25,7 +25,7 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
         }
         if (!activeView.CanEnableTemporaryViewPropertiesMode())
         {
-            _logger.LogInformation("Can't enable temporary view properties mode for view type {viewType}.", activeView.ViewType);
+            _logger.LogInformation("Can't enable temporary view properties mode for view type {ViewType}.", activeView.ViewType);
             return false;
         }
         if (WorksharingUtils.GetCheckoutStatus(document, activeView.Id) == CheckoutStatus.OwnedByOtherUser)

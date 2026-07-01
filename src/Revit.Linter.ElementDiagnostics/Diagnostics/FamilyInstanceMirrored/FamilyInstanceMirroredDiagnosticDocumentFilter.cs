@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceMirrored;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceMirrored;
 
 internal sealed class FamilyInstanceMirroredDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
 {

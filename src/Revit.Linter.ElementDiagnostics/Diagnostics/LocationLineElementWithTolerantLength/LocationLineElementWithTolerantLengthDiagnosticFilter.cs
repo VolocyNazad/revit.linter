@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.LocationLineElementWithTolerantLength;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.LocationLineElementWithTolerantLength;
 
 internal sealed class LocationLineElementWithTolerantLengthDiagnosticFilter : IElementDiagnosticFilter
 {

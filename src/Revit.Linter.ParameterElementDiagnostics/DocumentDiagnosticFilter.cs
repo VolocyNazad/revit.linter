@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ParameterElementDiagnostics;
+﻿namespace Revit.Linter.ParameterElementDiagnostics;
 
 internal sealed class DocumentDiagnosticFilter(DocumentFilterFactory documentFilterFactory) : IDocumentDiagnosticFilter
 {

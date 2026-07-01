@@ -36,6 +36,7 @@ public abstract class ExternalApplication : IExternalApplication
 
         return Result;
     }
+    public abstract void OnStartup();
 
     public Result OnShutdown(UIControlledApplication application)
     {
@@ -62,9 +63,5 @@ public abstract class ExternalApplication : IExternalApplication
         return Result.Succeeded;
     }
 
-    public abstract void OnStartup();
-
-    public virtual void OnShutdown()
-    {
-    }
+    public virtual void OnShutdown() { }
 }

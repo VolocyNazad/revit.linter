@@ -23,21 +23,23 @@
     <PackageVersion Include="VolocyNazad.Revit.Context" Version="$(MajorRevitVersion).0.6" />
     <PackageVersion Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.6" />
     <PackageVersion Include="VolocyNazad.Revit.MediatR" Version="$(MajorRevitVersion).0.6" />
-    <PackageVersion Include="PolySharp" Version="1.16.0" />
-    <PackageVersion Include="AutoConstructor" Version="5.6.0" />
     <PackageVersion Include="ILRepack" Version="2.0.45" />
     <PackageVersion Include="WixSharp.Core" Version="2.12.2" />
     <PackageVersion Include="WixSharp.Msi.Core" Version="2.12.2" />
     <PackageVersion Include="WixToolset.UI.wixext" Version="6.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <GlobalPackageReference Include="PolySharp">
+    <GlobalPackageReference Include="PolySharp" Version="1.16.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </GlobalPackageReference>
-    <GlobalPackageReference Include="AutoConstructor">
+    <GlobalPackageReference Include="AutoConstructor" Version="5.6.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </GlobalPackageReference>
+    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.27.0.140913">
+	      <PrivateAssets>all</PrivateAssets>
+	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </GlobalPackageReference>
   </ItemGroup>
 </Project>

@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyTypeUnused;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyTypeUnused;
 
 internal sealed class FamilySymbolUnusedDiagnosticFilter : IElementDiagnosticFilter
 {
@@ -9,6 +6,6 @@ internal sealed class FamilySymbolUnusedDiagnosticFilter : IElementDiagnosticFil
 
     public bool IsRelevantFor(Document document, Element element) 
         => element is FamilySymbol familySymbol
-        // todo С профилсями проблемы (не понятно как проверять их использование. Например в импостах витражей)
+        // todo С профилями проблемы (не понятно как проверять их использование. Например в импостах витражей)
         && familySymbol.Category?.Id.IntegerValue != (int)BuiltInCategory.OST_ProfileFamilies;
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Services;
 
 namespace Revit.Linter.Diagnostic.DI;

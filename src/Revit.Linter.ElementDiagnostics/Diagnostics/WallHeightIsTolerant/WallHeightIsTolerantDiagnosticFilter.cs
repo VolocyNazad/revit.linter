@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallHeightIsTolerant;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallHeightIsTolerant;
 
 internal sealed class WallHeightIsTolerantDiagnosticFilter : IElementDiagnosticFilter
 {

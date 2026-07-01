@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Revit.Linter.Core.Abstractions.Models;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;

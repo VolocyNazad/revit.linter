@@ -67,9 +67,5 @@ internal static class ElementFilterUtils
         ElementWorksetFilter filter = new(workset.Id);
         return filter;
     }
-    private static ElementFilter GetElementFilterBy(CategoryType categoryType)
-    {
-        throw new NotImplementedException();
-    }
 }
 

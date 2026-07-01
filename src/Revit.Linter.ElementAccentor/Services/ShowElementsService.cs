@@ -4,7 +4,7 @@ using Revit.Linter.ElementAccentor.Abstractions.Services;
 
 namespace Revit.Linter.ElementAccentor.Services;
 
-internal sealed class ShowElementsService(ILogger<SelectElementsService> logger) : IAccentElementsService
+internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) : IAccentElementsService
 {
     public AccentElementsType Type => AccentElementsType.ShowElements;
 

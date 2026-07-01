@@ -210,7 +210,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
         return this;
     }
 
-    private void RefreshBackground(bool disable = false)
+    private static void RefreshBackground(bool disable = false)
     {
         //if (!disable)
         //    RevitRibbonController.Disable();

@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomIsRedundant;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomIsRedundant;
 
 internal sealed class RoomIsRedundantDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
 {

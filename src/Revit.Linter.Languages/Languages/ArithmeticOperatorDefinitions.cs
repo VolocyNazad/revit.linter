@@ -41,11 +41,8 @@ public static class ArithmeticOperatorDefinitions
                                 typeof(object)
                             ]
                         )!,
-                        arguments:
-                        [
-                            Expression.Convert(left, typeof(object)),
-                            Expression.Convert(right, typeof(object))
-                        ]
+                        Expression.Convert(left, typeof(object)),
+                        Expression.Convert(right, typeof(object))
                     )
                 ),
             new(
@@ -85,6 +82,7 @@ public static class ArithmeticOperatorDefinitions
                             typeof(double)
                         ]
                     )!,
-                    arguments: [Expression.Convert(left, typeof(double)), Expression.Convert(right, typeof(double))])),
+                    Expression.Convert(left, typeof(double)), 
+                    Expression.Convert(right, typeof(double)))),
         ];
 }

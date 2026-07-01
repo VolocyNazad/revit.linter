@@ -23,8 +23,8 @@ public static class ElementFunctionCallDefinitions
                 Expression identifierExpression = parameters[0];
 
                 Expression? parameterExpression = identifierExpression is ConstantExpression { Value: string elementIdentifier }
-                    ? parameterExpression = CreateGetParameterExpression(elementExpression, elementIdentifier)
-                    : parameterExpression = CreateGetParameterExpression(elementExpression, identifierExpression);
+                    ? CreateGetParameterExpression(elementExpression, elementIdentifier)
+                    : CreateGetParameterExpression(elementExpression, identifierExpression);
 
                 Expression valueExpression = Expression.Call(
                     typeof(Utils).GetMethod(nameof(Utils.GetParameterValue), [typeof(Parameter)])!,
@@ -47,14 +47,14 @@ public static class ElementFunctionCallDefinitions
 
         return parameterExpression;
     }
+
     private static Expression CreateGetParameterExpression(Expression elementExpression, string elementIdentifier)
     {
-        Expression? parameterExpression = null;
+        Expression parameterExpression;
 
         Type type = Utils.GetIdentifierType(elementIdentifier);
 
-        if (type == typeof(BuiltInParameter))
-        {
+        if (type == typeof(BuiltInParameter)) {
 #if AFTER2025
             BuiltInParameter bip = Enum.Parse<BuiltInParameter>(elementIdentifier);
 #else
@@ -66,9 +66,7 @@ public static class ElementFunctionCallDefinitions
                 Expression.Constant(bip)
             );
         }
-
-        if (type == typeof(Guid))
-        {
+        else if (type == typeof(Guid)) {
             var guid = Guid.Parse(elementIdentifier);
             parameterExpression = Expression.Call(
                 typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(Guid)])!,
@@ -77,11 +75,13 @@ public static class ElementFunctionCallDefinitions
             );
         }
 
-        parameterExpression = Expression.Call(
-            typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(string)])!,
-            elementExpression,
-            Expression.Constant(elementIdentifier)
-        );
+        else {
+            parameterExpression = Expression.Call(
+                typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(string)])!,
+                elementExpression,
+                Expression.Constant(elementIdentifier)
+            );
+        }
 
         return parameterExpression;
     }

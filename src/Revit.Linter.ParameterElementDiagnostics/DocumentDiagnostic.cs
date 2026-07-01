@@ -1,6 +1,5 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Extensions;
+﻿using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Extensions;
+using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
@@ -72,10 +71,10 @@ internal sealed class DocumentDiagnostic(
                     if (int.TryParse(i, out int id)) return (BuiltInCategory)id;
                     return (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), i);
                 }).ToList();
-            if (binging.Categories
+            if (!binging.Categories
                     .Cast<Category>()
                     .Select(i => (BuiltInCategory)i.Id.Value())
-                    .SetEquals(catgories) == false)
+                    .SetEquals(catgories))
                 messages.Add("parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Categories'.");
 #else
             var group = new ForgeTypeId(parameterData.Group);
@@ -87,10 +86,10 @@ internal sealed class DocumentDiagnostic(
                     if (long.TryParse(i, out long id)) return (BuiltInCategory)id;
                     return Enum.Parse<BuiltInCategory>(i);
                 }).ToList();
-            if (binging.Categories
+            if (!binging.Categories
                 .Cast<Category>()
                 .Select(i => (BuiltInCategory)i.Id.Value)
-                .SetEquals(catgories) == false)
+                .SetEquals(catgories))
                 messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Categories'.");
 #endif
         }

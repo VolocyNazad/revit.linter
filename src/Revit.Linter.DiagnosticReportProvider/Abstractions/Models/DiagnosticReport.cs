@@ -1,5 +1,4 @@
 ﻿using Autodesk.Revit.DB;
-using Revit.Linter.Core.Abstractions.Models;
 
 namespace Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 

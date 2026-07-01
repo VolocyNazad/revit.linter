@@ -8,7 +8,7 @@ using Revit.Linter.Languages.Exceptions;
 
 namespace Revit.Linter.Languages.Utils;
 
-public sealed class RevitClassUtils
+public static class RevitClassUtils
 {
     private static readonly Type[] Types =
     [

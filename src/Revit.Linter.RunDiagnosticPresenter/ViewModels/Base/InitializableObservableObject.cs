@@ -35,6 +35,6 @@ public abstract partial class InitializableObservableObject : ObservableObject
 
     #endregion
 
-    protected virtual Task OnInitializing(CancellationToken cancellationToken) { return Task.CompletedTask; }
-    protected virtual Task OnDeinitializing(CancellationToken cancellationToken) { return Task.CompletedTask; }
+    protected virtual Task OnInitializing(CancellationToken cancellationToken = default) { return Task.CompletedTask; }
+    protected virtual Task OnDeinitializing(CancellationToken cancellationToken = default) { return Task.CompletedTask; }
 }

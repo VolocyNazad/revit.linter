@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.CollisionDiagnostics;
+﻿namespace Revit.Linter.CollisionDiagnostics;
 
 internal sealed class ElementDiagnosticDocumentFilter(
     DocumentFilterFactory documentFilterFactory) : IElementDiagnosticDocumentFilter

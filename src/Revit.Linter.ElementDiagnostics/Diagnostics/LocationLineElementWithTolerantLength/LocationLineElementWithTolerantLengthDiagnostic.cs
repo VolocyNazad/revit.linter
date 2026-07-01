@@ -1,19 +1,15 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.LocationLineElementWithTolerantLength;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.LocationLineElementWithTolerantLength;
 
 internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElementDiagnostic
 {
-    private readonly double _tolerance = 0.5;
-    private readonly int _roundingDigits = 7;
+    private readonly double Tolerance = 0.5;
+    private readonly int RoundingDigits = 7;
+    private const double Epsilon = 1e-9;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LocationLineElementWithTolerantLength;
 
     public DiagnosticResult Execute(Document document, View? view, Element targetElement)
     {
-        XYZ basePoint = BasePoint.GetProjectBasePoint(document).Position;
-
         Line line = (Line)((LocationCurve)targetElement.Location).Curve;
 
         XYZ firstEnd = line.GetEndPoint(1);
@@ -21,7 +17,6 @@ internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElement
 
         double[] lengthCollection = [
                 firstEnd.X  - secondEnd.X, firstEnd.Y  - secondEnd.Y, firstEnd.Z  - secondEnd.Z,
-                secondEnd.X - secondEnd.X, secondEnd.Y - secondEnd.Y, secondEnd.Z - secondEnd.Z,
             ];
 
         FormatOptions formatOptions = document.GetUnits().GetFormatOptions(SpecTypeId.Length);
@@ -29,9 +24,9 @@ internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElement
         IEnumerable<double> convertedLengthCollection = lengthCollection
             .Select(i => UnitUtils.ConvertFromInternalUnits(i, unitTypeId))
             .Select(Math.Abs)
-            .Select(i => Math.Round(i, _roundingDigits)).ToList();
+            .Select(i => Math.Round(i, RoundingDigits)).ToList();
 
-        return convertedLengthCollection.Any(i => i % _tolerance != 0)
+        return convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
             ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Revit.Linter.CollisionDiagnostics.Abstractions.Infrasructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrasructure.Extensions;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics;

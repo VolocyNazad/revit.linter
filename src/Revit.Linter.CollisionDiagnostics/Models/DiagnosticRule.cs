@@ -1,6 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-
-namespace Revit.Linter.CollisionDiagnostics.Models;
+﻿namespace Revit.Linter.CollisionDiagnostics.Models;
 
 internal sealed class DiagnosticRule
 {

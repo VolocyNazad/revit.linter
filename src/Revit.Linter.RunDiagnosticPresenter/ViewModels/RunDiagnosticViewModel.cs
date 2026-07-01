@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions;
 using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
 using System.Diagnostics;
@@ -39,13 +38,7 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private async Task RunDiagnostic(CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
-        RunDiagnostic();
-        DiagnosticTime = $"{stopwatch.Elapsed.Seconds} sec.";
-        stopwatch.Stop();
-    }
 
-    private void RunDiagnostic()
-    {
         _diagnosticReportPresenter.Clear();
 
         Document? targetDocument = _revitContext.ActiveDocument;
@@ -56,6 +49,9 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         _diagnosticService.Excecute(targetDocument, targetView);
 
         _diagnosticReportPresenter.Refresh();
+
+        DiagnosticTime = $"{stopwatch.Elapsed.Seconds} sec.";
+        stopwatch.Stop();
     }
 
     private bool CanRunDiagnostic() => _revitContext.ActiveDocument is { IsFamilyDocument: false };

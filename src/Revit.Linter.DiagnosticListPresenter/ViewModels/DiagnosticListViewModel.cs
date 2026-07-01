@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -143,13 +142,12 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-        => args.Accepted = true
-        && args.Item is DiagnosticItemViewModel viewModel
+        => args.Accepted = args.Item is DiagnosticItemViewModel viewModel
         //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
         && (viewModel.Description.ToString().Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
         || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
 
-    protected override async Task OnInitializing(CancellationToken cancellationToken)
+    protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await base.OnInitializing(cancellationToken);
         List<DiagnosticItemViewModel> items = [];

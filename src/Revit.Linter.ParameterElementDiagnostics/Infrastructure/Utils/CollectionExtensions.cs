@@ -1,4 +1,6 @@
-﻿public static class CollectionExtensions
+﻿namespace Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
+
+public static class CollectionExtensions
 {
     extension<T>(IEnumerable<T> first)
     {

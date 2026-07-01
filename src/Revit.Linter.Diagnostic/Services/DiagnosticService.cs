@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
@@ -42,7 +40,6 @@ internal sealed class DiagnosticService(
 
             var hasDuplicates = documentDiagnosticIds.Count() != new HashSet<DocumentDiagnosticId>(documentDiagnosticIds).Count;
             if (hasDuplicates) throw new DuplicateDiagnosticIdException();
-            // todo Проверить на дубликаты фильтры и сервисы диагностики
 
             return infos;
         }
@@ -68,13 +65,12 @@ internal sealed class DiagnosticService(
 
             var hasDuplicates = elementDiagnosticIds.Count() != new HashSet<ElementDiagnosticId>(elementDiagnosticIds).Count;
             if (hasDuplicates) throw new DuplicateDiagnosticIdException();
-            // todo Проверить на дубликаты фильтры и сервисы диагностики
 
             return infos;
         }
     }
 
-    public DiagnosticServiceResult Excecute(Document document, IEnumerable<ElementId> elementIds, View? view)
+    public DiagnosticServiceResult Excecute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
     {
         try
         {

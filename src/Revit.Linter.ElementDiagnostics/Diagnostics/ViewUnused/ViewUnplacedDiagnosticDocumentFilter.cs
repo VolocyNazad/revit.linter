@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.ViewUnused;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.ViewUnused;
 
 internal sealed class ViewUnplacedDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
 {

@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
 
 internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
 {
@@ -19,7 +16,7 @@ internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
         if (connectorManager is null) return new(DiagnosticVerdict.Valid);
         foreach (Connector connector in connectorManager.Connectors)
         {
-            if (!(connector.ConnectorType == ConnectorType.Physical)) continue; //todo Без этого не работало иногда. Убедиться, что все ок.
+            if (connector.ConnectorType != ConnectorType.Physical) continue; //todo Без этого не работало иногда. Убедиться, что все ок.
             if (!connector.IsConnected) return new(DiagnosticVerdict.NotValid);
         }
 

@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.StartingViewNotSet;
+﻿namespace Revit.Linter.DocumentDiagnostics.Diagnostics.StartingViewNotSet;
 
 internal sealed class StartingViewNotSetDiagnosticFilter : IDocumentDiagnosticFilter
 {

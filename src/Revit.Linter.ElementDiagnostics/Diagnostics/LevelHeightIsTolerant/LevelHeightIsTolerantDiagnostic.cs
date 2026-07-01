@@ -1,12 +1,10 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.LevelHeightIsTolerant;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.LevelHeightIsTolerant;
 
 internal sealed class LevelHeightIsTolerantDiagnostic : IElementDiagnostic
 {
-    private readonly double _tolerance = 0.5;
-    private readonly int _roundingDigits = 7;
+    private readonly double Tolerance = 0.5;
+    private readonly int RoundingDigits = 7;
+    private const double Epsilon = 1e-9;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LevelHeightIsTolerant;
 
@@ -21,7 +19,7 @@ internal sealed class LevelHeightIsTolerantDiagnostic : IElementDiagnostic
         if (parameter is null) return new(DiagnosticVerdict.Valid);
         double parameterValue = parameter.AsDouble();
 
-        return Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), _roundingDigits) % _tolerance != 0
-            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
+            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
     }
 }

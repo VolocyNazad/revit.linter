@@ -1,11 +1,10 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Revit.Linter.DocumentDiagnostics;
 
 internal static class DocumentDiagnosticIdCollector
 {
-    public static DocumentDiagnosticId StartingViewNotSet = new(
+    public readonly static DocumentDiagnosticId StartingViewNotSet = new(
         "DOC001",
         "Проверка 'Задан ли начальный вид документу'.",
         "Документу с наименованием '{documentTitle}' не задано начальное окно. Время выполнения '{duration}' мс.",

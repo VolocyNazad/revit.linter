@@ -20,15 +20,15 @@ public static class BracetGrammerDefinitions
 
     public static IEnumerable<GrammerDefinition> Get(IEnumerable<FunctionCallDefinition> functionCalls)
     {
-        BracketOpenDefinition openBracket;
-        ListDelimiterDefinition delimeter;
-        return [
-            openBracket = new BracketOpenDefinition(
+        BracketOpenDefinition openBracket = new(
                 name: NameDictionary["OPEN_BRACKET"],
-                regex: RegexDictionary["OPEN_BRACKET"]),
-            delimeter = new ListDelimiterDefinition(
+                regex: RegexDictionary["OPEN_BRACKET"]);
+        ListDelimiterDefinition delimeter = new(
                 name: NameDictionary["COMMA"],
-                regex: RegexDictionary["COMMA"]),
+                regex: RegexDictionary["COMMA"]);
+        return [
+            openBracket,
+            delimeter,
             new BracketCloseDefinition(
                 name: NameDictionary["CLOSE_BRACKET"],
                 regex: RegexDictionary["CLOSE_BRACKET"],

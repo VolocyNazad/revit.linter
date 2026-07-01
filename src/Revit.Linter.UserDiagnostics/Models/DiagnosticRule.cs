@@ -1,6 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-
-namespace Revit.Linter.UserDiagnostics.Models;
+﻿namespace Revit.Linter.UserDiagnostics.Models;
 
 internal sealed class DiagnosticRule
 {

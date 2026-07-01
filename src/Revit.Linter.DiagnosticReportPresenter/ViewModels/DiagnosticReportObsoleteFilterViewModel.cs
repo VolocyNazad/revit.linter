@@ -15,7 +15,7 @@ internal sealed partial class DiagnosticReportObsoleteFilterViewModel : Observab
 
     public int Count { get; init; }
 
-    public bool IsValid(DiagnosticReportItemViewModel item) => item.IsObsolete == true;
+    public bool IsValid(DiagnosticReportItemViewModel item) => item.IsObsolete;
 
     public override string ToString() => $"{Count} Obsolete";
 }

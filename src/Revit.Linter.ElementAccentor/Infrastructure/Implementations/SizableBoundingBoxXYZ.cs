@@ -1,7 +1,9 @@
 ﻿using Revit.Linter.ElementAccentor.Infrastructure.Factories;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Revit.Linter.ElementAccentor.Infrastructure.Implementations;
 
+[SuppressMessage("SonarAnalyzer", "S101", Justification = "XYZ is coordinate system")]
 public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
 {
     public SizableBoundingBoxXYZ(double height = 1, double width = 1, double length = 1)
@@ -190,11 +192,11 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
     private void SetDimension(Dimension dimension, double value)
     {
         double minValue;
-        _ = _alignments[(int)dimension] switch
+        minValue = _alignments[(int)dimension] switch
         {
-            Align.Start => minValue = Min[(int)dimension],
-            Align.End => minValue = Max[(int)dimension] - value,
-            Align.Center => minValue = Center[(int)dimension] - value / 2,
+            Align.Start => Min[(int)dimension],
+            Align.End => Max[(int)dimension] - value,
+            Align.Center => Center[(int)dimension] - value / 2,
             _ => throw new NotImplementedException()
         };
 

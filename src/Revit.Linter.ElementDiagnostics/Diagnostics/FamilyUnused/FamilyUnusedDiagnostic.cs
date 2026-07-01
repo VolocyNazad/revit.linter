@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyUnused;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyUnused;
 
 internal sealed class FamilyUnusedDiagnostic : IElementDiagnostic
 {

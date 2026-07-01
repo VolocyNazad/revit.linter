@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Revit.Linter.Infrastructure.Services;
 
-public sealed class AssemblyLoadService()
+public static class AssemblyLoadService
 {
     private static readonly IEnumerable<string> Troubled = [
             "Microsoft.Xaml.Behaviors",

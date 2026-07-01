@@ -43,10 +43,9 @@ public static class ArithmeticFunctionCallDefinitions
                 argumentTypes: [typeof(double), typeof(double)],
                 expressionBuilder: args => Expression.Call(
                     method:Type<object>.Method(x=>Math.Round(0.0, 0, MidpointRounding.AwayFromZero)),
-                    arguments: [
-                        args[0],
-                        Expression.Convert(args[1], typeof(int)),
-                        Expression.Constant(MidpointRounding.AwayFromZero)])),
+                    args[0],
+                    Expression.Convert(args[1], typeof(int)),
+                    Expression.Constant(MidpointRounding.AwayFromZero))),
             new(
                 name:  NameDictionary["SIN"],
                 regex: RegexDictionary["SIN"],

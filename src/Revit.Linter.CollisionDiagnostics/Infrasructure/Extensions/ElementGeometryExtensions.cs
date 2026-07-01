@@ -8,8 +8,6 @@ internal static class ElementGeometryExtensions
     {
         ICollection<Solid> collection = []; // todo нужно не создавать список, если это не требуется
 
-        //if (geometryElement is null) return collection;
-
         foreach (var geometryObject in geometryElement)
             AddSolids(geometryObject, collection);
 

@@ -20,11 +20,11 @@ public class ElementFunctionFactory(ILogger<ElementFunctionFactory> logger)
             Expression body = Language.Parse(formula);
             return Expression.Lambda<Func<Element, bool>>(body, _elementExpression).Compile();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            logger.LogWarning("Collision diagnostic formula compilation error.");
+            logger.LogWarning(ex, "Collision diagnostic formula compilation error.");
             // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
-            throw;
+            return elem => true;
         }
     }
     private static GrammerDefinition[] AllLanguageDefinitions()

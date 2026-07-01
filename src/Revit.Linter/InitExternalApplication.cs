@@ -10,7 +10,9 @@ using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.TransactionMemoryCache.Abstractions.Services;
+using System.IO;
 using System.Reflection;
+using System.Windows.Media.Imaging;
 
 namespace Revit.Linter;
 
@@ -18,6 +20,9 @@ namespace Revit.Linter;
 [Regeneration(RegenerationOption.Manual)]
 internal sealed class InitExternalApplication : ExternalApplication
 {
+    private static string _assemblyPath = Assembly.GetExecutingAssembly().Location;
+    private static string _assemblyDirectory = Path.GetDirectoryName(_assemblyPath);
+
     public override void OnStartup()
     {
         RevitTask.Initialize(Application);
@@ -44,70 +49,73 @@ internal sealed class InitExternalApplication : ExternalApplication
         AddOpenConfigurationFolderCommand(panel);
     }
 
-    private void AddOpenConfigurationFolderCommand(RibbonPanel panel)
+    private static void AddOpenConfigurationFolderCommand(RibbonPanel panel)
     {
-        string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "OpenConfigurationFolderButton",
             "Open configuration folder",
-            assemblyPath,
-            typeof(OpenConfigurationFolderCommand).FullName
-        );
-        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
-        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
-        //buttonData.ToolTip = "";
-        //buttonData.LongDescription = ""; // todo add icons
+            _assemblyPath, typeof(OpenConfigurationFolderCommand).FullName)
+        {
+            ToolTip = "",
+            LongDescription = "", // todo add images, tooltip and description
+            LargeImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            Image = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            ToolTipImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff"))
+
+        };
 
         panel.AddItem(buttonData);
     }
 
-    private void AddShowHideErrorListCommand(RibbonPanel panel)
+    private static void AddShowHideErrorListCommand(RibbonPanel panel)
     {
-        string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideErrorListButton",
             "Show/Hide errors",
-            assemblyPath,
-            typeof(ShowHideErrorListCommand).FullName
-        );
-        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
-        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
-        //buttonData.ToolTip = "";
-        //buttonData.LongDescription = ""; // todo add icons
+            _assemblyPath, typeof(ShowHideErrorListCommand).FullName)
+        {
+            ToolTip = "",
+            LongDescription = "", // todo add images, tooltip and description
+            LargeImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            Image = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            ToolTipImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff"))
+        };
 
         panel.AddItem(buttonData);
     }
 
-    private void AddShowHideFixListCommand(RibbonPanel panel)
+    private static void AddShowHideFixListCommand(RibbonPanel panel)
     {
-        string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideFixListButton",
             "Show/Hide fixes",
-            assemblyPath,
-            typeof(ShowHideFixListCommand).FullName
-        );
-        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
-        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
-        //buttonData.ToolTip = "";
-        //buttonData.LongDescription = ""; // todo add icons
+            _assemblyPath, typeof(ShowHideFixListCommand).FullName)
+        {
+            ToolTip = "",
+            LongDescription = "", // todo add images, tooltip and description
+            LargeImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            Image = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            ToolTipImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff"))
+        };
 
         panel.AddItem(buttonData);
     }
 
-    private void AddShowHideDiagnosticListCommand(RibbonPanel panel)
+    private static BitmapImage LoadImage(string path) => new(new Uri(path));
+
+    private static void AddShowHideDiagnosticListCommand(RibbonPanel panel)
     {
-        string assemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new(
             "ShowHideDiagnosticListButton",
             "Show/Hide diagnostics",
-            assemblyPath,
-            typeof(ShowHideDiagnosticListCommand).FullName
-        );
-        //buttonData.LargeImage = LoadImage("Resources.icons.pane-icon-32.png");
-        //buttonData.Image = LoadImage("Resources.icons.pane-icon-16.png");
-        //buttonData.ToolTip = "";
-        //buttonData.LongDescription = ""; // todo add icons
+            _assemblyPath, typeof(ShowHideDiagnosticListCommand).FullName)
+        {
+            ToolTip = "",
+            LongDescription = "", // todo add images, tooltip and description
+            LargeImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            Image = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff")),
+            ToolTipImage = LoadImage(Path.Combine(_assemblyDirectory, "Resources", "None Icon.tiff"))
+        };
 
         panel.AddItem(buttonData);
     }
@@ -115,7 +123,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     private void InitializeRevitContext()
         => Program.Provider.GetRequiredService<IRevitContextInitializer>().Initialize(Application);
 
-    private void InitializeRevitTransactionCache()
+    private static void InitializeRevitTransactionCache()
         => Program.Provider.GetRequiredService<IRevitTransactionMemoryCacheInitializer>().Initialize();
 
     private void RegisterDiagnosticReportDockablePane()

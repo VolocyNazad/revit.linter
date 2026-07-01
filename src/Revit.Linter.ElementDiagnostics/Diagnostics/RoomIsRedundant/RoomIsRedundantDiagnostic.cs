@@ -1,6 +1,4 @@
 ﻿using Autodesk.Revit.DB.Architecture;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomIsRedundant;
 

@@ -33,7 +33,7 @@ public static class DateTimeFunctionCallDefinitions
                     return Expression.Call(
                         nowDateTimeExpression,
                         method:Type<DateTime>.Method(x=>x.ToString("")),
-                        arguments: [args[0]]);
+                        args[0]);
                 }),
         ];
 }

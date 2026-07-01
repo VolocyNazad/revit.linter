@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
 
 internal sealed class ParameterElementUnusedDiagnosticFilter : IElementDiagnosticFilter
 {

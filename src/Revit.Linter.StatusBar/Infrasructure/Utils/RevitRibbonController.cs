@@ -5,7 +5,7 @@ namespace Revit.Linter.StatusBar.Infrasructure.Utils;
 /// <summary>
 /// RevitRibbonController
 /// </summary>
-internal sealed class RevitRibbonController
+internal static class RevitRibbonController
 {
     /// <summary>
     /// RibbonControl

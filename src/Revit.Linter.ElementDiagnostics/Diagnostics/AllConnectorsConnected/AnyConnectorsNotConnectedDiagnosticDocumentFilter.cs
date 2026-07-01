@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
 
 internal sealed class AnyConnectorsNotConnectedDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
 {

@@ -4,8 +4,6 @@ using MaterialDesignThemes.Wpf;
 using MediatR;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
@@ -97,7 +95,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> Filters { get; set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticReportFilter>? oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        IEnumerable<IDiagnosticReportFilter>? oldValue, IEnumerable<IDiagnosticReportFilter>? newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)
@@ -252,10 +250,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         CollectionViewSource.SortDescriptions.Add(
             new SortDescription(nameof(DiagnosticReportItemViewModel.Code), ListSortDirection.Ascending));
     }
+
     private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
+
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-        => args.Accepted = true
-        && args.Item is DiagnosticReportItemViewModel viewModel
+        => args.Accepted = args.Item is DiagnosticReportItemViewModel viewModel
         && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
         && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
         && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
@@ -297,6 +296,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
         CutViewByElementCommand.NotifyCanExecuteChanged();
     }
+
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         await base.OnDeinitializing(cancellationToken);
@@ -315,23 +315,43 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         DiagnosticReport report = e.Report;
 
-        List<FixViewModel>? fixes = null;
-        if (report.Target is Element element) {
+        DiagnosticReportItemViewModel item = new() {
+            Created = report.Created,
+            Code = report.Code,
+            Template = report.Message.Format,
+            Target = report.Target,
+            Fixes = CreateFixes(report),
+            Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
+            Severity = report.Severity,
+            DocumentTitle = report.Document.Title,
+            AccentElementDelegate = i => SelectElement(i),
+            IsObsolete = report.IsObsolete,
+            ObsoleteDescription = report.ObsoleteDescription,
+        };
+        Collection.Add(item);
+    }
+
+    private List<FixViewModel> CreateFixes(DiagnosticReport report)
+    {
+        if (report.Target is Element element)
+        {
             var elementId = element.Id;
-            fixes = _elementFixes
+            return _elementFixes
                 .Where(i => i.Identity.Code == report.Code)
                 .SelectMany(i =>
                 {
                     List<FixViewModel> fixes = [];
 
                     var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
-                    var icon = new PackIcon {
+                    PackIcon icon = new()
+                    {
                         Kind = PackIconKind.Idea,
                         Foreground = new SolidColorBrush(iconColor)
                     };
                     var doc = report.Document;
 
-                    FixViewModel fix = new() {
+                    FixViewModel fix = new()
+                    {
                         Icon = icon,
                         Title = i.Value,
                         FixDelegate = async (cancellationToken) => {
@@ -344,21 +364,17 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 doc, transactionName, async (_, _) => i.Excecute(element));
                             var response = await _mediator.Send(command);
 
-                            if (response is { Result: false } or { HasError: true })
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code, 
-                                        new("Something went wrong while attempting to fix the element with id: '{elementId}'.", ("elementId", elementId))));
-                            else
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code, 
-                                        new("The element with id: '{elementId}' has been successfully corrected.", ("elementId", elementId))));
+                            string message = response is { Result: false } or { HasError: true }
+                                ? "Something went wrong while attempting to fix the element with id: '{elementId}'."
+                                : "The element with id: '{elementId}' has been successfully corrected.";
+                            _fixReportSender.Send(new FixReport(
+                                i.Identity.Code, new(message, ("elementId", elementId))));
                         }
                     };
                     fixes.Add(fix);
 
-                    FixViewModel fixAll = new() {
+                    FixViewModel fixAll = new()
+                    {
                         Icon = icon,
                         Title = $"{i.Value} (all)",
                         FixDelegate = async (cancellationToken) => {
@@ -377,11 +393,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                                         if (!element.IsValidObject) continue;
 
-                                        try {
+                                        try
+                                        {
                                             bool result = i.Excecute(element);
                                             if (!result) hasErrors = true;
                                         }
-                                        catch (Exception) {
+                                        catch (Exception)
+                                        {
                                             hasErrors = true;
                                         }
                                     }
@@ -389,16 +407,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 });
                             var response = await _mediator.Send(command);
 
-                            if (response is { Result: false } or { HasError: true })
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code,
-                                        new("Something went wrong while attempting to fix the elements.")));
-                            else
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code,
-                                        new("The elements has been successfully corrected.")));
+                            string message = response is { Result: false } or { HasError: true }
+                                ? "Something went wrong while attempting to fix the elements."
+                                : "The elements has been successfully corrected.";
+                            _fixReportSender.Send(new FixReport(i.Identity.Code, new(message)));
                         }
                     };
                     fixes.Add(fixAll);
@@ -406,14 +418,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     return fixes;
                 }).ToList();
         }
-        else if (report.Target is Document document) {
+        else if (report.Target is Document document)
+        {
             string documentTitle = document.Title;
-            fixes = _documentFixes
+            return _documentFixes
                 .Where(i => i.Identity.Code == report.Code)
                 .Select(i =>
                 {
                     var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
-                    var icon = new PackIcon {
+                    PackIcon icon = new() {
                         Kind = PackIconKind.Idea,
                         Foreground = new SolidColorBrush(iconColor)
                     };
@@ -429,36 +442,17 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 document, transactionName, async (_, _) => i.Excecute(document));
                             var response = await _mediator.Send(command);
 
-                            if (response is { Result: false } or { HasError: true })
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code,
-                                        new("Something went wrong while attempting to fix the document with id: '{documentTitle}'.", ("documentTitle", documentTitle))));
-                            else
-                                _fixReportSender.Send(
-                                    new FixReport(
-                                        i.Identity.Code,
-                                        new("The document with id: '{documentTitle}' has been successfully corrected.", ("documentTitle", documentTitle))));
+                            string message = response is { Result: false } or { HasError: true }
+                                ? "Something went wrong while attempting to fix the document with id: '{documentTitle}'."
+                                : "The document with id: '{documentTitle}' has been successfully corrected.";
+                            _fixReportSender.Send(new FixReport(
+                                i.Identity.Code,
+                                new(message, ("documentTitle", documentTitle))));
                         }
                     };
                     return fix;
                 }).ToList();
         }
-
-        DiagnosticReportItemViewModel item = new() {
-            Created = report.Created,
-            Code = report.Code,
-            Template = report.Message.Format,
-            Target = report.Target,
-            Fixes = fixes,
-            Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
-            Severity = report.Severity,
-            DocumentTitle = report.Document.Title,
-            AccentElementDelegate = i => SelectElement(i),
-            IsObsolete = report.IsObsolete,
-            ObsoleteDescription = report.ObsoleteDescription,
-        };
-        Collection.Add(item);
+        return [];
     }
-
 }

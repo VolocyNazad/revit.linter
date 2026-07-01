@@ -4,7 +4,7 @@ namespace Revit.Linter.BackgroundDiagnostic.Services;
 
 internal sealed class UpdaterBuilder : IUpdaterBuilder
 {
-    private class LambdaUpdater : IUpdater
+    private sealed class LambdaUpdater : IUpdater
     {
         public string AdditionalInformation { get; set; } = string.Empty;
         public ChangePriority ChangePriority { get; set; } = ChangePriority.Structure;

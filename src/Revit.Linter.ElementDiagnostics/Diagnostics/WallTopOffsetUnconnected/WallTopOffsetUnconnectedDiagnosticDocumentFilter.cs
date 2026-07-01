@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallTopOffsetUnconnected;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallTopOffsetUnconnected;
 
 internal sealed class WallTopOffsetUnconnectedDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter
 {

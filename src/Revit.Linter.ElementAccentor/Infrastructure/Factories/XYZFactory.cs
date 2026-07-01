@@ -1,5 +1,8 @@
-﻿namespace Revit.Linter.ElementAccentor.Infrastructure.Factories;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Revit.Linter.ElementAccentor.Infrastructure.Factories;
+
+[SuppressMessage("SonarAnalyzer", "S101", Justification = "XYZ is coordinate system")]
 public static class XYZFactory
 {
     public static XYZ XYZ(params double[] array)

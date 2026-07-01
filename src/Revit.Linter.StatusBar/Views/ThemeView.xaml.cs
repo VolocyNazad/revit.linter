@@ -43,7 +43,7 @@ public sealed partial class ThemeView
         Run(progressBar);
     }
 
-    private void Run(ProgressBarStackPanel progressBar)
+    private static void Run(ProgressBarStackPanel progressBar)
     {
         Task.Run(async () =>
         {
@@ -66,6 +66,7 @@ public sealed partial class ThemeView
         ShowInTaskbar = false;
         ResizeMode = ResizeMode.NoResize;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        new System.Windows.Interop.WindowInteropHelper(this) { Owner = Autodesk.Windows.ComponentManager.ApplicationWindow };
+        var _ = new System.Windows.Interop.WindowInteropHelper(this) { 
+            Owner = Autodesk.Windows.ComponentManager.ApplicationWindow };
     }
 }

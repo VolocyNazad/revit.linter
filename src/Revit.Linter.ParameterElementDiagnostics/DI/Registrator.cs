@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.ConfigurationPath;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using YamlDotNet.Serialization;
@@ -24,49 +22,37 @@ public static class Registrator
             RegisterDiagnosticsUsingConfig(services);
             return services;
         }
-    }
 
-    private static void RegisterDiagnosticsUsingConfig(IServiceCollection services)
-    {
-        IDeserializer deserializer = new DeserializerBuilder()
-               .WithNamingConvention(CamelCaseNamingConvention.Instance)
-               .Build();
-        string configContent = File.ReadAllText(GetConfigPath());
-        if (string.IsNullOrEmpty(configContent)) return;
-        List<DiagnosticRule> rules = deserializer.Deserialize<List<DiagnosticRule>>(configContent);
-
-        foreach (DiagnosticRule rule in rules)
+        private void RegisterDiagnosticsUsingConfig()
         {
-            DocumentDiagnosticId id = new(
-                rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive, rule.IsObsolete, rule.ObsoleteDescription);
-            services
-                .AddSingleton(i => id)
-                 .AddSingleton<IDocumentDiagnostic>(i =>
-                    new DocumentDiagnostic(
-                        i.GetRequiredService<IRevitTransactionMemoryCache>())
-                    {
-                        Identity = id,
-                        Parameters = rule.Parameters
-                    })
-                .AddSingleton<IDocumentDiagnosticFilter>(i =>
-                    new DocumentDiagnosticFilter(i.GetRequiredService<DocumentFilterFactory>())
-                    {
-                        Identity = id,
-                        Formula = rule.Take
-                    })
-                .AddSingleton(i => new DocumentDiagnosticIdOverrides(id, id.DefaultSeverity, id.IsActive));
+            IDeserializer deserializer = new DeserializerBuilder()
+                   .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                   .Build();
+            ConfigurationPathUtils.EnsureFileExists(_configPath);
+            string configContent = File.ReadAllText(_configPath);
+            if (string.IsNullOrEmpty(configContent)) return;
+            List<DiagnosticRule> rules = deserializer.Deserialize<List<DiagnosticRule>>(configContent);
+
+            foreach (DiagnosticRule rule in rules)
+            {
+                DocumentDiagnosticId id = new(
+                    rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive, rule.IsObsolete, rule.ObsoleteDescription);
+                services
+                    .AddSingleton(i => id)
+                     .AddSingleton<IDocumentDiagnostic>(i =>
+                        new DocumentDiagnostic(i.GetRequiredService<IRevitTransactionMemoryCache>())
+                        {
+                            Identity = id,
+                            Parameters = rule.Parameters
+                        })
+                    .AddSingleton<IDocumentDiagnosticFilter>(i =>
+                        new DocumentDiagnosticFilter(i.GetRequiredService<DocumentFilterFactory>())
+                        {
+                            Identity = id,
+                            Formula = rule.Take
+                        })
+                    .AddSingleton(i => new DocumentDiagnosticIdOverrides(id, id.DefaultSeverity, id.IsActive));
+            }
         }
-    }
-
-    private static string GetConfigPath()
-    {
-        string? directoryPath = Path.GetDirectoryName(_configPath)
-            ?? throw new InvalidOperationException("Diagnostic configuration file not found.");
-        Directory.CreateDirectory(directoryPath);
-
-        if (!File.Exists(_configPath))
-            File.WriteAllText(_configPath, string.Empty);
-
-        return _configPath;
     }
 }

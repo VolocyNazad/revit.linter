@@ -33,11 +33,9 @@ public static class StringFunctionCallDefinitions
                     Type[] signature = [typeof(object), typeof(CultureInfo)];
                     return Expression.Call(
                         method:typeof(Convert).GetMethod(nameof(Convert.ToString), signature)!,
-                        arguments:
-                        [
-                            Expression.Convert(args[0], typeof(object)),
-                            Expression.Constant(CultureInfo.InvariantCulture)
-                        ]);
+                        Expression.Convert(args[0], typeof(object)),
+                        Expression.Constant(CultureInfo.InvariantCulture)
+                    );
                 }),
 
             new(
@@ -50,10 +48,8 @@ public static class StringFunctionCallDefinitions
                         args[0],
                         method:typeof(string).GetMethod(
                             nameof(string.Contains), [typeof(string)])!,
-                        arguments:
-                        [
-                            Expression.Convert(args[1], typeof(string))
-                        ]);
+                        Expression.Convert(args[1], typeof(string))
+                    );
                 }),
 
             new(
@@ -67,10 +63,8 @@ public static class StringFunctionCallDefinitions
                         method:typeof(string).GetMethod(
                             nameof(string.StartsWith),
                             [typeof(string)])!,
-                        arguments:
-                        [
-                            Expression.Convert(args[1], typeof(string))
-                        ]);
+                        Expression.Convert(args[1], typeof(string))
+                    );
                 }),
 
             new(
@@ -84,10 +78,8 @@ public static class StringFunctionCallDefinitions
                         method:typeof(string).GetMethod(
                             nameof(string.EndsWith),
                             [typeof(string)])!,
-                        arguments:
-                        [
-                            Expression.Convert(args[1], typeof(string))
-                        ]);
+                        Expression.Convert(args[1], typeof(string))
+                    );
                 }),
 
             new(
@@ -125,11 +117,8 @@ public static class StringFunctionCallDefinitions
 
                     return Expression.Call(
                         method:typeof(To).GetMethod(nameof(To.Transform), [typeof(string), typeof(ICulturedStringTransformer[])])!,
-                        arguments:
-                        [
-                            args[0],
-                            Expression.NewArrayInit(typeof(ICulturedStringTransformer), culturedStringTransformer)
-                        ]
+                        args[0],
+                        Expression.NewArrayInit(typeof(ICulturedStringTransformer), culturedStringTransformer)
                     );
                 }),
 
@@ -144,11 +133,8 @@ public static class StringFunctionCallDefinitions
 
                     return Expression.Call(
                         method:typeof(To).GetMethod(nameof(To.Transform), [typeof(string), typeof(ICulturedStringTransformer[])])!,
-                        arguments:
-                        [
-                            args[0],
-                            Expression.NewArrayInit(typeof(ICulturedStringTransformer), culturedStringTransformer)
-                        ]
+                        args[0],
+                        Expression.NewArrayInit(typeof(ICulturedStringTransformer), culturedStringTransformer)
                     );
                 }),
         ];

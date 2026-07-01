@@ -1,7 +1,4 @@
-﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomNotEnclosed;
+﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomNotEnclosed;
 
 internal sealed class DeleteNotEnclosedRoom : IElementFix
 {
