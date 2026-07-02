@@ -24,7 +24,7 @@
 		</Content>
 		<Content Include="appsettings.Development.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<DependentUpon>appsettings.json</DependentUpon>
+			<DependentUpon>appsettings.json</DependentUpon>   <!--todo Exclude from prodaction bin-->
 		</Content>
 		<Content Include="appsettings.Production.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
