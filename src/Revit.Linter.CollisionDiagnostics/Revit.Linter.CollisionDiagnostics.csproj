@@ -6,7 +6,7 @@
 		<PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
+		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
