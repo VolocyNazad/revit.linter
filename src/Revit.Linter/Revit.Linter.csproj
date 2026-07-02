@@ -7,8 +7,9 @@
 	<PropertyGroup>
 		<LaunchRevit>true</LaunchRevit>
 		<GenerateAddinOnBuild>true</GenerateAddinOnBuild>
-		<!--<IsRepackable>true</IsRepackable>
-		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll</RepackBinariesExcludes>-->
+		<IsRepackable>true</IsRepackable>
+		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll</RepackBinariesExcludes>
+		<StartArguments>/language RUS</StartArguments>
 	</PropertyGroup>
 	<ItemGroup>
 		<ExternalApplication Include="Revit.Linter">
