@@ -72,6 +72,9 @@
     <Project Path="src/Revit.Linter.FixReportPresenter/Revit.Linter.FixReportPresenter.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.OpenedDocuments/Revit.Linter.OpenedDocuments.csproj" Id="d3b29ecb-d6af-46c9-894a-3467ea471a90">
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.RunDiagnosticPresenter/Revit.Linter.RunDiagnosticPresenter.csproj" Id="ce7df23e-c72d-4cba-991a-5e98768f34f8">
       <Platform Solution="*|x64" Project="x64" />
     </Project>
