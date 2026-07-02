@@ -38,6 +38,15 @@
         <DockPanel>
             <DockPanel Height="50" DockPanel.Dock="Top">
                 <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
+                <ComboBox
+                    MinWidth="150"
+                    Margin="5"
+                    materialDesign:HintAssist.Hint="Document"
+                    DisplayMemberPath="DisplayName"
+                    ItemsSource="{Binding OpenedDocumentsViewModel.Collection, Source={StaticResource ServiceLocator}}"
+                    SelectedValue="{Binding TargetDocumentTitle}"
+                    SelectedValuePath="Title"
+                    Style="{StaticResource MaterialDesignComboBox}" />
                 <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"
@@ -111,6 +120,24 @@
                                         </ContextMenu>
                                     </FlowDocumentScrollViewer.ContextMenu>
                                 </FlowDocumentScrollViewer>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding DocumentTitle}"
+                                                Header="Copy"
+                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                    <Run Text="{Binding DocumentTitle}" />
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

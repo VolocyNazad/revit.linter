@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
+namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
 
 public abstract partial class InitializableObservableObject : ObservableObject
 {

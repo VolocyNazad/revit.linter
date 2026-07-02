@@ -16,6 +16,7 @@ using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
 using Revit.Linter.Infrastructure.Exceptions;
+using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.UserDiagnostics.DI;
@@ -54,7 +55,9 @@ internal sealed class Program
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule()
                 .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
-                .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule())
+                .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
+                .AddOpenedDocumentsModule()
+            )
         ;
 
 }

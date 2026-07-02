@@ -45,8 +45,24 @@
                     VerticalAlignment="Stretch"
                     DockPanel.Dock="Left"
                     Fill="{DynamicResource MaterialDesignDivider}" />
+                <ComboBox
+                    MinWidth="150"
+                    Margin="5"
+                    materialDesign:HintAssist.Hint="Document"
+                    DisplayMemberPath="DisplayName"
+                    ItemsSource="{Binding OpenedDocumentsViewModel.Collection, Source={StaticResource ServiceLocator}}"
+                    SelectedValue="{Binding TargetDocumentTitle}"
+                    SelectedValuePath="Title"
+                    Style="{StaticResource MaterialDesignComboBox}" />
+                <Rectangle
+                    Width="1"
+                    Margin="0,5"
+                    VerticalAlignment="Stretch"
+                    DockPanel.Dock="Left"
+                    Fill="{DynamicResource MaterialDesignDivider}" />
                 <ListBox
                     VerticalAlignment="Center"
+                    d:ItemsSource="{d:SampleData ItemCount=2}"
                     DataContext="{Binding SeverityFilters}"
                     DockPanel.Dock="Left"
                     ItemsSource="{Binding}"

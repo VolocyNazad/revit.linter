@@ -31,6 +31,15 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
         ClearFilters();
     }
 
+    public void Clear(string documentTitle)
+    {
+        var toRemove = Collection.Where(i => i.DocumentTitle == documentTitle).ToList();
+
+        foreach (var item in toRemove) Collection.Remove(item);
+
+        ClearFilters();
+    }
+
 
     public void Refresh()
     {
@@ -105,6 +114,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 filter.PropertyChanged += Filter_PropertyChanged;
         RefreshCollectionView();
     }
+
+    [ObservableProperty]
+    public partial string? TargetDocumentTitle { get; set; }
+    partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
 
     #region [ShowElement] Command - Показать элемент  
 
@@ -255,6 +268,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
         => args.Accepted = args.Item is DiagnosticReportItemViewModel viewModel
+        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
         && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
         && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
         && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
@@ -291,6 +305,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         await base.OnInitializing(cancellationToken);
         _diagnosticReportReceiver.DiagnosticReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
 
+        TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
+
         ShowElementCommand.NotifyCanExecuteChanged();
         SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
@@ -303,12 +319,16 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticReportReceiver.DiagnosticReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
     }
 
-    protected override void OnRevitChanged() {
+    protected override void OnRevitChanged(RevitEventType revitEventType) {
+
+        TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
+
         ShowElementCommand.NotifyCanExecuteChanged();
         SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
         CutViewByElementCommand.NotifyCanExecuteChanged();
-        Clear();
+
+        if (revitEventType is RevitEventType.DocumentChanged) Clear(); // todo Нужно очищать только тот документ, в котором транзакция
     }
 
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, DiagnosticMessageSentEventArgs e)
@@ -368,7 +388,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 ? "Something went wrong while attempting to fix the element with id: '{elementId}'."
                                 : "The element with id: '{elementId}' has been successfully corrected.";
                             _fixReportSender.Send(new FixReport(
-                                i.Identity.Code, new(message, ("elementId", elementId))));
+                                i.Identity.Code, report.Document.Title, new(message, ("elementId", elementId))));
                         }
                     };
                     fixes.Add(fix);
@@ -410,7 +430,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             string message = response is { Result: false } or { HasError: true }
                                 ? "Something went wrong while attempting to fix the elements."
                                 : "The elements has been successfully corrected.";
-                            _fixReportSender.Send(new FixReport(i.Identity.Code, new(message)));
+                            _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
                         }
                     };
                     fixes.Add(fixAll);
@@ -446,7 +466,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 ? "Something went wrong while attempting to fix the document with id: '{documentTitle}'."
                                 : "The document with id: '{documentTitle}' has been successfully corrected.";
                             _fixReportSender.Send(new FixReport(
-                                i.Identity.Code,
+                                i.Identity.Code, report.Document.Title,
                                 new(message, ("documentTitle", documentTitle))));
                         }
                     };

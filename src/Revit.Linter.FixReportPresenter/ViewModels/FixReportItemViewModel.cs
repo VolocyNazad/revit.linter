@@ -9,6 +9,7 @@ namespace Revit.Linter.FixReportPresenter.ViewModels;
 internal sealed partial class FixReportItemViewModel : ObservableObject
 {
     public required string Code { get; set; }
+    public required string DocumentTitle { get; init; }
     public required string Template { get; init; }
     public required Dictionary<string, object> Args { get; init; }
     public required Action<int> AccentElementDelegate { get; init; }

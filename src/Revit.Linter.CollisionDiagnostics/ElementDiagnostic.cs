@@ -16,7 +16,7 @@ internal sealed class ElementDiagnostic(
     public required ElementDiagnosticId Identity { get; init; }
     public required string TakeFormula { get; init; }
     public required string GroupByFormula { get; init; }
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticResult Execute(Document document, View? view, Element targetElement) //todo в результат попадает 2 пересечки (1 с 2,  2 с 1)
     {
         var targetElementId = targetElement.Id.Value();
 

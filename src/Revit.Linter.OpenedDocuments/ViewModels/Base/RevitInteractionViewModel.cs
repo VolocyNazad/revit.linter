@@ -2,11 +2,12 @@
 using Autodesk.Revit.UI.Events;
 using Revit.Async;
 using Revit.Events.Abstractions.Services;
+using Revit.Linter.OpenedDocuments.ViewModels.Base;
 
-namespace Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
+namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
 
 [XamlConstructor, AutoConstructor]
-internal abstract partial class RevitInteractionViewModel : InitializableObservableObject
+public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
     protected readonly IAsyncExternalEvent _externalEvent;
 

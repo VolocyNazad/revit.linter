@@ -71,6 +71,7 @@
 		<ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
 	</ItemGroup>

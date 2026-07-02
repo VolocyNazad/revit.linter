@@ -17,6 +17,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 	</ItemGroup>
 

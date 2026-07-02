@@ -60,6 +60,10 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         => RefreshCollectionView();
 
+    [ObservableProperty]
+    public partial string? TargetDocumentTitle { get; set; }
+    partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
+
     #region [CopyToClipboard] Command - Копировать текст в буфер обмена
 
     /// <summary> Копировать текст в буфер обмена </summary>
@@ -120,6 +124,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
        => args.Accepted = args.Item is FixReportItemViewModel viewModel
+        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
        && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase))
@@ -141,6 +146,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     {
         var report = e.Report;
         FixReportItemViewModel item = new() {
+            DocumentTitle = report.DocumentTitle,
             Created = report.Created,
             Code = report.Code, 
             Template = report.Message.Format,

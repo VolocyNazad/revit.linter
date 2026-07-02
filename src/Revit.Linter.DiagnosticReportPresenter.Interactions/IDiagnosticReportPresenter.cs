@@ -3,5 +3,6 @@
 public interface IDiagnosticReportPresenter
 {
     void Clear();
+    void Clear(string documentTitle);
     void Refresh();
 }

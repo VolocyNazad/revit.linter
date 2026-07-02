@@ -39,12 +39,12 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     {
         var stopwatch = Stopwatch.StartNew();
 
-        _diagnosticReportPresenter.Clear();
-
         Document? targetDocument = _revitContext.ActiveDocument;
         if (targetDocument is null) return;
 
         View? targetView = OnActiveViewMode ? targetDocument.ActiveView : null;
+
+        _diagnosticReportPresenter.Clear(targetDocument.Title);
 
         _diagnosticService.Excecute(targetDocument, targetView);
 
