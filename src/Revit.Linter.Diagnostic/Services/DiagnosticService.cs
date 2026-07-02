@@ -136,12 +136,12 @@ internal sealed class DiagnosticService(
     }
     private void AddElementDiagnostics(Document document, IEnumerable<Element> elements, View? view)
     {
-        using RevitProgressBar revitProgressBar = new();
-        revitProgressBar.SetMaximumValue(ElementDiagnosticInfo.Count);
+        //using RevitProgressBar revitProgressBar = new();
+        //revitProgressBar.SetMaximumValue(ElementDiagnosticInfo.Count);
 
         foreach ((ElementDiagnosticId diagnosticId, ElementDiagnosticIdOverrides diagnosticIdOverrides, IElementDiagnosticFilter diagnosticFilter, IElementDiagnosticDocumentFilter diagnosticDocumentFilter, IElementDiagnostic diagnostic) in ElementDiagnosticInfo)
         {
-            revitProgressBar.Increment();
+            //revitProgressBar.Increment();
 
             if (!diagnosticDocumentFilter.IsRelevantFor(document)) continue;
             foreach (Element element in elements)
