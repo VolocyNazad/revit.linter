@@ -1,0 +1,7 @@
+{
+  "cssTheme": "Wasp",
+  "showViewHeader": true,
+  "enabledCssSnippets": [
+    "hide-embed-title"
+  ]
+}

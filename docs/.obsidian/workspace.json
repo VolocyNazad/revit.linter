@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "e94cc64d34063423",
+        "id": "e645f5e36544c026",
         "type": "tabs",
         "children": [
           {
-            "id": "e722d408091312f8",
+            "id": "f7779c9858aea82e",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "markdown",
+              "state": {
+                "file": "documentation/ui.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ui"
             }
           }
         ]
@@ -90,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Добро пожаловать.md",
+                "file": "fast-start.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Обратные ссылки для Добро пожаловать"
+              "title": "Обратные ссылки для fast-start"
             }
           },
           {
@@ -109,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Добро пожаловать.md",
+                "file": "fast-start.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Исходящие ссылки из Добро пожаловать"
+              "title": "Исходящие ссылки из fast-start"
             }
           },
           {
@@ -152,37 +156,71 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Добро пожаловать.md",
+                "file": "documentation/ui.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Структура Добро пожаловать"
+              "title": "Структура ui"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-excalidraw-plugin:Создать новый чертеж": false,
       "switcher:Меню быстрого перехода": false,
       "graph:Граф": false,
       "canvas:Создать новый холст": false,
       "daily-notes:Сегодняшняя заметка": false,
       "templates:Вставить шаблон": false,
       "command-palette:Открыть палитру команд": false,
-      "bases:Создать новую базу": false,
-      "obsidian-excalidraw-plugin:Создать новый чертеж": false
+      "bases:Создать новую базу": false
     }
   },
-  "active": "e722d408091312f8",
+  "active": "f7779c9858aea82e",
   "lastOpenFiles": [
-    "Home.md",
-    "Добро пожаловать.md"
+    "excalidraw/interaction-scheme.md",
+    "documentation/ui.md",
+    "excalidraw/modules-scheme.md",
+    "Excalidraw/Drawing 2026-07-01 20.24.40.excalidraw.md",
+    "Excalidraw/Drawing 2026-07-01 17.36.22.excalidraw.md",
+    "Без названия.md",
+    "excalidraw/basic-ux-wireframing-elements.excalidrawlib",
+    "excalidraw/scheme.excalidraw.png",
+    "fast-start.md",
+    "excalidraw/Drawing 2026-06-28 10.09.05.excalidraw.md",
+    "excalidraw/Drawing 2026-06-28 10.09.05.excalidraw.png",
+    "documentation/ui/ribbon-buttons/show-or-hide-fix-reports-button.md",
+    "documentation/ui/dockable-panes/diagnostics-pane.md",
+    "how-to-install.md",
+    "documentation/collision-diagnostics.md",
+    "documentation/ui/dockable-panes/fix-reports-pane.md",
+    "documentation/ui/dockable-panes.md",
+    "welcome-to-the-revit-linter-wiki.md",
+    "documentation/diagnostics.md",
+    "documentation/diagnostic-parameters.md",
+    "documentation/diagnostic-types-by-target.md",
+    "documentation/diagnostic-modules.md",
+    "documentation.md",
+    "documentation/element-built-in diagnostics.md",
+    "documentation/project-parameter-diagnostics.md",
+    "documentation/user-diagnostics.md",
+    "documentation/document-built-in diagnostics.md",
+    "documentation/obsolete-diagnostic.md",
+    "documentation/ui/ribbon-buttons.md",
+    "documentation",
+    "Pasted image 20260628101408.png",
+    "excalidraw",
+    "documentation/ui/dockable-panes",
+    "documentation/ui/ribbon-buttons",
+    "UI/Show",
+    "documentation/ui"
   ]
 }

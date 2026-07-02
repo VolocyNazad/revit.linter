@@ -1,0 +1,4 @@
+/* Скрывает заголовок у встроенных заметок */
+.markdown-embed-title {
+  display: none;
+}
