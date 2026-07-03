@@ -5,8 +5,6 @@ namespace Revit.Linter.Languages.Languages;
 
 public static class LogicalFunctionCallDefinitions
 {
-    // todo if without else
-
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {
         ["IF"] = "if",
