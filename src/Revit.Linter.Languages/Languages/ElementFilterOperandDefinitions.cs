@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB.Architecture;
 using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
+using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.Languages.Languages;
 
@@ -41,19 +42,13 @@ public static class ElementFilterOperandDefinitions
                 name: NameDictionary["ALL"],
                 regex: RegexDictionary["ALL"],
                 expressionBuilder: _ =>
-                    Expression.Constant(new LogicalOrFilter(
-                        new ElementIsElementTypeFilter(),
-                        new ElementIsElementTypeFilter(true)
-                    ), typeof(ElementFilter))
+                    Expression.Constant(ElementFilterUtils.AllFilter(), typeof(ElementFilter))
             ),
             new OperandDefinition(
                 name: NameDictionary["EMPTY"],
                 regex: RegexDictionary["EMPTY"],
                 expressionBuilder: _ =>
-                    Expression.Constant(new LogicalAndFilter(
-                        new ElementIsElementTypeFilter(),
-                        new ElementIsElementTypeFilter(true)
-                    ), typeof(ElementFilter))
+                    Expression.Constant(ElementFilterUtils.EmptyFilter(), typeof(ElementFilter))
             ),
         ];
 }

@@ -1,13 +1,14 @@
 ﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
 
 	<ItemGroup>
-		<PackageReference Include="Humanizer.Core"/>
-		<PackageReference Include="Revit_All_Main_Versions_API_x64"/>
-		<PackageReference Include="StringToExpression"/>
+		<PackageReference Include="Humanizer.Core" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="StringToExpression" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 	</ItemGroup>
 
 </Project>
