@@ -11,13 +11,13 @@ public static class OperandDefinitions
     };
 
     private static Dictionary<string, string> RegexDictionary { get; } = NameDictionary
-        .ToDictionary(i => i.Key, i => $@"{i.Value}\(");
+        .ToDictionary(i => i.Key, i => $@"{i.Value}");
 
     public static IEnumerable<OperandDefinition> Get()
         => [
             new(
                 name:  NameDictionary["NULL"],
                 regex: RegexDictionary["NULL"],
-                expressionBuilder: _ => Expression.Constant(null)),
+                expressionBuilder: _ => Expression.Constant(null, typeof(object))),
         ];
 }

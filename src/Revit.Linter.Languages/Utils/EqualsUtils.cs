@@ -7,6 +7,7 @@ internal static class EqualsUtils
     public static bool InternalEquals(object left, object right) => left switch
     {
         null when right is string => false,
+        null when right is null => true,
         double leftDouble when right is double rightDouble => Math.Abs(leftDouble - rightDouble) < Tolerance,
         string leftString when right is string rightString => leftString == rightString,
         bool leftBool when right is bool rightBool => leftBool == rightBool,
