@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.UserDiagnostics.Models;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace Revit.Linter.UserDiagnostics.DI;
 
@@ -26,13 +24,9 @@ public static class Registrator
 
         private void RegisterDiagnosticsUsingConfig()
         {
-            IDeserializer deserializer = new DeserializerBuilder()
-                   .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                   .Build();
-            ConfigurationPathUtils.EnsureFileExists(_configPath);
-            string configContent = File.ReadAllText(_configPath);
-            if (string.IsNullOrEmpty(configContent)) return;
-            List<DiagnosticRule> rules = deserializer.Deserialize<List<DiagnosticRule>>(configContent);
+            List<DiagnosticRule>? rules = ConfigurationPathUtils
+                .GetConfigurations<List<DiagnosticRule>>(_configPath);
+            if (rules is null) return;
 
             foreach (DiagnosticRule rule in rules)
             {

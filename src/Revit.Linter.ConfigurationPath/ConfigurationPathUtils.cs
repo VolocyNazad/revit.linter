@@ -1,4 +1,7 @@
-﻿namespace Revit.Linter.ConfigurationPath;
+﻿using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+
+namespace Revit.Linter.ConfigurationPath;
 
 public static class ConfigurationPathUtils
 {
@@ -27,5 +30,17 @@ public static class ConfigurationPathUtils
 
         if (!File.Exists(path))
             File.WriteAllText(path, string.Empty);
+    }
+
+    public static T? GetConfigurations<T>(string configPath) where T : class
+    {
+        IDeserializer deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+        EnsureFileExists(configPath);
+        string configContent = File.ReadAllText(configPath);
+        if (string.IsNullOrEmpty(configContent)) return null;
+        T? rules = deserializer.Deserialize<T>(configContent);
+        return rules;
     }
 }

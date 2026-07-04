@@ -2,7 +2,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
-		<PackageReference Include="YamlDotNet" />
 		<PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
 	</ItemGroup>
 	<ItemGroup>
