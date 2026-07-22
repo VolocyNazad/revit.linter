@@ -31,6 +31,7 @@ public class DocumentFilterFactory(ILogger<DocumentFilterFactory> logger)
     {
         IEnumerable<FunctionCallDefinition> functions = [
            .. PropertyFunctionCallDefinitions.Get(_documentExpression),
+           .. MethodFunctionCallDefinitions.Get(_documentExpression),
            .. ArithmeticFunctionCallDefinitions.Get(),
            .. DateTimeFunctionCallDefinitions.Get(),
            .. LogicalFunctionCallDefinitions.Get(),

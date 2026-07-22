@@ -14,6 +14,7 @@ internal static class PropertyFormulaCompiler
         FunctionCallDefinition[] functions =
         [
             .. PropertyFunctionCallDefinitions.Get(targetExpression),
+            .. MethodFunctionCallDefinitions.Get(targetExpression),
             .. LogicalFunctionCallDefinitions.Get(),
             .. StringFunctionCallDefinitions.Get(),
         ];
@@ -43,6 +44,7 @@ internal static class PropertyFormulaCompiler
         [
             .. ElementFunctionCallDefinitions.Get(elementExpression),
             .. PropertyFunctionCallDefinitions.Get(elementExpression),
+            .. MethodFunctionCallDefinitions.Get(elementExpression),
             .. ArithmeticFunctionCallDefinitions.Get(),
             .. DateTimeFunctionCallDefinitions.Get(),
             .. LogicalFunctionCallDefinitions.Get(),

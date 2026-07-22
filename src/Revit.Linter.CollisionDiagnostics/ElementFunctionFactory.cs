@@ -32,6 +32,7 @@ public class ElementFunctionFactory(ILogger<ElementFunctionFactory> logger)
         IEnumerable<FunctionCallDefinition> functions = [
            .. ElementFunctionCallDefinitions.Get(_elementExpression),
            .. PropertyFunctionCallDefinitions.Get(_elementExpression),
+           .. MethodFunctionCallDefinitions.Get(_elementExpression),
            .. ArithmeticFunctionCallDefinitions.Get(),
            .. DateTimeFunctionCallDefinitions.Get(),
            .. LogicalFunctionCallDefinitions.Get(),

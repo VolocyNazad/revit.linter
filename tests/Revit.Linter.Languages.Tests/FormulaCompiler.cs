@@ -22,7 +22,11 @@ internal static class FormulaCompiler
     public static Func<TTarget, TResult> Compile<TTarget, TResult>(string formula)
     {
         ParameterExpression targetExpression = Expression.Parameter(typeof(TTarget));
-        Language language = new(CreateDefinitions(PropertyFunctionCallDefinitions.Get(targetExpression)));
+        Language language = new(CreateDefinitions(
+            [
+                .. PropertyFunctionCallDefinitions.Get(targetExpression),
+                .. MethodFunctionCallDefinitions.Get(targetExpression),
+            ]));
         Expression expression = language.Parse(formula);
         Expression convertedExpression = Expression.Convert(expression, typeof(TResult));
         return Expression.Lambda<Func<TTarget, TResult>>(convertedExpression, targetExpression)

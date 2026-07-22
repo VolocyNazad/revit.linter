@@ -33,4 +33,26 @@ public sealed class DocumentPropertyFormulaTests : RevitApiTest
 
         await Assert.That(result).IsTrue();
     }
+
+    [Test]
+    public async Task Parameterless_document_method_is_available()
+    {
+        Func<Document, bool> formula =
+            PropertyFormulaCompiler.Compile<Document, bool>("!isnull(method('GetWarnings'))");
+
+        bool result = formula.Invoke(_document!);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Dynamically_selected_document_method_is_available()
+    {
+        Func<Document, bool> formula = PropertyFormulaCompiler.Compile<Document, bool>(
+            "!isnull(method(if(true, 'GetWarnings', 'Missing')))");
+
+        bool result = formula.Invoke(_document!);
+
+        await Assert.That(result).IsTrue();
+    }
 }

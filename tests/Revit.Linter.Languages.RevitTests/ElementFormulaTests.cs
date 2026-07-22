@@ -48,6 +48,28 @@ public sealed class ElementFormulaTests : RevitApiTest
     }
 
     [Test]
+    public async Task Parameterless_element_method_is_available()
+    {
+        Func<Element, bool> formula =
+            PropertyFormulaCompiler.CompileElement<bool>("!isnull(method('GetTypeId'))");
+
+        bool result = formula.Invoke(_wall!);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Dynamically_selected_element_method_is_available()
+    {
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            "!isnull(method(if(true, 'GetTypeId', 'Missing')))");
+
+        bool result = formula.Invoke(_wall!);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
     public async Task Builtin_string_parameter_is_available()
     {
         Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
