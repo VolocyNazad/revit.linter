@@ -12,8 +12,7 @@ public static class Registrator
         {
             foreach (var id in DocumentDiagnosticIdCollector.GetAllDiagnosticIds())
                 services
-                    .AddSingleton(id)
-                    .AddSingleton(i => new DocumentDiagnosticIdOverrides(id, id.DefaultSeverity, id.IsActive));
+                    .AddSingleton(i => new DocumentDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
 
             return services
                 .From(Assembly.GetExecutingAssembly())

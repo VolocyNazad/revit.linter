@@ -93,6 +93,24 @@
                     DockPanel.Dock="Left"
                     Fill="{DynamicResource MaterialDesignDivider}" />
                 <Button
+                    Width="35"
+                    Height="35"
+                    Margin="5"
+                    d:Command="{x:Null}"
+                    Command="{Binding ExportCommand}"
+                    Content="{materialDesign:PackIcon Kind=Export,
+                                                      Size=30}"
+                    DockPanel.Dock="Left"
+                    IsEnabled="False"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="Export report" />
+                <Rectangle
+                    Width="1"
+                    Margin="0,5"
+                    VerticalAlignment="Stretch"
+                    DockPanel.Dock="Left"
+                    Fill="{DynamicResource MaterialDesignDivider}" />
+                <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"
                     DockPanel.Dock="Right"

@@ -7,6 +7,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.StatusBar\Revit.Linter.StatusBar.csproj" />
+		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 	</ItemGroup>
 </Project>

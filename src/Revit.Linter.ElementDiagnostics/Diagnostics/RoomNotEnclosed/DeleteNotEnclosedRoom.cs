@@ -5,6 +5,6 @@ internal sealed class DeleteNotEnclosedRoom : IElementFix
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomNotEnclosed;
 
     public string Value => "Удалить неокруженное помещение";
-    public bool Excecute(Element targetElement)
+    public bool Execute(Element targetElement)
         => targetElement.Document.Delete(targetElement.Id).Any();
 }

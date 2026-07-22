@@ -16,7 +16,7 @@ internal sealed class ElementDiagnostic(
     public required ElementDiagnosticId Identity { get; init; }
     public required string TakeFormula { get; init; }
     public required string GroupByFormula { get; init; }
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement) //todo в результат попадает 2 пересечки (1 с 2,  2 с 1)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement) //todo в результат попадает 2 пересечки (1 с 2,  2 с 1)
     {
         var targetElementId = targetElement.Id.Value();
 
@@ -32,7 +32,7 @@ internal sealed class ElementDiagnostic(
 
         var targetSolids = getElementGeomentry.Execute(targetElementId, targetGeometryElement);
 
-        if (targetSolids.Count == 0) return DiagnosticResult.Valid;
+        if (targetSolids.Count == 0) return DiagnosticFeedback.Valid;
 
         var targetBoundingBox = getElementBoundingBox.Execute(targetElementId, targetGeometryElement);
 
@@ -54,7 +54,8 @@ internal sealed class ElementDiagnostic(
             if (elementId == targetElementId) continue;
 
             GeometryElement? geometryElement = revitTransactionMemoryCache
-                .GetOrCreate($"element:element-geometry:id:{elementId}", () => element.get_Geometry(options)) ?? throw new InvalidOperationException($"Failed to get object from cache.");
+                .GetOrCreate($"element:element-geometry:id:{elementId}", () => element.get_Geometry(options)) 
+                ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
             var boundingBox = getElementBoundingBox.Execute(elementId, geometryElement);
 
@@ -63,13 +64,16 @@ internal sealed class ElementDiagnostic(
             var solids = getElementGeomentry.Execute(elementId, geometryElement);
 
             if (HasIntersection(solids, targetSolids))
-                return new(DiagnosticVerdict.NotValid, new() {
-                    { "intersection.elementName", element.Name },
-                    { "intersection.elementId", element.Id },
-                });
+                return new(DiagnosticVerdict.NotValid, 
+                    new() {
+                        { "intersection.elementName", element.Name },
+                        { "intersection.elementId", element.Id },
+                    },
+                    element
+                );
         }
 
-        return DiagnosticResult.Valid;
+        return DiagnosticFeedback.Valid;
     }
 
     private ElementFilter Filter => field ??= elementFilterFactory.Create(TakeFormula);

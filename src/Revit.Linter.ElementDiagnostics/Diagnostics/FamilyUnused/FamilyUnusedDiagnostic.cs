@@ -1,15 +1,14 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyUnused;
+﻿using Toolkit.Revit.Extensions;
+
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyUnused;
 
 internal sealed class FamilyUnusedDiagnostic : IElementDiagnostic
 {
-    private readonly ElementFilter filter = new LogicalOrFilter(
-       new ElementIsElementTypeFilter(true),
-       new ElementIsElementTypeFilter(false)
-   );
+    private readonly ElementFilter filter = ElementFilterUtils.AllFilter();
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var family = (Family)targetElement;
         var hasInstances = family.GetDependentElements(filter)

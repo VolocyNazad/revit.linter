@@ -11,6 +11,7 @@ internal sealed class DiagnosticReportItemViewModel
     public required string Code { get; init; }
     public required string DocumentTitle { get; init; }
     public required object? Target { get; init; }
+    public required object[]? TargetDependencies { get; init; }
     public required bool IsObsolete { get; init; }
     public required string ObsoleteDescription { get; init; }
     public required string Template { get; init; }

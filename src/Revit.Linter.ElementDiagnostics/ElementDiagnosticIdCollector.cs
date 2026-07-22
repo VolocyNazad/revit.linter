@@ -110,6 +110,38 @@ internal static class ElementDiagnosticIdCollector
         true,
         false,
         string.Empty);
+    public readonly static ElementDiagnosticId ModelCurveExists = new(
+        "SHRD0013",
+        "Проверка существования линии модели.",
+        "В модели существует линия модели с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId DetailCurveExists = new(
+        "SHRD0014",
+        "Проверка существования линии детализации.",
+        "В модели существует линия детализации с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId TextNoteExists = new(
+        "SHRD0015",
+        "Проверка существования текстовых примечаний.",
+        "В модели существует текстовое примечание с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId ImportInstanceExists = new(
+        "SHRD0016",
+        "Проверка существования импортированных объектов.",
+        "В модели существует импортированный объект с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
+        true,
+        false,
+        string.Empty);
     public readonly static ElementDiagnosticId RoomUnplaced = new(
         "ARCH001",
         "Проверка помещения, размещено ли оно.",

@@ -1,15 +1,14 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyTypeUnused;
+﻿using Toolkit.Revit.Extensions;
+
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyTypeUnused;
 
 internal sealed class FamilySymbolUnusedDiagnostic : IElementDiagnostic
 {
-    private readonly ElementFilter filter = new LogicalOrFilter(
-        new ElementIsElementTypeFilter(true), 
-        new ElementIsElementTypeFilter(false)
-    );
+    private readonly ElementFilter filter = ElementFilterUtils.AllFilter();
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilySymbolUnused;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var familySymbol = (FamilySymbol)targetElement;
         var hasInstances = familySymbol.GetDependentElements(filter)

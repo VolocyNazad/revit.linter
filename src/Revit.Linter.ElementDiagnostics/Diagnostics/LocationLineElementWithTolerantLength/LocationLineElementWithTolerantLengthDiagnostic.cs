@@ -8,7 +8,7 @@ internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElement
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LocationLineElementWithTolerantLength;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         Line line = (Line)((LocationCurve)targetElement.Location).Curve;
 

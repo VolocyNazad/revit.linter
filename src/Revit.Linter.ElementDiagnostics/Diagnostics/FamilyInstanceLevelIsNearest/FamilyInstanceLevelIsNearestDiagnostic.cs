@@ -7,7 +7,7 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceLevelIsNearest;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var familyInstance = (FamilyInstance)targetElement;
         ElementId levelId = familyInstance.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM).AsElementId();

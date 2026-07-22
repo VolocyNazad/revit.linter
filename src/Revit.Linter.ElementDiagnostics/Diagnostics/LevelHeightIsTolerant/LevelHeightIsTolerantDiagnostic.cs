@@ -8,7 +8,7 @@ internal sealed class LevelHeightIsTolerantDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LevelHeightIsTolerant;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var level = (Level)targetElement;
 

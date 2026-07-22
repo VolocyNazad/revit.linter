@@ -5,7 +5,7 @@ namespace Revit.Linter.FixReportProvider.Services;
 
 internal sealed class FixReportProvider : IFixReportReceiver, IFixReportSender
 {
-    public event FixReportHandler? FixReportSent;
+    public event FixReportHandler? ReportSent;
 
-    public void Send(FixReport report) => FixReportSent?.Invoke(this, new(report));
+    public void Send(FixReport report) => ReportSent?.Invoke(this, new(report));
 }

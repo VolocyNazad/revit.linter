@@ -7,10 +7,13 @@
 	<PropertyGroup>
 		<LaunchRevit>true</LaunchRevit>
 		<GenerateAddinOnBuild>true</GenerateAddinOnBuild>
-		<IsRepackable>true</IsRepackable>
+		<!--<IsRepackable>true</IsRepackable>-->
 		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll</RepackBinariesExcludes>
 		<StartArguments>/language RUS</StartArguments>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="required-revit-project-parameters.txt" />
+	</ItemGroup>
 	<ItemGroup>
 		<ExternalApplication Include="Revit.Linter">
 			<FullClassName>Revit.Linter.InitExternalApplication</FullClassName>
@@ -22,28 +25,29 @@
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="appsettings.Development.json"
-				 Condition="Exists('appsettings.Development.json')">
+		<Content Include="appsettings.Development.json" Condition="Exists('appsettings.Development.json')">
 			<CopyToOutputDirectory Condition="$(Configuration.Contains('Debug'))">PreserveNewest</CopyToOutputDirectory>
 			<CopyToOutputDirectory Condition="!$(Configuration.Contains('Debug'))">Never</CopyToOutputDirectory>
 			<DependentUpon>appsettings.json</DependentUpon>
 		</Content>
-		<Content Include="appsettings.Production.json"
-				 Condition="Exists('appsettings.Production.json')">
+		<Content Include="appsettings.Production.json" Condition="Exists('appsettings.Production.json')">
 			<CopyToOutputDirectory Condition="$(Configuration.Contains('Release'))">PreserveNewest</CopyToOutputDirectory>
 			<CopyToOutputDirectory Condition="!$(Configuration.Contains('Release'))">Never</CopyToOutputDirectory>
 			<DependentUpon>appsettings.json</DependentUpon>
 		</Content>
 	</ItemGroup>
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
 		<MinVerAutoIncrement>minor</MinVerAutoIncrement>
 		<MinVerTagPrefix>v</MinVerTagPrefix>
 		<MinVerDefaultPreReleaseIdentifiers>dev.0</MinVerDefaultPreReleaseIdentifiers>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
 	<ItemGroup>
+	  <EmbeddedResource Include="required-revit-project-parameters.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	  <EmbeddedResource Include="Resources\None Icon.tiff">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </EmbeddedResource>
@@ -55,14 +59,13 @@
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 		<PackageReference Include="VolocyNazad.AssemblyResolver" />
-		<PackageReference Include="MinVer" />
+		<!--<PackageReference Include="MinVer" />-->
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.MediatR" />
 		<PackageReference Include="ILRepack" PrivateAssets="all" IncludeAssets="build" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Revit.Linter.BackgroundDiagnostic\Revit.Linter.BackgroundDiagnostic.csproj" />
 		<ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
@@ -73,12 +76,18 @@
 		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementChangesProvider\Revit.Linter.ElementChangesProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementChangesUpdater\Revit.Linter.ElementChangesMonitor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.WarningsHandling\Revit.Linter.WarningsHandling.csproj" />
+		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,80 +1,83 @@
 ﻿using Microsoft.Extensions.Logging;
+using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
-using Revit.Linter.StatusBar.Services;
+using Revit.Linter.ElementIgnoring.Abstractions.Services;
+
+//using Revit.Linter.StatusBar.Services;
 using System.Diagnostics;
+using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.Diagnostic.Services;
 
 internal sealed class DiagnosticService(
         IDiagnosticReportSender diagnosticReportSender,
-        IEnumerable<DocumentDiagnosticId> documentDiagnosticIds,
-        IEnumerable<DocumentDiagnosticIdOverrides> documentDiagnosticIdOverrides,
-        IEnumerable<IDocumentDiagnostic> documentDiagnostics, IEnumerable<IDocumentDiagnosticFilter> documentDiagnosticFilters,
-        IEnumerable<ElementDiagnosticId> elementDiagnosticIds,
-        IEnumerable<ElementDiagnosticIdOverrides> elementDiagnosticIdOverrides,
+        IEnumerable<DocumentDiagnosticIdOverride> @override,
+        IEnumerable<IDocumentDiagnostic> documentDiagnostics, IEnumerable<IDocumentDiagnosticFilter> filter,
+        IEnumerable<ElementDiagnosticIdOverride> elementDiagnosticIdOverrides,
         IEnumerable<IElementDiagnostic> elementDiagnostics, IEnumerable<IElementDiagnosticFilter> elementDiagnosticFilters, 
         IEnumerable<IElementDiagnosticDocumentFilter> elementDiagnosticDocumentFilters,
+        IIgnoreElementDetector ignoreElementDetector,
         ILogger<DiagnosticService> logger)
     : IDiagnosticService
 {
-    private readonly ElementFilter elementFilter = new LogicalOrFilter(
-        new ElementIsElementTypeFilter(true), new ElementIsElementTypeFilter(false));
-    private IList<(DocumentDiagnosticId, DocumentDiagnosticIdOverrides, IDocumentDiagnosticFilter, IDocumentDiagnostic)> DocumentDiagnosticInfo
+    private readonly ElementFilter elementFilter = ElementFilterUtils.AllFilter();
+    private IList<(DocumentDiagnosticId, DocumentDiagnosticIdOverride, IDocumentDiagnosticFilter, IDocumentDiagnostic)> DocumentDiagnosticInfo
     {
         get
         {
             if (field != null) return field;
 
-            var infos = documentDiagnosticIds
-                   .Select(id => (
-                        id,
-                        documentDiagnosticIdOverrides.FirstOrDefault(o => o.Identity == id)
-                            ?? throw new InvalidOperationException($"Document diagnostic overrides with {id} not found."),
-                        documentDiagnosticFilters.First(f => f.Identity == id)
-                            ?? throw new InvalidOperationException($"Document diagnostic filter with {id} not found."),
-                        documentDiagnostics.First(d => d.Identity == id)
-                            ?? throw new InvalidOperationException($"Document diagnostic with {id} not found.")
-                    )).ToList();
+            var infos = documentDiagnostics
+                .Select(diagnostic => (
+                     diagnostic.Identity,
+                     @override.FirstOrDefault(o => o.Identity == diagnostic.Identity)
+                         ?? throw new InvalidOperationException($"Document diagnostic overrides with {diagnostic.Identity} not found."),
+                     filter.First(f => f.Identity == diagnostic.Identity)
+                         ?? throw new InvalidOperationException($"Document diagnostic filter with {diagnostic.Identity} not found."),
+                     diagnostic
+                 )).ToList();
 
-            var hasDuplicates = documentDiagnosticIds.Count() != new HashSet<DocumentDiagnosticId>(documentDiagnosticIds).Count;
+            var documentDiagnosticIds = documentDiagnostics.Select(i => i.Identity).ToList();
+            var hasDuplicates = documentDiagnosticIds.Count != new HashSet<DocumentDiagnosticId>(documentDiagnosticIds).Count;
             if (hasDuplicates) throw new DuplicateDiagnosticIdException();
 
             return infos;
         }
     }
-    private IList<(ElementDiagnosticId, ElementDiagnosticIdOverrides, IElementDiagnosticFilter, IElementDiagnosticDocumentFilter, IElementDiagnostic)> ElementDiagnosticInfo
+    private IList<(ElementDiagnosticId, ElementDiagnosticIdOverride, IElementDiagnosticFilter, IElementDiagnosticDocumentFilter, IElementDiagnostic)> ElementDiagnosticInfo
     {
         get
         {
             if (field != null) return field;
 
-            var infos = elementDiagnosticIds
-                    .Select(id => (
-                        id,
-                        diagnosticIdOverrides: elementDiagnosticIdOverrides.FirstOrDefault(o => o.Identity == id)
-                            ?? throw new InvalidOperationException($"Element diagnostic overrides with {id} not found."),
-                        diagnosticFilter: elementDiagnosticFilters.First(f => f.Identity == id)
-                            ?? throw new InvalidOperationException($"Element diagnostic filter with {id} not found."),
-                        diagnosticDocumentFilter: elementDiagnosticDocumentFilters.First(f => f.Identity == id)
-                            ?? throw new InvalidOperationException($"Element diagnostic document filter with {id} not found."),
-                        diagnostic: elementDiagnostics.First(d => d.Identity == id)
-                            ?? throw new InvalidOperationException($"Element diagnostic with {id} not found.")
-                    )).ToList();
+            var infos = elementDiagnostics
+                .Select(diagnostic => (
+                    diagnostic.Identity,
+                    diagnosticIdOverrides: elementDiagnosticIdOverrides.FirstOrDefault(o => o.Identity == diagnostic.Identity)
+                        ?? throw new InvalidOperationException($"Element diagnostic overrides with {diagnostic.Identity} not found."),
+                    diagnosticFilter: elementDiagnosticFilters.First(f => f.Identity == diagnostic.Identity)
+                        ?? throw new InvalidOperationException($"Element diagnostic filter with {diagnostic.Identity} not found."),
+                    diagnosticDocumentFilter: elementDiagnosticDocumentFilters.First(f => f.Identity == diagnostic.Identity)
+                        ?? throw new InvalidOperationException($"Element diagnostic document filter with {diagnostic.Identity} not found."),
+                    diagnostic
+                )).ToList();
 
-            var hasDuplicates = elementDiagnosticIds.Count() != new HashSet<ElementDiagnosticId>(elementDiagnosticIds).Count;
+            var elementDiagnosticIds = elementDiagnostics.Select(i => i.Identity).ToList();
+            var hasDuplicates = elementDiagnosticIds.Count != new HashSet<ElementDiagnosticId>(elementDiagnosticIds).Count;
             if (hasDuplicates) throw new DuplicateDiagnosticIdException();
 
             return infos;
         }
     }
 
-    public DiagnosticServiceResult Excecute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
+    public DiagnosticServiceResult Execute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
     {
         try
         {
             var elements = elementIds.Select(document.GetElement).ToList();
+            AddDocumentDiagnostics(document);
             AddElementDiagnostics(document, elements, view);
 
             return DiagnosticServiceResult.Success;
@@ -85,11 +88,10 @@ internal sealed class DiagnosticService(
             return DiagnosticServiceResult.Failed;
         }
     }
-    public DiagnosticServiceResult Excecute(Document document, View? view = null)
+    public DiagnosticServiceResult Execute(Document document, View? view = null)
     {
         try
         {
-            AddHandleFailures(document); // todo Учитывать вид
             AddDocumentDiagnostics(document);
             AddElementDiagnostics(document, view);
 
@@ -103,26 +105,27 @@ internal sealed class DiagnosticService(
     }
     private void AddDocumentDiagnostics(Document document)
     {
-        foreach ((DocumentDiagnosticId diagnosticId, DocumentDiagnosticIdOverrides diagnosticIdOverrides, IDocumentDiagnosticFilter diagnosticFilter, IDocumentDiagnostic diagnostic) in DocumentDiagnosticInfo)
+        foreach ((DocumentDiagnosticId diagnosticId, DocumentDiagnosticIdOverride diagnosticIdOverrides, IDocumentDiagnosticFilter diagnosticFilter, IDocumentDiagnostic diagnostic) in DocumentDiagnosticInfo)
         {
             if (!diagnosticIdOverrides.IsActive) continue;
             if (!diagnosticFilter.IsRelevantFor(document)) continue;
             var stopwatch = Stopwatch.StartNew();
-            DiagnosticResult diagnosticResult = diagnostic.Execute(document);
+            DiagnosticFeedback feedback = diagnostic.Execute(document);
             stopwatch.Stop();
-            if (diagnosticResult.Verdict == DiagnosticVerdict.Valid) continue;
-            (string, object)[] messageArgs;
-            if (diagnosticResult.MessageArgs is not null) {
-                messageArgs = diagnosticResult.MessageArgs
-                    .Select(i => (i.Key, i.Value))
-                    .Append(("duration", stopwatch.Elapsed.TotalMilliseconds))
-                    .Append(("documentTitle", document.Title)).ToArray(); // todo Оптимизировать
-            }
-            else {
-                messageArgs = [("duration", stopwatch.Elapsed.TotalMilliseconds), ("documentTitle", document.Title)];
+            if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+            (string, object)[] messageArgs = [
+                ("duration", stopwatch.Elapsed.TotalMilliseconds), 
+                ("documentTitle", document.Title)
+            ];
+            if (feedback.EnrichMessageArgs is not null && feedback.EnrichMessageArgs.Any()) {
+                messageArgs = messageArgs.Concat(feedback.EnrichMessageArgs
+                    .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
             }
             DiagnosticReportMessage diagnosticReportMessage = new(diagnosticId.MessageFormat, messageArgs);
-            DiagnosticReport diagnosticReport = new(diagnosticId.Code, diagnosticIdOverrides.Severity, document, document, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
+            DiagnosticReport diagnosticReport = new(
+                diagnosticId.Code, 
+                diagnosticIdOverrides.Severity, document, diagnosticReportMessage, document, null,
+                diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
             diagnosticReportSender.Send(diagnosticReport);
         }
     }
@@ -139,66 +142,40 @@ internal sealed class DiagnosticService(
         //using RevitProgressBar revitProgressBar = new();
         //revitProgressBar.SetMaximumValue(ElementDiagnosticInfo.Count);
 
-        foreach ((ElementDiagnosticId diagnosticId, ElementDiagnosticIdOverrides diagnosticIdOverrides, IElementDiagnosticFilter diagnosticFilter, IElementDiagnosticDocumentFilter diagnosticDocumentFilter, IElementDiagnostic diagnostic) in ElementDiagnosticInfo)
+        foreach ((ElementDiagnosticId diagnosticId, ElementDiagnosticIdOverride diagnosticIdOverrides, IElementDiagnosticFilter diagnosticFilter, IElementDiagnosticDocumentFilter diagnosticDocumentFilter, IElementDiagnostic diagnostic) in ElementDiagnosticInfo)
         {
             //revitProgressBar.Increment();
 
             if (!diagnosticDocumentFilter.IsRelevantFor(document)) continue;
+            if (!diagnosticIdOverrides.IsActive) continue;
             foreach (Element element in elements)
             {
-                if (!diagnosticIdOverrides.IsActive) continue;
+                if (ignoreElementDetector.IsIgnoreElement(diagnosticId.Code, element)) continue;
                 if (!diagnosticFilter.IsRelevantFor(document, element)) continue;
                 var stopwatch = Stopwatch.StartNew();
-                DiagnosticResult diagnosticResult = diagnostic.Execute(document, view, element);
+                DiagnosticFeedback feedback = diagnostic.Execute(document, view, element);
                 stopwatch.Stop();
-                if (diagnosticResult.Verdict == DiagnosticVerdict.Valid) continue;
-                (string, object)[] messageArgs;
-                if (diagnosticResult.MessageArgs is not null)
-                {
-                    messageArgs = diagnosticResult.MessageArgs
-                        .Select(i => (i.Key, i.Value))
-                        .Append(("duration", stopwatch.Elapsed.TotalMilliseconds))
-                        .Append(("elementId", element.Id))
-                        .Append(("elementName", element.Name)).ToArray(); // todo Оптимизировать
+                if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+                (string, object)[] messageArgs = [
+                    ("duration", stopwatch.Elapsed.TotalMilliseconds), 
+                    ("elementId", element.Id), 
+                    ("elementName", element.Name)];
+                if (feedback.EnrichMessageArgs is not null && feedback.EnrichMessageArgs.Any()) {
+                    messageArgs = messageArgs.Concat(feedback.EnrichMessageArgs
+                        .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
                 }
-                else
-                {
-                    messageArgs = [("duration", stopwatch.Elapsed.TotalMilliseconds), ("elementId", element.Id), ("elementName", element.Name)];
+                object[] targetDependencies = [];
+                if (feedback.EnrichTargetDependencies is not null && feedback.EnrichTargetDependencies.Any()) {
+                    targetDependencies = targetDependencies.Concat(feedback.EnrichTargetDependencies).ToArray(); // todo Оптимизировать
                 }
                 DiagnosticReportMessage diagnosticReportMessage = new(
                     diagnosticId.MessageFormat, messageArgs);
                 DiagnosticReport diagnosticReport = new(
-                    diagnosticId.Code, diagnosticIdOverrides.Severity, document, element, diagnosticReportMessage, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
+                    diagnosticId.Code, diagnosticIdOverrides.Severity, 
+                    document, diagnosticReportMessage, element, targetDependencies, diagnosticId.IsObsolete, diagnosticId.ObsoleteDescription);
                 diagnosticReportSender.Send(diagnosticReport);
             }
         }
 
-    }
-    private void AddHandleFailures(Document document)
-    {
-        foreach (FailureMessage failureMessage in document.GetWarnings())
-        {
-            var failureSeverity = failureMessage.GetSeverity();
-            DiagnosticSeverity severity = failureSeverity switch
-            {
-                FailureSeverity.None => DiagnosticSeverity.Message,
-                FailureSeverity.DocumentCorruption => DiagnosticSeverity.Message,
-                FailureSeverity.Warning => DiagnosticSeverity.Warning,
-                FailureSeverity.Error => DiagnosticSeverity.Error,
-                _ => throw new NotImplementedException(
-                    $"{nameof(FailureSeverity)} contains not mapped with {nameof(DiagnosticSeverity)} variant"),
-            };
-            DiagnosticReportMessage diagnosticReportMessage = new(
-                """
-                    В документе с наименованием '{documentTitle}' обнаружены предупреждения. 
-                    Элементы: {elementids}
-                    Детали: {details}
-                    """,
-                ("documentTitle", document.Title),
-                ("elementids", failureMessage.GetFailingElements()),
-                ("details", failureMessage.GetDescriptionText()));
-            DiagnosticReport diagnosticReport = new("RVT", severity, document, null, diagnosticReportMessage, false);
-            diagnosticReportSender.Send(diagnosticReport);
-        }
     }
 }

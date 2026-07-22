@@ -4,7 +4,7 @@ internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.AnyConnectorsNotConnected;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         ConnectorManager? connectorManager = targetElement switch
         {

@@ -33,7 +33,6 @@ public static class Registrator
                 ElementDiagnosticId id = new(
                     rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive, rule.IsObsolete, rule.ObsoleteDescription);
                 services
-                    .AddSingleton(i => id)
                     .AddSingleton<IElementDiagnostic>(i =>
                         new ElementDiagnostic(
                             i.GetRequiredService<ElementFunctionFactory>())
@@ -55,7 +54,7 @@ public static class Registrator
                         Identity = id,
                         Formula = rule.TakeDocument
                     })
-                .AddSingleton(i => new ElementDiagnosticIdOverrides(id, id.DefaultSeverity, id.IsActive));
+                .AddSingleton(i => new ElementDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
             }
         }
     }

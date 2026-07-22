@@ -2,7 +2,6 @@
 using Autodesk.Revit.UI.Events;
 using Revit.Async;
 using Revit.Events.Abstractions.Services;
-using Revit.Linter.OpenedDocuments.ViewModels.Base;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
 

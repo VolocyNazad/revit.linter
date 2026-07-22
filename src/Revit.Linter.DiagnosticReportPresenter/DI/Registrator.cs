@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MVVM.DependencyInjection;
-using Revit.Linter.DiagnosticReportPresenter.Interactions;
+using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels;
 using Revit.Linter.DiagnosticReportPresenter.Views;
 

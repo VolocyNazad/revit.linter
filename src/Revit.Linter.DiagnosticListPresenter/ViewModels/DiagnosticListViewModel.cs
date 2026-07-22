@@ -13,8 +13,8 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 internal sealed partial class DiagnosticListViewModel : InitializableObservableObject // todo Сворачиваемость групп
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IEnumerable<ElementDiagnosticIdOverrides> _elementDiagnosticIdOverrides;
-    private readonly IEnumerable<DocumentDiagnosticIdOverrides> _documentDiagnosticIdOverrides;
+    private readonly IEnumerable<ElementDiagnosticIdOverride> _elementDiagnosticIdOverrides;
+    private readonly IEnumerable<DocumentDiagnosticIdOverride> _documentDiagnosticIdOverrides;
 
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;

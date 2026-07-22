@@ -32,7 +32,6 @@ public static class Registrator
                 DocumentDiagnosticId id = new(
                     rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive, rule.IsObsolete, rule.ObsoleteDescription);
                 services
-                    .AddSingleton(i => id)
                      .AddSingleton<IDocumentDiagnostic>(i =>
                         new DocumentDiagnostic(i.GetRequiredService<IRevitTransactionMemoryCache>())
                         {
@@ -45,7 +44,7 @@ public static class Registrator
                             Identity = id,
                             Formula = rule.Take
                         })
-                    .AddSingleton(i => new DocumentDiagnosticIdOverrides(id, id.DefaultSeverity, id.IsActive));
+                    .AddSingleton(i => new DocumentDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
             }
         }
     }

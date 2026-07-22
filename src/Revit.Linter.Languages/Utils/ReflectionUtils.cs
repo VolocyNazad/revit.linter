@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Revit.Linter.Languages.Utils;
+﻿namespace Revit.Linter.Languages.Utils;
 
 internal static class ReflectionUtils
 {

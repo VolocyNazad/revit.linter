@@ -6,7 +6,7 @@ internal sealed class RoomIsRedundantDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomIsRedundant;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var room = (Room)targetElement;
         SpatialElementBoundaryOptions options = new()

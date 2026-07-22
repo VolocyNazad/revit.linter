@@ -6,5 +6,5 @@ public interface IElementFix
 {
     ElementDiagnosticId Identity { get; }
     string Value { get; }
-    bool Excecute(Element targetElement);
+    bool Execute(Element targetElement);
 }

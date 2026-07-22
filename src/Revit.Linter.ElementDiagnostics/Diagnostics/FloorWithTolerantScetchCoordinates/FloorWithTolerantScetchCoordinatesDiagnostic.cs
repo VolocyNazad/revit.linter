@@ -1,7 +1,4 @@
 ﻿#if AFTER2023
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FloorWithTolerantScetchCoordinates;
 
 internal sealed class FloorWithTolerantScetchCoordinatesDiagnostic : IElementDiagnostic
@@ -10,7 +7,7 @@ internal sealed class FloorWithTolerantScetchCoordinatesDiagnostic : IElementDia
     private readonly int _roundingDigits = 7;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FloorWithTolerantScetchCoordinates;
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var floor = (Floor)targetElement;
 

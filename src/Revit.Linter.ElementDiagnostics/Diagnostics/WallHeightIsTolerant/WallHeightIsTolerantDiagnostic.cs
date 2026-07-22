@@ -8,7 +8,7 @@ internal sealed class WallHeightIsTolerantDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.WallHeightIsTolerant;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var wall = (Wall)targetElement;
 

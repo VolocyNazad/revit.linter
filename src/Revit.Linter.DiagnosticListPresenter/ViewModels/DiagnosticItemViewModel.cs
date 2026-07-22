@@ -6,8 +6,8 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 [AutoConstructor]
 internal sealed partial class DiagnosticItemViewModel : ObservableObject
 {
-    private readonly IEnumerable<ElementDiagnosticIdOverrides> _elementDiagnosticIdOverrides;
-    private readonly IEnumerable<DocumentDiagnosticIdOverrides> _documentDiagnosticIdOverrides;
+    private readonly IEnumerable<ElementDiagnosticIdOverride> _elementDiagnosticIdOverrides;
+    private readonly IEnumerable<DocumentDiagnosticIdOverride> _documentDiagnosticIdOverrides;
 
     public string Code { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

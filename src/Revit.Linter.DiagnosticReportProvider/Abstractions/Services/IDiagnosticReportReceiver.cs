@@ -4,5 +4,5 @@ namespace Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 
 public interface IDiagnosticReportReceiver
 {
-    public event DiagnosticReportHandler? DiagnosticReportSent;
+    public event DiagnosticReportHandler? ReportSent;
 }

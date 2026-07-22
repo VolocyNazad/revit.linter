@@ -4,7 +4,7 @@ internal sealed class StartingViewNotSetDiagnostic : IDocumentDiagnostic
 {
     public DocumentDiagnosticId Identity => DocumentDiagnosticIdCollector.StartingViewNotSet;
 
-    public DiagnosticResult Execute(Document targetDocument)
+    public DiagnosticFeedback Execute(Document targetDocument)
         => StartingViewSettings.GetStartingViewSettings(targetDocument).ViewId == ElementId.InvalidElementId
         ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
 }

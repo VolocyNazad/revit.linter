@@ -8,7 +8,7 @@ internal sealed class FamilyInstanceElevationIsTolerantDiagnostic : IElementDiag
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceElevationIsTolerant;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var familyInstance = (FamilyInstance)targetElement;
 

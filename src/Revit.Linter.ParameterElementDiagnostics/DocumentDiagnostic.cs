@@ -1,5 +1,7 @@
 ﻿using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Extensions;
+#if BEFORE2024
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
+#endif
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
@@ -12,7 +14,7 @@ internal sealed class DocumentDiagnostic(
 
     public required IEnumerable<ParameterElementData> Parameters { get; init; }
 
-    public DiagnosticResult Execute(Document targetDocument)
+    public DiagnosticFeedback Execute(Document targetDocument)
     {
         ICollection<string> messages = [];
         foreach (ParameterElementData parameterData in Parameters)

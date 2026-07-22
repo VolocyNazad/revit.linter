@@ -6,7 +6,7 @@ internal sealed class RoomUnpacedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomUnplaced;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var room = (Room)targetElement;
         return room.Location is null ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);

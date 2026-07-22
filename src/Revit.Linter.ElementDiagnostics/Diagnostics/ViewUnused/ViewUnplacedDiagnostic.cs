@@ -6,7 +6,7 @@ internal sealed class ViewUnplacedDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ViewUnplaced;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var targetView = (View)targetElement;
         var viewports = targetView.GetDependentElements(viewportFilter);

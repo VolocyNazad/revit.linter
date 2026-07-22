@@ -6,5 +6,5 @@ public interface IDocumentFix
 {
     ElementDiagnosticId Identity { get; }
     string Value { get; }
-    bool Excecute(Document targetDocument);
+    bool Execute(Document targetDocument);
 }

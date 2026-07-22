@@ -5,7 +5,7 @@ namespace Revit.Linter.DiagnosticReportProvider.Services;
 
 internal sealed class DiagnosticReportProvider : IDiagnosticReportReceiver, IDiagnosticReportSender
 {
-    public event DiagnosticReportHandler? DiagnosticReportSent;
+    public event DiagnosticReportHandler? ReportSent;
 
-    public void Send(DiagnosticReport report) => DiagnosticReportSent?.Invoke(this, new(report));
+    public void Send(DiagnosticReport report) => ReportSent?.Invoke(this, new(report));
 }

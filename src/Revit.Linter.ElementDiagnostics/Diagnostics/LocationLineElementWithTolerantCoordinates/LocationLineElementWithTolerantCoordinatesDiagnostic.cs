@@ -8,7 +8,7 @@ internal sealed class LocationLineElementWithTolerantCoordinatesDiagnostic : IEl
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LocationLineElementWithTolerantCoordinates;
 
-    public DiagnosticResult Execute(Document document, View? view, Element targetElement)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         XYZ basePoint = BasePoint.GetProjectBasePoint(document).Position;
 

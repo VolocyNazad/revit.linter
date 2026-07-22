@@ -124,7 +124,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
        => args.Accepted = args.Item is FixReportItemViewModel viewModel
-        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
+        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle!.Equals(viewModel.DocumentTitle))
        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
        && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase))
@@ -134,12 +134,12 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await base.OnInitializing(cancellationToken);
-        _fixReportReceiver.FixReportSent += FixReportReceiver_FixReportSent;
+        _fixReportReceiver.ReportSent += FixReportReceiver_FixReportSent;
     }
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         await base.OnDeinitializing(cancellationToken);
-        _fixReportReceiver.FixReportSent -= FixReportReceiver_FixReportSent;
+        _fixReportReceiver.ReportSent -= FixReportReceiver_FixReportSent;
     }
 
     private void FixReportReceiver_FixReportSent(object? sender, FixMessageSentEventArgs e)

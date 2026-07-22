@@ -1,7 +1,4 @@
 ﻿#if AFTER2023
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
-
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FloorWithTolerantScetchCoordinates;
 
 internal sealed class FloorWithTolerantScetchCoordinatesDiagnosticDocumentFilter : IElementDiagnosticDocumentFilter

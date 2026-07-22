@@ -3,8 +3,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
-using Revit.Linter.DiagnosticReportPresenter.Interactions;
+using Revit.Linter.Diagnostic.Abstractions.Services;
+using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
+using Revit.Linter.WarningsHandling.Abstractions.Services;
 using System.Diagnostics;
 
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
@@ -14,14 +16,16 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 {
     private readonly IRevitContext _revitContext;
     private readonly IDiagnosticService _diagnosticService;
+    private readonly IRevitWarningsService _revitWarningsService;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
 
     public RunDiagnosticViewModel(
             IRevitContext revitContext, IAsyncExternalEvent externalEvent,
-            IDiagnosticService diagnosticService, IDiagnosticReportPresenter diagnosticReportViewModel) : base(externalEvent)
+            IDiagnosticService diagnosticService, IRevitWarningsService revitWarningsService, IDiagnosticReportPresenter diagnosticReportViewModel) : base(externalEvent)
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;
+        _revitWarningsService = revitWarningsService;
         _diagnosticReportPresenter = diagnosticReportViewModel;
     }
 
@@ -46,7 +50,8 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 
         _diagnosticReportPresenter.Clear(targetDocument.Title);
 
-        _diagnosticService.Excecute(targetDocument, targetView);
+        _diagnosticService.Execute(targetDocument, targetView);
+        _revitWarningsService.Execute(targetDocument);
 
         _diagnosticReportPresenter.Refresh();
 
