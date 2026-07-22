@@ -1,0 +1,15 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nice3point.TUnit.Revit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
+  </ItemGroup>
+</Project>

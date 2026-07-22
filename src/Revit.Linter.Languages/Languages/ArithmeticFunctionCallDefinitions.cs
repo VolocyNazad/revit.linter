@@ -1,5 +1,6 @@
 ﻿using StringToExpression.GrammerDefinitions;
 using StringToExpression.Util;
+using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Revit.Linter.Languages.Languages;
@@ -79,7 +80,10 @@ public static class ArithmeticFunctionCallDefinitions
                 regex: RegexDictionary["NUM"],
                 argumentTypes: [typeof(string)],
                 expressionBuilder: args => Expression.Call(
-                    method:Type<object>.Method(x=>double.Parse("")),
-                    arguments: args[0])),
+                    method:typeof(double).GetMethod(
+                        nameof(double.Parse),
+                        [typeof(string), typeof(IFormatProvider)])!,
+                    args[0],
+                    Expression.Constant(CultureInfo.InvariantCulture))),
         ];
 }

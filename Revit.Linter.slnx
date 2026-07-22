@@ -79,7 +79,14 @@
     <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/Revit.Linter.Languages.Tests/Revit.Linter.Languages.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.Languages.RevitTests/Revit.Linter.Languages.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
   <Folder Name="/ui/">
     <Project Path="src/Revit.Linter.DiagnosticListPresenter/Revit.Linter.DiagnosticListPresenter.csproj">
       <Platform Project="x64" />
