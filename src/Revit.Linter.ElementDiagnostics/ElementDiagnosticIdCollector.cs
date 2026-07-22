@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Revit.Linter.ElementDiagnostics;
 
@@ -77,7 +77,7 @@ internal static class ElementDiagnosticIdCollector
         false,
         string.Empty);
 #if AFTER2023
-    public readonly static ElementDiagnosticId FloorWithTolerantScetchCoordinates = new(
+    public readonly static ElementDiagnosticId FloorWithTolerantSketchCoordinates = new(
         "SHRD009",
         "Проверка перекрытий на толерантность координат размещения.",
         "Перекрытие с именем '{elementName}' и идентификатором '{elementId}' имеет не валидные значения координат относительно базовой точки. Время выполнения '{duration}' мс.",

@@ -1,5 +1,5 @@
-﻿using Revit.Linter.CollisionDiagnostics.Abstractions.Infrasructure.Services;
-using Revit.Linter.CollisionDiagnostics.Infrasructure.Extensions;
+using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
+using Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics;
@@ -8,10 +8,10 @@ internal sealed class ElementDiagnostic(
     ElementFilterFactory elementFilterFactory, 
     ElementFunctionFactory elementFunctionFactory,
     IGetElementBoundingBoxService getElementBoundingBox,
-    IGetElementGeomentryService getElementGeomentry,
+    IGetElementGeometryService getElementGeometry,
     IRevitTransactionMemoryCache revitTransactionMemoryCache) : IElementDiagnostic
 {
-    private const double EPSILON = 1e-6;
+    private const double Epsilon = 1e-6;
 
     public required ElementDiagnosticId Identity { get; init; }
     public required string TakeFormula { get; init; }
@@ -30,7 +30,7 @@ internal sealed class ElementDiagnostic(
             .GetOrCreate($"element:element-geometry:id:{targetElementId}", () 
                 => targetElement.get_Geometry(options)) ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
-        var targetSolids = getElementGeomentry.Execute(targetElementId, targetGeometryElement);
+        var targetSolids = getElementGeometry.Execute(targetElementId, targetGeometryElement);
 
         if (targetSolids.Count == 0) return DiagnosticFeedback.Valid;
 
@@ -61,7 +61,7 @@ internal sealed class ElementDiagnostic(
 
             if (!HasIntersection(boundingBox, targetBoundingBox)) continue;
 
-            var solids = getElementGeomentry.Execute(elementId, geometryElement);
+            var solids = getElementGeometry.Execute(elementId, geometryElement);
 
             if (HasIntersection(solids, targetSolids))
                 return new(DiagnosticVerdict.NotValid, 
@@ -110,7 +110,7 @@ internal sealed class ElementDiagnostic(
             foreach (Solid targetSolid in solids2)
             {
                 if (BooleanOperationsUtils.ExecuteBooleanOperation(
-                    targetSolid, solid, BooleanOperationsType.Intersect).Volume > EPSILON) return true;
+                    targetSolid, solid, BooleanOperationsType.Intersect).Volume > Epsilon) return true;
             }
         }
         return false;

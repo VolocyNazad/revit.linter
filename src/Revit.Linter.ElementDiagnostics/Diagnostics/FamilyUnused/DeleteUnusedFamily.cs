@@ -1,0 +1,10 @@
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyUnused;
+
+internal sealed class DeleteUnusedFamily : IElementFix
+{
+    public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
+
+    public string Value => "Удалить неиспользуемое семейство";
+    public bool Execute(Element targetElement)
+        => targetElement.Document.Delete(targetElement.Id).Any();
+}

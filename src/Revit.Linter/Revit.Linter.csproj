@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
 
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -77,7 +77,7 @@
 		<ProjectReference Include="..\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementChangesProvider\Revit.Linter.ElementChangesProvider.csproj" />
-		<ProjectReference Include="..\Revit.Linter.ElementChangesUpdater\Revit.Linter.ElementChangesMonitor.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementChangesMonitor\Revit.Linter.ElementChangesMonitor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />

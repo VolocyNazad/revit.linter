@@ -1,4 +1,4 @@
-﻿using Revit.Linter.ElementAccentor.Infrastructure.Factories;
+using Revit.Linter.ElementAccentor.Infrastructure.Factories;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Revit.Linter.ElementAccentor.Infrastructure.Implementations;

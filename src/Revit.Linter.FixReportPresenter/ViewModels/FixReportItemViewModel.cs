@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows;
 using System.Windows.Documents;

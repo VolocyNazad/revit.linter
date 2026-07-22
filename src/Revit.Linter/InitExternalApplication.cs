@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.Attributes;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;

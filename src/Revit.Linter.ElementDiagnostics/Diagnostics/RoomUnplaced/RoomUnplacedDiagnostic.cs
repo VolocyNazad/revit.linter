@@ -2,7 +2,7 @@
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomUnplaced;
 
-internal sealed class RoomUnpacedDiagnostic : IElementDiagnostic
+internal sealed class RoomUnplacedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomUnplaced;
 

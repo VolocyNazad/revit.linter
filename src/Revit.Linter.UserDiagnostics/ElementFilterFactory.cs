@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.Languages.Languages;
 using StringToExpression;
 using StringToExpression.GrammerDefinitions;
@@ -33,11 +33,11 @@ public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
 
         return [
             .. ValueStringOperandDefinitions.Get(),
-            .. WhitespaceGrammerDefinitions.Get(),
+            .. WhitespaceGrammarDefinitions.Get(),
             .. functions,
             .. ElementFilterOperandDefinitions.Get(),
             .. ElementFilterOperatorDefinitions.Get(),
-            .. BracetGrammerDefinitions.Get(functions),
+            .. BracketGrammarDefinitions.Get(functions),
         ];
     }
 }

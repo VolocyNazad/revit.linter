@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
@@ -22,7 +22,7 @@ internal sealed class DiagnosticService(
         ILogger<DiagnosticService> logger)
     : IDiagnosticService
 {
-    private readonly ElementFilter elementFilter = ElementFilterUtils.AllFilter();
+    private readonly ElementFilter _elementFilter = ElementFilterUtils.AllFilter();
     private IList<(DocumentDiagnosticId, DocumentDiagnosticIdOverride, IDocumentDiagnosticFilter, IDocumentDiagnostic)> DocumentDiagnosticInfo
     {
         get
@@ -117,8 +117,8 @@ internal sealed class DiagnosticService(
                 ("duration", stopwatch.Elapsed.TotalMilliseconds), 
                 ("documentTitle", document.Title)
             ];
-            if (feedback.EnrichMessageArgs is not null && feedback.EnrichMessageArgs.Any()) {
-                messageArgs = messageArgs.Concat(feedback.EnrichMessageArgs
+            if (feedback.AdditionalMessageArguments is not null && feedback.AdditionalMessageArguments.Any()) {
+                messageArgs = messageArgs.Concat(feedback.AdditionalMessageArguments
                     .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
             }
             DiagnosticReportMessage diagnosticReportMessage = new(diagnosticId.MessageFormat, messageArgs);
@@ -133,8 +133,8 @@ internal sealed class DiagnosticService(
     private void AddElementDiagnostics(Document document, View? view)
     {
         IList<Element> elements = view is null
-            ? new FilteredElementCollector(document).WherePasses(elementFilter).ToElements()
-            : new FilteredElementCollector(document, view.Id).WherePasses(elementFilter).ToElements();
+            ? new FilteredElementCollector(document).WherePasses(_elementFilter).ToElements()
+            : new FilteredElementCollector(document, view.Id).WherePasses(_elementFilter).ToElements();
         AddElementDiagnostics(document, elements, view);
     }
     private void AddElementDiagnostics(Document document, IEnumerable<Element> elements, View? view)
@@ -150,7 +150,7 @@ internal sealed class DiagnosticService(
             if (!diagnosticIdOverrides.IsActive) continue;
             foreach (Element element in elements)
             {
-                if (ignoreElementDetector.IsIgnoreElement(diagnosticId.Code, element)) continue;
+                if (ignoreElementDetector.IsElementIgnored(diagnosticId.Code, element)) continue;
                 if (!diagnosticFilter.IsRelevantFor(document, element)) continue;
                 var stopwatch = Stopwatch.StartNew();
                 DiagnosticFeedback feedback = diagnostic.Execute(document, view, element);
@@ -160,13 +160,13 @@ internal sealed class DiagnosticService(
                     ("duration", stopwatch.Elapsed.TotalMilliseconds), 
                     ("elementId", element.Id), 
                     ("elementName", element.Name)];
-                if (feedback.EnrichMessageArgs is not null && feedback.EnrichMessageArgs.Any()) {
-                    messageArgs = messageArgs.Concat(feedback.EnrichMessageArgs
+                if (feedback.AdditionalMessageArguments is not null && feedback.AdditionalMessageArguments.Any()) {
+                    messageArgs = messageArgs.Concat(feedback.AdditionalMessageArguments
                         .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
                 }
                 object[] targetDependencies = [];
-                if (feedback.EnrichTargetDependencies is not null && feedback.EnrichTargetDependencies.Any()) {
-                    targetDependencies = targetDependencies.Concat(feedback.EnrichTargetDependencies).ToArray(); // todo Оптимизировать
+                if (feedback.AdditionalTargetDependencies is not null && feedback.AdditionalTargetDependencies.Any()) {
+                    targetDependencies = targetDependencies.Concat(feedback.AdditionalTargetDependencies).ToArray(); // todo Оптимизировать
                 }
                 DiagnosticReportMessage diagnosticReportMessage = new(
                     diagnosticId.MessageFormat, messageArgs);

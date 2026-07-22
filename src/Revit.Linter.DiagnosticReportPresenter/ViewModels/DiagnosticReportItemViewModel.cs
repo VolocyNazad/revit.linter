@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;

@@ -1,9 +1,9 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallHeightIsTolerant;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallHeightIsTolerant;
 
 internal sealed class WallHeightIsTolerantDiagnostic : IElementDiagnostic
 {
-    private readonly double Tolerance = 0.5;
-    private readonly int RoundingDigits = 7;
+    private const double Tolerance = 0.5;
+    private const int RoundingDigits = 7;
     private const double Epsilon = 1e-9;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.WallHeightIsTolerant;

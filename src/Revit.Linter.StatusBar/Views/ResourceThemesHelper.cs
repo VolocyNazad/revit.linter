@@ -1,4 +1,4 @@
-﻿using Revit.Linter.StatusBar.Infrasructure.Extensions;
+using Revit.Linter.StatusBar.Infrastructure.Extensions;
 using System.Windows;
 
 namespace Revit.Linter.StatusBar.Views;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>

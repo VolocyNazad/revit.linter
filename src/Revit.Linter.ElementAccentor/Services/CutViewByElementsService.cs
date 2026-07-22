@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Infrastructure.Extensions;

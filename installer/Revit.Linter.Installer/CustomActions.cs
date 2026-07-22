@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using WixToolset.Dtf.WindowsInstaller;
 
 namespace Revit.Linter.Installer;
@@ -6,7 +6,7 @@ namespace Revit.Linter.Installer;
 public static class CustomActions
 {
     private const string RevitVersion = "2025";
-    private const string AddinName = "Revit.Linter";
+    private const string AddInName = "Revit.Linter";
     private const string Vendor = "VolocyNazad";
 
 
@@ -17,9 +17,9 @@ public static class CustomActions
             string filePath = GetManifestPath();
             ExternalApplicationDefinition definition = new()
             {
-                Name = AddinName,
-                FullClassName = $"{AddinName}.InitExternalApplication",
-                Assembly = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{AddinName}\{RevitVersion}\sources\{AddinName}.dll",
+                Name = AddInName,
+                FullClassName = $"{AddInName}.InitExternalApplication",
+                Assembly = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{AddInName}\{RevitVersion}\sources\{AddInName}.dll",
                 VendorId = Vendor,
                 VendorDescription = Vendor,
             };
@@ -58,7 +58,7 @@ public static class CustomActions
     {
         string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         string directoryPath = Path.Combine(appDataPath, "Autodesk", "Revit", "Addins", RevitVersion);
-        string filePath = Path.Combine(directoryPath, $"{AddinName}.addin");
+        string filePath = Path.Combine(directoryPath, $"{AddInName}.addin");
         return filePath;
     }
 }

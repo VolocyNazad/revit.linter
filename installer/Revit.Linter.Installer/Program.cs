@@ -1,4 +1,4 @@
-﻿using Revit.Linter.Installer;
+using Revit.Linter.Installer;
 using System.Security.Cryptography;
 using System.Text;
 using WixSharp;
@@ -6,7 +6,7 @@ using WixSharp.CommonTasks;
 using WixSharp.Controls;
 
 const int RevitVersion = 2025;
-const string AddinName = "Revit.Linter";
+const string AddInName = "Revit.Linter";
 const string Configuration = "Release 2025.0.0";
 const string Platform = "net8.0-windows";
 const string Vendor = "VolocyNazad";
@@ -24,16 +24,16 @@ Dictionary<int, string> guidMap = new() {
 string solutionPath = TryGetSolutionDirectoryPath();
 
 Version version = new(1, 0, 0);
-string productGuid = GenerateProductGuid(AddinName, RevitVersion, version);
+string productGuid = GenerateProductGuid(AddInName, RevitVersion, version);
 
 Project project = new() {
     MajorUpgrade = MajorUpgrade.Default,
     UpgradeCode = new Guid(guidMap[RevitVersion]),
     GUID = new Guid(productGuid),
     Version = version,
-    Name = AddinName,
+    Name = AddInName,
     ControlPanelInfo = {
-        Name = AddinName,
+        Name = AddInName,
         Manufacturer = Vendor,
         Comments = "Revit linter installer.",
         //ProductIcon = ,     
@@ -45,11 +45,11 @@ Project project = new() {
     //BackgroundImage = ,
     //BannerImage = ,
     Dirs = [
-        new InstallDir($@"%AppDataFolder%\{AddinName}\{RevitVersion}",
+        new InstallDir($@"%AppDataFolder%\{AddInName}\{RevitVersion}",
             new Dir("sources", new Files(
                 Path.Combine(
                     solutionPath,
-                    $@"src\{AddinName}\bin\x64\{Configuration}\{Platform}",
+                    $@"src\{AddInName}\bin\x64\{Configuration}\{Platform}",
                     "*.*")
                 ))
         ),

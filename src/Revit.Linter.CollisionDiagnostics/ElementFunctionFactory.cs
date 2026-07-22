@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.Languages.Languages;
 using StringToExpression;
 using StringToExpression.GrammerDefinitions;
@@ -41,14 +41,14 @@ public class ElementFunctionFactory(ILogger<ElementFunctionFactory> logger)
         return [
             .. ArithmeticOperandDefinitions.Get(),
             .. ArithmeticOperatorDefinitions.Get(),
-            .. LogicalOperatorDefinitionDefinitions.Get(),
+            .. LogicalOperatorDefinitions.Get(),
             .. OperandDefinitions.Get(),
             .. ValueStringOperandDefinitions.Get(),
             .. ValueArithmeticOperandDefinitions.Get(),
             .. ValueBooleanOperandDefinitions.Get(),
-            .. WhitespaceGrammerDefinitions.Get(),
+            .. WhitespaceGrammarDefinitions.Get(),
             .. functions,
-            .. BracetGrammerDefinitions.Get(functions),
+            .. BracketGrammarDefinitions.Get(functions),
         ];
     }
 }

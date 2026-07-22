@@ -1,4 +1,4 @@
-﻿using Revit.Linter.StatusBar.Infrasructure.Utils;
+using Revit.Linter.StatusBar.Infrastructure.Utils;
 using Revit.Linter.StatusBar.Views;
 using System.Diagnostics;
 
@@ -13,8 +13,8 @@ namespace Revit.Linter.StatusBar.Services;
 /// <param name="hasCancelButton"></param>
 public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
 {
-    private readonly Stopwatch stopwatch = Stopwatch.StartNew();
-    private readonly ProgressBarStackPanel progressBarStackPanel = new(hasCancelButton);
+    private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+    private readonly ProgressBarStackPanel _progressBarStackPanel = new(hasCancelButton);
 
     /// <summary>
     /// Run
@@ -59,14 +59,14 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar Run<T>(IEnumerable<T> collection, Action<T> action)
     {
-        progressBarStackPanel.Data.CurrentValue = 0;
-        progressBarStackPanel.Data.MinimumValue = 0;
-        progressBarStackPanel.Data.MaximumValue = collection.Count();
+        _progressBarStackPanel.Data.CurrentValue = 0;
+        _progressBarStackPanel.Data.MinimumValue = 0;
+        _progressBarStackPanel.Data.MaximumValue = collection.Count();
         foreach (var item in collection)
         {
-            var current = progressBarStackPanel.Data.CurrentValue;
+            var current = _progressBarStackPanel.Data.CurrentValue;
             action?.Invoke(item);
-            progressBarStackPanel.Data.CurrentValue = current + 1;
+            _progressBarStackPanel.Data.CurrentValue = current + 1;
             if (RefreshStopwatchBackground().IsCancelling())
                 break;
         }
@@ -80,7 +80,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetCurrentOperation(string currentOperation)
     {
-        progressBarStackPanel.Data.CurrentOperation = currentOperation;
+        _progressBarStackPanel.Data.CurrentOperation = currentOperation;
         return this;
     }
 
@@ -91,7 +91,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetCurrentValue(double currentValue)
     {
-        progressBarStackPanel.Data.CurrentValue = currentValue;
+        _progressBarStackPanel.Data.CurrentValue = currentValue;
         return this;
     }
 
@@ -102,7 +102,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetMinimumValue(double minimumValue)
     {
-        progressBarStackPanel.Data.MinimumValue = minimumValue;
+        _progressBarStackPanel.Data.MinimumValue = minimumValue;
         return this;
     }
 
@@ -113,7 +113,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetMaximumValue(double maximumValue)
     {
-        progressBarStackPanel.Data.MaximumValue = maximumValue;
+        _progressBarStackPanel.Data.MaximumValue = maximumValue;
         return this;
     }
 
@@ -124,7 +124,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetIsIndeterminate(bool isIndeterminate)
     {
-        progressBarStackPanel.Data.IsIndeterminate = isIndeterminate;
+        _progressBarStackPanel.Data.IsIndeterminate = isIndeterminate;
         return this;
     }
 
@@ -135,7 +135,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar SetHasCancelButton(bool hasCancelButton)
     {
-        progressBarStackPanel.Data.HasCancelButton = hasCancelButton;
+        _progressBarStackPanel.Data.HasCancelButton = hasCancelButton;
         return this;
     }
 
@@ -146,7 +146,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public RevitProgressBar Increment(int incrementCurrentValue = 1)
     {
-        progressBarStackPanel.Data.CurrentValue += incrementCurrentValue;
+        _progressBarStackPanel.Data.CurrentValue += incrementCurrentValue;
         RefreshStopwatchBackground();
         return this;
     }
@@ -158,9 +158,9 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     /// <returns></returns>
     public bool IsCancelling()
     {
-        if (progressBarStackPanel.Data.CommandCancel is null)
+        if (_progressBarStackPanel.Data.CommandCancel is null)
         {
-            progressBarStackPanel.Data.CommandCancel = new RelayCommand(Cancel);
+            _progressBarStackPanel.Data.CommandCancel = new RelayCommand(Cancel);
         }
         return CancelPressed;
     }
@@ -172,7 +172,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
         CancelPressed = true;
     }
 
-    private readonly bool ForceToRefresh = StatusBarController.IsVisible;
+    private readonly bool _forceRefresh = StatusBarController.IsVisible;
 
     /// <summary>
     /// Dispose
@@ -180,9 +180,9 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
     public void Dispose()
     {
         StatusBarController.Hide();
-        stopwatch.Stop();
+        _stopwatch.Stop();
 
-        RefreshBackground(ForceToRefresh);
+        RefreshBackground(_forceRefresh);
     }
 
     /// <summary>
@@ -196,16 +196,16 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
 
     private RevitProgressBar RefreshStopwatchBackground()
     {
-        if (InitializeMilliseconds > 0 && stopwatch.ElapsedMilliseconds < InitializeMilliseconds)
+        if (InitializeMilliseconds > 0 && _stopwatch.ElapsedMilliseconds < InitializeMilliseconds)
         {
             return this;
         }
         InitializeMilliseconds = 0;
-        if (stopwatch.ElapsedMilliseconds > RefreshMilliseconds)
+        if (_stopwatch.ElapsedMilliseconds > RefreshMilliseconds)
         {
-            StatusBarController.Show(progressBarStackPanel);
+            StatusBarController.Show(_progressBarStackPanel);
             RefreshBackground();
-            stopwatch.Restart();
+            _stopwatch.Restart();
         }
         return this;
     }
@@ -217,7 +217,7 @@ public sealed class RevitProgressBar(bool hasCancelButton = false) : IDisposable
 
         ApplicationUtils.DoEvents();
         //ApplicationUtils.SetCursorWait();
-        //progressBarStackPanel.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+        //_progressBarStackPanel.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
         if (disable)
         {
             ApplicationUtils.SetCursorDefault();

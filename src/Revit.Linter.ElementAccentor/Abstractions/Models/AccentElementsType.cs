@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.ElementAccentor.Abstractions.Models;
+namespace Revit.Linter.ElementAccentor.Abstractions.Models;
 
 public enum AccentElementsType
 {

@@ -1,4 +1,4 @@
-﻿using Revit.Linter.ElementAccentor.Abstractions.Models;
+using Revit.Linter.ElementAccentor.Abstractions.Models;
 
 namespace Revit.Linter.ElementAccentor.Abstractions.Services;
 

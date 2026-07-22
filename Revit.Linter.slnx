@@ -39,7 +39,7 @@
     <Project Path="src/Revit.Linter.ElementChangesProvider/Revit.Linter.ElementChangesProvider.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.ElementChangesUpdater/Revit.Linter.ElementChangesMonitor.csproj" Id="a9a8e2c0-09c5-4f5b-9bde-382b39fbf4b7">
+    <Project Path="src/Revit.Linter.ElementChangesMonitor/Revit.Linter.ElementChangesMonitor.csproj" Id="a9a8e2c0-09c5-4f5b-9bde-382b39fbf4b7">
       <Platform Solution="*|x64" Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ElementIgnoring/Revit.Linter.ElementIgnoring.csproj" Id="0dd2000b-291a-4951-a91e-2c9333eca8b7">

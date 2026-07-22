@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB;
 using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 
@@ -33,7 +33,7 @@ internal sealed class IgnoreElementManager : IIgnoreElementDetector, IIgnoreElem
         return IgnoreElementFeedback.Success();
     }
 
-    public bool IsIgnoreElement(string code, Element element)
+    public bool IsElementIgnored(string code, Element element)
     {
         Parameter? parameter = element.get_Parameter(_parameterId);
         if (parameter is null) return false;

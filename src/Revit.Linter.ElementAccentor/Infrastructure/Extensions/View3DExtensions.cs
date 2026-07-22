@@ -1,4 +1,4 @@
-﻿using Revit.Linter.ElementAccentor.Infrastructure.Implementations;
+using Revit.Linter.ElementAccentor.Infrastructure.Implementations;
 
 namespace Revit.Linter.ElementAccentor.Infrastructure.Extensions;
 
