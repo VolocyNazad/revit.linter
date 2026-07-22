@@ -45,27 +45,35 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
                 .Select(i => i.BuiltInCategory)
                 .SetEquals(builtInCategories)) hasDifference = true;
             if (hasDifference)
-                return bindingMap.ReInsert(definition, CreateParameterBinding(document, builtInCategories, isInstance));
+                return bindingMap.ReInsert(
+                    definition,
+                    CreateParameterBinding(document, builtInCategories, isInstance),
+                    builtInParameterGroup);
+            return true;
         }
 
         string sharedParametersFilenameCache = application.SharedParametersFilename;
-        foreach (string sharedParameterFile in GetSharedParameterFiles())
+        try
         {
-            //if (!File.Exists("sharedParameterFile")) continue;
-            application.SharedParametersFilename = sharedParameterFile;
-            DefinitionFile definitionFile = application.OpenSharedParameterFile();
-            foreach (DefinitionGroup group in definitionFile.Groups)
+            foreach (string sharedParameterFile in GetSharedParameterFiles())
             {
-                foreach (ExternalDefinition definition in group.Definitions)
+                application.SharedParametersFilename = sharedParameterFile;
+                DefinitionFile definitionFile = application.OpenSharedParameterFile();
+                foreach (DefinitionGroup group in definitionFile.Groups)
                 {
-                    if (definition.GUID != targetParameterId) continue;
-                    return AddSharedParameterToDocument(
-                        document, definition, builtInCategories, builtInParameterGroup, isInstance);
+                    foreach (ExternalDefinition definition in group.Definitions)
+                    {
+                        if (definition.GUID != targetParameterId) continue;
+                        return AddSharedParameterToDocument(
+                            document, definition, builtInCategories, builtInParameterGroup, isInstance);
+                    }
                 }
             }
         }
-
-        application.SharedParametersFilename = sharedParametersFilenameCache;
+        finally
+        {
+            application.SharedParametersFilename = sharedParametersFilenameCache;
+        }
 
         return false;
     }
@@ -160,23 +168,32 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
                 .Select(i => i.BuiltInCategory)
                 .SetEquals(builtInCategories)) hasDifference = true;
             if (hasDifference)
-                return bindingMap.ReInsert(definition, CreateParameterBinding(document, builtInCategories, isInstance));
+                return bindingMap.ReInsert(
+                    definition,
+                    CreateParameterBinding(document, builtInCategories, isInstance),
+                    groupTypeId);
+            return true;
         }
 
         string sharedParametersFilenameCache = application.SharedParametersFilename;
-        foreach (string sharedParameterFile in GetSharedParameterFiles()) {
-            //if (!File.Exists("sharedParameterFile")) continue;
-            application.SharedParametersFilename = sharedParameterFile;
-            DefinitionFile definitionFile = application.OpenSharedParameterFile();
-            foreach (DefinitionGroup group in definitionFile.Groups) {
-                foreach (ExternalDefinition definition in group.Definitions) {
-                    if (definition.GUID != targetParameterId) continue;
-                    return AddSharedParameterToDocument(
-                        document, definition, builtInCategories, groupTypeId, isInstance);
+        try
+        {
+            foreach (string sharedParameterFile in GetSharedParameterFiles()) {
+                application.SharedParametersFilename = sharedParameterFile;
+                DefinitionFile definitionFile = application.OpenSharedParameterFile();
+                foreach (DefinitionGroup group in definitionFile.Groups) {
+                    foreach (ExternalDefinition definition in group.Definitions) {
+                        if (definition.GUID != targetParameterId) continue;
+                        return AddSharedParameterToDocument(
+                            document, definition, builtInCategories, groupTypeId, isInstance);
+                    }
                 }
             }
         }
-        application.SharedParametersFilename = sharedParametersFilenameCache;
+        finally
+        {
+            application.SharedParametersFilename = sharedParametersFilenameCache;
+        }
         return false;
     }
 

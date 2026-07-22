@@ -1,0 +1,8 @@
+# This is a Revit shared parameter file.
+# Do not edit manually.
+*META	VERSION	MINVERSION
+META	2	1
+*GROUP	ID	NAME
+GROUP	1	Revit Linter Tests
+*PARAM	GUID	NAME	DATATYPE	DATACATEGORY	GROUP	VISIBLE	DESCRIPTION	USERMODIFIABLE	HIDEWHENNOVALUE
+PARAM	8d665115-22dd-4a8d-a66c-c123710c9cb2	TestProjectParameter	TEXT		1	1	Test project parameter	1	0

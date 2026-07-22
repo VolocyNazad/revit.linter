@@ -1,5 +1,6 @@
 ﻿using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace Revit.Linter.Languages.Languages;
 
@@ -20,13 +21,21 @@ public static class ValueStringOperandDefinitions
             new(
                 name: NameDictionary["STRING"],
                 regex: RegexDictionary["STRING"],
-                expressionBuilder: x => Expression.Constant(x.Trim('\'')
-                    .Replace("\\'", "'")
-                    .Replace("\\r", "\r")
-                    .Replace("\\f", "\f")
-                    .Replace("\\n", "\n")
-                    .Replace("\\\\", "\\")
-                    .Replace("\\b", "\b")
-                    .Replace("\\t", "\t"))),
+                expressionBuilder: x => Expression.Constant(Unescape(x[1..^1]))),
         ];
+
+    private static string Unescape(string value) => Regex.Replace(
+        value,
+        @"\\(['\\rfnbtn])",
+        match => match.Groups[1].Value[0] switch
+        {
+            '\'' => "'",
+            '\\' => "\\",
+            'r' => "\r",
+            'f' => "\f",
+            'n' => "\n",
+            'b' => "\b",
+            't' => "\t",
+            _ => match.Value,
+        });
 }

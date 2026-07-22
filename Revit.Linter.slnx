@@ -80,10 +80,34 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.DiagnosticReportProvider.Tests/Revit.Linter.DiagnosticReportProvider.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.Diagnostic.Tests/Revit.Linter.Diagnostic.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ElementChangesProvider.Tests/Revit.Linter.ElementChangesProvider.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ElementIgnoring.Tests/Revit.Linter.ElementIgnoring.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.FixReportProvider.Tests/Revit.Linter.FixReportProvider.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.Languages.Tests/Revit.Linter.Languages.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Languages.RevitTests/Revit.Linter.Languages.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ProjectParameterManaging.Tests/Revit.Linter.ProjectParameterManaging.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.WarningsHandling.Tests/Revit.Linter.WarningsHandling.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

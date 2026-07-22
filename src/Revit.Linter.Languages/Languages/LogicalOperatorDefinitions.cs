@@ -49,7 +49,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["NOTEQUALS"],
                 regex: RegexDictionary["NOTEQUALS"],
-                orderOfPrecedence:12,
+                orderOfPrecedence:11,
                 expressionBuilder: (left,right) =>
                     Expression.Call(
                         method:typeof(EqualsUtils).GetMethod(
@@ -62,7 +62,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["GREATERTHANOREQUAL"],
                 regex: RegexDictionary["GREATERTHANOREQUAL"],
-                orderOfPrecedence:14,
+                orderOfPrecedence:10,
                 expressionBuilder: (left,right) =>
                     Expression.GreaterThanOrEqual(
                         Expression.Convert(left,typeof(double)),
@@ -70,7 +70,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["GREATERTHAN"],
                 regex: RegexDictionary["GREATERTHAN"],
-                orderOfPrecedence:13,
+                orderOfPrecedence:10,
                 expressionBuilder: (left,right) =>
                     Expression.GreaterThan(
                         Expression.Convert(left,typeof(double)),
@@ -79,7 +79,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["LESSTHANOREQUAL"],
                 regex: RegexDictionary["LESSTHANOREQUAL"],
-                orderOfPrecedence:16,
+                orderOfPrecedence:10,
                 expressionBuilder: (left,right) =>
                     Expression.LessThanOrEqual(
                         Expression.Convert(left,typeof(double)),
@@ -87,7 +87,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["LESSTHAN"],
                 regex: RegexDictionary["LESSTHAN"],
-                orderOfPrecedence:15,
+                orderOfPrecedence:10,
                 expressionBuilder: (left,right) =>
                     Expression.LessThan(
                         Expression.Convert(left,typeof(double)),
@@ -96,7 +96,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["AND"],
                 regex: RegexDictionary["AND"],
-                orderOfPrecedence:17,
+                orderOfPrecedence:12,
                 expressionBuilder: (left,right) =>
                     Expression.And(
                         Expression.Convert(left,typeof(bool)),
@@ -104,7 +104,7 @@ public static class LogicalOperatorDefinitions
             new BinaryOperatorDefinition(
                 name:  NameDictionary["OR"],
                 regex: RegexDictionary["OR"],
-                orderOfPrecedence:18,
+                orderOfPrecedence:13,
                 expressionBuilder: (left,right) =>
                     Expression.Or(
                         Expression.Convert(left,typeof(bool)),
@@ -113,7 +113,7 @@ public static class LogicalOperatorDefinitions
             new UnaryOperatorDefinition(
                 name:  NameDictionary["NOT"],
                 regex: RegexDictionary["NOT"],
-                orderOfPrecedence:19,
+                orderOfPrecedence:9,
                 operandPosition: RelativePosition.Right,
                 expressionBuilder: arg => Expression.Not(Expression.Convert(arg, typeof(bool))))
         ];

@@ -25,7 +25,10 @@ internal sealed class IgnoreElementManager : IIgnoreElementDetector, IIgnoreElem
             return IgnoreElementFeedback.Success();
         }
 
-        if (line[-1] != _separator) line += _separator;
+        if (line.Split(_separator).Contains(code))
+            return IgnoreElementFeedback.Success();
+
+        if (line[^1] != _separator) line += _separator;
 
         line += code;
         parameter.Set(line);
