@@ -1,0 +1,51 @@
+name: Publish release
+
+on:
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: Create a draft release
+        required: true
+        default: false
+        type: boolean
+
+concurrency:
+  group: publish-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build and publish release
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Verify release tag
+        shell: pwsh
+        run: |
+          $tags = @(git tag --points-at HEAD | Where-Object { $_ -match '^v\d+\.\d+\.\d+$' })
+          if ($tags.Count -ne 1) {
+            throw "The selected commit must have exactly one stable tag such as 'v1.4.0'."
+          }
+
+      - name: Build and publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          dotnet run `
+            --project build/Revit.Linter.Build.csproj `
+            -c Release `
+            --no-launch-profile `
+            -- publish --Publish:Draft=${{ inputs.draft }}
