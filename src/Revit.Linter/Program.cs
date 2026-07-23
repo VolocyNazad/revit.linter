@@ -24,6 +24,7 @@ using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
+using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.Linter.WarningsHandling.DI;
 using Revit.MediatR.DI;
@@ -65,6 +66,7 @@ internal sealed class Program
                 .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddOpenedDocumentsModule()
+                .AddThemeManagingModule()
             )
         ;
 

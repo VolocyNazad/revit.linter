@@ -83,6 +83,7 @@
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.WarningsHandling\Revit.Linter.WarningsHandling.csproj" />
 		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />

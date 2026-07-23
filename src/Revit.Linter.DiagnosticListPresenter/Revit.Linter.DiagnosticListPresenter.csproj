@@ -17,6 +17,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />

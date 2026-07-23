@@ -19,6 +19,9 @@
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Update="SonarAnalyzer.CSharp">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
