@@ -12,10 +12,12 @@ using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
+using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using MediaColor = System.Windows.Media.Color;
 #if BEFORE2024
 using Toolkit.Revit.Extensions;
 #endif
@@ -60,7 +62,61 @@ internal sealed class InitExternalApplication : ExternalApplication
         var app = Application.ControlledApplication;
         app.DocumentCreated += App_DocumentCreated;
         app.DocumentOpened += App_DocumentOpened;
+
+        InitializeThemeHandling();
     }
+
+    public override void OnShutdown()
+    {
+        var app = Application.ControlledApplication;
+        app.DocumentCreated -= App_DocumentCreated;
+        app.DocumentOpened -= App_DocumentOpened;
+
+#if !BEFORE2024
+        Application.ThemeChanged -= Application_ThemeChanged;
+#endif
+    }
+
+    private void InitializeThemeHandling()
+    {
+        ChangePluginTheme();
+#if !BEFORE2024
+        Application.ThemeChanged += Application_ThemeChanged;
+#endif
+    }
+
+#if !BEFORE2024
+    private static void Application_ThemeChanged(object? sender, Autodesk.Revit.UI.Events.ThemeChangedEventArgs e)
+        => ChangePluginTheme();
+#endif
+
+    private static void ChangePluginTheme()
+    {
+#if BEFORE2024
+        bool isDarkTheme = false;
+        MediaColor backgroundColor = MediaColor.FromRgb(255, 255, 255);
+#else
+        bool isDarkTheme = UIThemeManager.CurrentTheme == UITheme.Dark;
+        MediaColor backgroundColor = GetRevitFrameBackgroundColor(isDarkTheme);
+#endif
+        Program.Provider.GetRequiredService<IThemeService>().ChangeTheme(isDarkTheme, backgroundColor);
+    }
+
+#if !BEFORE2024
+    private static MediaColor GetRevitFrameBackgroundColor(bool isDarkTheme)
+    {
+        var method = typeof(UIThemeManager).GetMethod("GetCurrentFrameBackgroundColor", Type.EmptyTypes);
+        object? revitColor = method?.Invoke(null, null);
+        if (revitColor is null)
+            return isDarkTheme ? MediaColor.FromRgb(44, 52, 64) : MediaColor.FromRgb(245, 245, 245);
+
+        var colorType = revitColor.GetType();
+        return MediaColor.FromRgb(
+            Convert.ToByte(colorType.GetProperty("Red")?.GetValue(revitColor)),
+            Convert.ToByte(colorType.GetProperty("Green")?.GetValue(revitColor)),
+            Convert.ToByte(colorType.GetProperty("Blue")?.GetValue(revitColor)));
+    }
+#endif
 
     private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e) => await AddProjectParameters(e.Document);
 
