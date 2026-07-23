@@ -31,7 +31,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticListFilter> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticListFilter>? oldValue, IEnumerable<IDiagnosticListFilter> newValue)
+        IEnumerable<IDiagnosticListFilter> oldValue, IEnumerable<IDiagnosticListFilter> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)

@@ -16,4 +16,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="SonarAnalyzer.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

@@ -1,4 +1,6 @@
-﻿using Toolkit.Revit.Extensions;
+﻿#if BEFORE2024
+using Toolkit.Revit.Extensions;
+#endif
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.DetailCurveExists;
 

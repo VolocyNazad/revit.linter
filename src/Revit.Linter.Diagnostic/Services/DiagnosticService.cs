@@ -4,7 +4,6 @@ using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
-
 //using Revit.Linter.StatusBar.Services;
 using System.Diagnostics;
 using Toolkit.Revit.Extensions;

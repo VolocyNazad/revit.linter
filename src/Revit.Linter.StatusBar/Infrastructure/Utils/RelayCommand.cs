@@ -10,6 +10,6 @@ internal sealed class RelayCommand(Action action) : ICommand
     public event EventHandler? CanExecuteChanged;
 #pragma warning restore CS0067
 
-    public bool CanExecute(object parameter) => true;
-    public void Execute(object parameter) => _action?.Invoke();
+    public bool CanExecute(object? parameter) => true;
+    public void Execute(object? parameter) => _action?.Invoke();
 }

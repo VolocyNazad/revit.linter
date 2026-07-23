@@ -1,4 +1,6 @@
-namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
+using Autodesk.Revit.DB;
+
+namespace Toolkit.Revit.Extensions;
 
 public static class ElementIdExtensions
 {
@@ -15,6 +17,5 @@ public static class ElementIdExtensions
             return id.Value;
         }
 #endif
-
     }
 }

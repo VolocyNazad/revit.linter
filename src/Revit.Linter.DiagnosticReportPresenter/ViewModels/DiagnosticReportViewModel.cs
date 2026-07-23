@@ -104,7 +104,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> SeverityFilters { get; set; } = [];
     partial void OnSeverityFiltersChanged(
-        IEnumerable<IDiagnosticReportFilter>? oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)
@@ -118,7 +118,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> Filters { get; set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticReportFilter>? oldValue, IEnumerable<IDiagnosticReportFilter>? newValue)
+        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)

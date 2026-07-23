@@ -16,7 +16,11 @@ internal sealed class DiagnosticReportItemViewModel
     public required string ObsoleteDescription { get; init; }
     public required string Template { get; init; }
     public required Dictionary<string, object> Args { get; init; }
+#if BEFORE2024
     public required Action<int> AccentElementDelegate { get; init; }
+#else
+    public required Action<long> AccentElementDelegate { get; init; }
+#endif
     public required IEnumerable<FixViewModel>? Fixes { get; init; }
     public required DateTime Created { get; init; }
 
@@ -152,14 +156,16 @@ internal sealed class DiagnosticReportItemViewModel
 
         hyperlink.Click += (s, e) =>
         {
-            OnElementNavigationRequested(int.Parse((string)hyperlink.Tag));
+#if BEFORE2024
+            AccentElementDelegate(int.Parse((string)hyperlink.Tag));
+#else
+            AccentElementDelegate(long.Parse((string)hyperlink.Tag));
+#endif
             e.Handled = true;
         };
 
         return hyperlink;
     }
-
-    private void OnElementNavigationRequested(int elementId) => AccentElementDelegate(elementId);
 
     enum InlineType
     {

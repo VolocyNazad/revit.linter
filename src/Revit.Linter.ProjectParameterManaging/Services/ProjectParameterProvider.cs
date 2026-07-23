@@ -11,8 +11,7 @@ namespace Revit.Linter.ProjectParameterManaging.Services;
 
 internal sealed class ProjectParameterProvider : IProjectParameterProvider
 {
-    private const string SharedParameterFileExtension = ".txt";
-    private const string SharedParameterFileMask = $"*{SharedParameterFileExtension}";
+    private const string SharedParameterFileName = "required-revit-project-parameters.txt";
     private static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)!;
 
     public bool Add(
@@ -55,18 +54,18 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         string sharedParametersFilenameCache = application.SharedParametersFilename;
         try
         {
-            foreach (string sharedParameterFile in GetSharedParameterFiles())
+            string? sharedParameterFile = GetSharedParameterFile();
+            if (sharedParameterFile is null) return false;
+
+            application.SharedParametersFilename = sharedParameterFile;
+            DefinitionFile definitionFile = application.OpenSharedParameterFile();
+            foreach (DefinitionGroup group in definitionFile.Groups)
             {
-                application.SharedParametersFilename = sharedParameterFile;
-                DefinitionFile definitionFile = application.OpenSharedParameterFile();
-                foreach (DefinitionGroup group in definitionFile.Groups)
+                foreach (ExternalDefinition definition in group.Definitions)
                 {
-                    foreach (ExternalDefinition definition in group.Definitions)
-                    {
-                        if (definition.GUID != targetParameterId) continue;
-                        return AddSharedParameterToDocument(
-                            document, definition, builtInCategories, builtInParameterGroup, isInstance);
-                    }
+                    if (definition.GUID != targetParameterId) continue;
+                    return AddSharedParameterToDocument(
+                        document, definition, builtInCategories, builtInParameterGroup, isInstance);
                 }
             }
         }
@@ -116,12 +115,10 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         else throw new InvalidOperationException("Unable to create parameter binding to categories because category list is empty");
         return categorySet;
     }
-    private static IEnumerable<string> GetSharedParameterFiles()
+    private static string? GetSharedParameterFile()
     {
-        IEnumerable<string> sharedParameterFiles = Directory
-            .GetFiles(DirectoryPath, SharedParameterFileMask, SearchOption.AllDirectories);
-        foreach (string sharedParameterFile in sharedParameterFiles)
-            yield return sharedParameterFile;
+        string path = Path.Combine(DirectoryPath, SharedParameterFileName);
+        return File.Exists(path) ? path : null;
     }
 }
 
@@ -137,8 +134,7 @@ namespace Revit.Linter.ProjectParameterManaging.Services;
 
 internal sealed class ProjectParameterProvider : IProjectParameterProvider
 {
-    private const string SharedParameterFileExtension = ".txt";
-    private const string SharedParameterFileMask = $"*{SharedParameterFileExtension}";
+    private const string SharedParameterFileName = "required-revit-project-parameters.txt";
     private static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)!;
 
     public bool Add(
@@ -178,15 +174,16 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         string sharedParametersFilenameCache = application.SharedParametersFilename;
         try
         {
-            foreach (string sharedParameterFile in GetSharedParameterFiles()) {
-                application.SharedParametersFilename = sharedParameterFile;
-                DefinitionFile definitionFile = application.OpenSharedParameterFile();
-                foreach (DefinitionGroup group in definitionFile.Groups) {
-                    foreach (ExternalDefinition definition in group.Definitions) {
-                        if (definition.GUID != targetParameterId) continue;
-                        return AddSharedParameterToDocument(
-                            document, definition, builtInCategories, groupTypeId, isInstance);
-                    }
+            string? sharedParameterFile = GetSharedParameterFile();
+            if (sharedParameterFile is null) return false;
+
+            application.SharedParametersFilename = sharedParameterFile;
+            DefinitionFile definitionFile = application.OpenSharedParameterFile();
+            foreach (DefinitionGroup group in definitionFile.Groups) {
+                foreach (ExternalDefinition definition in group.Definitions) {
+                    if (definition.GUID != targetParameterId) continue;
+                    return AddSharedParameterToDocument(
+                        document, definition, builtInCategories, groupTypeId, isInstance);
                 }
             }
         }
@@ -230,12 +227,10 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         else throw new InvalidOperationException("Unable to create parameter binding to categories because category list is empty");
         return categorySet;
     }
-    private static IEnumerable<string> GetSharedParameterFiles()
+    private static string? GetSharedParameterFile()
     {
-        IEnumerable<string> sharedParameterFiles = Directory
-            .GetFiles(DirectoryPath, SharedParameterFileMask, SearchOption.AllDirectories);
-        foreach (string sharedParameterFile in sharedParameterFiles)
-            yield return sharedParameterFile;
+        string path = Path.Combine(DirectoryPath, SharedParameterFileName);
+        return File.Exists(path) ? path : null;
     }
 }
 #endif

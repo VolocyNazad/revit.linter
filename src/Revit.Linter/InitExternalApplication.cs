@@ -62,9 +62,9 @@ internal sealed class InitExternalApplication : ExternalApplication
         app.DocumentOpened += App_DocumentOpened;
     }
 
-    private static async void App_DocumentOpened(object sender, DocumentOpenedEventArgs e) => await AddProjectParameters(e.Document);
+    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e) => await AddProjectParameters(e.Document);
 
-    private static async void App_DocumentCreated(object sender, DocumentCreatedEventArgs e) => await AddProjectParameters(e.Document);
+    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e) => await AddProjectParameters(e.Document);
 
     private static async Task AddProjectParameters(Document doc) => await AddIgnoreListParameter(doc);
 
@@ -86,7 +86,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 #if BEFORE2024
                     BuiltInParameterGroup.PG_IDENTITY_DATA,
 #else
-                    GroupTypeId.IdentityData
+                    GroupTypeId.IdentityData,
 #endif
                     true
                 );

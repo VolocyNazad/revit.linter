@@ -5,6 +5,15 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
-		<PackageReference Include="CommunityToolkit.Mvvm"/>
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
 	</ItemGroup>
 </Project>

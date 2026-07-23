@@ -1,7 +1,7 @@
-﻿using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Extensions;
-#if BEFORE2024
-using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
+﻿#if BEFORE2024
+using Toolkit.Revit.Extensions;
 #endif
+using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 

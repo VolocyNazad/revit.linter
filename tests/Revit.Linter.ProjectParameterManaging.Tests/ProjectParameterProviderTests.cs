@@ -5,12 +5,15 @@ using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ProjectParameterManaging.DI;
 using TUnit.Core.Executors;
+#if BEFORE2024
 using Toolkit.Revit.Extensions;
+#endif
 
 namespace Revit.Linter.ProjectParameterManaging.Tests;
 
 public sealed class ProjectParameterProviderTests : RevitApiTest
 {
+    private const string SharedParameterFileName = "required-revit-project-parameters.txt";
     private static readonly Guid ParameterId = new("8d665115-22dd-4a8d-a66c-c123710c9cb2");
     private Document? _document;
 
@@ -33,6 +36,14 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         IProjectParameterProvider second = serviceProvider.GetRequiredService<IProjectParameterProvider>();
 
         await Assert.That(ReferenceEquals(first, second)).IsTrue();
+    }
+
+    [Test]
+    public async Task Required_shared_parameter_file_exists_in_output_directory()
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, SharedParameterFileName);
+
+        await Assert.That(File.Exists(path)).IsTrue();
     }
 
     [Test]

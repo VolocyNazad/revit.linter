@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
@@ -17,6 +18,7 @@ using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.ElementIgnoring.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
+using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Exceptions;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
@@ -43,13 +45,15 @@ internal sealed class Program
     private static IHostBuilder CreateHostBuilder(string[] args) =>
         Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
             .UseContentRoot(Location)
+            .ConfigureLogging(logging => logging.ClearProviders())
             .ConfigureAppConfiguration((_, cfg) => cfg
                 .SetBasePath(Location))
 #if (DEBUG)
             .UseEnvironment("Production")
             //.UseEnvironment("Development")
 #endif
-            .ConfigureServices((_, services) => services
+            .ConfigureServices((context, services) => services
+                .AddAndConfigureSerilog()
                 .AddLocalization(i => i.ResourcesPath = "Resources")
                 .AddRevitContext().AddEvents().AddMediatR().AddTransactionMemoryCache().AddElementAccentor()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddRevitWarningsModule().AddElementIgnoringModule().AddProjectParameterManagingModule()

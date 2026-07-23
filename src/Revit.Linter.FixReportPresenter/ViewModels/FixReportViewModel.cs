@@ -47,7 +47,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     [ObservableProperty]
     public partial IEnumerable<IFixListFilter> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IFixListFilter>? oldValue, IEnumerable<IFixListFilter> newValue)
+        IEnumerable<IFixListFilter> oldValue, IEnumerable<IFixListFilter> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)

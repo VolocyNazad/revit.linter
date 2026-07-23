@@ -8,19 +8,23 @@ internal static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public AssemblySelector From(Assembly assembly)
+        public AssemblySelector From(Assembly assembly, string namespacePrefix)
         {
-            return new AssemblySelector(services, assembly);
+            return new AssemblySelector(services, assembly, namespacePrefix);
         }
     }
 
-    public class AssemblySelector(IServiceCollection services, Assembly assembly)
+    public class AssemblySelector(IServiceCollection services, Assembly assembly, string namespacePrefix)
     {
         public ImplementationSelector FindImplementationsOf<TInterface>()
-            => new(services, assembly, typeof(TInterface));
+            => new(services, assembly, namespacePrefix, typeof(TInterface));
     }
 
-    public class ImplementationSelector(IServiceCollection services, Assembly assembly, Type interfaceType)
+    public class ImplementationSelector(
+        IServiceCollection services,
+        Assembly assembly,
+        string namespacePrefix,
+        Type interfaceType)
     {
         private ServiceLifetime _serviceLifetime = ServiceLifetime.Scoped;
 
@@ -52,6 +56,9 @@ internal static class ServiceCollectionExtensions
 
         private IEnumerable<Type> GetImplementations()
             => assembly.GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && interfaceType.IsAssignableFrom(t));
+            .Where(t => t.IsClass
+                && !t.IsAbstract
+                && t.Namespace?.StartsWith(namespacePrefix + ".", StringComparison.Ordinal) == true
+                && interfaceType.IsAssignableFrom(t));
     }
 }

@@ -21,16 +21,19 @@ public static class AssemblyLoadService
     {
         string? location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-        if (File.Exists(location))
-            location = Path.GetDirectoryName(location);
-
         if (!Directory.Exists(location)) return;
 
         string? target = Directory.GetFiles(location)
-            .Where(i => i.Contains(".dll"))
-            .Where(i => !i.Contains(".config"))
+            .Where(i => string.Equals(Path.GetExtension(i), ".dll", StringComparison.OrdinalIgnoreCase))
             .FirstOrDefault(i => Path.GetFileNameWithoutExtension(i) == targetName);
 
-        if (target != null) Assembly.LoadFrom(target);
+        if (target == null) return;
+
+        AssemblyName targetAssemblyName = AssemblyName.GetAssemblyName(target);
+        bool isLoaded = AppDomain.CurrentDomain.GetAssemblies()
+            .Select(assembly => assembly.GetName())
+            .Any(assemblyName => AssemblyName.ReferenceMatchesDefinition(assemblyName, targetAssemblyName));
+
+        if (!isLoaded) Assembly.LoadFrom(target);
     }
 }
