@@ -1,4 +1,4 @@
-## Модули проверок
+# Модули проверок
 
 - [[element-built-in diagnostics|Встроенные проверки элементов]]
 - [[document-built-in diagnostics|Встроенные проверки документов]]

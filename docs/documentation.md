@@ -1,6 +1,4 @@
-## 📋 Документация
+# Документация Revit Linter
 
-Документация по работе с RevitLinter
-
-- [[ui|UI]]
-- [[diagnostics|Diagnostics]]
+- [[diagnostics|Диагностики]]
+- [[ui|Интерфейс]]
