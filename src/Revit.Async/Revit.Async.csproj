@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.42">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 	<ItemGroup>
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 	</ItemGroup>
