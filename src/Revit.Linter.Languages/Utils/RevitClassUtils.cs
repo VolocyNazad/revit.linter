@@ -10,7 +10,7 @@ namespace Revit.Linter.Languages.Utils;
 
 public static class RevitClassUtils
 {
-    private static readonly Type[] Types =
+    private static readonly Type[] NamespaceTypes =
     [
         typeof(FamilyInstance),
         typeof(Pipe),
@@ -21,16 +21,32 @@ public static class RevitClassUtils
         typeof(Hub)
     ];
 
+    private static readonly IReadOnlyDictionary<string, Type> Types = CreateTypes();
+
     public static Type GetType(string typeName)
     {
-        Type[] types = Types;
-        foreach (Type type in types)
-        {
-            Type? type2 = Type.GetType(type.AssemblyQualifiedName.Replace(type.Name, typeName));
-            if (type2 != null) return type2;
-        }
+        if (Types.TryGetValue(typeName, out Type? type)) return type;
 
         throw new RevitTypeNotFoundException(typeName);
+    }
+
+    private static IReadOnlyDictionary<string, Type> CreateTypes()
+    {
+        Dictionary<string, Type> types = new(StringComparer.Ordinal);
+        Type[] exportedTypes = typeof(Element).Assembly.GetExportedTypes();
+
+        foreach (Type namespaceType in NamespaceTypes)
+        {
+            foreach (Type type in exportedTypes)
+            {
+                if (type.Namespace == namespaceType.Namespace && !types.ContainsKey(type.Name))
+                {
+                    types.Add(type.Name, type);
+                }
+            }
+        }
+
+        return types;
     }
 }
 

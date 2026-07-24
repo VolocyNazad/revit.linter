@@ -35,7 +35,7 @@ public static class ElementFilterFunctionCallDefinitions
                 argumentTypes: [typeof(string)],
                 expressionBuilder: parameters =>
                     parameters[0] is ConstantExpression { Value: string className }
-                    ? Expression.Constant(new ElementClassFilter(RevitClassUtils.GetType(className)), typeof(ElementFilter))
+                    ? Expression.Constant(ElementFilterUtils.GetElementClassFilter(className), typeof(ElementFilter))
                     : Expression.Call(
                         typeof(ElementFilterUtils).GetMethod(nameof(ElementFilterUtils.GetElementClassFilter), [typeof(string)])!,
                         parameters)
