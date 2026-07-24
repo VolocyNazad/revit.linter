@@ -174,6 +174,46 @@ internal static class ElementDiagnosticIdCollector
         true,
         false,
         string.Empty);
+    public readonly static ElementDiagnosticId SheetEmpty = new(
+        "SHRD0017",
+        "Проверка листов на наличие размещенных видов и спецификаций.",
+        "Лист с именем '{elementName}' и идентификатором '{elementId}' пуст. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Warning,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId ViewOnSheetWithoutTemplate = new(
+        "SHRD0018",
+        "Проверка размещенных на листах видов на наличие шаблона вида.",
+        "Вид с именем '{elementName}' и идентификатором '{elementId}' размещен на листе без шаблона вида. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Warning,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId SheetWithoutTitleBlock = new(
+        "SHRD0019",
+        "Проверка листов на наличие основной надписи.",
+        "Лист с именем '{elementName}' и идентификатором '{elementId}' не содержит основную надпись. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Error,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId SheetWithMultipleTitleBlocks = new(
+        "SHRD0020",
+        "Проверка листов на наличие не более одной основной надписи.",
+        "Лист с именем '{elementName}' и идентификатором '{elementId}' содержит несколько основных надписей. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Error,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId GroupNested = new(
+        "SHRD0021",
+        "Проверка групп на отсутствие вложения в другие группы.",
+        "Группа с именем '{elementName}' и идентификатором '{elementId}' вложена в другую группу. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Warning,
+        true,
+        false,
+        string.Empty);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)
