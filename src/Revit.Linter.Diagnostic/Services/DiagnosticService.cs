@@ -112,13 +112,17 @@ internal sealed class DiagnosticService(
             DiagnosticFeedback feedback = diagnostic.Execute(document);
             stopwatch.Stop();
             if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
-            (string, object)[] messageArgs = [
-                ("duration", stopwatch.Elapsed.TotalMilliseconds), 
-                ("documentTitle", document.Title)
-            ];
-            if (feedback.AdditionalMessageArguments is not null && feedback.AdditionalMessageArguments.Any()) {
-                messageArgs = messageArgs.Concat(feedback.AdditionalMessageArguments
-                    .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
+            Dictionary<string, object>? additionalMessageArguments = feedback.AdditionalMessageArguments;
+            (string, object)[] messageArgs = new (string, object)[2 + (additionalMessageArguments?.Count ?? 0)];
+            messageArgs[0] = ("duration", stopwatch.Elapsed.TotalMilliseconds);
+            messageArgs[1] = ("documentTitle", document.Title);
+            if (additionalMessageArguments is not null)
+            {
+                int index = 2;
+                foreach (KeyValuePair<string, object> argument in additionalMessageArguments)
+                {
+                    messageArgs[index++] = (argument.Key, argument.Value);
+                }
             }
             DiagnosticReportMessage diagnosticReportMessage = new(diagnosticId.MessageFormat, messageArgs);
             DiagnosticReport diagnosticReport = new(
@@ -155,18 +159,20 @@ internal sealed class DiagnosticService(
                 DiagnosticFeedback feedback = diagnostic.Execute(document, view, element);
                 stopwatch.Stop();
                 if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
-                (string, object)[] messageArgs = [
-                    ("duration", stopwatch.Elapsed.TotalMilliseconds), 
-                    ("elementId", element.Id), 
-                    ("elementName", element.Name)];
-                if (feedback.AdditionalMessageArguments is not null && feedback.AdditionalMessageArguments.Any()) {
-                    messageArgs = messageArgs.Concat(feedback.AdditionalMessageArguments
-                        .Select(i => (i.Key, i.Value))).ToArray(); // todo Оптимизировать
+                Dictionary<string, object>? additionalMessageArguments = feedback.AdditionalMessageArguments;
+                (string, object)[] messageArgs = new (string, object)[3 + (additionalMessageArguments?.Count ?? 0)];
+                messageArgs[0] = ("duration", stopwatch.Elapsed.TotalMilliseconds);
+                messageArgs[1] = ("elementId", element.Id);
+                messageArgs[2] = ("elementName", element.Name);
+                if (additionalMessageArguments is not null)
+                {
+                    int index = 3;
+                    foreach (KeyValuePair<string, object> argument in additionalMessageArguments)
+                    {
+                        messageArgs[index++] = (argument.Key, argument.Value);
+                    }
                 }
-                object[] targetDependencies = [];
-                if (feedback.AdditionalTargetDependencies is not null && feedback.AdditionalTargetDependencies.Any()) {
-                    targetDependencies = targetDependencies.Concat(feedback.AdditionalTargetDependencies).ToArray(); // todo Оптимизировать
-                }
+                object[] targetDependencies = feedback.AdditionalTargetDependencies ?? [];
                 DiagnosticReportMessage diagnosticReportMessage = new(
                     diagnosticId.MessageFormat, messageArgs);
                 DiagnosticReport diagnosticReport = new(
