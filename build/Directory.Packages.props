@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="ModularPipelines" Version="3.2.8" />
+    <PackageVersion Include="ModularPipelines.DotNet" Version="3.2.8" />
+    <PackageVersion Include="ModularPipelines.Git" Version="3.2.8" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+</Project>
