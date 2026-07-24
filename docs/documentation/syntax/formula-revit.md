@@ -31,17 +31,26 @@ property('Width') > 0
 
 ## Параметры элемента
 
-`parameter(identifier)` доступна только в `check`. Идентификатор разрешается в следующем порядке:
+`parameter(elementDefiner, identifier)` доступна только в формулах элемента. Первый аргумент выбирает источник параметра: `me` означает текущий элемент, `type` — его тип, `host` — основу и так далее. Если определитель возвращает несколько элементов, используется первый. Идентификатор разрешается в следующем порядке:
 
 1. имя перечисления `BuiltInParameter`;
 2. GUID общего параметра;
 3. отображаемое имя параметра (`LookupParameter`).
 
 ```text
-parameter('ALL_MODEL_INSTANCE_COMMENTS') == 'checked'
-!isnullorempty(parameter('Марка'))
-isnull(parameter('Missing parameter'))
+parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS') == 'checked'
+parameter(type, 'ALL_MODEL_TYPE_COMMENTS') == 'checked'
+!isnullorempty(parameter(me, 'Марка'))
+isnull(parameter(me, 'Missing parameter'))
 ```
+
+Проверить наличие параметра или заполненного значения можно функциями:
+
+```text
+hasparameter('Марка', me)
+hasparametervalue('Марка', me)
+```
+
 
 | StorageType Revit | Значение в формуле |
 | --- | --- |

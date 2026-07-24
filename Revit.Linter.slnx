@@ -56,6 +56,9 @@
     </Project>
   </Folder>
   <Folder Name="/others/">
+    <Project Path="src/Revit.Linter.ElementDependencyDefiners/Revit.Linter.ElementDependencyDefiners.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Async/Revit.Async.csproj">
       <Platform Project="x64" />
     </Project>
@@ -86,6 +89,9 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Revit.Linter.ElementDependencyDefiners.RevitTests/Revit.Linter.ElementDependencyDefiners.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">
       <Platform Project="x64" />
     </Project>

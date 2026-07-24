@@ -13,7 +13,7 @@
   isObsolete: true
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Walls')"
-  check: "parameter('Комментарии') == 'Ура!' & parameter('Марка') == 'Ура!'"
+  check: "parameter(me, 'Комментарии') == 'Ура!' & parameter(me, 'Марка') == 'Ура!'"
 - code: "CSTM002"
   description: "custom"
   message: "Для элемента с именем '{elementName}' и идентификатором '{elementId}' неверно указано имя"

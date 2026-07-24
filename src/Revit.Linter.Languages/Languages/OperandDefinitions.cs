@@ -11,7 +11,7 @@ public static class OperandDefinitions
     };
 
     private static Dictionary<string, string> RegexDictionary { get; } = NameDictionary
-        .ToDictionary(i => i.Key, i => $@"{i.Value}");
+        .ToDictionary(i => i.Key, i => $@"{i.Value}\b");
 
     public static IEnumerable<OperandDefinition> Get()
         => [

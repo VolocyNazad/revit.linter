@@ -1,6 +1,8 @@
 ﻿using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
 
+using Revit.Linter.ElementDependencyDefiners.Abstractions;
+
 namespace Revit.Linter.Languages.Languages;
 
 public static class ElementFunctionCallDefinitions
@@ -8,6 +10,8 @@ public static class ElementFunctionCallDefinitions
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {
         ["PARAMETER"] = "parameter",
+        ["HASPARAMETER"] = "hasparameter",
+        ["HASPARAMETERVALUE"] = "hasparametervalue",
     };
 
     private static Dictionary<string, string> RegexDictionary { get; } = NameDictionary
@@ -18,13 +22,20 @@ public static class ElementFunctionCallDefinitions
         new FunctionCallDefinition(
             name:  NameDictionary["PARAMETER"],
             regex: RegexDictionary["PARAMETER"],
-            argumentTypes: [typeof(string)],
+            argumentTypes: [typeof(IElementsDependencyDefiner), typeof(string)],
             expressionBuilder: parameters => {
-                Expression identifierExpression = parameters[0];
+                Expression definerExpression = parameters[0];
+                Expression identifierExpression = parameters[1];
+
+                Expression targetElementExpression = Expression.Call(
+                    definerExpression,
+                    typeof(IElementsDependencyDefiner).GetMethod(
+                        nameof(IElementsDependencyDefiner.FirstOrDefault))!,
+                    elementExpression);
 
                 Expression? parameterExpression = identifierExpression is ConstantExpression { Value: string elementIdentifier }
-                    ? CreateGetParameterExpression(elementExpression, elementIdentifier)
-                    : CreateGetParameterExpression(elementExpression, identifierExpression);
+                    ? CreateGetParameterExpression(targetElementExpression, elementIdentifier)
+                    : CreateGetParameterExpression(targetElementExpression, identifierExpression);
 
                 Expression valueExpression = Expression.Call(
                     typeof(Utils).GetMethod(nameof(Utils.GetParameterValue), [typeof(Parameter)])!,
@@ -34,8 +45,40 @@ public static class ElementFunctionCallDefinitions
                 return valueExpression;
             }
 
-        ),  // todo Добавить перегрузку, чтобы пользователь сам указывал тип параметра
+        ),
+        CreateParameterPredicate(
+            elementExpression,
+            NameDictionary["HASPARAMETER"],
+            (parameter) => Expression.NotEqual(parameter, Expression.Constant(null, typeof(Parameter)))),
+        CreateParameterPredicate(
+            elementExpression,
+            NameDictionary["HASPARAMETERVALUE"],
+            (parameter) => Expression.AndAlso(
+                Expression.NotEqual(parameter, Expression.Constant(null, typeof(Parameter))),
+                Expression.Property(parameter, nameof(Parameter.HasValue)))),
     ];
+
+    private static FunctionCallDefinition CreateParameterPredicate(
+        Expression elementExpression,
+        string name,
+        Func<Expression, Expression> predicateBuilder)
+        => new(
+            name: name,
+            regex: RegexDictionary[name.ToUpperInvariant()],
+            argumentTypes: [typeof(string), typeof(IElementsDependencyDefiner)],
+            expressionBuilder: parameters => {
+                Expression identifierExpression = parameters[0];
+                Expression definerExpression = parameters[1];
+                Expression targetElementExpression = Expression.Call(
+                    definerExpression,
+                    typeof(IElementsDependencyDefiner).GetMethod(nameof(IElementsDependencyDefiner.FirstOrDefault))!,
+                    elementExpression);
+                Expression parameterExpression = identifierExpression is ConstantExpression { Value: string identifier }
+                    ? CreateGetParameterExpression(targetElementExpression, identifier)
+                    : CreateGetParameterExpression(targetElementExpression, identifierExpression);
+
+                return predicateBuilder(parameterExpression);
+            });
 
     private static Expression CreateGetParameterExpression(Expression elementExpression, Expression elementIdentifierExpression)
     {
@@ -100,17 +143,20 @@ internal static class Utils
         return typeof(string);
     }
 
-    public static Parameter GetParameter(Element element, BuiltInParameter identifier)
-        => element.get_Parameter(identifier);
+    public static Parameter? GetParameter(Element? element, BuiltInParameter identifier)
+        => element?.get_Parameter(identifier);
 
-    public static Parameter GetParameter(Element element, Guid identifier)
-        => element.get_Parameter(identifier);
+    public static Parameter? GetParameter(Element? element, Guid identifier)
+        => element?.get_Parameter(identifier);
 
-    public static Parameter GetParameter(Element element, string identifier)
-        => element.LookupParameter(identifier);
+    public static Parameter? GetParameter(Element? element, string identifier)
+        => element?.LookupParameter(identifier);
 
-    public static Parameter DynamicGetParameter(Element element, string identifier)
+    public static Parameter? DynamicGetParameter(Element? element, string identifier)
     {
+        if (element is null)
+            return null;
+
         if (Enum.TryParse(identifier, out BuiltInParameter builtInParameter))
             return element.get_Parameter(builtInParameter);
 

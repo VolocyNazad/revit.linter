@@ -17,7 +17,7 @@ public static class ElementFilterOperandDefinitions
     };
 
     private static Dictionary<string, string> RegexDictionary { get; } = NameDictionary
-        .ToDictionary(i => i.Key, i => $@"{i.Value}");
+        .ToDictionary(i => i.Key, i => $@"{i.Value}\b");
 
     public static OperandDefinition[] Get()
         => [

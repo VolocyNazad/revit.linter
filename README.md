@@ -139,7 +139,7 @@ Revit.Linter — это инструмент для проектировщико
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
   take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
-  groupBy: "parameter('Комментарии')"
+  groupBy: "parameter(me, 'Комментарии')"
 - code: "CLSN002"
 ...
 ```
@@ -240,7 +240,7 @@ Revit.Linter — это инструмент для проектировщико
   isObsolete: true
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Walls')"
-  check: "parameter('Комментарии') == 'Ура!' & parameter('Марка') == 'Ура!'"
+  check: "parameter(me, 'Комментарии') == 'Ура!' & parameter(me, 'Марка') == 'Ура!'"
 - code: "CSTM002"
   description: "custom"
   message: "Для элемента с именем '{elementName}' и идентификатором '{elementId}' неверно указано имя"

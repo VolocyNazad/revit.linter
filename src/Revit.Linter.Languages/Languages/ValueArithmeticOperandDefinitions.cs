@@ -13,7 +13,7 @@ public static class ValueArithmeticOperandDefinitions
 
     private static Dictionary<string, string> RegexDictionary { get; } = new()
     {
-        ["DOUBLE"] = @"\-?\d+(\.\d+)?",
+        ["DOUBLE"] = @"\-?\d+(\.\d+)?\b",
     };
 
     public static IEnumerable<OperandDefinition> Get()

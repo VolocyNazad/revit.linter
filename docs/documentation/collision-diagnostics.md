@@ -14,7 +14,7 @@
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
   take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
-  groupBy: "parameter('Комментарии')"
+  groupBy: "parameter(me, 'Комментарии')"
 - code: "CLSN002"
 ...
 ```

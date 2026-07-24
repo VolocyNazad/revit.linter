@@ -33,7 +33,7 @@ public static class LanguageDefinitions
             .. CreateCommonFunctions(),
         ];
 
-        return CreateValueDefinitions(functions);
+        return CreateValueDefinitions(functions, ElementDependencyDefinerOperandDefinitions.Get());
     }
 
     public static GrammerDefinition[] CreateElementFilter()
@@ -60,7 +60,9 @@ public static class LanguageDefinitions
             .. StringFunctionCallDefinitions.Get(),
         ];
 
-    private static GrammerDefinition[] CreateValueDefinitions(FunctionCallDefinition[] functions)
+    private static GrammerDefinition[] CreateValueDefinitions(
+        FunctionCallDefinition[] functions,
+        params OperandDefinition[] additionalOperands)
         =>
         [
             .. ArithmeticOperandDefinitions.Get(),
@@ -70,6 +72,7 @@ public static class LanguageDefinitions
             .. ValueStringOperandDefinitions.Get(),
             .. ValueArithmeticOperandDefinitions.Get(),
             .. ValueBooleanOperandDefinitions.Get(),
+            .. additionalOperands,
             .. WhitespaceGrammarDefinitions.Get(),
             .. functions,
             .. BracketGrammarDefinitions.Get(functions),

@@ -26,6 +26,9 @@ public sealed class ElementFormulaTests : RevitApiTest
             _level.Id,
             false);
         _wall.get_Parameter(BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS).Set("checked");
+        _document.GetElement(_wall.GetTypeId())
+            .get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS)
+            .Set("type checked");
         transaction.Commit();
     }
 
@@ -73,7 +76,7 @@ public sealed class ElementFormulaTests : RevitApiTest
     public async Task Builtin_string_parameter_is_available()
     {
         Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
-            "parameter('ALL_MODEL_INSTANCE_COMMENTS') == 'checked'");
+            "parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS') == 'checked'");
 
         bool result = formula.Invoke(_wall!);
 
@@ -84,7 +87,7 @@ public sealed class ElementFormulaTests : RevitApiTest
     public async Task Dynamically_selected_parameter_identifier_is_available()
     {
         Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
-            "parameter(if(true, 'ALL_MODEL_INSTANCE_COMMENTS', 'INVALID')) == 'checked'");
+            "parameter(me, if(true, 'ALL_MODEL_INSTANCE_COMMENTS', 'INVALID')) == 'checked'");
 
         bool result = formula.Invoke(_wall!);
 
@@ -95,7 +98,7 @@ public sealed class ElementFormulaTests : RevitApiTest
     public async Task Missing_parameter_returns_null()
     {
         Func<Element, bool> formula =
-            PropertyFormulaCompiler.CompileElement<bool>("isnull(parameter('Missing parameter'))");
+            PropertyFormulaCompiler.CompileElement<bool>("isnull(parameter(me, 'Missing parameter'))");
 
         bool result = formula.Invoke(_wall!);
 
@@ -106,7 +109,7 @@ public sealed class ElementFormulaTests : RevitApiTest
     public async Task Double_parameter_is_converted_to_language_number()
     {
         Func<Element, bool> formula =
-            PropertyFormulaCompiler.CompileElement<bool>("parameter('WALL_BASE_OFFSET') == 0");
+            PropertyFormulaCompiler.CompileElement<bool>("parameter(me, 'WALL_BASE_OFFSET') == 0");
 
         bool result = formula.Invoke(_wall!);
 
@@ -117,11 +120,43 @@ public sealed class ElementFormulaTests : RevitApiTest
     public async Task ElementId_parameter_is_returned_as_value()
     {
         Func<Element, bool> formula =
-            PropertyFormulaCompiler.CompileElement<bool>("!isnull(parameter('WALL_BASE_CONSTRAINT'))");
+            PropertyFormulaCompiler.CompileElement<bool>("!isnull(parameter(me, 'WALL_BASE_CONSTRAINT'))");
 
         bool result = formula.Invoke(_wall!);
 
         await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Parameter_can_be_read_from_element_selected_by_definer()
+    {
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            "parameter(type, 'ALL_MODEL_TYPE_COMMENTS') == 'type checked'");
+
+        bool result = formula.Invoke(_wall!);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Hasparameter_checks_element_selected_by_definer()
+    {
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            "hasparameter('ALL_MODEL_INSTANCE_COMMENTS', me)");
+
+        await Assert.That(formula.Invoke(_wall!)).IsTrue();
+    }
+
+    [Test]
+    public async Task Hasparametervalue_distinguishes_empty_and_filled_parameters()
+    {
+        Func<Element, bool> filled = PropertyFormulaCompiler.CompileElement<bool>(
+            "hasparametervalue('ALL_MODEL_INSTANCE_COMMENTS', me)");
+        Func<Element, bool> empty = PropertyFormulaCompiler.CompileElement<bool>(
+            "hasparametervalue('ALL_MODEL_MARK', me)");
+
+        await Assert.That(filled.Invoke(_wall!)).IsTrue();
+        await Assert.That(empty.Invoke(_wall!)).IsFalse();
     }
 
     [Test]

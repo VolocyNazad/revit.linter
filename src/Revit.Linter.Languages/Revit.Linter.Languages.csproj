@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ElementDependencyDefiners\Revit.Linter.ElementDependencyDefiners.csproj" />
 		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 	</ItemGroup>
 
