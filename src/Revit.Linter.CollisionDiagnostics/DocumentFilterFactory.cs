@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Languages.Languages;
 using StringToExpression;
-using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
 
 namespace Revit.Linter.CollisionDiagnostics;
@@ -12,7 +11,7 @@ public class DocumentFilterFactory(ILogger<DocumentFilterFactory> logger)
 
     public Func<Document, bool> Create(string formula) => CreateDelegate(formula);
 
-    private static Language Language => field ??= new(AllLanguageDefinitions());
+    private static Language Language => field ??= new(LanguageDefinitions.CreateForDocument(_documentExpression));
     private Func<Document, bool> CreateDelegate(string formula)
     {
         try
@@ -26,29 +25,5 @@ public class DocumentFilterFactory(ILogger<DocumentFilterFactory> logger)
             // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
             return doc => false;
         }
-    }
-    private static GrammerDefinition[] AllLanguageDefinitions()
-    {
-        IEnumerable<FunctionCallDefinition> functions = [
-           .. PropertyFunctionCallDefinitions.Get(_documentExpression),
-           .. MethodFunctionCallDefinitions.Get(_documentExpression),
-           .. ArithmeticFunctionCallDefinitions.Get(),
-           .. DateTimeFunctionCallDefinitions.Get(),
-           .. LogicalFunctionCallDefinitions.Get(),
-           .. StringFunctionCallDefinitions.Get(),
-        ];
-
-        return [
-            .. ArithmeticOperandDefinitions.Get(),
-            .. ArithmeticOperatorDefinitions.Get(),
-            .. LogicalOperatorDefinitions.Get(),
-            .. OperandDefinitions.Get(),
-            .. ValueStringOperandDefinitions.Get(),
-            .. ValueArithmeticOperandDefinitions.Get(),
-            .. ValueBooleanOperandDefinitions.Get(),
-            .. WhitespaceGrammarDefinitions.Get(),
-            .. functions,
-            .. BracketGrammarDefinitions.Get(functions),
-        ];
     }
 }

@@ -16,6 +16,9 @@ public static class ArithmeticFunctionCallDefinitions
         ["COS"] = "cos",
         ["TAN"] = "tan",
         ["SQRT"] = "sqrt",
+        ["ABS"] = "abs",
+        ["MIN"] = "min",
+        ["MAX"] = "max",
         ["NUM"] = "num",
     };
 
@@ -75,7 +78,28 @@ public static class ArithmeticFunctionCallDefinitions
                 expressionBuilder: args => Expression.Call(
                     method:Type<object>.Method(x=>Math.Sqrt(0)),
                     arguments: args[0])),
-             new(
+            new(
+                name:  NameDictionary["ABS"],
+                regex: RegexDictionary["ABS"],
+                argumentTypes: [typeof(double)],
+                expressionBuilder: args => Expression.Call(
+                    method: Type<object>.Method(x => Math.Abs(0.0)),
+                    arguments: args[0])),
+            new(
+                name:  NameDictionary["MIN"],
+                regex: RegexDictionary["MIN"],
+                argumentTypes: [typeof(double), typeof(double)],
+                expressionBuilder: args => Expression.Call(
+                    method: Type<object>.Method(x => Math.Min(0.0, 0.0)),
+                    arguments: args)),
+            new(
+                name:  NameDictionary["MAX"],
+                regex: RegexDictionary["MAX"],
+                argumentTypes: [typeof(double), typeof(double)],
+                expressionBuilder: args => Expression.Call(
+                    method: Type<object>.Method(x => Math.Max(0.0, 0.0)),
+                    arguments: args)),
+            new(
                 name:  NameDictionary["NUM"],
                 regex: RegexDictionary["NUM"],
                 argumentTypes: [typeof(string)],

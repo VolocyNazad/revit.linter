@@ -12,6 +12,7 @@ public static class LogicalFunctionCallDefinitions
         ["ISDOUBLE"] = "isdouble",
         ["ISSTRING"] = "isstring",
         ["ISBOOL"] = "isbool",
+        ["ISEMPTY"] = "isempty",
         ["ISNULLOREMPTY"] = "isnullorempty",
     };
 
@@ -50,6 +51,13 @@ public static class LogicalFunctionCallDefinitions
                 regex: RegexDictionary["ISBOOL"],
                 argumentTypes: [typeof(object)],
                 expressionBuilder: args => Expression.TypeIs(args[0], typeof(bool))),
+            new(
+                name:  NameDictionary["ISEMPTY"],
+                regex: RegexDictionary["ISEMPTY"],
+                argumentTypes: [typeof(object)],
+                expressionBuilder: args => Expression.Equal(
+                    args[0],
+                    Expression.Constant(string.Empty, typeof(object)))),
             new(
                 name:  NameDictionary["ISNULLOREMPTY"],
                 regex: RegexDictionary["ISNULLOREMPTY"],

@@ -9,6 +9,9 @@ public sealed class StringFormulaTests
     [InlineData("toupper('ReViT')", "REVIT")]
     [InlineData("totitle('revit linter')", "Revit Linter")]
     [InlineData("tosentence('revit linter')", "Revit linter")]
+    [InlineData("trim('  Revit Linter  ')", "Revit Linter")]
+    [InlineData("replace('Revit Linter', 'Linter', 'Rules')", "Revit Rules")]
+    [InlineData("substring('Revit Linter', 6, 6)", "Linter")]
     [InlineData("if(true, 'yes', 'no')", "yes")]
     [InlineData("'Count: ' + 3", "Count: 3")]
     [InlineData("3 + ' items'", "3 items")]
@@ -39,6 +42,16 @@ public sealed class StringFormulaTests
         object? result = FormulaCompiler.Evaluate<object?>("null + null");
 
         Assert.Null(result);
+    }
+
+    [Theory]
+    [InlineData("length('Revit')", 5)]
+    [InlineData("length('')", 0)]
+    public void String_length_returns_expected_result(string formula, double expected)
+    {
+        double result = FormulaCompiler.Evaluate<double>(formula);
+
+        Assert.Equal(expected, result);
     }
 
     [Theory]

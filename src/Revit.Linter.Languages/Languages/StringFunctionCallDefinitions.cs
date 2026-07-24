@@ -15,6 +15,10 @@ public static class StringFunctionCallDefinitions
         ["ENDWITH"] = "endwith",
         ["TOLOWER"] = "tolower",
         ["TOUPPER"] = "toupper",
+        ["TRIM"] = "trim",
+        ["REPLACE"] = "replace",
+        ["LENGTH"] = "length",
+        ["SUBSTRING"] = "substring",
         ["TOTITLE"] = "totitle",
         ["TOSENTENCE"] = "tosentence",
     };
@@ -105,6 +109,46 @@ public static class StringFunctionCallDefinitions
                         method:typeof(string).GetMethod(nameof(string.ToUpper), [])!
                     );
                 }),
+
+            new(
+                name:  NameDictionary["TRIM"],
+                regex: RegexDictionary["TRIM"],
+                argumentTypes: [typeof(string)],
+                expressionBuilder: args => Expression.Call(
+                    args[0],
+                    method: typeof(string).GetMethod(nameof(string.Trim), Type.EmptyTypes)!)),
+
+            new(
+                name:  NameDictionary["REPLACE"],
+                regex: RegexDictionary["REPLACE"],
+                argumentTypes: [typeof(string), typeof(string), typeof(string)],
+                expressionBuilder: args => Expression.Call(
+                    args[0],
+                    method: typeof(string).GetMethod(
+                        nameof(string.Replace),
+                        [typeof(string), typeof(string)])!,
+                    args[1],
+                    args[2])),
+
+            new(
+                name:  NameDictionary["LENGTH"],
+                regex: RegexDictionary["LENGTH"],
+                argumentTypes: [typeof(string)],
+                expressionBuilder: args => Expression.Convert(
+                    Expression.Property(args[0], nameof(string.Length)),
+                    typeof(double))),
+
+            new(
+                name:  NameDictionary["SUBSTRING"],
+                regex: RegexDictionary["SUBSTRING"],
+                argumentTypes: [typeof(string), typeof(double), typeof(double)],
+                expressionBuilder: args => Expression.Call(
+                    args[0],
+                    method: typeof(string).GetMethod(
+                        nameof(string.Substring),
+                        [typeof(int), typeof(int)])!,
+                    Expression.Convert(args[1], typeof(int)),
+                    Expression.Convert(args[2], typeof(int)))),
 
             new(
                 name:  NameDictionary["TOTITLE"],

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "documentation.md",
+                "file": "documentation/syntax/formula-functions.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "documentation"
+              "title": "formula-functions"
             }
           }
         ]
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "documentation.md",
+                "file": "documentation/syntax/formula-functions.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Структура documentation"
+              "title": "Структура formula-functions"
             }
           }
         ],
@@ -186,6 +186,7 @@
   },
   "active": "8745e559b13cc7c8",
   "lastOpenFiles": [
+    "documentation.md",
     "welcome-to-the-revit-linter-wiki.md",
     "how-to-install.md",
     "fast-start.md",
@@ -204,7 +205,6 @@
     "documentation/syntax/formula-language.md",
     "documentation/syntax",
     "change-log.md",
-    "documentation.md",
     "documentation/obsolete-diagnostic.md",
     "documentation/ui.md",
     "excalidraw/modules-scheme.md",

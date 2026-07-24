@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Languages.Languages;
 using StringToExpression;
-using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
 using Toolkit.Revit.Extensions;
 
@@ -10,7 +9,7 @@ namespace Revit.Linter.UserDiagnostics;
 public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
 {
     public ElementFilter Create(string formula) => CreateDelegate(formula).Invoke();
-    private static Language Language => field ??= new(AllLanguageDefinitions());
+    private static Language Language => field ??= new(LanguageDefinitions.CreateElementFilter());
     private Func<ElementFilter> CreateDelegate(string formula)
     {
         try
@@ -24,20 +23,5 @@ public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
             // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
             return ElementFilterUtils.EmptyFilter;
         }
-    }
-    private static GrammerDefinition[] AllLanguageDefinitions()
-    {
-        IEnumerable<FunctionCallDefinition> functions = [
-           .. ElementFilterFunctionCallDefinitions.Get()
-        ];
-
-        return [
-            .. ValueStringOperandDefinitions.Get(),
-            .. WhitespaceGrammarDefinitions.Get(),
-            .. functions,
-            .. ElementFilterOperandDefinitions.Get(),
-            .. ElementFilterOperatorDefinitions.Get(),
-            .. BracketGrammarDefinitions.Get(functions),
-        ];
     }
 }
