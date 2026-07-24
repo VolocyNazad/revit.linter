@@ -5,7 +5,6 @@
     xmlns:core="clr-namespace:Revit.Linter.Core.Abstractions.Models;assembly=Revit.Linter.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticListPresenter.Infrastructure"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -80,9 +79,6 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
-                <DataGrid.Resources>
-                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
-                </DataGrid.Resources>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem
@@ -124,9 +120,12 @@
                     <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
                                             <Setter Property="Text" Value="{Binding Code}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
@@ -135,34 +134,19 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </TextBlock.Style>
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Code}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </TextBox.Style>
+                                </TextBox>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Severity" SortMemberPath="Severity">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox ItemsSource="{Binding Source={StaticResource DiagnosticSeverities}}" SelectedItem="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <ComboBox.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Severity}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </ComboBox.ContextMenu>
-                                </ComboBox>
+                                <ComboBox
+                                    IsEditable="True"
+                                    IsReadOnly="True"
+                                    ItemsSource="{Binding Source={StaticResource DiagnosticSeverities}}"
+                                    SelectedItem="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -172,9 +156,12 @@
                         SortMemberPath="Description">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock TextWrapping="Wrap">
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                                <TextBox VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    TextWrapping="Wrap">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
                                             <Setter Property="Text" Value="{Binding Description}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
@@ -183,17 +170,8 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </TextBlock.Style>
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Description}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </TextBox.Style>
+                                </TextBox>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

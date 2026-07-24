@@ -9,10 +9,7 @@ using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Data;
-using System.Windows.Documents;
-using TextRange = System.Windows.Documents.TextRange;
 
 namespace Revit.Linter.FixReportPresenter.ViewModels;
 
@@ -63,20 +60,6 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     [ObservableProperty]
     public partial string? TargetDocumentTitle { get; set; }
     partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
-
-    #region [CopyToClipboard] Command - Копировать текст в буфер обмена
-
-    /// <summary> Копировать текст в буфер обмена </summary>
-    [RelayCommand]
-    private void CopyToClipboard(object item)
-    {
-        string text = item is FlowDocument flowDocument
-            ? new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd).Text
-            : item.ToString();
-        Clipboard.SetText(text.ToString());
-    }
-
-    #endregion
 
     #region [SelectElement] Command - Выбрать элемент  
 

@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:infrastructure="clr-namespace:Revit.Linter.FixReportPresenter.Infrastructure"
     xmlns:local="clr-namespace:Revit.Linter.FixReportPresenter.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -80,25 +79,16 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
-                <DataGrid.Resources>
-                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
-                </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock VerticalAlignment="Center">
-                                    <Run d:Text="Code" Text="{Binding Code}" />
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Code}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    Style="{StaticResource MaterialDesignTextBox}"
+                                    Text="{Binding Code}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -109,53 +99,32 @@
                                     Width="1800"
                                     Document="{Binding Message}"
                                     HorizontalScrollBarVisibility="Disabled"
-                                    VerticalScrollBarVisibility="Disabled">
-                                    <FlowDocumentScrollViewer.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Message}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </FlowDocumentScrollViewer.ContextMenu>
-                                </FlowDocumentScrollViewer>
+                                    IsSelectionEnabled="True"
+                                    VerticalScrollBarVisibility="Disabled" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding DocumentTitle}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                    <Run Text="{Binding DocumentTitle}" />
-                                </TextBlock>
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    Style="{StaticResource MaterialDesignTextBox}"
+                                    Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock VerticalAlignment="Center">
-                                    <Run d:Text="Created" Text="{Binding Created}" />
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Created}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    Style="{StaticResource MaterialDesignTextBox}"
+                                    Text="{Binding Created}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

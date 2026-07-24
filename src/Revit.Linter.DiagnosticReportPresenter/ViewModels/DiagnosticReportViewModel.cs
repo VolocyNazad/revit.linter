@@ -23,9 +23,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Media;
-using TextRange = System.Windows.Documents.TextRange;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -251,13 +249,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     /// <summary> Копировать текст в буфер обмена </summary>
     [RelayCommand]
-    private void CopyToClipboard(object item)
-    {
-        string text = item is FlowDocument flowDocument
-            ? new TextRange(flowDocument.ContentStart, flowDocument.ContentEnd).Text
-            : item.ToString();
-        Clipboard.SetText(text.ToString());
-    }
+    private void CopyToClipboard(object item) => Clipboard.SetText(item.ToString() ?? string.Empty);
 
     #endregion
 

@@ -224,15 +224,6 @@
                                     d:Content="Severity"
                                     Content="{Binding Severity}"
                                     Style="{StaticResource SeverityChipStyle}">
-                                    <materialDesign:Chip.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Severity}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </materialDesign:Chip.ContextMenu>
                                 </materialDesign:Chip>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -240,10 +231,13 @@
                     <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock VerticalAlignment="Center">
-                                    <Run d:Text="Code" Text="{Binding Code}" />
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                            <Setter Property="Text" Value="{Binding Code}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
                                                     <Setter Property="TextDecorations" Value="Strikethrough" />
@@ -251,17 +245,8 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </TextBlock.Style>
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Code}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </TextBox.Style>
+                                </TextBox>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -272,53 +257,30 @@
                                     Width="1800"
                                     Document="{Binding Message}"
                                     HorizontalScrollBarVisibility="Disabled"
-                                    VerticalScrollBarVisibility="Disabled">
-                                    <FlowDocumentScrollViewer.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Message}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </FlowDocumentScrollViewer.ContextMenu>
-                                </FlowDocumentScrollViewer>
+                                    IsSelectionEnabled="True"
+                                    VerticalScrollBarVisibility="Disabled" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding DocumentTitle}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                    <Run Text="{Binding DocumentTitle}" />
-                                </TextBlock>
+                                <TextBox Style="{StaticResource MaterialDesignTextBox}"
+                                         VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock VerticalAlignment="Center">
-                                    <Run d:Text="Created" Text="{Binding Created}" />
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem
-                                                Command="{Binding DataContext.CopyToClipboardCommand, Source={StaticResource proxy}}"
-                                                CommandParameter="{Binding Created}"
-                                                Header="Copy"
-                                                Icon="{materialDesign:PackIcon Kind=ContentCopy}" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                <TextBox Style="{StaticResource MaterialDesignTextBox}"
+                                    VerticalAlignment="Center"
+                                    IsReadOnly="True"
+                                    IsReadOnlyCaretVisible="False"
+                                    Text="{Binding Created}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
