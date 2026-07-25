@@ -44,7 +44,7 @@
         HorizontalContentAlignment="Stretch"
         VerticalContentAlignment="Stretch">
         <DockPanel>
-            <DockPanel Height="50" DockPanel.Dock="Top">
+            <DockPanel Height="45" DockPanel.Dock="Top">
                 <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
                 <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
@@ -122,10 +122,11 @@
                             <DataTemplate>
                                 <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False">
                                     <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                        <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
                                             <Setter Property="Text" Value="{Binding Code}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
@@ -151,17 +152,18 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
-                        Width="*"
+                        Width="1000"
                         Header="Description"
                         SortMemberPath="Description">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    TextWrapping="Wrap">
+                                    IsReadOnlyCaretVisible="False">
                                     <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                        <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
                                             <Setter Property="Text" Value="{Binding Description}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">

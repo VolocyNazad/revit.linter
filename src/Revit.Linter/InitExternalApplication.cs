@@ -37,6 +37,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         RevitTask.Initialize(Application);
 
         AssemblyLoadService.LoadAssemblies();
+
         InitializeRevitContext();
         InitializeRevitTransactionCache();
         RegisterDiagnosticReportDockablePane();
@@ -78,32 +79,24 @@ internal sealed class InitExternalApplication : ExternalApplication
 #endif
     }
 
+#if !BEFORE2024
     private void InitializeThemeHandling()
     {
         ChangePluginTheme();
-#if !BEFORE2024
         Application.ThemeChanged += Application_ThemeChanged;
-#endif
     }
 
-#if !BEFORE2024
     private static void Application_ThemeChanged(object? sender, Autodesk.Revit.UI.Events.ThemeChangedEventArgs e)
         => ChangePluginTheme();
-#endif
 
     private static void ChangePluginTheme()
     {
-#if BEFORE2024
-        bool isDarkTheme = false;
-        MediaColor backgroundColor = MediaColor.FromRgb(255, 255, 255);
-#else
         bool isDarkTheme = UIThemeManager.CurrentTheme == UITheme.Dark;
         MediaColor backgroundColor = GetRevitFrameBackgroundColor(isDarkTheme);
-#endif
+
         Program.Provider.GetRequiredService<IThemeService>().ChangeTheme(isDarkTheme, backgroundColor);
     }
 
-#if !BEFORE2024
     private static MediaColor GetRevitFrameBackgroundColor(bool isDarkTheme)
     {
         var method = typeof(UIThemeManager).GetMethod("GetCurrentFrameBackgroundColor", Type.EmptyTypes);

@@ -37,7 +37,7 @@
         HorizontalContentAlignment="Stretch"
         VerticalContentAlignment="Stretch">
         <DockPanel>
-            <DockPanel Height="50" DockPanel.Dock="Top">
+            <DockPanel Height="45" DockPanel.Dock="Top">
                 <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
                 <Rectangle
                     Width="1"
@@ -119,6 +119,7 @@
                 <TextBox
                     Width="200"
                     Margin="5"
+                    d:Text="Search text"
                     materialDesign:HintAssist.Hint="Search"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"
@@ -223,8 +224,7 @@
                                     Margin="0"
                                     d:Content="Severity"
                                     Content="{Binding Severity}"
-                                    Style="{StaticResource SeverityChipStyle}">
-                                </materialDesign:Chip>
+                                    Style="{StaticResource SeverityChipStyle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -233,10 +233,11 @@
                             <DataTemplate>
                                 <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False">
                                     <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                        <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
                                             <Setter Property="Text" Value="{Binding Code}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
@@ -265,10 +266,12 @@
                     <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Style="{StaticResource MaterialDesignTextBox}"
-                                         VerticalAlignment="Center"
+                                <TextBox
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
+                                    Style="{StaticResource MaterialDesignTextBox}"
                                     Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -276,10 +279,12 @@
                     <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Style="{StaticResource MaterialDesignTextBox}"
+                                <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
+                                    Style="{StaticResource MaterialDesignTextBox}"
                                     Text="{Binding Created}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
