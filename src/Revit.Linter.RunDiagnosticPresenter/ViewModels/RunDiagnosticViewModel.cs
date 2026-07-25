@@ -35,6 +35,9 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     [ObservableProperty]
     public partial bool OnActiveViewMode { get; set; } = false;
 
+    [ObservableProperty]
+    public partial bool IncludeRevitWarnings { get; set; } = true;
+
     #region [RunDiagnostic] Command - Запустить диагностику  
 
     /// <summary> Запустить диагностику </summary>
@@ -51,7 +54,9 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         _diagnosticReportPresenter.Clear(targetDocument.Title);
 
         _diagnosticService.Execute(targetDocument, targetView);
-        _revitWarningsService.Execute(targetDocument);
+
+        if (IncludeRevitWarnings)
+            _revitWarningsService.Execute(targetDocument);
 
         _diagnosticReportPresenter.Refresh();
 

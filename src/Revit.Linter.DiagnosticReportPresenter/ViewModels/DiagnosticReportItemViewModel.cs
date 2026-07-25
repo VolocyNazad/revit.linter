@@ -43,7 +43,7 @@ internal sealed class DiagnosticReportItemViewModel
 
         flowDocument.Blocks.Add(paragraph);
 
-        paragraph.FontSize = 13;
+        paragraph.FontSize = 10;
         paragraph.FontFamily = new("Segoe UI");
         paragraph.FontWeight = FontWeights.Regular;
         if (IsObsolete)

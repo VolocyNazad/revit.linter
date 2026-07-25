@@ -3,8 +3,9 @@ namespace Revit.Linter.ElementDiagnostics.Diagnostics.FloorWithTolerantSketchCoo
 
 internal sealed class FloorWithTolerantSketchCoordinatesDiagnostic : IElementDiagnostic
 {
-    private readonly double _tolerance = 0.5;
-    private readonly int _roundingDigits = 7;
+    private readonly double Tolerance = 0.5;
+    private readonly int RoundingDigits = 7;
+    private const double Epsilon = 1e-9;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FloorWithTolerantSketchCoordinates;
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
@@ -36,9 +37,9 @@ internal sealed class FloorWithTolerantSketchCoordinatesDiagnostic : IElementDia
         IEnumerable<double> convertedLengthCollection = lengthCollection
             .Select(i => UnitUtils.ConvertFromInternalUnits(i, unitTypeId))
             .Select(Math.Abs)
-            .Select(i => Math.Round(i, _roundingDigits)).ToList();
+            .Select(i => Math.Round(i, RoundingDigits)).ToList();
 
-        return convertedLengthCollection.Any(i => i % _tolerance != 0)
+        return convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
             ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
     }
 }

@@ -62,5 +62,10 @@
             Content="On active view"
             DockPanel.Dock="Left"
             IsChecked="{Binding OnActiveViewMode}" />
+        <CheckBox
+            Margin="0,0,10,0"
+            Content="Include Revit warnings"
+            DockPanel.Dock="Left"
+            IsChecked="{Binding IncludeRevitWarnings}" />
     </DockPanel>
 </UserControl>

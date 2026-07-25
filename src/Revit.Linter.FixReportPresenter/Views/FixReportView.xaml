@@ -82,8 +82,9 @@
                     <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox BorderThickness="0"
+                                <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
                                     Style="{StaticResource MaterialDesignTextBox}"
@@ -106,8 +107,9 @@
                     <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox BorderThickness="0"
+                                <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
                                     Style="{StaticResource MaterialDesignTextBox}"
@@ -118,8 +120,9 @@
                     <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox BorderThickness="0"
+                                <TextBox
                                     VerticalAlignment="Center"
+                                    BorderThickness="0"
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
                                     Style="{StaticResource MaterialDesignTextBox}"
