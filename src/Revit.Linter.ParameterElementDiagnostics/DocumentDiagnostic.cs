@@ -16,6 +16,10 @@ internal sealed class DocumentDiagnostic(
 
     public DiagnosticFeedback Execute(Document targetDocument)
     {
+        if (targetDocument.IsFamilyDocument)
+            return new(DiagnosticVerdict.NotValid, new() {
+                { "details", "Parameter diagnostics are not supported on family documents." }
+            });
         ICollection<string> messages = [];
         foreach (ParameterElementData parameterData in Parameters)
         {

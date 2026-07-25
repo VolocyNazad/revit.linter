@@ -18,7 +18,7 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
         BuiltInParameterGroup builtInParameterGroup, bool isInstance = true)
     {
-        if (document is not { IsValidObject: true }) return false;
+        if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
 
         Application application = document.Application;
 
@@ -141,7 +141,7 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
         ForgeTypeId groupTypeId, bool isInstance = true)
     {
-        if (document is not { IsValidObject: true }) return false;
+        if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
         Application application = document.Application;
 
         BindingMap bindingMap = document.ParameterBindings;
