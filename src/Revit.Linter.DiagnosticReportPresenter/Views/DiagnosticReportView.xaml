@@ -49,6 +49,7 @@
                     MinWidth="150"
                     Margin="5"
                     materialDesign:HintAssist.Hint="Document"
+                    materialDesign:HintAssist.IsFloating="True"
                     DisplayMemberPath="DisplayName"
                     ItemsSource="{Binding OpenedDocumentsViewModel.Collection, Source={StaticResource ServiceLocator}}"
                     SelectedValue="{Binding TargetDocumentTitle}"
