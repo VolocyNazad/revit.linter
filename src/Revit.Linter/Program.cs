@@ -18,14 +18,15 @@ using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.ElementIgnoring.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
-using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Exceptions;
+using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
+using Revit.Linter.ValueStore.DI;
 using Revit.Linter.WarningsHandling.DI;
 using Revit.MediatR.DI;
 using Revit.TransactionMemoryCache.DI;
@@ -67,6 +68,7 @@ internal sealed class Program
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
+                .AddValueStoreModule()
             )
         ;
 

@@ -11,6 +11,7 @@ using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.Tests;
@@ -64,7 +65,7 @@ public sealed class DiagnosticServiceTests : RevitApiTest
         {
             collection.AddSingleton<IDocumentDiagnostic>(diagnostic);
             collection.AddSingleton<IDocumentDiagnosticFilter>(new DocumentFilter(id, true));
-            collection.AddSingleton(new DocumentDiagnosticIdOverride(id, DiagnosticSeverity.Error, true));
+            collection.AddSingleton(CreateOverride(id, DiagnosticSeverity.Error, true));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
@@ -93,7 +94,7 @@ public sealed class DiagnosticServiceTests : RevitApiTest
         {
             collection.AddSingleton<IDocumentDiagnostic>(diagnostic);
             collection.AddSingleton<IDocumentDiagnosticFilter>(new DocumentFilter(id, true));
-            collection.AddSingleton(new DocumentDiagnosticIdOverride(id, DiagnosticSeverity.Warning, false));
+            collection.AddSingleton(CreateOverride(id, DiagnosticSeverity.Warning, false));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
@@ -115,7 +116,7 @@ public sealed class DiagnosticServiceTests : RevitApiTest
             collection.AddSingleton<IDocumentDiagnostic>(new DocumentDiagnostic(id, DiagnosticFeedback.Valid));
             collection.AddSingleton<IDocumentDiagnostic>(new DocumentDiagnostic(id, DiagnosticFeedback.Valid));
             collection.AddSingleton<IDocumentDiagnosticFilter>(new DocumentFilter(id, true));
-            collection.AddSingleton(new DocumentDiagnosticIdOverride(id, DiagnosticSeverity.Warning, true));
+            collection.AddSingleton(CreateOverride(id, DiagnosticSeverity.Warning, true));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
@@ -141,7 +142,7 @@ public sealed class DiagnosticServiceTests : RevitApiTest
             collection.AddSingleton<IElementDiagnostic>(diagnostic);
             collection.AddSingleton<IElementDiagnosticFilter>(new ElementFilter(id, true));
             collection.AddSingleton<IElementDiagnosticDocumentFilter>(new ElementDocumentFilter(id, true));
-            collection.AddSingleton(new ElementDiagnosticIdOverride(id, DiagnosticSeverity.Warning, true));
+            collection.AddSingleton(CreateOverride(id, DiagnosticSeverity.Warning, true));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
@@ -175,7 +176,7 @@ public sealed class DiagnosticServiceTests : RevitApiTest
             collection.AddSingleton<IElementDiagnostic>(diagnostic);
             collection.AddSingleton<IElementDiagnosticFilter>(new ElementFilter(id, true));
             collection.AddSingleton<IElementDiagnosticDocumentFilter>(new ElementDocumentFilter(id, true));
-            collection.AddSingleton(new ElementDiagnosticIdOverride(id, DiagnosticSeverity.Warning, true));
+            collection.AddSingleton(CreateOverride(id, DiagnosticSeverity.Warning, true));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
@@ -193,6 +194,32 @@ public sealed class DiagnosticServiceTests : RevitApiTest
         Level level = Level.Create(_document!, 0);
         transaction.Commit();
         return level;
+    }
+
+    private static DocumentDiagnosticIdOverride CreateOverride(
+        DocumentDiagnosticId id, DiagnosticSeverity severity, bool isActive)
+    {
+        var settings = new DocumentDiagnosticOverridesSettings();
+        settings.Overrides[id.Code] = new DiagnosticOverrideSettings
+        {
+            Severity = severity,
+            IsActive = isActive,
+        };
+        return new DocumentDiagnosticIdOverride(
+            id, new ValueStoreStub<DocumentDiagnosticOverridesSettings>(settings));
+    }
+
+    private static ElementDiagnosticIdOverride CreateOverride(
+        ElementDiagnosticId id, DiagnosticSeverity severity, bool isActive)
+    {
+        var settings = new ElementDiagnosticOverridesSettings();
+        settings.Overrides[id.Code] = new DiagnosticOverrideSettings
+        {
+            Severity = severity,
+            IsActive = isActive,
+        };
+        return new ElementDiagnosticIdOverride(
+            id, new ValueStoreStub<ElementDiagnosticOverridesSettings>(settings));
     }
 
     private static object GetArgument(DiagnosticReport report, string name) =>
@@ -266,5 +293,17 @@ public sealed class DiagnosticServiceTests : RevitApiTest
     private sealed class IgnoreElementDetector(bool result) : IIgnoreElementDetector
     {
         public bool IsElementIgnored(string code, Element element) => result;
+    }
+
+    private sealed class ValueStoreStub<T>(T value) : IValueStore<T> where T : class
+    {
+        public T CurrentValue { get; } = value;
+        public IDisposable OnChange(Action<T> listener) => new EmptyDisposable();
+        public void Update(Action<T> change) => change(CurrentValue);
+
+        private sealed class EmptyDisposable : IDisposable
+        {
+            public void Dispose() { }
+        }
     }
 }

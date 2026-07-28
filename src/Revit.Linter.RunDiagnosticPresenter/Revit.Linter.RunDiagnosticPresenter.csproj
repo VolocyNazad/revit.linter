@@ -20,6 +20,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Async\Revit.Async.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
 		<ProjectReference Include="..\Revit.Linter.WarningsHandling\Revit.Linter.WarningsHandling.csproj" />

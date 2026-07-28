@@ -1,0 +1,11 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="YamlDotNet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Revit.Linter.ValueStore.Tests" />
+  </ItemGroup>
+</Project>

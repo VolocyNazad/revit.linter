@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -15,6 +16,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IServiceProvider _serviceProvider;
     private readonly IEnumerable<ElementDiagnosticIdOverride> _elementDiagnosticIdOverrides;
     private readonly IEnumerable<DocumentDiagnosticIdOverride> _documentDiagnosticIdOverrides;
+    private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
+    private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
 
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;
@@ -49,11 +52,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Выделить все </summary>
     [RelayCommand]
     private void CheckAll()
-    {
-        var collection = Collection;
-        foreach (var item in collection)
-            item.IsActive = true;
-    }
+        => UpdateIsActive(Collection, _ => true);
 
     #endregion
 
@@ -62,11 +61,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Снять все </summary>
     [RelayCommand]
     private void UncheckAll()
-    {
-        var collection = Collection;
-        foreach (var item in collection)
-            item.IsActive = false;
-    }
+        => UpdateIsActive(Collection, _ => false);
 
     #endregion
 
@@ -75,11 +70,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Инвертировать все </summary>
     [RelayCommand]
     private void InvertAll()
-    {
-        var collection = Collection;
-        foreach (var item in collection)
-            item.IsActive = !item.IsActive;
-    }
+        => UpdateIsActive(Collection, value => !value);
 
     #endregion
 
@@ -88,11 +79,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Выделить видимое </summary>
     [RelayCommand]
     private void CheckVisible()
-    {
-        var collection = CollectionViewSource!.View;
-        foreach (DiagnosticItemViewModel item in collection)
-            item.IsActive = true;
-    }
+        => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), _ => true);
 
     #endregion
 
@@ -101,11 +88,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Снять видимое </summary>
     [RelayCommand]
     private void UncheckVisible()
-    {
-        var collection = CollectionViewSource!.View;
-        foreach (DiagnosticItemViewModel item in collection)
-            item.IsActive = false;
-    }
+        => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), _ => false);
 
     #endregion
 
@@ -114,13 +97,36 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary> Инвертировать видимое </summary>
     [RelayCommand]
     private void InvertVisible()
-    {
-        var collection = CollectionViewSource!.View;
-        foreach (DiagnosticItemViewModel item in collection)
-            item.IsActive = !item.IsActive;
-    }
+        => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), value => !value);
 
     #endregion
+
+    private void UpdateIsActive(
+        IEnumerable<DiagnosticItemViewModel> source,
+        Func<bool, bool> transform)
+    {
+        var items = source.ToArray();
+        var elements = items.Where(item => item.TargetType == TargetType.Element).ToArray();
+        var documents = items.Where(item => item.TargetType == TargetType.Document).ToArray();
+
+        if (elements.Length > 0)
+            _elementOverrideStore.Update(settings => UpdateSettings(settings.Overrides, elements, transform));
+        if (documents.Length > 0)
+            _documentOverrideStore.Update(settings => UpdateSettings(settings.Overrides, documents, transform));
+    }
+
+    private static void UpdateSettings(
+        IDictionary<string, DiagnosticOverrideSettings> settings,
+        IEnumerable<DiagnosticItemViewModel> items,
+        Func<bool, bool> transform)
+    {
+        foreach (var item in items)
+            settings[item.Code] = new DiagnosticOverrideSettings
+            {
+                Severity = item.Severity,
+                IsActive = transform(item.IsActive),
+            };
+    }
 
     private void InitializeCollectionView()
     {
@@ -154,27 +160,13 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         foreach (var item in _elementDiagnosticIdOverrides)
         {
             var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            var diagnosticId  = item.Identity;
-            viewModel.TargetType = TargetType.Element;
-            viewModel.Code = diagnosticId.Code;
-            viewModel.Description = diagnosticId.Description;
-            viewModel.IsActive = item.IsActive;
-            viewModel.Severity = item.Severity;
-            viewModel.IsObsolete = diagnosticId.IsObsolete;
-            viewModel.ObsoleteDescription = diagnosticId.ObsoleteDescription;
+            viewModel.Initialize(item);
             items.Add(viewModel);
         }
         foreach (var item in _documentDiagnosticIdOverrides)
         {
             var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            var diagnosticId = item.Identity;
-            viewModel.TargetType = TargetType.Document;
-            viewModel.Code = diagnosticId.Code;
-            viewModel.Description = diagnosticId.Description;
-            viewModel.IsActive = item.IsActive;
-            viewModel.Severity = item.Severity;
-            viewModel.IsObsolete = diagnosticId.IsObsolete;
-            viewModel.ObsoleteDescription = diagnosticId.ObsoleteDescription;
+            viewModel.Initialize(item);
             items.Add(viewModel);
         }
 

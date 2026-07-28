@@ -6,6 +6,7 @@ using Revit.Events.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.Linter.WarningsHandling.Abstractions.Services;
 using System.Diagnostics;
 
@@ -18,15 +19,34 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private readonly IDiagnosticService _diagnosticService;
     private readonly IRevitWarningsService _revitWarningsService;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
+    private readonly IValueStore<RunDiagnosticSettings> _store;
+    private readonly IDisposable _changeSubscription;
+    private bool _applyingExternalChanges;
 
     public RunDiagnosticViewModel(
             IRevitContext revitContext, IAsyncExternalEvent externalEvent,
-            IDiagnosticService diagnosticService, IRevitWarningsService revitWarningsService, IDiagnosticReportPresenter diagnosticReportViewModel) : base(externalEvent)
+            IDiagnosticService diagnosticService, IRevitWarningsService revitWarningsService,
+            IDiagnosticReportPresenter diagnosticReportViewModel,
+            IValueStore<RunDiagnosticSettings> store) : base(externalEvent)
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;
         _revitWarningsService = revitWarningsService;
         _diagnosticReportPresenter = diagnosticReportViewModel;
+        _store = store;
+
+        OnActiveViewMode = _store.CurrentValue.OnActiveViewMode;
+        IncludeRevitWarnings = _store.CurrentValue.IncludeRevitWarnings;
+
+        _changeSubscription = _store.OnChange(OnStoreValueChanged);
+    }
+
+    private void OnStoreValueChanged(RunDiagnosticSettings settings)
+    {
+        _applyingExternalChanges = true;
+        OnActiveViewMode = settings.OnActiveViewMode;
+        IncludeRevitWarnings = settings.IncludeRevitWarnings;
+        _applyingExternalChanges = false;
     }
 
     [ObservableProperty]
@@ -34,13 +54,22 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 
     [ObservableProperty]
     public partial bool OnActiveViewMode { get; set; } = false;
+    partial void OnOnActiveViewModeChanged(bool value)
+    {
+        if (_applyingExternalChanges) return;
+        _store.Update(s => s.OnActiveViewMode = value);
+    }
 
     [ObservableProperty]
     public partial bool IncludeRevitWarnings { get; set; } = true;
+    partial void OnIncludeRevitWarningsChanged(bool value)
+    {
+        if (_applyingExternalChanges) return;
+        _store.Update(s => s.IncludeRevitWarnings = value);
+    }
 
     #region [RunDiagnostic] Command - Запустить диагностику  
 
-    /// <summary> Запустить диагностику </summary>
     [RelayCommand(CanExecute = nameof(CanRunDiagnostic))]
     private async Task RunDiagnostic(CancellationToken cancellationToken = default)
     {
@@ -76,6 +105,7 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     }
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
+        _changeSubscription.Dispose();
         await base.OnDeinitializing(cancellationToken);
     }
 

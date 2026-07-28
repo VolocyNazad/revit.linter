@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.DocumentDiagnostics.Infrastructure.Extensions;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using System.Reflection;
 
 namespace Revit.Linter.DocumentDiagnostics.DI;
@@ -14,7 +15,8 @@ public static class ServiceCollectionExtensions
 
             foreach (var id in DocumentDiagnosticIdCollector.GetAllDiagnosticIds())
                 services
-                    .AddSingleton(i => new DocumentDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
+                    .AddSingleton(i => new DocumentDiagnosticIdOverride(
+                        id, i.GetRequiredService<IValueStore<DocumentDiagnosticOverridesSettings>>()));
 
             return services
                 .From(Assembly.GetExecutingAssembly(), namespacePrefix)

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ParameterElementDiagnostics.Models;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.ParameterElementDiagnostics.DI;
@@ -44,7 +45,8 @@ public static class ServiceCollectionExtensions
                             Identity = id,
                             Formula = rule.Take
                         })
-                    .AddSingleton(i => new DocumentDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
+                    .AddSingleton(i => new DocumentDiagnosticIdOverride(
+                        id, i.GetRequiredService<IValueStore<DocumentDiagnosticOverridesSettings>>()));
             }
         }
     }

@@ -1,55 +1,88 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
 [XamlConstructor]
-[AutoConstructor]
 internal sealed partial class DiagnosticItemViewModel : ObservableObject
 {
-    private readonly IEnumerable<ElementDiagnosticIdOverride> _elementDiagnosticIdOverrides;
-    private readonly IEnumerable<DocumentDiagnosticIdOverride> _documentDiagnosticIdOverrides;
+    private DocumentDiagnosticIdOverride? _documentOverride;
+    private ElementDiagnosticIdOverride? _elementOverride;
 
-    public string Code { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public bool IsObsolete { get; set; }
-    public string ObsoleteDescription { get; set; }
-    public TargetType TargetType { get; set; }
+    public string Code { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
+    public bool IsObsolete { get; private set; }
+    public string ObsoleteDescription { get; private set; } = string.Empty;
+    public TargetType TargetType { get; private set; }
 
-    [ObservableProperty]
-    public partial bool IsActive { get; set; }
-    partial void OnIsActiveChanged(bool value)
+    public bool IsActive
     {
-        var elementDiagnosticId = _elementDiagnosticIdOverrides.FirstOrDefault(i => i.Identity.Code == Code);
-        if (elementDiagnosticId is not null)
+        get => _elementOverride?.IsActive ?? _documentOverride?.IsActive ?? false;
+        set
         {
-            elementDiagnosticId.IsActive = value;
-            return;
+            if (_elementOverride is not null) _elementOverride.IsActive = value;
+            else if (_documentOverride is not null) _documentOverride.IsActive = value;
         }
-        var documentDiagnosticId = _documentDiagnosticIdOverrides.FirstOrDefault(i => i.Identity.Code == Code);
-        if (documentDiagnosticId is not null)
-        {
-            documentDiagnosticId.IsActive = value;
-            return;
-        }
-        throw new InvalidOperationException("Diagnistic id overrides not found");
     }
 
-    [ObservableProperty]
-    public partial DiagnosticSeverity Severity { get; set; }
-    partial void OnSeverityChanged(DiagnosticSeverity value)
+    public DiagnosticSeverity Severity
     {
-        var elementDiagnosticId = _elementDiagnosticIdOverrides.FirstOrDefault(i => i.Identity.Code == Code);
-        if (elementDiagnosticId is not null)
+        get => _elementOverride?.Severity ?? _documentOverride?.Severity ?? default;
+        set
         {
-            elementDiagnosticId.Severity = Severity;
+            if (_elementOverride is not null) _elementOverride.Severity = value;
+            else if (_documentOverride is not null) _documentOverride.Severity = value;
+        }
+    }
+
+    public void Initialize(ElementDiagnosticIdOverride item)
+    {
+        _elementOverride = item;
+        TargetType = TargetType.Element;
+        Initialize(item.Identity);
+        item.Changed += Override_Changed;
+    }
+
+    public void Initialize(DocumentDiagnosticIdOverride item)
+    {
+        _documentOverride = item;
+        TargetType = TargetType.Document;
+        Initialize(item.Identity);
+        item.Changed += Override_Changed;
+    }
+
+    private void Initialize(ElementDiagnosticId identity)
+    {
+        Code = identity.Code;
+        Description = identity.Description;
+        IsObsolete = identity.IsObsolete;
+        ObsoleteDescription = identity.ObsoleteDescription;
+    }
+
+    private void Initialize(DocumentDiagnosticId identity)
+    {
+        Code = identity.Code;
+        Description = identity.Description;
+        IsObsolete = identity.IsObsolete;
+        ObsoleteDescription = identity.ObsoleteDescription;
+    }
+
+    private void Override_Changed(object? sender, DiagnosticOverrideChangedEventArgs args)
+    {
+        var dispatcher = System.Windows.Application.Current?.Dispatcher;
+        if (dispatcher is not null && !dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(() => NotifyChanges(args));
             return;
         }
-        var documentDiagnosticId = _documentDiagnosticIdOverrides.FirstOrDefault(i => i.Identity.Code == Code);
-        if (documentDiagnosticId is not null)
-        {
-            documentDiagnosticId.Severity = Severity;
-            return;
-        }
-        throw new InvalidOperationException("Diagnistic id overrides not found");
+
+        NotifyChanges(args);
+    }
+
+    private void NotifyChanges(DiagnosticOverrideChangedEventArgs args)
+    {
+        if (args.Previous.IsActive != args.Current.IsActive)
+            OnPropertyChanged(nameof(IsActive));
+        if (args.Previous.Severity != args.Current.Severity)
+            OnPropertyChanged(nameof(Severity));
     }
 }

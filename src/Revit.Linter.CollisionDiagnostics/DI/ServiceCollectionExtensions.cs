@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Models;
@@ -65,7 +66,8 @@ public static class ServiceCollectionExtensions
                             Identity = id,
                             Formula = rule.TakeDocument
                         })
-                    .AddSingleton(i => new ElementDiagnosticIdOverride(id, id.DefaultSeverity, id.IsActive));
+                    .AddSingleton(i => new ElementDiagnosticIdOverride(
+                        id, i.GetRequiredService<IValueStore<ElementDiagnosticOverridesSettings>>()));
             }
         }
     }

@@ -3,6 +3,9 @@
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
 	</ItemGroup>
 	<ItemGroup>

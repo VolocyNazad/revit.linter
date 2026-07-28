@@ -127,7 +127,7 @@
                                     IsReadOnlyCaretVisible="False">
                                     <TextBox.Style>
                                         <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
-                                            <Setter Property="Text" Value="{Binding Code}" />
+                                            <Setter Property="Text" Value="{Binding Code, Mode=OneWay}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
                                                     <Setter Property="TextDecorations" Value="Strikethrough" />
@@ -164,7 +164,7 @@
                                     IsReadOnlyCaretVisible="False">
                                     <TextBox.Style>
                                         <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
-                                            <Setter Property="Text" Value="{Binding Description}" />
+                                            <Setter Property="Text" Value="{Binding Description, Mode=OneWay}" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
                                                     <Setter Property="TextDecorations" Value="Strikethrough" />
