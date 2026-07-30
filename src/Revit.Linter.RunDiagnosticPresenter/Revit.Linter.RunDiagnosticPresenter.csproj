@@ -16,9 +16,9 @@
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.MediatR" />
+		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Revit.Async\Revit.Async.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />

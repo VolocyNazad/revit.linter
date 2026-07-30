@@ -59,9 +59,6 @@
     <Project Path="src/Revit.Linter.ElementDependencyDefiners/Revit.Linter.ElementDependencyDefiners.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Async/Revit.Async.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>

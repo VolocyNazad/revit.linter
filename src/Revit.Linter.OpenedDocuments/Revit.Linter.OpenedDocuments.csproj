@@ -10,9 +10,7 @@
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.MediatR" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Revit.Async\Revit.Async.csproj" />
+		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />

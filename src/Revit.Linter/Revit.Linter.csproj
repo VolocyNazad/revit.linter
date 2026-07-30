@@ -60,10 +60,10 @@
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.MediatR" />
 		<PackageReference Include="ILRepack" PrivateAssets="all" IncludeAssets="build" />
+		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Revit.Async\Revit.Async.csproj" />
 		<ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
