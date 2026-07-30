@@ -44,11 +44,12 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
 
     public IDisposable OnChange(Action<T> listener)
     {
-        ArgumentNullException.ThrowIfNull(listener);
+        if (listener is null)
+            throw new ArgumentNullException(nameof(listener));
 
         lock (_lock)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
             _changeHandlers.Add(listener);
         }
 
@@ -61,14 +62,15 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
 
     public void Update(Action<T> change)
     {
-        ArgumentNullException.ThrowIfNull(change);
+        if (change is null)
+            throw new ArgumentNullException(nameof(change));
 
         T valueForNotification;
         List<Action<T>> handlers;
 
         lock (_lock)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             var snapshot = CloneValue(_value);
             change(snapshot);
@@ -247,13 +249,22 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
         try
         {
             File.WriteAllText(tempPath, yaml);
-            File.Move(tempPath, _filePath, overwrite: true);
+            if (File.Exists(_filePath))
+                File.Replace(tempPath, _filePath, null);
+            else
+                File.Move(tempPath, _filePath);
         }
         finally
         {
             if (File.Exists(tempPath))
                 File.Delete(tempPath);
         }
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_disposed)
+            throw new ObjectDisposedException(GetType().FullName);
     }
 
     private T CloneValue(T value)

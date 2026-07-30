@@ -51,7 +51,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
         catch { }
 
         if (_hasBackup && File.Exists(_backupPath))
-            File.Move(_backupPath, _filePath, overwrite: true);
+            File.Move(_backupPath, _filePath);
     }
 
     private static YmlFileValueStore<TestSettings> CreateStore()
@@ -110,10 +110,10 @@ public sealed class YmlFileValueStoreTests : IDisposable
         using var store = CreateStore();
         store.Update(s => s.Name = "original");
 
-        var received = new TaskCompletionSource();
-        using var sub = store.OnChange(_ => received.TrySetResult());
+        var received = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var sub = store.OnChange(_ => received.TrySetResult(true));
 
-        await File.WriteAllTextAsync(_filePath, "name: modified\ncount: 99");
+        File.WriteAllText(_filePath, "name: modified\ncount: 99");
 
         var timeout = Task.Delay(3000);
         var completed = await Task.WhenAny(received.Task, timeout);
@@ -128,8 +128,8 @@ public sealed class YmlFileValueStoreTests : IDisposable
         using var store = CreateStore();
         store.Update(s => s.Name = "value");
 
-        var received = new TaskCompletionSource();
-        using var sub = store.OnChange(_ => received.TrySetResult());
+        var received = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var sub = store.OnChange(_ => received.TrySetResult(true));
 
         File.Delete(_filePath);
 
@@ -229,7 +229,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
         using var store = CreateStore();
         store.Update(s => s.Name = "valid");
 
-        await File.WriteAllTextAsync(_filePath, "name: [invalid");
+        File.WriteAllText(_filePath, "name: [invalid");
         await Task.Delay(1500);
 
         Assert.Equal("valid", store.CurrentValue.Name);

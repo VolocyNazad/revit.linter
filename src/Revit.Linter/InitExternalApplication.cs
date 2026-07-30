@@ -65,7 +65,9 @@ internal sealed class InitExternalApplication : ExternalApplication
         app.DocumentCreated += App_DocumentCreated;
         app.DocumentOpened += App_DocumentOpened;
 
+#if !BEFORE2024
         InitializeThemeHandling();
+#endif
     }
 
     public override void OnShutdown()
