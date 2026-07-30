@@ -1,6 +1,4 @@
-﻿#if BEFORE2024
 using Toolkit.Revit.Extensions;
-#endif
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.TransactionMemoryCache.Abstractions.Services;
@@ -29,7 +27,7 @@ internal sealed class DocumentDiagnostic(
                 List<ParameterElement>? parameterElement = revitTransactionMemoryCache
                   .GetOrCreate($"parameter-elements:document:{targetDocument.Title}\"", () =>
                     new FilteredElementCollector(targetDocument)
-                        .OfClass(typeof(ParameterElement)).Cast<ParameterElement>().ToList())
+                        .WhereElementIs<ParameterElement>().Cast<ParameterElement>().ToList())
                    ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
                 target = parameterElement.FirstOrDefault(i => i.Name == parameterData.Name);
@@ -43,7 +41,7 @@ internal sealed class DocumentDiagnostic(
                 List<SharedParameterElement>? parameterElement = revitTransactionMemoryCache
                     .GetOrCreate($"shared-parameter-elements:document:{targetDocument.Title}\"", () =>
                       new FilteredElementCollector(targetDocument)
-                          .OfClass(typeof(SharedParameterElement)).Cast<SharedParameterElement>().ToList())
+                          .WhereElementIs<SharedParameterElement>().Cast<SharedParameterElement>().ToList())
                      ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
                 target = parameterElement.FirstOrDefault(i => i.GuidValue == Guid.Parse(parameterData.Guid));
@@ -79,7 +77,7 @@ internal sealed class DocumentDiagnostic(
                 }).ToList();
             if (!binging.Categories
                     .Cast<Category>()
-                    .Select(i => (BuiltInCategory)i.Id.Value())
+                    .Select(i => i.Id.ToBuiltInCategory())
                     .SetEquals(catgories))
                 messages.Add("parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Categories'.");
 #else

@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Mechanical;
+using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.ElementDependencyDefiners.Infrastructure;
 
@@ -18,11 +19,7 @@ internal static class ElementDependencyExtensions
 
     public static BuiltInCategory GetBuiltInCategory(this Category category)
     {
-#if BEFORE2024
-        int value = category.Id.IntegerValue;
-#else
-        long value = category.Id.Value;
-#endif
+        long value = category.Id.Value();
         return Enum.IsDefined(typeof(BuiltInCategory), value)
             ? (BuiltInCategory)value
             : BuiltInCategory.INVALID;

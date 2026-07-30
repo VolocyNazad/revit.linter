@@ -59,7 +59,7 @@ internal sealed class ElementDiagnostic(
 
             var boundingBox = getElementBoundingBox.Execute(elementId, geometryElement);
 
-            if (!HasIntersection(boundingBox, targetBoundingBox)) continue;
+            if (!boundingBox.Overlaps(targetBoundingBox)) continue;
 
             var solids = getElementGeometry.Execute(elementId, geometryElement);
 
@@ -82,7 +82,7 @@ internal sealed class ElementDiagnostic(
     {
         List<ElementFilter> categoryFilters = document.Settings.Categories
             .Cast<Category>().Where(i => i.CategoryType == CategoryType.Model)
-            .Select(i => new ElementCategoryFilter((BuiltInCategory)i.Id.Value()))
+            .Select(i => new ElementCategoryFilter(i.Id.ToBuiltInCategory()))
             .Cast<ElementFilter>().ToList();
         if (view is null)
             return new FilteredElementCollector(document)
@@ -95,13 +95,6 @@ internal sealed class ElementDiagnostic(
             .WherePasses(new LogicalOrFilter(categoryFilters))
             .WherePasses(Filter)
             .ToElements();
-    }
-    private static bool HasIntersection(BoundingBoxXYZ box1, BoundingBoxXYZ box2)
-    {
-        // Теорема разделяющей оси
-        return !(box1.Max.X < box2.Min.X || box2.Max.X < box1.Min.X ||
-                 box1.Max.Y < box2.Min.Y || box2.Max.Y < box1.Min.Y ||
-                 box1.Max.Z < box2.Min.Z || box2.Max.Z < box1.Min.Z);
     }
     private static bool HasIntersection(IEnumerable<Solid> solids1, IEnumerable<Solid> solids2)
     {

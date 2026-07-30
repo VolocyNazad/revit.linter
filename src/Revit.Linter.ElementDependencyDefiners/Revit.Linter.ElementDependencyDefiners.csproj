@@ -6,6 +6,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
 	</ItemGroup>
 

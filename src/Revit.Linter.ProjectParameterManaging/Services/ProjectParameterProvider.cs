@@ -23,17 +23,14 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         Application application = document.Application;
 
         BindingMap bindingMap = document.ParameterBindings;
+        SharedParameterElement? targetParameter = SharedParameterElement.Lookup(document, targetParameterId);
         var iterator = bindingMap.ForwardIterator();
 
         iterator.Reset();
         while (iterator.MoveNext())
         {
             if (iterator.Key is not InternalDefinition definition) continue;
-            var parameterId = new FilteredElementCollector(document).OfClass(typeof(SharedParameterElement))
-                .ToElementIds().FirstOrDefault(i => i.Equals(definition.Id));
-            if (parameterId is null) continue;
-            var sharedParameterElement = (SharedParameterElement)document.GetElement(parameterId);
-            if (sharedParameterElement.GuidValue != targetParameterId) continue;
+            if (targetParameter is null || definition.Id != targetParameter.Id) continue;
             ElementBinding binging = (ElementBinding)bindingMap.get_Item(definition);
             bool hasDifference = false;
             if (binging is InstanceBinding && !isInstance) hasDifference = true;
@@ -145,15 +142,12 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         Application application = document.Application;
 
         BindingMap bindingMap = document.ParameterBindings;
+        SharedParameterElement? targetParameter = SharedParameterElement.Lookup(document, targetParameterId);
         var iterator = bindingMap.ForwardIterator();
         iterator.Reset();
         while (iterator.MoveNext()) {
             if (iterator.Key is not InternalDefinition definition) continue;
-            var parameterId = new FilteredElementCollector(document).OfClass(typeof(SharedParameterElement))
-                .ToElementIds().FirstOrDefault(i => i.Equals(definition.Id));
-            if (parameterId is null) continue;
-            var sharedParameterElement = (SharedParameterElement)document.GetElement(parameterId);
-            if (sharedParameterElement.GuidValue != targetParameterId) continue;
+            if (targetParameter is null || definition.Id != targetParameter.Id) continue;
             ElementBinding binging = (ElementBinding)bindingMap.get_Item(definition);
             bool hasDifference = false;
             if (binging is InstanceBinding && !isInstance) hasDifference = true;

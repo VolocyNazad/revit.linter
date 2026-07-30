@@ -1,4 +1,5 @@
 ﻿using Revit.TransactionMemoryCache.Abstractions.Services;
+using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
 
@@ -18,7 +19,7 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
         IList<Level> levels = revitTransactionMemoryCache
             .GetOrCreate(
                 $"levels:document:{document.Title}",
-                () => new FilteredElementCollector(document).OfClass(typeof(Level)).Cast<Level>().ToList())
+                () => new FilteredElementCollector(document).WhereElementIs<Level>().Cast<Level>().ToList())
             ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
         ElementId nearedsLevelId = levels.OrderBy(level
