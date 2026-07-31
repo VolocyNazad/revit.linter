@@ -9,7 +9,6 @@
 		</PackageReference>
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
-		<PackageReference Include="VolocyNazad.Revit.MediatR" />
 		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>

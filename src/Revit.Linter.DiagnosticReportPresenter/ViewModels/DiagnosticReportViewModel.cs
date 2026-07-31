@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
-using MediatR;
+using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
@@ -17,7 +17,6 @@ using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
-using Revit.MediatR.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -54,7 +53,6 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 [XamlConstructor]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
-    private readonly IMediator _mediator;
     private readonly IRevitContext _revitContext;
     private readonly IFixReportSender _fixReportSender;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
@@ -66,7 +64,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IIgnoreElementProvider _ignoreElementProvider;
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IAsyncExternalEvent externalEvent, IMediator mediator,
+            IRevitContext revitContext, IAsyncExternalEvent externalEvent,
             IEnumerable<IAccentElementsService> accentElementsServices,
             IFixReportSender fixReportSender,
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
@@ -78,7 +76,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _elementChangesReceiver = elementChangesReceiver;
         _revitContext = revitContext;
         _fixReportSender = fixReportSender;
-        _mediator = mediator;
         _elementFixes = elementFixes;
         _documentFixes = documentFixes;
         _diagnosticService = diagnosticService;
@@ -455,15 +452,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                     string? feedbackMessage = null;
                     string transactionName = "Игнорирование проверки для элемента";
-                    LambdaExternalEventTransactionCommand command = new(
-                        doc, transactionName, async (_, _) => {
+                    bool success = await ExecuteTransaction(doc, transactionName, () => {
                             var feedback = _ignoreElementProvider.Ignore(report.Code, element);
                             feedbackMessage = feedback.Message;
                             return feedback.Result == IgnoreElementResult.Success;
-                        });
-                    var response = await _mediator.Send(command);
+                        }, cancellationToken);
 
-                    string message = response is { Result: false } or { HasError: true }
+                    string message = !success
                         ? "Something went wrong while attempting to ignore the element with id: '{elementId}'. " + $"Details: {feedbackMessage}"
                         : "The element with id: '{elementId}' has been successfully ignored.";
                     _fixReportSender.Send(new FixReport(
@@ -489,8 +484,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                     StringBuilder? feedbackMessage = new();
                     string transactionName = "Игнорирование провери для элементов";
-                    LambdaExternalEventTransactionCommand command = new(
-                        doc, transactionName, async (_, _) => {
+                    bool success = await ExecuteTransaction(doc, transactionName, () => {
                             bool hasErrors = false;
                             foreach (var reportItem in Collection)
                             {
@@ -514,10 +508,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 }
                             }
                             return !hasErrors;
-                        });
-                    var response = await _mediator.Send(command);
+                        }, cancellationToken);
 
-                    string message = response is { Result: false } or { HasError: true }
+                    string message = !success
                         ? "Something went wrong while attempting to ignore the element with id: '{elementId}'. " 
                         + Environment.NewLine + $"Details: {feedbackMessage}"
                         : "The element with id: '{elementId}' has been successfully ignored.";
@@ -547,11 +540,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             if (!element.IsValidObject) return;
 
                             string transactionName = i.Value;
-                            LambdaExternalEventTransactionCommand command = new(
-                                doc, transactionName, async (_, _) => i.Execute(element));
-                            var response = await _mediator.Send(command);
+                            bool success = await ExecuteTransaction(
+                                doc, transactionName, () => i.Execute(element), cancellationToken);
 
-                            string message = response is { Result: false } or { HasError: true }
+                            string message = !success
                                 ? "Something went wrong while attempting to fix the element with id: '{elementId}'."
                                 : "The element with id: '{elementId}' has been successfully corrected.";
                             _fixReportSender.Send(new FixReport(
@@ -573,8 +565,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             if (doc is null or { IsValidObject: false }) return;
 
                             string transactionName = $"{i.Value} (all)";
-                            LambdaExternalEventTransactionCommand command = new(
-                                doc, transactionName, async (_, _) => {
+                            bool success = await ExecuteTransaction(doc, transactionName, () => {
                                     bool hasErrors = false;
                                     foreach (var reportItem in Collection)
                                     {
@@ -596,10 +587,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                         }
                                     }
                                     return !hasErrors;
-                                });
-                            var response = await _mediator.Send(command);
+                                }, cancellationToken);
 
-                            string message = response is { Result: false } or { HasError: true }
+                            string message = !success
                                 ? "Something went wrong while attempting to fix the elements."
                                 : "The elements has been successfully corrected.";
                             _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
@@ -630,11 +620,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             if (document is null or { IsValidObject: false }) return;
 
                             string transactionName = i.Value;
-                            LambdaExternalEventTransactionCommand command = new(
-                                document, transactionName, async (_, _) => i.Execute(document));
-                            var response = await _mediator.Send(command);
+                            bool success = await ExecuteTransaction(
+                                document, transactionName, () => i.Execute(document), cancellationToken);
 
-                            string message = response is { Result: false } or { HasError: true }
+                            string message = !success
                                 ? "Something went wrong while attempting to fix the document with id: '{documentTitle}'."
                                 : "The document with id: '{documentTitle}' has been successfully corrected.";
                             _fixReportSender.Send(new FixReport(
@@ -647,4 +636,23 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
         return [];
     }
+
+    private static Task<bool> ExecuteTransaction(
+        Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
+        => RevitTask.RunAsync(_ => {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using Transaction transaction = new(document, transactionName);
+            try
+            {
+                if (transaction.Start() != TransactionStatus.Started) return false;
+                if (!action()) return false;
+
+                return transaction.Commit() == TransactionStatus.Committed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        });
 }

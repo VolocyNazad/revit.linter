@@ -58,7 +58,6 @@
 		<PackageReference Include="Serilog.Sinks.File" />
 		<PackageReference Include="VolocyNazad.AssemblyResolver" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
-		<PackageReference Include="VolocyNazad.Revit.MediatR" />
 		<PackageReference Include="ILRepack" PrivateAssets="all" IncludeAssets="build" />
 		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>

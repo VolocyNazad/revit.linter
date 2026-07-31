@@ -28,7 +28,6 @@ using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.Linter.ValueStore.DI;
 using Revit.Linter.WarningsHandling.DI;
-using Revit.MediatR.DI;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
 using System.Reflection;
@@ -57,7 +56,7 @@ internal sealed class Program
             .ConfigureServices((context, services) => services
                 .AddAndConfigureSerilog()
                 .AddLocalization(i => i.ResourcesPath = "Resources")
-                .AddRevitContext().AddEvents().AddMediatR().AddTransactionMemoryCache().AddElementAccentor()
+                .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddElementAccentor()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddRevitWarningsModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
