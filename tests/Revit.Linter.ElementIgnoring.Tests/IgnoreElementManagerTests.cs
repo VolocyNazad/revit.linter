@@ -12,6 +12,7 @@ namespace Revit.Linter.ElementIgnoring.Tests;
 public sealed class IgnoreElementManagerTests : RevitApiTest
 {
     private static readonly Guid ParameterId = new("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b");
+    private static readonly Guid TypeParameterId = new("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53");
     private Document? _document;
     private string? _sharedParameterFile;
 
@@ -156,18 +157,46 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
         await Assert.That(detector.IsElementIgnored("TEST-001", wall)).IsTrue();
     }
 
+    [Test]
+    public async Task Element_type_uses_its_own_ignore_parameter()
+    {
+        Wall wall = CreateWallWithParameter("TEXT");
+        ElementType wallType = (ElementType)_document!.GetElement(wall.GetTypeId());
+        using ServiceProvider services = CreateServices();
+        IIgnoreElementProvider provider = services.GetRequiredService<IIgnoreElementProvider>();
+        IIgnoreElementDetector detector = services.GetRequiredService<IIgnoreElementDetector>();
+
+        IgnoreElementFeedback feedback;
+        using (Transaction transaction = new(_document, "Ignore element type"))
+        {
+            transaction.Start();
+            feedback = provider.Ignore("TYPE-001", wallType);
+            transaction.Commit();
+        }
+
+        await Assert.That(wallType.get_Parameter(ParameterId)).IsNull();
+        await Assert.That(wallType.get_Parameter(TypeParameterId)).IsNotNull();
+        await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Success);
+        await Assert.That(detector.IsElementIgnored("TYPE-001", wallType)).IsTrue();
+        await Assert.That(detector.IsElementIgnored("TYPE", wallType)).IsFalse();
+        await Assert.That(detector.IsElementIgnored("TYPE-001", wall)).IsFalse();
+    }
+
     private Wall CreateWallWithParameter(string dataType)
     {
-        ExternalDefinition definition = CreateDefinition(dataType);
+        (ExternalDefinition definition, ExternalDefinition typeDefinition) = CreateDefinitions(dataType);
         using Transaction transaction = new(_document!, "Create test wall and parameter");
         transaction.Start();
         CategorySet categories = Application.Create.NewCategorySet();
         categories.Insert(Category.GetCategory(_document!, BuiltInCategory.OST_Walls));
         InstanceBinding binding = Application.Create.NewInstanceBinding(categories);
+        TypeBinding typeBinding = Application.Create.NewTypeBinding(categories);
 #if BEFORE2024
         _document!.ParameterBindings.Insert(definition, binding, BuiltInParameterGroup.PG_DATA);
+        _document.ParameterBindings.Insert(typeDefinition, typeBinding, BuiltInParameterGroup.PG_DATA);
 #else
         _document!.ParameterBindings.Insert(definition, binding, GroupTypeId.Data);
+        _document.ParameterBindings.Insert(typeDefinition, typeBinding, GroupTypeId.Data);
 #endif
         Wall wall = CreateWallCore();
         transaction.Commit();
@@ -190,7 +219,7 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             _document!, Line.CreateBound(XYZ.Zero, new XYZ(10, 0, 0)), level.Id, false);
     }
 
-    private ExternalDefinition CreateDefinition(string dataType)
+    private (ExternalDefinition Instance, ExternalDefinition Type) CreateDefinitions(string dataType)
     {
         _sharedParameterFile = Path.Combine(
             Path.GetTempPath(), $"RevitLinter-{Guid.NewGuid():N}.txt");
@@ -202,6 +231,7 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             GROUP	1	Revit Linter Tests
             *PARAM	GUID	NAME	DATATYPE	DATACATEGORY	GROUP	VISIBLE	DESCRIPTION	USERMODIFIABLE	HIDEWHENNOVALUE
             PARAM	{ParameterId:D}	IgnoredDiagnostics	{dataType}		1	1	Ignored diagnostics	1	0
+            PARAM	{TypeParameterId:D}	IgnoredTypeDiagnostics	{dataType}		1	1	Ignored type diagnostics	1	0
             """);
         string originalFilename = Application.SharedParametersFilename;
         try
@@ -209,7 +239,9 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             Application.SharedParametersFilename = _sharedParameterFile;
             DefinitionFile file = Application.OpenSharedParameterFile();
             DefinitionGroup group = file.Groups.get_Item("Revit Linter Tests");
-            return (ExternalDefinition)group.Definitions.get_Item("IgnoredDiagnostics");
+            return (
+                (ExternalDefinition)group.Definitions.get_Item("IgnoredDiagnostics"),
+                (ExternalDefinition)group.Definitions.get_Item("IgnoredTypeDiagnostics"));
         }
         finally
         {

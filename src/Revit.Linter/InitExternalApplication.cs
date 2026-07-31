@@ -143,6 +143,17 @@ internal sealed class InitExternalApplication : ExternalApplication
                     true
                 );
 
+                parameterChanged |= projectParameterProvider.Add(
+                    doc, new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53"),
+                    doc.Settings.Categories.Cast<Category>().Where(i => i.AllowsBoundParameters).Select(i => i.BuiltInCategory).ToList(),
+#if BEFORE2024
+                    BuiltInParameterGroup.PG_IDENTITY_DATA,
+#else
+                    GroupTypeId.IdentityData,
+#endif
+                    false
+                );
+
                 transaction.Commit();
             }
 
