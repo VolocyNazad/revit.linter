@@ -2,6 +2,8 @@
 
 Список и поведение проверок задается через конфигурационный файл с расширением `.yaml`, который, в свою очередь, должен быть расположен по указанному в соглашении [[diagnostic-configuration-path-convension|пути]]. Наименование файла должно быть `collision.config.yaml`.
 
+Готовый файл: [collision.config.yaml](../examples/configuration/collision.config.yaml).
+
 ---
 
 **Пример конфигурации:**
@@ -12,8 +14,8 @@
   severity: "Warning"
   isActive: true
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
-  take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
-  andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitFitting'))"
+  take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
+  andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "parameter(me, 'Комментарии')"
 - code: "CLSN002"
 ...

@@ -1,0 +1,37 @@
+- code: "CSTM001"
+  description: "custom"
+  message: "Для элемента с именем '{elementName}' и идентификатором '{elementId}' неверно указаны параметры 'Марка' и(или) 'Комментарии'. Время выполнения '{duration}' мс."
+  isObsolete: true
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and builtincategory('OST_Walls')"
+  check: "parameter(me, 'Комментарии') == 'Ура!' & parameter(me, 'Марка') == 'Ура!'"
+- code: "CSTM002"
+  description: "custom"
+  message: "Для элемента с именем '{elementName}' и идентификатором '{elementId}' неверно указано имя."
+  severity: "Message"
+  isActive: false
+  isObsolete: true
+  obsoleteDescription: "Какой-то текст, описывающий причину устаревания проверки"
+  takeDocument: "true"
+  take: "instance and builtincategory('OST_Walls')"
+  check: "property('Name') == '1'"
+- code: "CSTM003"
+  description: "custom"
+  message: "Элемент с именем '{elementName}' и идентификатором '{elementId}'."
+  severity: "Message"
+  isActive: false
+  isObsolete: true
+  obsoleteDescription: "Какой-то текст, описывающий причину устаревания проверки"
+  takeDocument: "true"
+  take: "instance and class('FamilyInstance')"
+  check: "property('SuperComponent') == null"
+- code: "CSTM004"
+  description: "custom"
+  message: "Элемент с именем '{elementName}' и идентификатором '{elementId}'."
+  severity: "Message"
+  isActive: false
+  isObsolete: true
+  obsoleteDescription: "Какой-то текст, описывающий причину устаревания проверки"
+  takeDocument: "true"
+  take: "instance and class('FamilyInstance')"
+  check: "property('Mirrored') == true"

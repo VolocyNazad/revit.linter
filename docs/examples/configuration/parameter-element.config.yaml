@@ -1,0 +1,24 @@
+- code: "PRMTR001"
+  description: "custom"
+  message: "Документ с наименованием '{documentTitle}' содержит невалидные параметры проекта. Детали: \n\n{details} \n\nВремя выполнения '{duration}' мс."
+  severity: "Message"
+  isActive: false
+  take: "!property('IsFamilyDocument')"
+  parameters:
+    - guid: "dd002437-b54b-41b5-9142-71704a513ef3"
+      name: "CUBE_ID"
+      group: "PG_TEXT"
+      isInstance: true
+      categories: ["OST_DuctCurves"]
+      allowVaryBetweenGroups: true
+    - guid: "2f60ce79-f71b-4b1e-9b74-7ce425cf3cec"
+      name: "CUBE_Зависимости"
+      group: "PG_TEXT"
+      isInstance: true
+      categories: ["-2008000"]
+      allowVaryBetweenGroups: true
+    - name: "Какой-то параметр"
+      group: "PG_TEXT"
+      isInstance: true
+      categories: ["-2008000"]
+      allowVaryBetweenGroups: true

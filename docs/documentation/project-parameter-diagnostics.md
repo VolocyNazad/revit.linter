@@ -2,6 +2,8 @@
 
 Список и поведение проверок задается через конфигурационный файл с расширением `.yaml`, который, в свою очередь, должен быть расположен по указанному в соглашении [[diagnostic-configuration-path-convension|пути]]. Наименование файла должно быть `parameter-element.config.yaml`.
 
+Готовый файл: [parameter-element.config.yaml](../examples/configuration/parameter-element.config.yaml).
+
 ---
 
 **Пример конфигурации:**`

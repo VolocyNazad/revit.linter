@@ -1,0 +1,9 @@
+- code: "CLSN001"
+  description: "custom"
+  message: "Элемент с именем '{elementName}' и идентификатором '{elementId}' образует пересечение c элементом '{intersection.elementName}' и идентификатором '{intersection.elementId}'. Время выполнения '{duration}' мс."
+  severity: "Warning"
+  isActive: true
+  takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
+  take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
+  andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
+  groupBy: "parameter(me, 'Комментарии')"
