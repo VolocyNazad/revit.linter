@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
@@ -46,7 +47,8 @@ public static class ServiceCollectionExtensions
                             i.GetRequiredService<ElementFunctionFactory>(),
                             i.GetRequiredService<IGetElementBoundingBoxService>(),
                             i.GetRequiredService<IGetElementGeometryService>(),
-                            i.GetRequiredService<IRevitTransactionMemoryCache>())
+                            i.GetRequiredService<IRevitTransactionMemoryCache>(),
+                            i.GetRequiredService<ILogger<ElementDiagnostic>>())
                         {
                             Identity = id,
                             TakeFormula = rule.AndTake,

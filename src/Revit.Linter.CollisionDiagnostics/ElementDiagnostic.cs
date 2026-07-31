@@ -1,6 +1,7 @@
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Toolkit.Revit.Extensions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Revit.Linter.CollisionDiagnostics;
 
@@ -9,7 +10,8 @@ internal sealed class ElementDiagnostic(
     ElementFunctionFactory elementFunctionFactory,
     IGetElementBoundingBoxService getElementBoundingBox,
     IGetElementGeometryService getElementGeometry,
-    IRevitTransactionMemoryCache revitTransactionMemoryCache) : IElementDiagnostic
+    IRevitTransactionMemoryCache revitTransactionMemoryCache,
+    ILogger<ElementDiagnostic> logger) : IElementDiagnostic
 {
     private const double Epsilon = 1e-6;
 
@@ -63,7 +65,7 @@ internal sealed class ElementDiagnostic(
 
             var solids = getElementGeometry.Execute(elementId, geometryElement);
 
-            if (HasIntersection(solids, targetSolids))
+            if (HasIntersection(solids, targetSolids, elementId, targetElementId))
                 return new(DiagnosticVerdict.NotValid, 
                     new() {
                         { "intersection.elementName", element.Name },
@@ -96,14 +98,34 @@ internal sealed class ElementDiagnostic(
             .WherePasses(Filter)
             .ToElements();
     }
-    private static bool HasIntersection(IEnumerable<Solid> solids1, IEnumerable<Solid> solids2)
+    private bool HasIntersection(
+        IEnumerable<Solid> solids1,
+        IEnumerable<Solid> solids2,
+        long elementId,
+        long targetElementId)
     {
         foreach (Solid solid in solids1)
         {
             foreach (Solid targetSolid in solids2)
             {
-                if (BooleanOperationsUtils.ExecuteBooleanOperation(
-                    targetSolid, solid, BooleanOperationsType.Intersect).Volume > Epsilon) return true;
+                bool booleanOperationFailed = false;
+                try
+                {
+                    if (BooleanOperationsUtils.ExecuteBooleanOperation(
+                        targetSolid, solid, BooleanOperationsType.Intersect).Volume > Epsilon) return true;
+                }
+                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
+                {
+                    booleanOperationFailed = true;
+                }
+
+                if (!booleanOperationFailed) continue;
+
+                logger.LogWarning(
+                    "Boolean intersection failed for elements {ElementId} and {TargetElementId}; treating the pair as a potential collision.",
+                    elementId,
+                    targetElementId);
+                return true;
             }
         }
         return false;
