@@ -127,6 +127,9 @@
     </Project>
   </Folder>
   <Folder Name="/ui/">
+    <Project Path="src/Revit.Linter.Behaviors/Revit.Linter.Behaviors.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.DiagnosticListPresenter/Revit.Linter.DiagnosticListPresenter.csproj">
       <Platform Project="x64" />
     </Project>
