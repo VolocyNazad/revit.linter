@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />

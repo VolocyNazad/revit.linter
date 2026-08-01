@@ -4,7 +4,7 @@ namespace Revit.Linter.Core.Abstractions.Services;
 
 public interface IDocumentFix
 {
-    ElementDiagnosticId Identity { get; }
+    DocumentDiagnosticId Identity { get; }
     string Value { get; }
     bool Execute(Document targetDocument);
 }

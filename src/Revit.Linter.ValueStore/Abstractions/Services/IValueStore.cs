@@ -1,6 +1,6 @@
 namespace Revit.Linter.ValueStore.Abstractions.Services;
 
-public interface IValueStore<T> where T : class
+public interface IValueStore<out T> where T : class
 {
     T CurrentValue { get; }
     IDisposable OnChange(Action<T> listener);

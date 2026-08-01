@@ -58,8 +58,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly IDiagnosticReportReceiver _diagnosticReportReceiver;
     private readonly IElementChangesReceiver _elementChangesReceiver;
-    private readonly IEnumerable<IElementFix> _elementFixes;
-    private readonly IEnumerable<IDocumentFix> _documentFixes;
+    private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
 
@@ -68,7 +67,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IEnumerable<IAccentElementsService> accentElementsServices,
             IFixReportSender fixReportSender,
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
-            IEnumerable<IElementFix> elementFixes, IEnumerable<IDocumentFix> documentFixes,
+            IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider) : base(externalEvent)
     {
         _accentElementsServices = accentElementsServices;
@@ -76,8 +75,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _elementChangesReceiver = elementChangesReceiver;
         _revitContext = revitContext;
         _fixReportSender = fixReportSender;
-        _elementFixes = elementFixes;
-        _documentFixes = documentFixes;
+        _diagnosticCatalog = diagnosticCatalog;
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
 
@@ -519,7 +517,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 }
             };
 
-            return _elementFixes
+            return _diagnosticCatalog.ElementDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
                 .SelectMany(i =>
                 {
@@ -603,7 +601,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         else if (report.Target is Document document)
         {
             string documentTitle = document.Title;
-            return _documentFixes
+            return _diagnosticCatalog.DocumentDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
                 .Select(i =>
                 {

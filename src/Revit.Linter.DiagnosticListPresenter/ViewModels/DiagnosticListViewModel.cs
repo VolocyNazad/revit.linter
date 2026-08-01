@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
 using Revit.Linter.ValueStore.Abstractions.Services;
 using System.Collections.ObjectModel;
@@ -14,8 +15,7 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 internal sealed partial class DiagnosticListViewModel : InitializableObservableObject // todo Сворачиваемость групп
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IEnumerable<ElementDiagnosticIdOverride> _elementDiagnosticIdOverrides;
-    private readonly IEnumerable<DocumentDiagnosticIdOverride> _documentDiagnosticIdOverrides;
+    private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
 
@@ -157,16 +157,16 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     {
         await base.OnInitializing(cancellationToken);
         List<DiagnosticItemViewModel> items = [];
-        foreach (var item in _elementDiagnosticIdOverrides)
+        foreach (ElementDiagnosticRegistration registration in _diagnosticCatalog.ElementDiagnostics)
         {
             var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            viewModel.Initialize(item);
+            viewModel.Initialize(registration.Override);
             items.Add(viewModel);
         }
-        foreach (var item in _documentDiagnosticIdOverrides)
+        foreach (DocumentDiagnosticRegistration registration in _diagnosticCatalog.DocumentDiagnostics)
         {
             var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            viewModel.Initialize(item);
+            viewModel.Initialize(registration.Override);
             items.Add(viewModel);
         }
 

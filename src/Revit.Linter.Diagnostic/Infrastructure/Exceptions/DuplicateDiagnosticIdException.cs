@@ -1,3 +1,4 @@
 ﻿namespace Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 
-public class DuplicateDiagnosticIdException() : Exception($"{nameof(ElementDiagnosticId)}(s) duplicated");
+public class DuplicateDiagnosticIdException(string code)
+    : Exception($"Diagnostic code '{code}' is duplicated");

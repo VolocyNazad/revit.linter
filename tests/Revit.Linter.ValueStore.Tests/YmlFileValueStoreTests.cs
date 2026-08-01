@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ValueStore.Abstractions;
-using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.Linter.ValueStore.Services;
 
 namespace Revit.Linter.ValueStore.Tests;
@@ -16,7 +15,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
 {
     private readonly string _filePath;
     private readonly string _backupPath;
-    private bool _hasBackup;
+    private readonly bool _hasBackup;
 
     public YmlFileValueStoreTests()
     {
