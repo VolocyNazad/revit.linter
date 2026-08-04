@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Context.Abstractions.Services;
+using Revit.Linter.SerilogEnrichers;
 using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
@@ -25,12 +27,13 @@ internal static class ServiceCollectionExtensions
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentName()
+                .Enrich.WithRevitContext(() => Program.Provider.GetService<IRevitContext>())
                 .WriteTo.Console()
                 .WriteTo.Debug()
                 .WriteTo.File(logPath)
                 .CreateLogger();
 
-            return services.AddSerilog(); // todo add revit context enricher
+            return services.AddSerilog();
         }
     }
 }

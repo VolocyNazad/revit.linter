@@ -1,0 +1,15 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.SerilogEnrichers.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="VolocyNazad.Revit.Context" />
+	</ItemGroup>
+
+</Project>
