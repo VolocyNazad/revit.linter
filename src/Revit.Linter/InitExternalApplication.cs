@@ -161,7 +161,6 @@ internal sealed class InitExternalApplication : ExternalApplication
         var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
 
         bool parameterChanged = false;
-
         await RevitTask.RunAsync(() =>
         {
             using (Transaction transaction = new(doc, "Parameter project adding"))
@@ -176,6 +175,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 #else
                     GroupTypeId.IdentityData,
 #endif
+                    true,
                     true
                 );
 
@@ -187,7 +187,8 @@ internal sealed class InitExternalApplication : ExternalApplication
 #else
                     GroupTypeId.IdentityData,
 #endif
-                    false
+                    false,
+                    true
                 );
 
                 transaction.Commit();

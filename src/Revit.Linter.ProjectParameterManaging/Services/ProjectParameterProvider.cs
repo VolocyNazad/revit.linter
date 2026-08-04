@@ -16,7 +16,7 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
 
     public bool Add(
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
-        BuiltInParameterGroup builtInParameterGroup, bool isInstance = true)
+        BuiltInParameterGroup builtInParameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false)
     {
         if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
 
@@ -40,12 +40,14 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
                 .Cast<Category>()
                 .Select(i => i.BuiltInCategory)
                 .SetEquals(builtInCategories)) hasDifference = true;
+            bool reInserted = true;
             if (hasDifference)
-                return bindingMap.ReInsert(
+                reInserted = bindingMap.ReInsert(
                     definition,
                     CreateParameterBinding(document, builtInCategories, isInstance),
                     builtInParameterGroup);
-            return true;
+            SetAllowVaryBetweenGroups(document, definition, allowVaryBetweenGroups);
+            return reInserted;
         }
 
         string sharedParametersFilenameCache = application.SharedParametersFilename;
@@ -61,8 +63,10 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
                 foreach (ExternalDefinition definition in group.Definitions)
                 {
                     if (definition.GUID != targetParameterId) continue;
-                    return AddSharedParameterToDocument(
+                    bool inserted = AddSharedParameterToDocument(
                         document, definition, builtInCategories, builtInParameterGroup, isInstance);
+                    SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
+                    return inserted;
                 }
             }
         }
@@ -73,6 +77,18 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
 
         return false;
     }
+
+    private static void SetAllowVaryBetweenGroups(
+        Document document, Guid targetParameterId, bool allowVaryBetweenGroups)
+    {
+        InternalDefinition? definition =
+            SharedParameterElement.Lookup(document, targetParameterId)?.GetDefinition();
+        definition?.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
+    }
+
+    private static void SetAllowVaryBetweenGroups(
+        Document document, InternalDefinition definition, bool allowVaryBetweenGroups) =>
+        definition.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
 
     private static bool AddSharedParameterToDocument(
         Document document, ExternalDefinition parameterDefinition, IEnumerable<BuiltInCategory> builtInCategories,
@@ -136,7 +152,7 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
 
     public bool Add(
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
-        ForgeTypeId groupTypeId, bool isInstance = true)
+        ForgeTypeId groupTypeId, bool isInstance = true, bool allowVaryBetweenGroups = false)
     {
         if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
         Application application = document.Application;
@@ -157,12 +173,14 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
                 .Cast<Category>()
                 .Select(i => i.BuiltInCategory)
                 .SetEquals(builtInCategories)) hasDifference = true;
+            bool reInserted = true;
             if (hasDifference)
-                return bindingMap.ReInsert(
+                reInserted = bindingMap.ReInsert(
                     definition,
                     CreateParameterBinding(document, builtInCategories, isInstance),
                     groupTypeId);
-            return true;
+            SetAllowVaryBetweenGroups(document, definition, allowVaryBetweenGroups);
+            return reInserted;
         }
 
         string sharedParametersFilenameCache = application.SharedParametersFilename;
@@ -176,8 +194,10 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
             foreach (DefinitionGroup group in definitionFile.Groups) {
                 foreach (ExternalDefinition definition in group.Definitions) {
                     if (definition.GUID != targetParameterId) continue;
-                    return AddSharedParameterToDocument(
+                    bool inserted = AddSharedParameterToDocument(
                         document, definition, builtInCategories, groupTypeId, isInstance);
+                    SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
+                    return inserted;
                 }
             }
         }
@@ -187,6 +207,18 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         }
         return false;
     }
+
+    private static void SetAllowVaryBetweenGroups(
+        Document document, Guid targetParameterId, bool allowVaryBetweenGroups)
+    {
+        InternalDefinition? definition =
+            SharedParameterElement.Lookup(document, targetParameterId)?.GetDefinition();
+        definition?.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
+    }
+
+    private static void SetAllowVaryBetweenGroups(
+        Document document, InternalDefinition definition, bool allowVaryBetweenGroups) =>
+        definition.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
 
     private static bool AddSharedParameterToDocument(
         Document document, ExternalDefinition parameterDefinition, IEnumerable<BuiltInCategory> builtInCategories,

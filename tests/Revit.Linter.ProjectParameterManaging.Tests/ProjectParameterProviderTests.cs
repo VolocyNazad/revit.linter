@@ -150,6 +150,23 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
     }
 
     [Test]
+    public async Task Add_sets_allow_vary_between_groups()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+        using Transaction transaction = new(_document!, "Add test project parameter");
+        transaction.Start();
+        bool result = Add(provider, _document!, ParameterId, [BuiltInCategory.OST_Walls], allowVaryBetweenGroups: true);
+        transaction.Commit();
+
+        SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
+        InternalDefinition definition = parameter.GetDefinition();
+
+        await Assert.That(result).IsTrue();
+        await Assert.That(definition.VariesAcrossGroups).IsTrue();
+    }
+
+    [Test]
     public async Task Add_updates_existing_parameter_categories()
     {
         using ServiceProvider services = CreateServices();
@@ -209,10 +226,11 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         Document document,
         Guid parameterId,
         IEnumerable<BuiltInCategory> categories,
-        bool isInstance = true) =>
+        bool isInstance = true,
+        bool allowVaryBetweenGroups = false) =>
 #if BEFORE2024
-        provider.Add(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance);
+        provider.Add(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance, allowVaryBetweenGroups);
 #else
-        provider.Add(document, parameterId, categories, GroupTypeId.Data, isInstance);
+        provider.Add(document, parameterId, categories, GroupTypeId.Data, isInstance, allowVaryBetweenGroups);
 #endif
 }
