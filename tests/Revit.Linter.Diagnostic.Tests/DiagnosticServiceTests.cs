@@ -12,14 +12,13 @@ using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
-using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.Tests;
 
-public sealed class DiagnosticServiceTests : RevitApiTest
+public sealed partial class DiagnosticServiceTests : RevitApiTest
 {
     private Document? _document;
 
@@ -52,102 +51,6 @@ public sealed class DiagnosticServiceTests : RevitApiTest
 
         await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
         await Assert.That(sender.Reports).IsEmpty();
-    }
-
-    [Test]
-    public async Task Catalog_aggregates_registrations_and_fixes_from_providers()
-    {
-        ElementDiagnosticId elementId = new(
-            "ELM-CATALOG", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        DocumentDiagnosticId documentId = new(
-            "DOC-CATALOG", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementFix elementFix = new(elementId);
-        DocumentFix documentFix = new(documentId);
-        ElementDiagnosticRegistration elementRegistration = new(
-            elementId,
-            new ElementDiagnostic(elementId, DiagnosticFeedback.Valid),
-            new ElementFilter(elementId, true),
-            new ElementDocumentFilter(elementId, true),
-            CreateOverride(elementId, DiagnosticSeverity.Warning, true),
-            [elementFix]);
-        DocumentDiagnosticRegistration documentRegistration = new(
-            documentId,
-            new DocumentDiagnostic(documentId, DiagnosticFeedback.Valid),
-            new DocumentFilter(documentId, true),
-            CreateOverride(documentId, DiagnosticSeverity.Warning, true),
-            [documentFix]);
-
-        using ServiceProvider services = CreateServices(configure: collection =>
-        {
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [elementRegistration]));
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(documentDiagnostics: [documentRegistration]));
-        });
-
-        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
-
-        await Assert.That(catalog.ElementDiagnostics).Count().IsEqualTo(1);
-        await Assert.That(catalog.DocumentDiagnostics).Count().IsEqualTo(1);
-        await Assert.That(ReferenceEquals(catalog.ElementDiagnostics[0].Fixes.Single(), elementFix)).IsTrue();
-        await Assert.That(ReferenceEquals(catalog.DocumentDiagnostics[0].Fixes.Single(), documentFix)).IsTrue();
-    }
-
-    [Test]
-    public async Task Disposing_catalog_disposes_owned_components()
-    {
-        ElementDiagnosticId id = new(
-            "ELM-DISPOSE", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
-        ElementFix fix = new(id);
-        ElementDiagnosticIdOverride diagnosticOverride = new(id, store);
-        ElementDiagnosticRegistration registration = new(
-            id,
-            new ElementDiagnostic(id, DiagnosticFeedback.Valid),
-            new ElementFilter(id, true),
-            new ElementDocumentFilter(id, true),
-            diagnosticOverride,
-            [fix]);
-        ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
-        _ = services.GetRequiredService<IDiagnosticCatalog>();
-
-        await services.DisposeAsync();
-
-        await Assert.That(store.SubscriptionDisposed).IsTrue();
-        await Assert.That(fix.IsDisposed).IsTrue();
-    }
-
-    [Test]
-    public async Task Catalog_rejects_registration_with_mismatched_component_code()
-    {
-        ElementDiagnosticId registrationId = new(
-            "ELM-REGISTRATION", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticId diagnosticId = new(
-            "ELM-DIAGNOSTIC", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticRegistration registration = new(
-            registrationId,
-            new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid),
-            new ElementFilter(registrationId, true),
-            new ElementDocumentFilter(registrationId, true),
-            CreateOverride(registrationId, DiagnosticSeverity.Warning, true),
-            []);
-        using ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
-
-        Exception? exception = CaptureException(
-            () => services.GetRequiredService<IDiagnosticCatalog>());
-
-        await Assert.That(exception).IsTypeOf<InvalidOperationException>();
-        await Assert.That(exception!.Message).Contains("ELM-REGISTRATION");
-        await Assert.That(exception.Message).Contains("ELM-DIAGNOSTIC");
     }
 
     [Test]
@@ -184,27 +87,6 @@ public sealed class DiagnosticServiceTests : RevitApiTest
 
         await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
         await Assert.That(enumerationCount).IsEqualTo(1);
-    }
-
-    [Test]
-    public async Task Built_in_provider_creates_complete_registrations()
-    {
-        ServiceCollection collection = new();
-        collection.AddSingleton<IRevitTransactionMemoryCache, TestTransactionMemoryCache>();
-        collection.AddSingleton<IValueStore<ElementDiagnosticOverridesSettings>>(
-            new ValueStoreStub<ElementDiagnosticOverridesSettings>(new()));
-        collection.AddElementDiagnostics();
-        collection.AddDiagnosticModule();
-        await using ServiceProvider services = collection.BuildServiceProvider();
-
-        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
-
-        await Assert.That(catalog.ElementDiagnostics.Count).IsGreaterThan(0);
-        await Assert.That(catalog.ElementDiagnostics.All(registration =>
-            registration.Identity.Code == registration.Diagnostic.Identity.Code &&
-            registration.Identity.Code == registration.Filter.Identity.Code &&
-            registration.Identity.Code == registration.DocumentFilter.Identity.Code)).IsTrue();
-        await Assert.That(catalog.ElementDiagnostics.SelectMany(registration => registration.Fixes).Any()).IsTrue();
     }
 
     [Test]
@@ -501,6 +383,84 @@ public sealed class DiagnosticServiceTests : RevitApiTest
     {
         public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics() => elementDiagnostics ?? [];
         public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => documentDiagnostics ?? [];
+    }
+
+    private sealed class RefreshingRegistrationProvider : IDiagnosticRegistrationProvider
+    {
+        private int _generation;
+
+        public bool ThrowOnCreate { get; set; }
+        public List<ElementFix> Fixes { get; } = [];
+
+        public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
+        public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
+        {
+            if (ThrowOnCreate) throw new InvalidOperationException("Snapshot creation failed.");
+
+            int generation = ++_generation;
+            ElementDiagnosticId id = new(
+                $"ELM-REFRESH-{generation}", "Description", "Message", DiagnosticSeverity.Warning,
+                true, false, "");
+            ElementFix fix = new(id);
+            Fixes.Add(fix);
+            return
+            [
+                new ElementDiagnosticRegistration(
+                    id,
+                    new ElementDiagnostic(id, DiagnosticFeedback.Valid),
+                    new ElementFilter(id, true),
+                    new ElementDocumentFilter(id, true),
+                    CreateOverride(id, DiagnosticSeverity.Warning, true),
+                    [fix]),
+            ];
+        }
+    }
+
+    private sealed class ThrowingRegistrationProvider : IDiagnosticRegistrationProvider
+    {
+        private readonly ElementDiagnosticId _id = new(
+            "ELM-PARTIAL", "Description", "Message", DiagnosticSeverity.Warning,
+            true, false, "");
+
+        public ElementFix Fix { get; }
+
+        public ThrowingRegistrationProvider()
+        {
+            Fix = new ElementFix(_id);
+        }
+
+        public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
+        {
+            yield return new ElementDiagnosticRegistration(
+                _id,
+                new ElementDiagnostic(_id, DiagnosticFeedback.Valid),
+                new ElementFilter(_id, true),
+                new ElementDocumentFilter(_id, true),
+                CreateOverride(_id, DiagnosticSeverity.Warning, true),
+                [Fix]);
+            throw new InvalidOperationException("Provider failed.");
+        }
+
+        public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+    }
+
+    private sealed class TestCatalogChangeSource : IDiagnosticCatalogChangeSource
+    {
+        private Action? _listener;
+        public int ListenerCount => _listener?.GetInvocationList().Length ?? 0;
+        public IDisposable OnChange(Action listener)
+        {
+            _listener += listener;
+            return new DisposableCallback(() => _listener -= listener);
+        }
+
+        public void Notify() => _listener?.Invoke();
+
+        private sealed class DisposableCallback(Action dispose) : IDisposable
+        {
+            public void Dispose() => dispose();
+        }
     }
 
     private sealed class ValueStoreStub<T>(T value) : IValueStore<T> where T : class

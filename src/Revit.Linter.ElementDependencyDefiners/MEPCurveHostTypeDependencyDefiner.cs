@@ -1,12 +1,14 @@
 using Autodesk.Revit.DB;
 using Revit.Linter.ElementDependencyDefiners.Abstractions;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
 /// Позволяет определить типоразмер, который явяется типоразмером основы текущей изоляции
 /// </summary>
+[SuppressMessage("SonarAnalyzer", "S101", Justification = "MEP is a standard abbreviation")]
 public class MEPCurveHostTypeDependencyDefiner : IElementsDependencyDefiner
 {
 public IElementsDependencyDefiner Inversed => DefinerInstance<InstanceInsulationsDependencyDefiner>.Value;

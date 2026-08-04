@@ -1,5 +1,8 @@
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text;
+using Humanizer;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -14,8 +17,23 @@ internal sealed partial class FixReportItemViewModel : ObservableObject
     public required Dictionary<string, object> Args { get; init; }
     public required Action<int> AccentElementDelegate { get; init; }
     public required DateTime Created { get; init; }
+    public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
+    public required string ShowElementToolTipFormat { get; init; }
 
     public FlowDocument Message => CreateFlowDocument();
+
+    private List<TextPart>? _parts;
+    private List<TextPart> Parts => _parts ??= ParseTemplate(Template, Args);
+
+    private string? _messageText;
+    public string MessageText => _messageText ??= BuildPlainText();
+
+    private string BuildPlainText()
+    {
+        StringBuilder builder = new();
+        foreach (var part in Parts) builder.Append(part.Text);
+        return builder.ToString();
+    }
 
     private FlowDocument CreateFlowDocument()
     {
@@ -28,9 +46,7 @@ internal sealed partial class FixReportItemViewModel : ObservableObject
             Margin = new(0)
         };
 
-        var parts = ParseTemplate(Template, Args);
-
-        CreateInlinesFromParts(parts, paragraph);
+        CreateInlinesFromParts(Parts, paragraph);
 
         flowDocument.Blocks.Add(paragraph);
 
@@ -140,7 +156,7 @@ internal sealed partial class FixReportItemViewModel : ObservableObject
             Foreground = Brushes.Blue,
             TextDecorations = TextDecorations.Underline,
             Cursor = System.Windows.Input.Cursors.Hand,
-            ToolTip = $"Показать элемент {elementId} в модели",
+            ToolTip = string.Format(ShowElementToolTipFormat, elementId),
         };
 
         hyperlink.Click += (s, e) =>

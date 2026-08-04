@@ -9,9 +9,13 @@ internal sealed class UserDiagnosticRegistrationProvider(
     ElementFunctionFactory elementFunctionFactory,
     DocumentFilterFactory documentFilterFactory,
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
-    : IDiagnosticRegistrationProvider
+    : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
     private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, "config.yaml");
+    private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
+
+    public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
+    public void Dispose() => _changeSource.Dispose();
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
@@ -33,4 +37,6 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 []);
         }
     }
+
+    public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
 }

@@ -1,6 +1,7 @@
 ﻿using Revit.Linter.Languages.Utils;
 using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Revit.Linter.Languages.Languages;
 
@@ -22,6 +23,10 @@ public static class PropertyFunctionCallDefinitions
             argumentTypes: [typeof(string)],
             expressionBuilder: parameters => {
                 Expression propertyNameExpression = parameters[0];
+                MethodInfo getPropertyValue = typeof(ReflectionUtils).GetMethod(
+                    nameof(ReflectionUtils.GetPropertyValue), [typeof(object), typeof(string)])
+                    ?? throw new InvalidOperationException(
+                        $"Method {nameof(ReflectionUtils.GetPropertyValue)} was not found on {typeof(ReflectionUtils)}.");
                 if (propertyNameExpression is ConstantExpression { Value: string propertyName })
                 {
                     var prop = elementExpression.Type.GetProperty(propertyName);
@@ -29,15 +34,15 @@ public static class PropertyFunctionCallDefinitions
                         return Expression.Property(elementExpression, propertyName);
 
                     return Expression.Call(
-                        typeof(ReflectionUtils).GetMethod(nameof(ReflectionUtils.GetPropertyValue), [typeof(object), typeof(string)]),
+                        getPropertyValue,
                         elementExpression,
                         Expression.Constant(propertyName)
                     );
                 }
 
                 return Expression.Call(
-                    typeof(ReflectionUtils).GetMethod(nameof(ReflectionUtils.GetPropertyValue), [typeof(object), typeof(string)]), 
-                    elementExpression, 
+                    getPropertyValue,
+                    elementExpression,
                     propertyNameExpression
                 );
             }

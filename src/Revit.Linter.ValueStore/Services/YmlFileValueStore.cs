@@ -11,6 +11,7 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
 {
     private static readonly string _filePath = BuildFilePath();
     private readonly ILogger _logger;
+    private readonly ValueStoreNotificationHub _notificationHub;
     private readonly ISerializer _serializer = new SerializerBuilder()
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
@@ -25,9 +26,12 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
     private string? _fileContent;
     private bool _disposed;
 
-    public YmlFileValueStore(ILogger<YmlFileValueStore<T>> logger)
+    public YmlFileValueStore(
+        ILogger<YmlFileValueStore<T>> logger,
+        ValueStoreNotificationHub notificationHub)
     {
         _logger = logger;
+        _notificationHub = notificationHub;
         (_value, _fileContent) = LoadOrCreate();
         _pollingTimer = new Timer(_ => PollFileSafely(), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
         StartWatcher();
@@ -44,9 +48,6 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
 
     public IDisposable OnChange(Action<T> listener)
     {
-        if (listener is null)
-            throw new ArgumentNullException(nameof(listener));
-
         lock (_lock)
         {
             ThrowIfDisposed();
@@ -62,9 +63,6 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
 
     public void Update(Action<T> change)
     {
-        if (change is null)
-            throw new ArgumentNullException(nameof(change));
-
         T valueForNotification;
         List<Action<T>> handlers;
 
@@ -199,6 +197,7 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
                 value = string.IsNullOrWhiteSpace(content)
                     ? new T()
                     : _deserializer.Deserialize<T>(content) ?? new T();
+                _notificationHub.ReportSuccess(typeof(T));
                 return true;
             }
             catch (IOException exception)
@@ -210,10 +209,12 @@ internal sealed class YmlFileValueStore<T> : IValueStore<T>, IDisposable where T
                 }
 
                 _logger.LogWarning(exception, "Failed to read settings file after retries: {Path}", _filePath);
+                _notificationHub.ReportFailure(typeof(T), _filePath, exception);
             }
             catch (Exception exception)
             {
                 _logger.LogWarning(exception, "Failed to deserialize settings file; keeping the last valid value: {Path}", _filePath);
+                _notificationHub.ReportFailure(typeof(T), _filePath, exception);
                 break;
             }
         }

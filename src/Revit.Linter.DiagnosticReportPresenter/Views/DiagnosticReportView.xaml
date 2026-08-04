@@ -49,7 +49,7 @@
                 <ComboBox
                     MinWidth="150"
                     Margin="5"
-                    materialDesign:HintAssist.Hint="Document"
+                    materialDesign:HintAssist.Hint="{Binding DocumentText}"
                     materialDesign:HintAssist.IsFloating="True"
                     DisplayMemberPath="DisplayName"
                     ItemsSource="{Binding OpenedDocumentsViewModel.Collection, Source={StaticResource ServiceLocator}}"
@@ -105,7 +105,7 @@
                     DockPanel.Dock="Left"
                     IsEnabled="False"
                     Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="Export report" />
+                    ToolTip="{Binding ExportReportText}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"
@@ -122,7 +122,7 @@
                     Width="200"
                     Margin="5"
                     d:Text="Search text"
-                    materialDesign:HintAssist.Hint="Search"
+                    materialDesign:HintAssist.Hint="{Binding SearchText}"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"
                     DockPanel.Dock="Right"
@@ -132,7 +132,7 @@
                     Margin="5"
                     VerticalAlignment="Center"
                     DockPanel.Dock="Right"
-                    Text="Reports:" />
+                    Text="{Binding ReportsText}" />
                 <UIElement />
             </DockPanel>
             <Rectangle
@@ -202,7 +202,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Severity" SortMemberPath="Severity">
+                    <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <DataTemplate.Resources>
@@ -230,7 +230,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
+                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -253,7 +253,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Message" SortMemberPath="Message">
+                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="Message">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <FlowDocumentScrollViewer
@@ -269,7 +269,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
+                    <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -282,7 +282,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
+                    <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -291,7 +291,7 @@
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
                                     Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding Created}" />
+                                    Text="{Binding CreatedText, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

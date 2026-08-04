@@ -126,4 +126,39 @@
   <data name="fixReport_dockablePane_title" xml:space="preserve">
     <value>Исправления</value>
   </data>
+  <data name="projectParameters_configured_message" xml:space="preserve">
+    <value>Параметры проекта настроены.</value>
+  </data>
+  <data name="projectParameters_configurationFailed_message" xml:space="preserve">
+    <value>Не удалось настроить параметры проекта.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="configurationFolder_openFailed_message" xml:space="preserve">
+    <value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="settingsFile_loadFailed_message" xml:space="preserve">
+    <value>Изменения файла настроек «{0}» не применены. Используются предыдущие корректные значения.&#xA;&#xA;{1}</value>
+  </data>
+  <data name="diagnosticCatalog_refreshFailed_message" xml:space="preserve">
+    <value>Изменения конфигурации не применены. Используется предыдущая корректная версия.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
+    <value>Правила диагностик были изменены вне приложения и успешно перезагружены.</value>
+  </data>
+  <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Проверки</value></data>
+  <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Открыть папку
+конфигурации</value></data>
+  <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Открыть папку конфигурации линтера</value></data>
+  <data name="openConfigurationFolder_longDescription" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
+  <data name="showHideErrors_buttonText" xml:space="preserve"><value>Показать/скрыть
+отчёты</value></data>
+  <data name="showHideErrors_toolTip" xml:space="preserve"><value>Показать или скрыть панель отчётов</value></data>
+  <data name="showHideErrors_longDescription" xml:space="preserve"><value>Показывает или скрывает панель с отчётами диагностик.</value></data>
+  <data name="showHideFixes_buttonText" xml:space="preserve"><value>Показать/скрыть
+исправления</value></data>
+  <data name="showHideFixes_toolTip" xml:space="preserve"><value>Показать или скрыть историю исправлений</value></data>
+  <data name="showHideFixes_longDescription" xml:space="preserve"><value>Показывает или скрывает панель с историей исправлений.</value></data>
+  <data name="showHideDiagnostics_buttonText" xml:space="preserve"><value>Показать/скрыть
+проверки</value></data>
+  <data name="showHideDiagnostics_toolTip" xml:space="preserve"><value>Показать или скрыть список проверок</value></data>
+  <data name="showHideDiagnostics_longDescription" xml:space="preserve"><value>Показывает или скрывает панель с доступными проверками.</value></data>
 </root>

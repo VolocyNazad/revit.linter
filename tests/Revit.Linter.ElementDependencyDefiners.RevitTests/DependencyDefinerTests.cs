@@ -71,7 +71,7 @@ public sealed class DependencyDefinerTests : RevitApiTest
         Element[] all = [.. definer.All(_level!)];
         ElementId sourceId = _level!.Id;
         ElementId resultId = all[0].Id;
-        ElementId firstId = definer.FirstOrDefault(_level)!.Id;
+        ElementId firstId = definer.FirstOrDefault(_level).Id;
 
         await Assert.That(all).Count().IsEqualTo(1);
         await Assert.That(resultId).IsEqualTo(sourceId);

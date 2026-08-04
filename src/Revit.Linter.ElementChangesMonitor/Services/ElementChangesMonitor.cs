@@ -1,59 +1,43 @@
+using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.ElementChangesMonitor.Abstractions.Services;
-using Revit.Linter.ElementChangesMonitor.Infrastructure.Builders;
 using Revit.Linter.ElementChangesProvider.Abstractions.Services;
-using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.ElementChangesMonitor.Services;
 
 internal sealed class ElementChangesMonitor(
-    IRevitContext revitContext, IElementChangesSender elementChangesSender) : IElementChangesMonitor
+    IRevitContext revitContext,
+    IElementChangesSender elementChangesSender) : IElementChangesMonitor
 {
-    private static readonly ElementFilter _elementFilter = ElementFilterUtils.AllFilter();
-    private static readonly ChangeType _changeType = Element.GetChangeTypeAny();
-
-    private UpdaterId? _updaterId;
+    private ControlledApplication? _application;
 
     public bool Run()
     {
-        var id = Guid.NewGuid();
+        if (_application is not null) return false;
 
-        IUpdater updater = new UpdaterBuilder()
-           .SetUpdaterId(new(revitContext.ControlledApplication!.ActiveAddInId, id))
-           .SetChangePriority(ChangePriority.Structure)
-           .SetUpdaterName("Element changes monitoring")
-           .SetAdditionalInformation("Revit linter element changes monitoring")
-           .SetAction(Handle).Build();
-
-        UpdaterId updaterId = updater.GetUpdaterId();
-
-        if (UpdaterRegistry.IsUpdaterRegistered(updaterId)) return false;
-
-        UpdaterRegistry.RegisterUpdater(updater, true);
-        UpdaterRegistry.AddTrigger(updaterId, _elementFilter, _changeType);
-
-        _updaterId = updaterId;
-
+        _application = revitContext.ControlledApplication!;
+        _application.DocumentChanged += Application_DocumentChanged;
         return true;
     }
 
     public bool Stop()
     {
-        if (_updaterId is null) return false;
+        if (_application is null) return false;
 
-        if (!UpdaterRegistry.IsUpdaterRegistered(_updaterId)) return false;
-
-        UpdaterRegistry.UnregisterUpdater(_updaterId);
-
+        _application.DocumentChanged -= Application_DocumentChanged;
+        _application = null;
         return true;
     }
 
-    private void Handle(UpdaterData data)
-        => elementChangesSender.Send(
-            new(
-                data.GetDocument(),
-                data.GetAddedElementIds(),
-                data.GetModifiedElementIds(),
-                data.GetDeletedElementIds()));
+    private void Application_DocumentChanged(object? sender, DocumentChangedEventArgs args)
+    {
+        ICollection<ElementId> created = args.GetAddedElementIds();
+        ICollection<ElementId> modified = args.GetModifiedElementIds();
+        ICollection<ElementId> deleted = args.GetDeletedElementIds();
+        if (created.Count == 0 && modified.Count == 0 && deleted.Count == 0) return;
+
+        elementChangesSender.Send(new(args.GetDocument(), created, modified, deleted));
+    }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="diagnostics_text" xml:space="preserve"><value>Diagnostics:</value></data>
+  <data name="search_text" xml:space="preserve"><value>Search</value></data>
+  <data name="checkAll_text" xml:space="preserve"><value>Check all</value></data>
+  <data name="uncheckAll_text" xml:space="preserve"><value>Uncheck all</value></data>
+  <data name="checkVisible_text" xml:space="preserve"><value>Check visible</value></data>
+  <data name="uncheckVisible_text" xml:space="preserve"><value>Uncheck visible</value></data>
+  <data name="invertAll_text" xml:space="preserve"><value>Invert all</value></data>
+  <data name="invertVisible_text" xml:space="preserve"><value>Invert visible</value></data>
+  <data name="isActive_header" xml:space="preserve"><value>Active</value></data>
+  <data name="code_header" xml:space="preserve"><value>Code</value></data>
+  <data name="severity_header" xml:space="preserve"><value>Severity</value></data>
+  <data name="description_header" xml:space="preserve"><value>Description</value></data>
+</root>

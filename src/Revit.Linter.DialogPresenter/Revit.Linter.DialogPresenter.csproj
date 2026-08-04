@@ -1,10 +1,11 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
@@ -16,16 +17,15 @@
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
+		<EmbeddedResource Remove="ViewModels\DialogViewModel*.resx" />
+		<None Include="ViewModels\DialogViewModel.resx"><DependentUpon>DialogViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\DialogViewModel.ru-RU.resx"><DependentUpon>DialogViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\DialogViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	</ItemGroup>
 
 </Project>

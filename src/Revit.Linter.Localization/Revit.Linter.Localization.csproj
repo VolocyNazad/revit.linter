@@ -1,0 +1,14 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+	<ItemGroup>
+		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DiagnosticReportPresenter\ViewModels\DiagnosticReportViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DiagnosticReportPresenter\ViewModels\DiagnosticReportViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\DialogViewModel.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.DialogViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\DialogViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.DialogViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
+	</ItemGroup>
+</Project>

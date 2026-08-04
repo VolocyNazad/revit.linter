@@ -1,10 +1,18 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\DiagnosticListViewModel*.resx" />
+		<None Include="ViewModels\DiagnosticListViewModel.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\DiagnosticListViewModel.ru-RU.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\DiagnosticListViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
@@ -16,16 +24,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 </Project>

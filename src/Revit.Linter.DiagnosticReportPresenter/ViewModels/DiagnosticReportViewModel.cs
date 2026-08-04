@@ -17,12 +17,14 @@ using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
+using Revit.Linter.Localization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -51,6 +53,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 }
 
 [XamlConstructor]
+[GenerateLocalizedProperties]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
     private readonly IRevitContext _revitContext;
@@ -61,6 +64,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
+    private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    private bool _catalogChangesEnabled;
+    private Dispatcher? _dispatcher;
 
     public DiagnosticReportViewModel(
             IRevitContext revitContext, IAsyncExternalEvent externalEvent,
@@ -281,13 +287,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
     {
         args.Accepted = args.Item is DiagnosticReportItemViewModel viewModel
-            && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle!.Equals(viewModel.DocumentTitle))
+            && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
             && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
-            && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase))
-            //todo viewModel.Message.ToString() возвращает не в том формате, что виден пользователю
-            ;
+            && ((viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)));
     }
 
     private void ClearFilters()
@@ -319,7 +323,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
+        _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
+        _catalogLease?.Dispose();
+        _catalogLease = lease;
+        _catalogChangesEnabled = true;
+        _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
 
         _diagnosticReportReceiver.ReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
@@ -334,10 +344,40 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
-        await base.OnDeinitializing(cancellationToken);
-
+        _catalogChangesEnabled = false;
+        _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
+        _catalogLease?.Dispose();
+        _catalogLease = null;
+        _dispatcher = null;
+        await base.OnDeinitializing(cancellationToken);
+    }
+
+    private void DiagnosticCatalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
+    {
+        if (!_catalogChangesEnabled) return;
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(() =>
+            {
+                if (_catalogChangesEnabled) ReplaceCatalogSnapshot();
+            });
+            return;
+        }
+
+        ReplaceCatalogSnapshot();
+    }
+
+    private void ReplaceCatalogSnapshot()
+    {
+        IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
+        Clear();
+        IDiagnosticCatalogSnapshotLease? previous = _catalogLease;
+        _catalogLease = lease;
+        previous?.Dispose();
     }
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
@@ -391,12 +431,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         List<DiagnosticReportItemViewModel> GetTargetItemsBy(ElementId id) {
             return Collection
                 .Where(i => i.DocumentTitle == targetDocument.Title
-                && (IsTarget(i.Target, id) || (i.TargetDependencies != null && i.TargetDependencies.Any(dependency => IsTarget(dependency, id)))))
+                && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
                 .ToList();
         }
-
-        static bool IsTarget(object? target, ElementId id)
-            => target is Element { IsValidObject: true } element && element.Id.Equals(id);
 
 
         // todo Нужно учитывать зависимые элеметы при обработке изменений. При коллизиях например. Создать еще поле
@@ -409,10 +446,16 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         DiagnosticReportItemViewModel item = new() {
             Created = report.Created,
+            ShowElementToolTipFormat = ShowElementToolTip,
             Code = report.Code,
             Template = report.Message.Format,
             Target = report.Target,
             TargetDependencies = report.TargetDependencies,
+            TargetElementId = (report.Target as Element)?.Id,
+            TargetDependencyElementIds = report.TargetDependencies?
+                .OfType<Element>()
+                .Select(element => element.Id)
+                .ToArray() ?? [],
             Fixes = CreateFixes(report),
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
@@ -441,7 +484,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             FixViewModel ignoreFix = new()
             {
                 Icon = icon,
-                Title = "Игнорировать",
+                Title = IgnoreFixTitle,
                 FixDelegate = async (cancellationToken) => 
                 {
                     if (doc is null or { IsValidObject: false }) return;
@@ -457,8 +500,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         }, cancellationToken);
 
                     string message = !success
-                        ? "Something went wrong while attempting to ignore the element with id: '{elementId}'. " + $"Details: {feedbackMessage}"
-                        : "The element with id: '{elementId}' has been successfully ignored.";
+                        ? IgnoreElementFailedMessage + Environment.NewLine
+                            + GetLocalizedString("details_message", feedbackMessage ?? string.Empty)
+                        : IgnoreElementSucceededMessage;
                     _fixReportSender.Send(new FixReport(
                         report.Code, report.Document.Title, new(message, ("elementId", elementId))));
                 }
@@ -473,7 +517,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             FixViewModel ignoreFixAll = new()
             {
                 Icon = icon,
-                Title = "Игнорировать (all)",
+                Title = GetLocalizedString("all_title", IgnoreFixTitle),
                 FixDelegate = async (cancellationToken) =>
                 {
                     if (doc is null or { IsValidObject: false }) return;
@@ -509,15 +553,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         }, cancellationToken);
 
                     string message = !success
-                        ? "Something went wrong while attempting to ignore the element with id: '{elementId}'. " 
-                        + Environment.NewLine + $"Details: {feedbackMessage}"
-                        : "The element with id: '{elementId}' has been successfully ignored.";
+                        ? IgnoreElementsFailedMessage + Environment.NewLine
+                            + GetLocalizedString("details_message", feedbackMessage)
+                        : IgnoreElementsSucceededMessage;
                     _fixReportSender.Send(new FixReport(
                         report.Code, report.Document.Title, new(message, ("elementId", elementId))));
                 }
             };
 
-            return _diagnosticCatalog.ElementDiagnostics.SelectMany(registration => registration.Fixes)
+            return GetCatalogSnapshot().ElementDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
                 .SelectMany(i =>
                 {
@@ -541,9 +585,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             bool success = await ExecuteTransaction(
                                 doc, transactionName, () => i.Execute(element), cancellationToken);
 
-                            string message = !success
-                                ? "Something went wrong while attempting to fix the element with id: '{elementId}'."
-                                : "The element with id: '{elementId}' has been successfully corrected.";
+                            string message = GetLocalizedString(success
+                                ? "fixElementSucceeded_message"
+                                : "fixElementFailed_message");
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title, new(message, ("elementId", elementId))));
                         }
@@ -558,11 +602,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     };
                     FixViewModel fixAll = new() {
                         Icon = icon,
-                        Title = $"{i.Value} (all)",
+                        Title = GetLocalizedString("all_title", i.Value),
                         FixDelegate = async (cancellationToken) => {
                             if (doc is null or { IsValidObject: false }) return;
 
-                            string transactionName = $"{i.Value} (all)";
+                            string transactionName = GetLocalizedString("all_title", i.Value);
                             bool success = await ExecuteTransaction(doc, transactionName, () => {
                                     bool hasErrors = false;
                                     foreach (var reportItem in Collection)
@@ -587,9 +631,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                     return !hasErrors;
                                 }, cancellationToken);
 
-                            string message = !success
-                                ? "Something went wrong while attempting to fix the elements."
-                                : "The elements has been successfully corrected.";
+                            string message = GetLocalizedString(success
+                                ? "fixElementsSucceeded_message"
+                                : "fixElementsFailed_message");
                             _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
                         }
                     };
@@ -601,7 +645,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         else if (report.Target is Document document)
         {
             string documentTitle = document.Title;
-            return _diagnosticCatalog.DocumentDiagnostics.SelectMany(registration => registration.Fixes)
+            return GetCatalogSnapshot().DocumentDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
                 .Select(i =>
                 {
@@ -621,9 +665,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             bool success = await ExecuteTransaction(
                                 document, transactionName, () => i.Execute(document), cancellationToken);
 
-                            string message = !success
-                                ? "Something went wrong while attempting to fix the document with id: '{documentTitle}'."
-                                : "The document with id: '{documentTitle}' has been successfully corrected.";
+                            string message = GetLocalizedString(success
+                                ? "fixDocumentSucceeded_message"
+                                : "fixDocumentFailed_message");
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title,
                                 new(message, ("documentTitle", documentTitle))));
@@ -653,4 +697,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 return false;
             }
         });
+
+    private DiagnosticCatalogSnapshot GetCatalogSnapshot() =>
+        _catalogLease?.Snapshot ?? throw new InvalidOperationException("The diagnostic catalog is not initialized.");
 }

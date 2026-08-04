@@ -126,4 +126,39 @@
   <data name="fixReport_dockablePane_title" xml:space="preserve">
     <value>Fix list</value>
   </data>
+  <data name="projectParameters_configured_message" xml:space="preserve">
+    <value>Project parameters configured.</value>
+  </data>
+  <data name="projectParameters_configurationFailed_message" xml:space="preserve">
+    <value>Project parameters could not be configured.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="configurationFolder_openFailed_message" xml:space="preserve">
+    <value>The configuration folder could not be opened.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="settingsFile_loadFailed_message" xml:space="preserve">
+    <value>Changes to the settings file '{0}' were not applied. The previous valid values are still in use.&#xA;&#xA;{1}</value>
+  </data>
+  <data name="diagnosticCatalog_refreshFailed_message" xml:space="preserve">
+    <value>Configuration changes were not applied. The previous valid version is still in use.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
+    <value>Diagnostic rules were changed outside the application and reloaded successfully.</value>
+  </data>
+  <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Open configuration
+folder</value></data>
+  <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Open the linter configuration folder</value></data>
+  <data name="openConfigurationFolder_longDescription" xml:space="preserve"><value>Opens the folder containing configuration files that define the linter rules.</value></data>
+  <data name="showHideErrors_buttonText" xml:space="preserve"><value>Show/Hide
+reports</value></data>
+  <data name="showHideErrors_toolTip" xml:space="preserve"><value>Show or hide the report panel</value></data>
+  <data name="showHideErrors_longDescription" xml:space="preserve"><value>Shows or hides the panel containing diagnostic reports.</value></data>
+  <data name="showHideFixes_buttonText" xml:space="preserve"><value>Show/Hide
+fixes</value></data>
+  <data name="showHideFixes_toolTip" xml:space="preserve"><value>Show or hide the fix history</value></data>
+  <data name="showHideFixes_longDescription" xml:space="preserve"><value>Shows or hides the panel containing the fix history.</value></data>
+  <data name="showHideDiagnostics_buttonText" xml:space="preserve"><value>Show/Hide
+diagnostics</value></data>
+  <data name="showHideDiagnostics_toolTip" xml:space="preserve"><value>Show or hide the diagnostic list</value></data>
+  <data name="showHideDiagnostics_longDescription" xml:space="preserve"><value>Shows or hides the panel containing available diagnostics.</value></data>
 </root>

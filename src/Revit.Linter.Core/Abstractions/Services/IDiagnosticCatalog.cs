@@ -4,6 +4,9 @@ namespace Revit.Linter.Core.Abstractions.Services;
 
 public interface IDiagnosticCatalog
 {
-    IReadOnlyList<ElementDiagnosticRegistration> ElementDiagnostics { get; }
-    IReadOnlyList<DocumentDiagnosticRegistration> DocumentDiagnostics { get; }
+    event EventHandler<DiagnosticCatalogChangedEventArgs>? Changed;
+    event EventHandler<DiagnosticCatalogRefreshFailedEventArgs>? RefreshFailed;
+
+    IDiagnosticCatalogSnapshotLease AcquireSnapshot();
+    void Refresh();
 }

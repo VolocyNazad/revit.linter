@@ -4,7 +4,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
+		<PackageReference Include="Humanizer.Core" />
+		<PackageReference Include="Humanizer.Core.ru" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
@@ -15,21 +18,20 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\FixReportViewModel*.resx" />
+		<None Include="ViewModels\FixReportViewModel.resx"><DependentUpon>FixReportViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\FixReportViewModel.ru-RU.resx"><DependentUpon>FixReportViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\FixReportViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
 	  <ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

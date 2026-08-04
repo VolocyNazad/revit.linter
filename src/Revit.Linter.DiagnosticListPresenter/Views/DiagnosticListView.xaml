@@ -5,6 +5,7 @@
     xmlns:core="clr-namespace:Revit.Linter.Core.Abstractions.Models;assembly=Revit.Linter.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticListPresenter.Infrastructure"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -56,7 +57,7 @@
                     Width="200"
                     Margin="5"
                     HorizontalAlignment="Stretch"
-                    materialDesign:HintAssist.Hint="Search"
+                    materialDesign:HintAssist.Hint="{Binding SearchText}"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"
                     DockPanel.Dock="Right"
@@ -66,7 +67,7 @@
                     Margin="5"
                     VerticalAlignment="Center"
                     DockPanel.Dock="Right"
-                    Text="Diagnostics:" />
+                    Text="{Binding DiagnosticsText}" />
                 <UIElement />
             </DockPanel>
             <Rectangle
@@ -79,45 +80,62 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
+                <DataGrid.Resources>
+                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                </DataGrid.Resources>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem
                             Command="{Binding CheckAllCommand}"
-                            Header="Check all"
+                            Header="{Binding CheckAllText}"
                             Icon="{materialDesign:PackIcon Kind=CheckboxMultipleOutline}" />
                         <MenuItem
                             Command="{Binding UncheckAllCommand}"
-                            Header="Uncheck all"
+                            Header="{Binding UncheckAllText}"
                             Icon="{materialDesign:PackIcon Kind=CheckboxMultipleBlankOutline}" />
                         <Separator />
-                        <MenuItem Command="{Binding CheckVisibleCommand}" Header="Check visible" />
-                        <MenuItem Command="{Binding UncheckVisibleCommand}" Header="Uncheck visible" />
+                        <MenuItem Command="{Binding CheckVisibleCommand}" Header="{Binding CheckVisibleText}" />
+                        <MenuItem Command="{Binding UncheckVisibleCommand}" Header="{Binding UncheckVisibleText}" />
                         <Separator />
                         <MenuItem
                             Command="{Binding InvertAllCommand}"
-                            Header="Invert all"
+                            Header="{Binding InvertAllText}"
                             Icon="{materialDesign:PackIcon Kind=SwapHorizontal}" />
-                        <MenuItem Command="{Binding InvertVisibleCommand}" Header="Invert visible" />
+                        <MenuItem Command="{Binding InvertVisibleCommand}" Header="{Binding InvertVisibleText}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.GroupStyle>
                     <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Margin="5,10,5,2"
-                                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                    Text="{Binding Name}" />
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <DockPanel>
+                                                        <TextBlock
+                                                            VerticalAlignment="Center"
+                                                            d:Text="Имя группы"
+                                                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                                            Text="{Binding Name}" />
+                                                    </DockPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
                     </GroupStyle>
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
                         Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Header="IsActive"
+                        Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}"
                         SortMemberPath="IsActive" />
-                    <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
+                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -140,7 +158,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Severity" SortMemberPath="Severity">
+                    <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox
@@ -153,7 +171,7 @@
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
                         Width="1000"
-                        Header="Description"
+                        Header="{Binding DataContext.DescriptionHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Description">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

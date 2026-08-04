@@ -5,6 +5,7 @@
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:infrastructure="clr-namespace:Revit.Linter.FixReportPresenter.Infrastructure"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:Revit.Linter.FixReportPresenter.ViewModels"
@@ -40,7 +41,7 @@
                 <ComboBox
                     MinWidth="150"
                     Margin="5"
-                    materialDesign:HintAssist.Hint="Document"
+                    materialDesign:HintAssist.Hint="{Binding DocumentText}"
                     materialDesign:HintAssist.IsFloating="True"
                     DisplayMemberPath="DisplayName"
                     ItemsSource="{Binding OpenedDocumentsViewModel.Collection, Source={StaticResource ServiceLocator}}"
@@ -57,7 +58,7 @@
                     Width="200"
                     Margin="5"
                     HorizontalAlignment="Stretch"
-                    materialDesign:HintAssist.Hint="Search"
+                    materialDesign:HintAssist.Hint="{Binding SearchText}"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"
                     DockPanel.Dock="Right"
@@ -67,7 +68,7 @@
                     Margin="5"
                     VerticalAlignment="Center"
                     DockPanel.Dock="Right"
-                    Text="Fixes:" />
+                    Text="{Binding FixesText}" />
                 <UIElement />
             </DockPanel>
             <Rectangle
@@ -80,8 +81,11 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
+                <DataGrid.Resources>
+                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Code" SortMemberPath="Code">
+                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -94,7 +98,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Message" SortMemberPath="Message">
+                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="Message">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <FlowDocumentScrollViewer
@@ -110,7 +114,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Document" SortMemberPath="DocumentTitle">
+                    <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -123,7 +127,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Created" SortMemberPath="Created">
+                    <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox
@@ -132,7 +136,7 @@
                                     IsReadOnly="True"
                                     IsReadOnlyCaretVisible="False"
                                     Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding Created}" />
+                                    Text="{Binding CreatedText, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

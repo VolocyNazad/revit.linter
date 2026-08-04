@@ -4,15 +4,20 @@ using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
 using Revit.Events.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
+using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.Localization;
 using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
 using Revit.Linter.ValueStore.Abstractions.Services;
 using Revit.Linter.WarningsHandling.Abstractions.Services;
+using Revit.Linter.WarningsHandling.Abstractions.Models;
 using System.Diagnostics;
 
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 
 [XamlConstructor]
+[GenerateLocalizedProperties]
 internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 {
     private readonly IRevitContext _revitContext;
@@ -20,6 +25,7 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private readonly IRevitWarningsService _revitWarningsService;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
     private readonly IValueStore<RunDiagnosticSettings> _store;
+    private readonly IDialog _dialog;
     private readonly IDisposable _changeSubscription;
     private bool _applyingExternalChanges;
 
@@ -27,13 +33,15 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
             IRevitContext revitContext, IAsyncExternalEvent externalEvent,
             IDiagnosticService diagnosticService, IRevitWarningsService revitWarningsService,
             IDiagnosticReportPresenter diagnosticReportViewModel,
-            IValueStore<RunDiagnosticSettings> store) : base(externalEvent)
+            IValueStore<RunDiagnosticSettings> store,
+            IDialog dialog) : base(externalEvent)
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;
         _revitWarningsService = revitWarningsService;
         _diagnosticReportPresenter = diagnosticReportViewModel;
         _store = store;
+        _dialog = dialog;
 
         OnActiveViewMode = _store.CurrentValue.OnActiveViewMode;
         IncludeRevitWarnings = _store.CurrentValue.IncludeRevitWarnings;
@@ -82,15 +90,28 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 
         _diagnosticReportPresenter.Clear(targetDocument.Title);
 
-        _diagnosticService.Execute(targetDocument, targetView);
+        DiagnosticServiceResult diagnosticResult = _diagnosticService.Execute(targetDocument, targetView);
 
-        if (IncludeRevitWarnings)
-            _revitWarningsService.Execute(targetDocument);
+        WarningsServiceResult warningsResult = IncludeRevitWarnings
+            ? _revitWarningsService.Execute(targetDocument)
+            : WarningsServiceResult.Success;
 
         _diagnosticReportPresenter.Refresh();
 
-        DiagnosticTime = $"{stopwatch.Elapsed.Seconds} sec.";
+        DiagnosticTime = GetLocalizedString("diagnosticDuration_text", stopwatch.Elapsed.TotalSeconds);
         stopwatch.Stop();
+
+        if (diagnosticResult == DiagnosticServiceResult.Failed || warningsResult == WarningsServiceResult.Failed)
+        {
+            string key = (diagnosticResult, warningsResult) switch
+            {
+                (DiagnosticServiceResult.Failed, WarningsServiceResult.Failed) =>
+                    "diagnosticsAndWarningsFailed_message",
+                (DiagnosticServiceResult.Failed, _) => "diagnosticsFailed_message",
+                _ => "warningsFailed_message",
+            };
+            await _dialog.Show(new DialogRequest(GetLocalizedString(key)), cancellationToken);
+        }
     }
 
     private bool CanRunDiagnostic() => _revitContext.ActiveDocument is { IsFamilyDocument: false };

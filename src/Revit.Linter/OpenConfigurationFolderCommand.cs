@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
@@ -16,6 +17,8 @@ public class OpenConfigurationFolderCommand : ExternalCommand
     private ILogger Logger => field 
         ??= Provider.GetRequiredService<ILogger<OpenConfigurationFolderCommand>>();
     private IDialog Dialog => field ??= Provider.GetRequiredService<IDialog>();
+    private IStringLocalizer<GlobalLocalizations> Localizer => field
+        ??= Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
 
     public override void Execute()
     {
@@ -25,13 +28,17 @@ public class OpenConfigurationFolderCommand : ExternalCommand
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            Process.Start("explorer.exe", directory);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directory,
+                UseShellExecute = true,
+            });
         }
         catch (Exception ex)
         {
-            string message = "Open configuration folder failed.";
+            string message = Localizer["configurationFolder_openFailed_message", ex.Message];
             Logger.LogError(ex, message);
-            Dialog.Show(message);
+            _ = Dialog.Show(new DialogRequest(message));
         }
     }
 }

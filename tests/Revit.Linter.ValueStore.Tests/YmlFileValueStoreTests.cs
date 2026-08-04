@@ -55,7 +55,9 @@ public sealed class YmlFileValueStoreTests : IDisposable
 
     private static YmlFileValueStore<TestSettings> CreateStore()
     {
-        return new YmlFileValueStore<TestSettings>(NullLoggerStub<TestSettings>.Instance);
+        return new YmlFileValueStore<TestSettings>(
+            NullLoggerStub<TestSettings>.Instance,
+            new ValueStoreNotificationHub());
     }
 
     private sealed class NullLoggerStub<T> : ILogger<YmlFileValueStore<T>> where T : class, new()
@@ -114,7 +116,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
 
         File.WriteAllText(_filePath, "name: modified\ncount: 99");
 
-        var timeout = Task.Delay(3000);
+        var timeout = Task.Delay(3000, TestContext.Current.CancellationToken);
         var completed = await Task.WhenAny(received.Task, timeout);
         Assert.True(completed == received.Task, "OnChange not fired within timeout");
         Assert.Equal("modified", store.CurrentValue.Name);
@@ -132,7 +134,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
 
         File.Delete(_filePath);
 
-        var timeout = Task.Delay(3000);
+        var timeout = Task.Delay(3000, TestContext.Current.CancellationToken);
         var completed = await Task.WhenAny(received.Task, timeout);
         Assert.True(completed == received.Task, "OnChange not fired within timeout");
         Assert.Null(store.CurrentValue.Name);
@@ -163,7 +165,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
         store.Update(s => s.Name = "test");
 
         Assert.NotNull(captured);
-        Assert.Equal("test", captured!.Name);
+        Assert.Equal("test", captured.Name);
     }
 
     [Fact]
@@ -181,7 +183,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
     }
 
     [Fact]
-    public void Concurrent_Update_and_read_does_not_corrupt()
+    public async Task Concurrent_Update_and_read_does_not_corrupt()
     {
         using var store = CreateStore();
 
@@ -193,7 +195,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
                 store.Update(s => s.Count = captured);
                 Thread.Yield();
             }
-        });
+        }, TestContext.Current.CancellationToken);
 
         var readTask = Task.Run(() =>
         {
@@ -202,9 +204,9 @@ public sealed class YmlFileValueStoreTests : IDisposable
                 _ = store.CurrentValue.Count;
                 Thread.Yield();
             }
-        });
+        }, TestContext.Current.CancellationToken);
 
-        Task.WaitAll(writeTask, readTask);
+        await Task.WhenAll(writeTask, readTask);
 
         Assert.InRange(store.CurrentValue.Count, 0, 29);
     }
@@ -217,7 +219,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
         var callCount = 0;
         using var sub = store.OnChange(_ => Interlocked.Increment(ref callCount));
 
-        await Task.Delay(1500);
+        await Task.Delay(1500, TestContext.Current.CancellationToken);
 
         Assert.Equal(0, callCount);
     }
@@ -229,7 +231,7 @@ public sealed class YmlFileValueStoreTests : IDisposable
         store.Update(s => s.Name = "valid");
 
         File.WriteAllText(_filePath, "name: [invalid");
-        await Task.Delay(1500);
+        await Task.Delay(1500, TestContext.Current.CancellationToken);
 
         Assert.Equal("valid", store.CurrentValue.Name);
     }

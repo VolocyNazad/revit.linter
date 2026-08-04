@@ -7,6 +7,7 @@ using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.FixReportPresenter.ViewModels.Base;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
+using Revit.Linter.Localization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -14,6 +15,7 @@ using System.Windows.Data;
 namespace Revit.Linter.FixReportPresenter.ViewModels;
 
 [XamlConstructor]
+[GenerateLocalizedProperties]
 internal sealed partial class FixReportViewModel : InitializableObservableObject
 {
     private readonly IRevitContext _revitContext;
@@ -21,7 +23,8 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
 
     public FixReportViewModel(
-        IRevitContext revitContext, IFixReportReceiver fixReportReceiver, IEnumerable<IAccentElementsService> accentElementsServices)
+        IRevitContext revitContext, IFixReportReceiver fixReportReceiver,
+        IEnumerable<IAccentElementsService> accentElementsServices)
     {
         _fixReportReceiver = fixReportReceiver;
         Collection = [];
@@ -107,12 +110,10 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
        => args.Accepted = args.Item is FixReportItemViewModel viewModel
-        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle!.Equals(viewModel.DocumentTitle))
+        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
-       && ((viewModel.Message.ToString() ?? string.Empty).Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-       || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase))
-        //todo viewModel.Message.ToString() возвращает не в том формате, что виден пользователю
-        ;
+       && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+       || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
 
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
@@ -135,6 +136,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             Template = report.Message.Format,
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             AccentElementDelegate = i => SelectElement(i),
+            ShowElementToolTipFormat = ShowElementToolTip,
         };
         Collection.Add(item);
     }

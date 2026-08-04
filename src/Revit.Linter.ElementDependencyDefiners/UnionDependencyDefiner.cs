@@ -19,12 +19,7 @@ public class ExceptDependencyDefiner(IElementsDependencyDefiner first, IElements
 	{
 		HashSet<Element> secondSet = new(second.All(element), ElementEqualityComparer.Instance);
 
-		foreach (Element? item in first.All(element)) {
-			if (!secondSet.Contains(item))
-				return item;
-		}
-
-		return null;
+		return first.All(element).FirstOrDefault(item => !secondSet.Contains(item));
 	}
 }
 
@@ -43,12 +38,7 @@ public class IntersectDependencyDefiner(IElementsDependencyDefiner first, IEleme
 	{
 		HashSet<Element> secondSet = new(second.All(element), ElementEqualityComparer.Instance);
 
-		foreach (Element? item in first.All(element)) {
-			if (secondSet.Contains(item))
-				return item;
-		}
-
-		return null;
+		return first.All(element).FirstOrDefault(item => secondSet.Contains(item));
 	}
 }
 

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
@@ -7,6 +8,7 @@ internal sealed partial class DiagnosticItemViewModel : ObservableObject
 {
     private DocumentDiagnosticIdOverride? _documentOverride;
     private ElementDiagnosticIdOverride? _elementOverride;
+    private Dispatcher? _dispatcher;
 
     public string Code { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
@@ -36,6 +38,7 @@ internal sealed partial class DiagnosticItemViewModel : ObservableObject
 
     public void Initialize(ElementDiagnosticIdOverride item)
     {
+        _dispatcher = Dispatcher.CurrentDispatcher;
         _elementOverride = item;
         TargetType = TargetType.Element;
         Initialize(item.Identity);
@@ -44,6 +47,7 @@ internal sealed partial class DiagnosticItemViewModel : ObservableObject
 
     public void Initialize(DocumentDiagnosticIdOverride item)
     {
+        _dispatcher = Dispatcher.CurrentDispatcher;
         _documentOverride = item;
         TargetType = TargetType.Document;
         Initialize(item.Identity);
@@ -68,8 +72,9 @@ internal sealed partial class DiagnosticItemViewModel : ObservableObject
 
     private void Override_Changed(object? sender, DiagnosticOverrideChangedEventArgs args)
     {
-        var dispatcher = System.Windows.Application.Current?.Dispatcher;
-        if (dispatcher is not null && !dispatcher.CheckAccess())
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
         {
             _ = dispatcher.InvokeAsync(() => NotifyChanges(args));
             return;

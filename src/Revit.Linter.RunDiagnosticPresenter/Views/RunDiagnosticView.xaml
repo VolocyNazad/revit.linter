@@ -59,12 +59,12 @@
             Fill="{DynamicResource MaterialDesignDivider}" />
         <CheckBox
             Margin="10,0,10,0"
-            Content="On active view"
+            Content="{Binding OnActiveViewText}"
             DockPanel.Dock="Left"
             IsChecked="{Binding OnActiveViewMode}" />
         <CheckBox
             Margin="0,0,10,0"
-            Content="Include Revit warnings"
+            Content="{Binding IncludeRevitWarningsText}"
             DockPanel.Dock="Left"
             IsChecked="{Binding IncludeRevitWarnings}" />
     </DockPanel>

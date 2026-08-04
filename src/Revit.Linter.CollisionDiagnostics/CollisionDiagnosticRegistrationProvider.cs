@@ -16,10 +16,14 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
     IRevitTransactionMemoryCache transactionMemoryCache,
     ILoggerFactory loggerFactory,
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
-    : IDiagnosticRegistrationProvider
+    : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
     private static readonly string _configPath = Path.Combine(
         ConfigurationPathUtils.Directory, "collision.config.yaml");
+    private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
+
+    public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
+    public void Dispose() => _changeSource.Dispose();
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
@@ -44,4 +48,6 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 []);
         }
     }
+
+    public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
 }

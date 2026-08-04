@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="diagnosticsFailed_message" xml:space="preserve"><value>Diagnostics could not be completed. The results may be incomplete.</value></data>
+  <data name="warningsFailed_message" xml:space="preserve"><value>Diagnostics were completed, but Revit warnings could not be processed. The results may be incomplete.</value></data>
+  <data name="diagnosticsAndWarningsFailed_message" xml:space="preserve"><value>Diagnostics and Revit warnings could not be processed. The results may be incomplete.</value></data>
+  <data name="onActiveView_text" xml:space="preserve"><value>On active view</value></data>
+  <data name="includeRevitWarnings_text" xml:space="preserve"><value>Include Revit warnings</value></data>
+  <data name="diagnosticDuration_text" xml:space="preserve"><value>{0:0.##} sec.</value></data>
+</root>

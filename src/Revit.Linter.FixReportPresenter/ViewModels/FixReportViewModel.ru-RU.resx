@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="document_text" xml:space="preserve"><value>Документ</value></data><data name="search_text" xml:space="preserve"><value>Поиск</value></data>
+  <data name="fixes_text" xml:space="preserve"><value>Исправления:</value></data><data name="code_header" xml:space="preserve"><value>Код</value></data>
+  <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
+  <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
+  <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
+</root>

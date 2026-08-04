@@ -1,4 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
+using Humanizer;
+using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -12,6 +15,8 @@ internal sealed class DiagnosticReportItemViewModel
     public required string DocumentTitle { get; init; }
     public required object? Target { get; init; }
     public required object[]? TargetDependencies { get; init; }
+    public required ElementId? TargetElementId { get; init; }
+    public required ElementId[] TargetDependencyElementIds { get; init; }
     public required bool IsObsolete { get; init; }
     public required string ObsoleteDescription { get; init; }
     public required string Template { get; init; }
@@ -23,8 +28,23 @@ internal sealed class DiagnosticReportItemViewModel
 #endif
     public required IEnumerable<FixViewModel>? Fixes { get; init; }
     public required DateTime Created { get; init; }
+    public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
+    public required string ShowElementToolTipFormat { get; init; }
 
     public FlowDocument Message => CreateFlowDocument();
+
+    private List<TextPart>? _parts;
+    private List<TextPart> Parts => _parts ??= ParseTemplate(Template, Args);
+
+    private string? _messageText;
+    public string MessageText => _messageText ??= BuildPlainText();
+
+    private string BuildPlainText()
+    {
+        StringBuilder builder = new();
+        foreach (var part in Parts) builder.Append(part.Text);
+        return builder.ToString();
+    }
 
     private FlowDocument CreateFlowDocument()
     {
@@ -37,9 +57,7 @@ internal sealed class DiagnosticReportItemViewModel
             Margin = new(0)
         };
 
-        var parts = ParseTemplate(Template, Args);
-
-        CreateInlinesFromParts(parts, paragraph);
+        CreateInlinesFromParts(Parts, paragraph);
 
         flowDocument.Blocks.Add(paragraph);
 
@@ -151,7 +169,7 @@ internal sealed class DiagnosticReportItemViewModel
             Foreground = Brushes.Blue,
             TextDecorations = TextDecorations.Underline,
             Cursor = System.Windows.Input.Cursors.Hand,
-            ToolTip = $"Показать элемент {elementId} в модели",
+            ToolTip = string.Format(ShowElementToolTipFormat, elementId),
         };
 
         hyperlink.Click += (s, e) =>

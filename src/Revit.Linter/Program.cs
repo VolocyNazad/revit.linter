@@ -20,6 +20,7 @@ using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
 using Revit.Linter.Infrastructure.Exceptions;
 using Revit.Linter.Infrastructure.Extensions;
+using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.ProjectParameterManaging.DI;
@@ -65,6 +66,8 @@ internal sealed class Program
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule().AddElementChangesProviderModule()
                 .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
+                .AddSingleton<DiagnosticCatalogNotifier>()
+                .AddSingleton<ValueStoreNotifier>()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
                 .AddValueStoreModule()

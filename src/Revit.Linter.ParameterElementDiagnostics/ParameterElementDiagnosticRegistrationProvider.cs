@@ -9,10 +9,14 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
     IRevitTransactionMemoryCache transactionMemoryCache,
     IValueStore<DocumentDiagnosticOverridesSettings> overrideStore)
-    : IDiagnosticRegistrationProvider
+    : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
     private static readonly string _configPath = Path.Combine(
         ConfigurationPathUtils.Directory, "parameter-element.config.yaml");
+    private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
+
+    public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
+    public void Dispose() => _changeSource.Dispose();
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
     {
@@ -32,4 +36,6 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 []);
         }
     }
+
+    public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics() => [];
 }

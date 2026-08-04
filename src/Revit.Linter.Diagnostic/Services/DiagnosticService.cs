@@ -13,23 +13,27 @@ internal sealed class DiagnosticService(
         IDiagnosticCatalog diagnosticCatalog,
         IIgnoreElementDetector ignoreElementDetector,
         ILogger<DiagnosticService> logger)
-    : IDiagnosticService
+    : IDiagnosticService // todo add progress
 {
     private readonly ElementFilter _elementFilter = ElementFilterUtils.AllFilter();
 
     public DiagnosticServiceResult Execute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
         => ExecuteSafely(() =>
         {
+            using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
+            DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
             Element[] elements = elementIds.Select(document.GetElement).ToArray();
-            RunDocumentDiagnostics(document);
-            RunElementDiagnostics(document, elements, view);
+            RunDocumentDiagnostics(snapshot, document);
+            RunElementDiagnostics(snapshot, document, elements, view);
         });
 
     public DiagnosticServiceResult Execute(Document document, View? view = null)
         => ExecuteSafely(() =>
         {
-            RunDocumentDiagnostics(document);
-            RunElementDiagnostics(document, CollectElements(document, view), view);
+            using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
+            DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
+            RunDocumentDiagnostics(snapshot, document);
+            RunElementDiagnostics(snapshot, document, CollectElements(document, view), view);
         });
 
     private DiagnosticServiceResult ExecuteSafely(Action execute)
@@ -47,9 +51,9 @@ internal sealed class DiagnosticService(
         }
     }
 
-    private void RunDocumentDiagnostics(Document document)
+    private void RunDocumentDiagnostics(DiagnosticCatalogSnapshot snapshot, Document document)
     {
-        foreach (DocumentDiagnosticRegistration registration in diagnosticCatalog.DocumentDiagnostics)
+        foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
         {
             if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) continue;
 
@@ -76,9 +80,10 @@ internal sealed class DiagnosticService(
             ? new FilteredElementCollector(document).WherePasses(_elementFilter).ToElements()
             : new FilteredElementCollector(document, view.Id).WherePasses(_elementFilter).ToElements();
 
-    private void RunElementDiagnostics(Document document, IEnumerable<Element> elements, View? view)
+    private void RunElementDiagnostics(
+        DiagnosticCatalogSnapshot snapshot, Document document, IEnumerable<Element> elements, View? view)
     {
-        foreach (ElementDiagnosticRegistration registration in diagnosticCatalog.ElementDiagnostics)
+        foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
         {
             if (!registration.Override.IsActive || !registration.DocumentFilter.IsRelevantFor(document)) continue;
 
@@ -126,8 +131,8 @@ internal sealed class DiagnosticService(
         var result = new (string, object)[standardArguments.Length + additionalArguments.Count];
         standardArguments.CopyTo(result, 0);
         int index = standardArguments.Length;
-        foreach ((string name, object value) in additionalArguments)
-            result[index++] = (name, value);
+        foreach (KeyValuePair<string, object> pair in additionalArguments)
+            result[index++] = (pair.Key, pair.Value);
         return result;
     }
 

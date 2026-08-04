@@ -11,6 +11,9 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddValueStoreModule()
         {
             return services
+                .AddSingleton<ValueStoreNotificationHub>()
+                .AddSingleton<IValueStoreNotificationSource>(provider =>
+                    provider.GetRequiredService<ValueStoreNotificationHub>())
                 .AddSingleton(typeof(IValueStore<>), typeof(YmlFileValueStore<>));
         }
     }

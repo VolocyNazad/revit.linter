@@ -1,10 +1,11 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
@@ -18,23 +19,23 @@
 		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
 	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\RunDiagnosticViewModel*.resx" />
+		<None Include="ViewModels\RunDiagnosticViewModel.resx"><DependentUpon>RunDiagnosticViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\RunDiagnosticViewModel.ru-RU.resx"><DependentUpon>RunDiagnosticViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\RunDiagnosticViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.WarningsHandling\Revit.Linter.WarningsHandling.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="DI\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

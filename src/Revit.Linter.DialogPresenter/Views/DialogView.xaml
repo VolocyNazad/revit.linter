@@ -5,12 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:Revit.Linter.DialogPresenter.ViewModels"
-    Height="175"
+    MinHeight="175"
+    MaxHeight="500"
     MinWidth="250"
     MaxWidth="500"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DialogViewModel}}"
     ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    WindowStyle="None"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Window.Resources>
@@ -22,6 +27,9 @@
                     SecondaryColor="DeepOrange" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type system:String}">
+                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <materialDesign:ColorZone
@@ -29,7 +37,20 @@
         VerticalAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
         VerticalContentAlignment="Stretch">
-        <ContentControl Content="{Binding Content}" />
-        <!--  todo  -->
+        <Grid Margin="24,20,24,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Content}" />
+            <Button
+                Grid.Row="1"
+                MinWidth="80"
+                Margin="0,16,0,0"
+                HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}"
+                Content="{Binding CloseButtonText}" d:Content="Закрыть"
+                IsCancel="True"
+                IsDefault="True" />
+        </Grid>
     </materialDesign:ColorZone>
 </Window>

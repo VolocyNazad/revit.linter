@@ -15,7 +15,11 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<DocumentFilterFactory>()
                 .AddSingleton<IGetElementGeometryService, GetElementGeometryService>()
                 .AddSingleton<IGetElementBoundingBoxService, GetElementBoundingBoxService>()
-                .AddSingleton<IDiagnosticRegistrationProvider, CollisionDiagnosticRegistrationProvider>();
+                .AddSingleton<CollisionDiagnosticRegistrationProvider>()
+                .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
+                    provider.GetRequiredService<CollisionDiagnosticRegistrationProvider>())
+                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
+                    provider.GetRequiredService<CollisionDiagnosticRegistrationProvider>());
             return services;
         }
     }

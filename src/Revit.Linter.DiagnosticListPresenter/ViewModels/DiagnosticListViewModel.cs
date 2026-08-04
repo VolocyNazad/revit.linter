@@ -2,22 +2,28 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.Localization;
 using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
 using Revit.Linter.ValueStore.Abstractions.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
 [XamlConstructor]
 [AutoConstructor]
-internal sealed partial class DiagnosticListViewModel : InitializableObservableObject // todo Сворачиваемость групп
+[GenerateLocalizedProperties]
+internal sealed partial class DiagnosticListViewModel : InitializableObservableObject
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
+    private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    private bool _catalogChangesEnabled;
+    private Dispatcher? _dispatcher;
 
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;
@@ -155,22 +161,68 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
+        _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        ReplaceCatalogSnapshot();
+        _catalogChangesEnabled = true;
+        _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
+    }
+
+    protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
+    {
+        _catalogChangesEnabled = false;
+        _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
+        _catalogLease?.Dispose();
+        _catalogLease = null;
+        _dispatcher = null;
+        await base.OnDeinitializing(cancellationToken);
+    }
+
+    private void DiagnosticCatalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
+    {
+        if (!_catalogChangesEnabled) return;
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(() =>
+            {
+                if (_catalogChangesEnabled) ReplaceCatalogSnapshot();
+            });
+            return;
+        }
+
+        ReplaceCatalogSnapshot();
+    }
+
+    private void ReplaceCatalogSnapshot()
+    {
         List<DiagnosticItemViewModel> items = [];
-        foreach (ElementDiagnosticRegistration registration in _diagnosticCatalog.ElementDiagnostics)
+        IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
+        try
         {
-            var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            viewModel.Initialize(registration.Override);
-            items.Add(viewModel);
+            DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
+            foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
+            {
+                var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
+                viewModel.Initialize(registration.Override);
+                items.Add(viewModel);
+            }
+            foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
+            {
+                var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
+                viewModel.Initialize(registration.Override);
+                items.Add(viewModel);
+            }
+
+            Collection = new(items);
+            _catalogLease?.Dispose();
+            _catalogLease = lease;
         }
-        foreach (DocumentDiagnosticRegistration registration in _diagnosticCatalog.DocumentDiagnostics)
+        catch
         {
-            var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-            viewModel.Initialize(registration.Override);
-            items.Add(viewModel);
+            lease.Dispose();
+            throw;
         }
-
-        Collection = new(items);
-
     }
 }

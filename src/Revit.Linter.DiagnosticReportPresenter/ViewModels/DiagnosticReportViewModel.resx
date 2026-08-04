@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="document_text" xml:space="preserve"><value>Document</value></data><data name="exportReport_text" xml:space="preserve"><value>Export report</value></data>
+  <data name="search_text" xml:space="preserve"><value>Search</value></data><data name="reports_text" xml:space="preserve"><value>Reports:</value></data>
+  <data name="severity_header" xml:space="preserve"><value>Severity</value></data><data name="code_header" xml:space="preserve"><value>Code</value></data>
+  <data name="message_header" xml:space="preserve"><value>Message</value></data><data name="document_header" xml:space="preserve"><value>Document</value></data>
+  <data name="created_header" xml:space="preserve"><value>Created</value></data>
+  <data name="all_title" xml:space="preserve"><value>{0} (all)</value></data>
+  <data name="ignoreFix_title" xml:space="preserve"><value>Ignore</value></data>
+  <data name="ignoreElementFailed_message" xml:space="preserve"><value>Failed to ignore element '{elementId}'.</value></data><data name="ignoreElementSucceeded_message" xml:space="preserve"><value>Element '{elementId}' was ignored successfully.</value></data>
+  <data name="ignoreElementsFailed_message" xml:space="preserve"><value>Some elements could not be ignored.</value></data><data name="ignoreElementsSucceeded_message" xml:space="preserve"><value>Elements were ignored successfully.</value></data>
+  <data name="details_message" xml:space="preserve"><value>Details: {0}</value></data>
+  <data name="fixElementFailed_message" xml:space="preserve"><value>Failed to fix element '{elementId}'.</value></data><data name="fixElementSucceeded_message" xml:space="preserve"><value>Element '{elementId}' was fixed successfully.</value></data>
+  <data name="fixElementsFailed_message" xml:space="preserve"><value>Some elements could not be fixed.</value></data><data name="fixElementsSucceeded_message" xml:space="preserve"><value>Elements were fixed successfully.</value></data>
+  <data name="fixDocumentFailed_message" xml:space="preserve"><value>Failed to fix document '{documentTitle}'.</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was fixed successfully.</value></data>
+  <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
+</root>

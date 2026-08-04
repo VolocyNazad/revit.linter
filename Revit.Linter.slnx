@@ -31,45 +31,48 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportPresenter.Interactions/Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" Id="82e25b80-70d3-4253-badb-6fbaf24e5721">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportProvider/Revit.Linter.DiagnosticReportProvider.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.ElementChangesMonitor/Revit.Linter.ElementChangesMonitor.csproj" Id="a9a8e2c0-09c5-4f5b-9bde-382b39fbf4b7">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ElementChangesProvider/Revit.Linter.ElementChangesProvider.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.ElementChangesMonitor/Revit.Linter.ElementChangesMonitor.csproj" Id="a9a8e2c0-09c5-4f5b-9bde-382b39fbf4b7">
-      <Platform Solution="*|x64" Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.ElementIgnoring/Revit.Linter.ElementIgnoring.csproj" Id="0dd2000b-291a-4951-a91e-2c9333eca8b7">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.FixReportProvider/Revit.Linter.FixReportProvider.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ProjectParameterManaging/Revit.Linter.ProjectParameterManaging.csproj" Id="260e3d44-3388-4bb3-b656-9673bb54cff2">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.WarningsHandling/Revit.Linter.WarningsHandling.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>
   <Folder Name="/others/">
-    <Project Path="src/Revit.Linter.ElementDependencyDefiners/Revit.Linter.ElementDependencyDefiners.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ElementAccentor/Revit.Linter.ElementAccentor.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.ElementDependencyDefiners/Revit.Linter.ElementDependencyDefiners.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.Languages/Revit.Linter.Languages.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.StatusBar/Revit.Linter.StatusBar.csproj" Id="a3f1bbfe-dc59-485f-861e-17251e7fb9ff">
-      <Platform Solution="*|x64" Project="x64" />
+    <Project Path="src/Revit.Linter.Localization.Generator/Revit.Linter.Localization.Generator.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.Localization/Revit.Linter.Localization.csproj">
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.ThemeManaging/Revit.Linter.ThemeManaging.csproj">
       <Platform Project="x64" />
@@ -78,30 +81,34 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Toolkit.Revit.Extensions/Toolkit.Revit.Extensions.csproj" Id="870e61cb-2af9-458e-af3f-ee17ad3b3486">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
   </Folder>
   <Folder Name="/solutionItems/">
     <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="AGENTS.md" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="GitVersion.yml" />
+    <File Path="LICENSE" />
     <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Revit.Linter.ElementDependencyDefiners.RevitTests/Revit.Linter.ElementDependencyDefiners.RevitTests.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">
-      <Platform Project="x64" />
-    </Project>
-    <Project Path="tests/Revit.Linter.DiagnosticReportProvider.Tests/Revit.Linter.DiagnosticReportProvider.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Diagnostic.Tests/Revit.Linter.Diagnostic.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.DiagnosticReportProvider.Tests/Revit.Linter.DiagnosticReportProvider.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.ElementChangesProvider.Tests/Revit.Linter.ElementChangesProvider.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ElementDependencyDefiners.RevitTests/Revit.Linter.ElementDependencyDefiners.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ElementIgnoring.Tests/Revit.Linter.ElementIgnoring.Tests.csproj">
@@ -110,19 +117,22 @@
     <Project Path="tests/Revit.Linter.FixReportProvider.Tests/Revit.Linter.FixReportProvider.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.Languages.RevitTests/Revit.Linter.Languages.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.Languages.Tests/Revit.Linter.Languages.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.Languages.RevitTests/Revit.Linter.Languages.RevitTests.csproj">
+    <Project Path="tests/Revit.Linter.Localization.Generator.Tests/Revit.Linter.Localization.Generator.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ProjectParameterManaging.Tests/Revit.Linter.ProjectParameterManaging.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.WarningsHandling.Tests/Revit.Linter.WarningsHandling.Tests.csproj">
+    <Project Path="tests/Revit.Linter.ValueStore.Tests/Revit.Linter.ValueStore.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.ValueStore.Tests/Revit.Linter.ValueStore.Tests.csproj">
+    <Project Path="tests/Revit.Linter.WarningsHandling.Tests/Revit.Linter.WarningsHandling.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>
@@ -143,10 +153,10 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.OpenedDocuments/Revit.Linter.OpenedDocuments.csproj" Id="d3b29ecb-d6af-46c9-894a-3467ea471a90">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.RunDiagnosticPresenter/Revit.Linter.RunDiagnosticPresenter.csproj" Id="ce7df23e-c72d-4cba-991a-5e98768f34f8">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
   </Folder>
   <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">

@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -8,7 +8,7 @@
 		<LaunchRevit>true</LaunchRevit>
 		<GenerateAddinOnBuild>true</GenerateAddinOnBuild>
 		<IsRepackable>true</IsRepackable>
-		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll</RepackBinariesExcludes>
+		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll;Revit.Linter.Localization.dll</RepackBinariesExcludes>
 		<StartArguments>/language RUS</StartArguments>
 	</PropertyGroup>
 	<ItemGroup>
@@ -80,6 +80,7 @@
 		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
@@ -102,17 +103,6 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>GlobalLocalizations.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

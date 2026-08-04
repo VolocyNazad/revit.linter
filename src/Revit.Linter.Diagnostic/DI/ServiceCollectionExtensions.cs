@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     extension(IServiceCollection services)
     {
         public IServiceCollection AddDiagnosticModule() => services
+            .AddSingleton<IDiagnosticCatalogSnapshotFactory, DiagnosticCatalogSnapshotFactory>()
             .AddSingleton<IDiagnosticCatalog, DiagnosticCatalog>()
             .AddSingleton<IDiagnosticService, DiagnosticService>()
         ;

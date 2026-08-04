@@ -144,9 +144,9 @@ internal static class ElementDependencyExtensions
                      element.Document,
                      "rooms",
                      () => new FilteredElementCollector(element.Document)
-                         .WherePasses(RoomFilter)).OfType<Room>())
-            if (room.IsPointInRoom(location.Point))
-                yield return room;
+                         .WherePasses(RoomFilter)).OfType<Room>()
+                     .Where(room => room.IsPointInRoom(location.Point)))
+            yield return room;
     }
 
     public static Element? FindSpace(this Element element)
@@ -161,9 +161,9 @@ internal static class ElementDependencyExtensions
                      element.Document,
                      "spaces",
                      () => new FilteredElementCollector(element.Document)
-                         .WherePasses(SpaceFilter)).OfType<Space>())
-            if (space.IsPointInSpace(location.Point))
-                yield return space;
+                         .WherePasses(SpaceFilter)).OfType<Space>()
+                     .Where(space => space.IsPointInSpace(location.Point)))
+            yield return space;
     }
 
     public static IEnumerable<Element> FindPlaced<TElement>(this Room room)
@@ -195,9 +195,9 @@ internal static class ElementDependencyExtensions
                      element.Document,
                      "scope-boxes",
                      () => new FilteredElementCollector(element.Document)
-                         .WherePasses(ScopeBoxFilter)))
-            if (scopeBox.IsElementInScopeBox(element.Id))
-                yield return scopeBox;
+                         .WherePasses(ScopeBoxFilter))
+                     .Where(scopeBox => scopeBox.IsElementInScopeBox(element.Id)))
+            yield return scopeBox;
     }
 
     public static IEnumerable<Element> FindPlacedInsideScopeBox(this Element scopeBox)

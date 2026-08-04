@@ -174,8 +174,11 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             transaction.Commit();
         }
 
-        await Assert.That(wallType.get_Parameter(ParameterId)).IsNull();
-        await Assert.That(wallType.get_Parameter(TypeParameterId)).IsNotNull();
+        Parameter? instanceParameter = wallType.get_Parameter(ParameterId);
+        Parameter? typeParameter = wallType.get_Parameter(TypeParameterId);
+        await Assert.That(instanceParameter?.AsString()).IsNull();
+        await Assert.That(typeParameter).IsNotNull();
+        await Assert.That(typeParameter?.AsString()).IsEqualTo("TYPE-001");
         await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Success);
         await Assert.That(detector.IsElementIgnored("TYPE-001", wallType)).IsTrue();
         await Assert.That(detector.IsElementIgnored("TYPE", wallType)).IsFalse();

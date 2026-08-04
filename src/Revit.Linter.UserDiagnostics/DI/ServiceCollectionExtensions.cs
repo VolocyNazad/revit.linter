@@ -11,7 +11,11 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<ElementFilterFactory>()
                 .AddSingleton<ElementFunctionFactory>()
                 .AddSingleton<DocumentFilterFactory>()
-                .AddSingleton<IDiagnosticRegistrationProvider, UserDiagnosticRegistrationProvider>();
+                .AddSingleton<UserDiagnosticRegistrationProvider>()
+                .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
+                    provider.GetRequiredService<UserDiagnosticRegistrationProvider>())
+                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
+                    provider.GetRequiredService<UserDiagnosticRegistrationProvider>());
             return services;
         }
     }

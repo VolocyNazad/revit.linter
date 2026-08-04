@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
@@ -10,14 +10,5 @@
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.Async" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 </Project>

@@ -30,6 +30,8 @@ internal sealed class DocumentDiagnosticRegistrationProvider(
         }
     }
 
+    public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics() => [];
+
     private T[] CreateImplementations<T>(Assembly assembly, string namespacePrefix) => assembly.GetTypes()
         .Where(type => type.IsClass && !type.IsAbstract &&
                        type.Namespace?.StartsWith(namespacePrefix, StringComparison.Ordinal) == true &&

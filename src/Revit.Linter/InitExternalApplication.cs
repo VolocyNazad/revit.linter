@@ -2,10 +2,12 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
 using Revit.Linter.DiagnosticReportPresenter.Views;
+using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.ElementChangesMonitor.Abstractions.Services;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 using Revit.Linter.FixReportPresenter.Views;
@@ -31,6 +33,10 @@ internal sealed class InitExternalApplication : ExternalApplication
 {
     private static readonly string AssemblyPath = Assembly.GetExecutingAssembly().Location;
     private static readonly string AssemblyDirectory = Path.GetDirectoryName(AssemblyPath);
+    private static IStringLocalizer<GlobalLocalizations> Localizer =>
+        Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+    private DiagnosticCatalogNotifier? _diagnosticCatalogNotifier;
+    private ValueStoreNotifier? _valueStoreNotifier;
 
     public override void OnStartup()
     {
@@ -40,6 +46,8 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         InitializeRevitContext();
         InitializeRevitTransactionCache();
+        _diagnosticCatalogNotifier = Program.Provider.GetRequiredService<DiagnosticCatalogNotifier>();
+        _valueStoreNotifier = Program.Provider.GetRequiredService<ValueStoreNotifier>();
         RegisterDiagnosticReportDockablePane();
         RegisterFixReportDockablePane();
         RegisterDiagnosticListDockablePane();
@@ -51,7 +59,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         }
         catch { /* Вкладка уже существует - игнорируем ошибку */ }
 
-        RibbonPanel panel = Application.CreateRibbonPanel(tabName, "Diagnostic");
+        RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 
         AddShowHideErrorListCommand(panel);
         AddShowHideFixListCommand(panel);
@@ -72,6 +80,12 @@ internal sealed class InitExternalApplication : ExternalApplication
 
     public override void OnShutdown()
     {
+        Program.Provider.GetRequiredService<IElementChangesMonitor>().Stop();
+        _diagnosticCatalogNotifier?.Dispose();
+        _diagnosticCatalogNotifier = null;
+        _valueStoreNotifier?.Dispose();
+        _valueStoreNotifier = null;
+
         var app = Application.ControlledApplication;
         app.DocumentCreated -= App_DocumentCreated;
         app.DocumentOpened -= App_DocumentOpened;
@@ -79,6 +93,8 @@ internal sealed class InitExternalApplication : ExternalApplication
 #if !BEFORE2024
         Application.ThemeChanged -= Application_ThemeChanged;
 #endif
+
+        RevitTask.Shutdown();
     }
 
 #if !BEFORE2024
@@ -114,15 +130,35 @@ internal sealed class InitExternalApplication : ExternalApplication
     }
 #endif
 
-    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e) => await AddProjectParameters(e.Document);
+    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e) =>
+        await AddProjectParametersSafely(e.Document);
 
-    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e) => await AddProjectParameters(e.Document);
+    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e) =>
+        await AddProjectParametersSafely(e.Document);
+
+    private static async Task AddProjectParametersSafely(Document document)
+    {
+        try
+        {
+            await AddProjectParameters(document);
+        }
+        catch (Exception exception)
+        {
+            Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
+                .LogError(exception, "Failed to configure project parameters");
+            var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+            await Program.Provider.GetRequiredService<IDialog>().Show(new DialogRequest(
+                localizer["projectParameters_configurationFailed_message", exception.Message]));
+        }
+    }
 
     private static async Task AddProjectParameters(Document doc) => await AddIgnoreListParameter(doc);
 
     private static async Task AddIgnoreListParameter(Document doc)
     {
         var projectParameterProvider = Program.Provider.GetRequiredService<IProjectParameterProvider>();
+        var dialog = Program.Provider.GetRequiredService<IDialog>();
+        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
 
         bool parameterChanged = false;
 
@@ -158,7 +194,7 @@ internal sealed class InitExternalApplication : ExternalApplication
             }
 
             if (parameterChanged)
-                TaskDialog.Show("Information", "Project parameters configured!"); // todo Use custom dialog
+                _ = dialog.Show(new DialogRequest(localizer["projectParameters_configured_message"]));
         });
     }
 
@@ -166,11 +202,11 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         PushButtonData buttonData = new(
             "OpenConfigurationFolderButton",
-            "Open configuration folder",
+            Localizer["openConfigurationFolder_buttonText"],
             AssemblyPath, typeof(OpenConfigurationFolderCommand).FullName)
         {
-            ToolTip = "Open linter configuration folder",
-            LongDescription = "Opens the folder containing configuration files that define the linter's logic.", // todo add images
+            ToolTip = Localizer["openConfigurationFolder_toolTip"],
+            LongDescription = Localizer["openConfigurationFolder_longDescription"],
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
@@ -184,11 +220,11 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         PushButtonData buttonData = new(
             "ShowHideErrorListButton",
-            "Show/Hide errors",
+            Localizer["showHideErrors_buttonText"],
             AssemblyPath, typeof(ShowHideErrorListCommand).FullName)
         {
-            ToolTip = "Show/Hide error pane",
-            LongDescription = "Shows or hides the error list panel that displays all linter's diagnostics.", // todo add images
+            ToolTip = Localizer["showHideErrors_toolTip"],
+            LongDescription = Localizer["showHideErrors_longDescription"],
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
@@ -201,11 +237,11 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         PushButtonData buttonData = new(
             "ShowHideFixListButton",
-            "Show/Hide fixes",
+            Localizer["showHideFixes_buttonText"],
             AssemblyPath, typeof(ShowHideFixListCommand).FullName)
         {
-            ToolTip = "Show/Hide fix pane",
-            LongDescription = "Shows or hides the fix report panel that displays all linter's fix report history.", // todo add images
+            ToolTip = Localizer["showHideFixes_toolTip"],
+            LongDescription = Localizer["showHideFixes_longDescription"],
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
@@ -220,11 +256,11 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         PushButtonData buttonData = new(
             "ShowHideDiagnosticListButton",
-            "Show/Hide diagnostics",
+            Localizer["showHideDiagnostics_buttonText"],
             AssemblyPath, typeof(ShowHideDiagnosticListCommand).FullName)
         {
-            ToolTip = "Show/Hide diagnostic pane",
-            LongDescription = "Shows or hides the diagnostic report panel that displays all linter's report history.", // todo add images
+            ToolTip = Localizer["showHideDiagnostics_toolTip"],
+            LongDescription = Localizer["showHideDiagnostics_longDescription"],
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))

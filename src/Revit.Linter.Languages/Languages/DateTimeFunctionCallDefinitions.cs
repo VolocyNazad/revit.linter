@@ -23,12 +23,13 @@ public static class DateTimeFunctionCallDefinitions
                 argumentTypes: [typeof(string)],
                 expressionBuilder: args =>
                 {
-                    PropertyInfo? propertyInfo = typeof(DateTime).GetProperty(
-                        nameof(DateTime.Now),
-                        BindingFlags.Public | BindingFlags.Static
-                    );
+                    PropertyInfo propertyInfo = typeof(DateTime).GetProperty(
+                            nameof(DateTime.Now),
+                            BindingFlags.Public | BindingFlags.Static)
+                        ?? throw new InvalidOperationException(
+                            $"Property {nameof(DateTime.Now)} was not found on {typeof(DateTime)}.");
 
-                    MemberExpression nowDateTimeExpression = Expression.Property(null, propertyInfo!);
+                    MemberExpression nowDateTimeExpression = Expression.Property(null, propertyInfo);
 
                     return Expression.Call(
                         nowDateTimeExpression,

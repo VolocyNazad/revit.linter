@@ -43,4 +43,6 @@ internal sealed class ElementDiagnosticRegistrationProvider(
 
     private static T FindByCode<T>(IEnumerable<T> items, string code, Func<T, string> getCode) =>
         items.Single(item => string.Equals(getCode(item), code, StringComparison.Ordinal));
+
+    public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
 }

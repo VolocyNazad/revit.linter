@@ -4,7 +4,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
+		<PackageReference Include="Humanizer.Core" />
+		<PackageReference Include="Humanizer.Core.ru" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
@@ -17,9 +20,17 @@
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 	</ItemGroup>
 	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\DiagnosticReportViewModel*.resx" />
+		<None Include="ViewModels\DiagnosticReportViewModel.resx"><DependentUpon>DiagnosticReportViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\DiagnosticReportViewModel.ru-RU.resx"><DependentUpon>DiagnosticReportViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\DiagnosticReportViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="VolocyNazad.Revit.Async" />
 		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
@@ -32,14 +43,5 @@
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.29.0.143774" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 </Project>

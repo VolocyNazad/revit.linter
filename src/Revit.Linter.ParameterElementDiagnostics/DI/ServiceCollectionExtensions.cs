@@ -9,7 +9,11 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddParameterElementDiagnostics()
         {
             services.AddSingleton<DocumentFilterFactory>()
-                .AddSingleton<IDiagnosticRegistrationProvider, ParameterElementDiagnosticRegistrationProvider>();
+                .AddSingleton<ParameterElementDiagnosticRegistrationProvider>()
+                .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
+                    provider.GetRequiredService<ParameterElementDiagnosticRegistrationProvider>())
+                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
+                    provider.GetRequiredService<ParameterElementDiagnosticRegistrationProvider>());
             return services;
         }
     }
