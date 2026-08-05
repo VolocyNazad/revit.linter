@@ -188,7 +188,7 @@ internal sealed class InitExternalApplication : ExternalApplication
                     GroupTypeId.IdentityData,
 #endif
                     false,
-                    true
+                    false
                 );
 
                 transaction.Commit();
