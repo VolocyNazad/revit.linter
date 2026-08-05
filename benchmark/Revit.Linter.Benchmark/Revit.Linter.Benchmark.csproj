@@ -1,0 +1,17 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Revit.Linter.Benchmark</RootNamespace>
+        <Configurations>
+            Release_2025.0.0;
+        </Configurations>
+        <Platforms>x64</Platforms>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Revit_All_Main_Versions_API_x64" />
+        <PackageReference Include="Nice3point.BenchmarkDotNet.Revit" />
+    </ItemGroup>
+
+</Project>

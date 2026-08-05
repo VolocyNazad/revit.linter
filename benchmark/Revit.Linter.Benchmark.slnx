@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Release_2025.0.0" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Benchmarks/">
+    <Project Path="Revit.Linter.Benchmark/Revit.Linter.Benchmark.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+</Solution>
