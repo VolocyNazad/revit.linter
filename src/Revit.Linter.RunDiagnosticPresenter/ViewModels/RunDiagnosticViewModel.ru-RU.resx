@@ -5,9 +5,6 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="diagnosticsFailed_message" xml:space="preserve"><value>Не удалось завершить проверки. Результаты могут быть неполными.</value></data>
-  <data name="warningsFailed_message" xml:space="preserve"><value>Проверки завершены, но предупреждения Revit обработать не удалось. Результаты могут быть неполными.</value></data>
-  <data name="diagnosticsAndWarningsFailed_message" xml:space="preserve"><value>Не удалось выполнить проверки и обработать предупреждения Revit. Результаты могут быть неполными.</value></data>
   <data name="onActiveView_text" xml:space="preserve"><value>На активном виде</value></data>
-  <data name="includeRevitWarnings_text" xml:space="preserve"><value>Предупреждения Revit</value></data>
   <data name="diagnosticDuration_text" xml:space="preserve"><value>{0:0.##} с</value></data>
 </root>

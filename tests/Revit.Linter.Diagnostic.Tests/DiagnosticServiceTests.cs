@@ -95,7 +95,7 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
         DocumentDiagnosticId id = new(
             "DOC001", "Description", "Value: {value}", DiagnosticSeverity.Warning,
             true, true, "Obsolete");
-        DocumentDiagnostic diagnostic = new(id, new(
+        DocumentDiagnostic diagnostic = new(id, new DiagnosticFeedback(
             DiagnosticVerdict.NotValid,
             new Dictionary<string, object> { ["value"] = 42 }));
         ReportSender sender = new();
@@ -122,12 +122,38 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
     }
 
     [Test]
+    public async Task Document_diagnostic_sends_one_report_per_invalid_feedback()
+    {
+        DocumentDiagnosticId id = new(
+            "DOC-MULTI", "Description", "Value: {value}", DiagnosticSeverity.Warning,
+            true, false, "");
+        DocumentDiagnostic diagnostic = new(
+            id,
+            new(DiagnosticVerdict.NotValid, new() { ["value"] = 1 }),
+            DiagnosticFeedback.Valid,
+            new(DiagnosticVerdict.NotValid, new() { ["value"] = 2 }));
+        ReportSender sender = new();
+        using ServiceProvider services = CreateServices(sender, collection =>
+            collection.AddSingleton<IDiagnosticRegistrationProvider>(new TestRegistrationProvider(
+                documentDiagnostics:
+                [new(id, diagnostic, new DocumentFilter(id, true),
+                    CreateOverride(id, DiagnosticSeverity.Warning, true), [])])));
+
+        DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
+
+        await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
+        await Assert.That(sender.Reports.Count).IsEqualTo(2);
+        await Assert.That(GetArgument(sender.Reports[0], "value")).IsEqualTo(1);
+        await Assert.That(GetArgument(sender.Reports[1], "value")).IsEqualTo(2);
+    }
+
+    [Test]
     public async Task Inactive_document_diagnostic_is_not_executed()
     {
         DocumentDiagnosticId id = new(
             "DOC002", "Description", "Message", DiagnosticSeverity.Warning,
             true, false, "");
-        DocumentDiagnostic diagnostic = new(id, new(DiagnosticVerdict.NotValid));
+        DocumentDiagnostic diagnostic = new(id, new DiagnosticFeedback(DiagnosticVerdict.NotValid));
         ReportSender sender = new();
         using ServiceProvider services = CreateServices(sender, collection =>
         {
@@ -310,15 +336,15 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
         public void Send(DiagnosticReport report) => Reports.Add(report);
     }
 
-    private sealed class DocumentDiagnostic(DocumentDiagnosticId identity, DiagnosticFeedback feedback)
+    private sealed class DocumentDiagnostic(DocumentDiagnosticId identity, params DiagnosticFeedback[] feedbacks)
         : IDocumentDiagnostic
     {
         public DocumentDiagnosticId Identity { get; } = identity;
         public int ExecutionCount { get; private set; }
-        public DiagnosticFeedback Execute(Document targetDocument)
+        public IEnumerable<DiagnosticFeedback> Execute(Document targetDocument)
         {
             ExecutionCount++;
-            return feedback;
+            return feedbacks;
         }
     }
 

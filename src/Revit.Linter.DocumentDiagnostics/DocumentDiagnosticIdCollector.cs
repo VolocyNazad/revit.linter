@@ -13,6 +13,20 @@ internal static class DocumentDiagnosticIdCollector
         false, 
         string.Empty);
 
+    public readonly static DocumentDiagnosticId RevitWarnings = new(
+        "RVT",
+        "Проверка предупреждений Revit.",
+        """
+        В документе с наименованием '{documentTitle}' обнаружены предупреждения.
+        Элементы: {elementIds}
+        Детали: {details}
+        Время выполнения '{duration}' мс.
+        """,
+        DiagnosticSeverity.Warning,
+        true,
+        false,
+        string.Empty);
+
 
     private static readonly Lazy<IReadOnlyList<DocumentDiagnosticId>> _allDiagnosticIds =
         new(typeof(DocumentDiagnosticIdCollector)

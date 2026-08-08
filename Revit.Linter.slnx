@@ -51,9 +51,6 @@
     <Project Path="src/Revit.Linter.ProjectParameterManaging/Revit.Linter.ProjectParameterManaging.csproj" Id="260e3d44-3388-4bb3-b656-9673bb54cff2">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.WarningsHandling/Revit.Linter.WarningsHandling.csproj">
-      <Platform Project="x64" />
-    </Project>
   </Folder>
   <Folder Name="/others/">
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
@@ -136,9 +133,6 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ValueStore.Tests/Revit.Linter.ValueStore.Tests.csproj">
-      <Platform Project="x64" />
-    </Project>
-    <Project Path="tests/Revit.Linter.WarningsHandling.Tests/Revit.Linter.WarningsHandling.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

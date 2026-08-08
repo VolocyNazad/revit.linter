@@ -12,12 +12,12 @@ internal sealed class DocumentDiagnostic(
 
     public required IEnumerable<ParameterElementData> Parameters { get; init; }
 
-    public DiagnosticFeedback Execute(Document targetDocument)
+    public IEnumerable<DiagnosticFeedback> Execute(Document targetDocument)
     {
         if (targetDocument.IsFamilyDocument)
-            return new(DiagnosticVerdict.NotValid, new() {
+            return [new(DiagnosticVerdict.NotValid, new() {
                 { "details", "Parameter diagnostics are not supported on family documents." }
-            });
+            })];
         ICollection<string> messages = [];
         foreach (ParameterElementData parameterData in Parameters)
         {
@@ -99,9 +99,9 @@ internal sealed class DocumentDiagnostic(
         }
 
         if (messages.Count == 0)
-            return new(DiagnosticVerdict.Valid);
-        return new(DiagnosticVerdict.NotValid, new() { 
-            { "details", string.Join(Environment.NewLine, messages) } 
-        });
+            return [DiagnosticFeedback.Valid];
+        return [new(DiagnosticVerdict.NotValid, new() {
+            { "details", string.Join(Environment.NewLine, messages) }
+        })];
     }
 }

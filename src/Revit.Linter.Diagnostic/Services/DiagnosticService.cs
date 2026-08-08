@@ -57,21 +57,25 @@ internal sealed class DiagnosticService(
         {
             if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) continue;
 
-            (DiagnosticFeedback feedback, double duration) = Measure(
-                () => registration.Diagnostic.Execute(document));
-            if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+            (DiagnosticFeedback[] feedbacks, double duration) = Measure(
+                () => registration.Diagnostic.Execute(document).ToArray());
 
-            DocumentDiagnosticId identity = registration.Identity;
-            diagnosticReportSender.Send(new DiagnosticReport(
-                identity.Code,
-                registration.Override.Severity,
-                document,
-                new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
-                    feedback, ("duration", duration), ("documentTitle", document.Title))),
-                document,
-                null,
-                identity.IsObsolete,
-                identity.ObsoleteDescription));
+            foreach (DiagnosticFeedback feedback in feedbacks)
+            {
+                if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+
+                DocumentDiagnosticId identity = registration.Identity;
+                diagnosticReportSender.Send(new DiagnosticReport(
+                    identity.Code,
+                    registration.Override.Severity,
+                    document,
+                    new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
+                        feedback, ("duration", duration), ("documentTitle", document.Title))),
+                    document,
+                    feedback.AdditionalTargetDependencies,
+                    identity.IsObsolete,
+                    identity.ObsoleteDescription));
+            }
         }
     }
 
@@ -114,11 +118,11 @@ internal sealed class DiagnosticService(
         }
     }
 
-    private static (DiagnosticFeedback Feedback, double Duration) Measure(Func<DiagnosticFeedback> execute)
+    private static (T Result, double Duration) Measure<T>(Func<T> execute)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
-        DiagnosticFeedback feedback = execute();
-        return (feedback, stopwatch.Elapsed.TotalMilliseconds);
+        T result = execute();
+        return (result, stopwatch.Elapsed.TotalMilliseconds);
     }
 
     private static (string, object)[] CreateMessageArguments(

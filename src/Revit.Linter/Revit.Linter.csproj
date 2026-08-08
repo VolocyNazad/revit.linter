@@ -87,7 +87,6 @@
 		<ProjectReference Include="..\Revit.Linter.SerilogEnrichers\Revit.Linter.SerilogEnrichers.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
-		<ProjectReference Include="..\Revit.Linter.WarningsHandling\Revit.Linter.WarningsHandling.csproj" />
 		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
 	</ItemGroup>
 

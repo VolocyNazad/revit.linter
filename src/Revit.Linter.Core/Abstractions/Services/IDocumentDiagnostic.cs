@@ -5,5 +5,5 @@ namespace Revit.Linter.Core.Abstractions.Services;
 public interface IDocumentDiagnostic
 {
     DocumentDiagnosticId Identity { get; }
-    DiagnosticFeedback Execute(Document targetDocument);
+    IEnumerable<DiagnosticFeedback> Execute(Document targetDocument);
 }
