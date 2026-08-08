@@ -6,7 +6,9 @@ using Toolkit.Revit.Extensions;
 
 namespace Revit.Linter.UserDiagnostics;
 
-public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
+public class ElementFilterFactory(
+    ILogger<ElementFilterFactory> logger,
+    IFormulaCompilationNotifier notifier)
 {
     public ElementFilter Create(string formula) => CreateDelegate(formula).Invoke();
     private static Language Language => field ??= new(LanguageDefinitions.CreateElementFilter());
@@ -19,8 +21,8 @@ public class ElementFilterFactory(ILogger<ElementFilterFactory> logger)
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Collision diagnostic formula compilation error.");
-            // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
+            logger.LogWarning(ex, "User diagnostic formula compilation error.");
+            notifier.Notify();
             return ElementFilterUtils.EmptyFilter;
         }
     }

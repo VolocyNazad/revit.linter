@@ -5,7 +5,9 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.ParameterElementDiagnostics;
 
-public class DocumentFilterFactory(ILogger<DocumentFilterFactory> logger)
+public class DocumentFilterFactory(
+    ILogger<DocumentFilterFactory> logger,
+    IFormulaCompilationNotifier notifier)
 {
     private static readonly ParameterExpression _documentExpression = Expression.Parameter(typeof(Document));
 
@@ -21,8 +23,8 @@ public class DocumentFilterFactory(ILogger<DocumentFilterFactory> logger)
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Collision diagnostic formula compilation error.");
-            // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
+            logger.LogWarning(ex, "Parameter element diagnostic formula compilation error.");
+            notifier.Notify();
             return doc => false;
         }
     }

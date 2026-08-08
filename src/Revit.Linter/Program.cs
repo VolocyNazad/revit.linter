@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticListPresenter.DI;
 using Revit.Linter.DiagnosticReportPresenter.DI;
@@ -67,6 +68,7 @@ internal sealed class Program
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddSingleton<DiagnosticCatalogNotifier>()
                 .AddSingleton<ValueStoreNotifier>()
+                .AddSingleton<IFormulaCompilationNotifier, FormulaCompilationNotifier>()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
                 .AddValueStoreModule()

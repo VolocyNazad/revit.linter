@@ -144,6 +144,9 @@
   <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
     <value>Правила диагностик были изменены вне приложения и успешно перезагружены.</value>
   </data>
+  <data name="formulaCompilation_failed_message" xml:space="preserve">
+    <value>Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit.</value>
+  </data>
   <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Проверки</value></data>
   <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Открыть папку
 конфигурации</value></data>

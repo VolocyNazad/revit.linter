@@ -144,6 +144,9 @@
   <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
     <value>Diagnostic rules were changed outside the application and reloaded successfully.</value>
   </data>
+  <data name="formulaCompilation_failed_message" xml:space="preserve">
+    <value>Formula compilation failed. Fix the configuration file and restart Revit.</value>
+  </data>
   <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Open configuration
 folder</value></data>

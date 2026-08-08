@@ -5,7 +5,9 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.UserDiagnostics;
 
-public class ElementFunctionFactory(ILogger<ElementFunctionFactory> logger)
+public class ElementFunctionFactory(
+    ILogger<ElementFunctionFactory> logger,
+    IFormulaCompilationNotifier notifier)
 {
     private static readonly ParameterExpression _elementExpression = Expression.Parameter(typeof(Element));
 
@@ -21,8 +23,8 @@ public class ElementFunctionFactory(ILogger<ElementFunctionFactory> logger)
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Collision diagnostic formula compilation error.");
-            // todo Реализовать уведомление пользователя 'Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit'
+            logger.LogWarning(ex, "User diagnostic formula compilation error.");
+            notifier.Notify();
             return elem => true;
         }
     }
