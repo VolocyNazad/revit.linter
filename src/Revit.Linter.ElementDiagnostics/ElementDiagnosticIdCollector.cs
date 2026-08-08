@@ -214,6 +214,14 @@ internal static class ElementDiagnosticIdCollector
         true,
         false,
         string.Empty);
+    public readonly static ElementDiagnosticId ProfileFamilySymbolUnused = new(
+        "SHRD0023",
+        "Проверка типоразмеров семейств профилей на их использование в документе.",
+        "Типоразмер профиля с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
+        true,
+        false,
+        string.Empty);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)

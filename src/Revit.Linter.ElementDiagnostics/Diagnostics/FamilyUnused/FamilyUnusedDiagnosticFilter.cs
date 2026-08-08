@@ -8,6 +8,5 @@ internal sealed class FamilyUnusedDiagnosticFilter : IElementDiagnosticFilter
 
     public bool IsRelevantFor(Document document, Element element) 
         => element is Family family
-        // todo С профилями проблемы (не понятно как проверять их использование. Например в импостах витражей)
         && family.FamilyCategory?.Id.IsCategory(BuiltInCategory.OST_ProfileFamilies) != true;
 }
