@@ -49,7 +49,10 @@ public sealed class YmlFileValueStoreTests : IDisposable
             if (File.Exists(_filePath))
                 File.Delete(_filePath);
         }
-        catch { }
+        catch
+        {
+            // Cleanup is best effort and must not hide the test result.
+        }
 
         if (_hasBackup && File.Exists(_backupPath))
             File.Move(_backupPath, _filePath);
