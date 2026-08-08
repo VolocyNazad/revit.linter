@@ -103,7 +103,6 @@
                     Content="{materialDesign:PackIcon Kind=Export,
                                                       Size=30}"
                     DockPanel.Dock="Left"
-                    IsEnabled="False"
                     Style="{StaticResource MaterialDesignIconButton}"
                     ToolTip="{Binding ExportReportText}" />
                 <Rectangle

@@ -20,11 +20,17 @@ using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.Linter.Localization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Win32;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -260,8 +266,129 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [RelayCommand]
     private void Export()
     {
-        // todo Реализовать
+        SaveFileDialog dialog = new()
+        {
+            AddExtension = true,
+            DefaultExt = ".csv",
+            FileName = CreateExportFileName(),
+            Filter = "CSV (*.csv)|*.csv|JSON (*.json)|*.json|YAML (*.yaml)|*.yaml",
+            FilterIndex = 1,
+            OverwritePrompt = true
+        };
+
+        if (dialog.ShowDialog() != true) return;
+
+        List<DiagnosticReportExportItem> items = (CollectionViewSource?.View
+            .Cast<object>()
+            .OfType<DiagnosticReportItemViewModel>() ?? [])
+            .Select(item => new DiagnosticReportExportItem(
+                item.Severity.ToString(),
+                item.Code,
+                item.MessageText,
+                item.DocumentTitle,
+                item.Created))
+            .ToList();
+
+        string extension = dialog.FilterIndex switch
+        {
+            2 => ".json",
+            3 => ".yaml",
+            _ => ".csv"
+        };
+        string fileName = Path.ChangeExtension(dialog.FileName, extension);
+
+        switch (dialog.FilterIndex)
+        {
+            case 2:
+                ExportJson(fileName, items);
+                break;
+            case 3:
+                ExportYaml(fileName, items);
+                break;
+            default:
+                ExportCsv(fileName, items);
+                break;
+        }
     }
+
+    private void ExportCsv(string fileName, IEnumerable<DiagnosticReportExportItem> items)
+    {
+        char delimiter = CultureInfo.CurrentCulture.TextInfo.ListSeparator.FirstOrDefault(',');
+        StringBuilder content = new();
+        AppendCsvRow(content, delimiter,
+            SeverityHeader, CodeHeader, MessageHeader, DocumentHeader, CreatedHeader);
+
+        foreach (DiagnosticReportExportItem item in items)
+            AppendCsvRow(content, delimiter,
+                item.Severity,
+                item.Code,
+                item.Message,
+                item.Document,
+                item.Created.ToString("G", CultureInfo.CurrentCulture));
+
+        File.WriteAllText(fileName, content.ToString(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
+    }
+
+    private static void ExportJson(string fileName, IEnumerable<DiagnosticReportExportItem> items)
+    {
+        JsonSerializerOptions options = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+        File.WriteAllText(fileName, JsonSerializer.Serialize(items, options), new UTF8Encoding(false));
+    }
+
+    private static void ExportYaml(string fileName, IEnumerable<DiagnosticReportExportItem> items)
+    {
+        ISerializer serializer = new SerializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+        File.WriteAllText(fileName, serializer.Serialize(items), new UTF8Encoding(false));
+    }
+
+    private string CreateExportFileName()
+    {
+        string document = string.IsNullOrWhiteSpace(TargetDocumentTitle)
+            ? "DiagnosticReport"
+            : TargetDocumentTitle;
+        char[] invalidCharacters = Path.GetInvalidFileNameChars();
+        string safeDocument = string.Concat(document.Select(character =>
+            invalidCharacters.Contains(character) ? '_' : character));
+        return $"{safeDocument}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
+    }
+
+    private static void AppendCsvRow(StringBuilder builder, char delimiter, params string?[] values)
+    {
+        for (int index = 0; index < values.Length; index++)
+        {
+            if (index > 0) builder.Append(delimiter);
+
+            string value = values[index] ?? string.Empty;
+            bool requiresEscaping = value.Contains(delimiter)
+                || value.Contains('"')
+                || value.Contains('\r')
+                || value.Contains('\n');
+            if (!requiresEscaping)
+            {
+                builder.Append(value);
+                continue;
+            }
+
+            builder.Append('"');
+            builder.Append(value.Replace("\"", "\"\""));
+            builder.Append('"');
+        }
+
+        builder.AppendLine();
+    }
+
+    private sealed record DiagnosticReportExportItem(
+        string Severity,
+        string Code,
+        string Message,
+        string Document,
+        DateTime Created);
 
     #endregion
 
