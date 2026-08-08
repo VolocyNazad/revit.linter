@@ -25,22 +25,6 @@ public sealed class ArithmeticFormulaTests
     [InlineData("10 - 3 - 2", 5)]
     [InlineData("20 / 5 / 2", 2)]
     [InlineData("20 % 6 % 4", 2)]
-    public void Arithmetic_expression_returns_expected_result(string formula, double expected)
-    {
-        double result = FormulaCompiler.Evaluate<double>(formula);
-
-        Assert.Equal(expected, result, precision: 10);
-    }
-
-    [Fact]
-    public void Division_by_zero_returns_positive_infinity()
-    {
-        double result = FormulaCompiler.Evaluate<double>("1 / 0");
-
-        Assert.Equal(double.PositiveInfinity, result);
-    }
-
-    [Theory]
     [InlineData("roundup(1.1)", 2)]
     [InlineData("rounddown(1.9)", 1)]
     [InlineData("round(1.25, 1)", 1.3)]
@@ -54,10 +38,18 @@ public sealed class ArithmeticFormulaTests
     [InlineData("cos(0)", 1)]
     [InlineData("tan(0)", 0)]
     [InlineData("pi", Math.PI)]
-    public void Arithmetic_function_returns_expected_result(string formula, double expected)
+    public void Arithmetic_formula_returns_expected_result(string formula, double expected)
     {
         double result = FormulaCompiler.Evaluate<double>(formula);
 
         Assert.Equal(expected, result, precision: 10);
+    }
+
+    [Fact]
+    public void Division_by_zero_returns_positive_infinity()
+    {
+        double result = FormulaCompiler.Evaluate<double>("1 / 0");
+
+        Assert.Equal(double.PositiveInfinity, result);
     }
 }

@@ -23,14 +23,6 @@ public sealed class LogicalFormulaTests
     [InlineData("2 <= 2", true)]
     [InlineData("true & !false", true)]
     [InlineData("false | true", true)]
-    public void Logical_expression_returns_expected_result(string formula, bool expected)
-    {
-        bool result = FormulaCompiler.Evaluate<bool>(formula);
-
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData("isnull(null)", true)]
     [InlineData("isdouble(1)", true)]
     [InlineData("isstring('text')", true)]
@@ -47,14 +39,6 @@ public sealed class LogicalFormulaTests
     [InlineData("isnullorempty(null)", true)]
     [InlineData("isnullorempty('text')", false)]
     [InlineData("if(false, true, false)", false)]
-    public void Logical_function_returns_expected_result(string formula, bool expected)
-    {
-        bool result = FormulaCompiler.Evaluate<bool>(formula);
-
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData("true | false & false", true)]
     [InlineData("(true | false) & false", false)]
     [InlineData("!false & false | true", true)]
@@ -69,7 +53,7 @@ public sealed class LogicalFormulaTests
     [InlineData("true\r\n & true", true)]
     [InlineData("true & true & false", false)]
     [InlineData("false | false | true", true)]
-    public void Logical_operators_respect_precedence_and_brackets(string formula, bool expected)
+    public void Logical_formula_returns_expected_result(string formula, bool expected)
     {
         bool result = FormulaCompiler.Evaluate<bool>(formula);
 
