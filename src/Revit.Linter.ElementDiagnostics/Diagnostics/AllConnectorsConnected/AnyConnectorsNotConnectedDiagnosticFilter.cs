@@ -4,5 +4,10 @@ internal sealed class AnyConnectorsNotConnectedDiagnosticFilter : IElementDiagno
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.AnyConnectorsNotConnected;
 
-    public bool IsRelevantFor(Document document, Element element) => element is MEPCurve or FamilyInstance;
+    public bool IsRelevantFor(Document document, Element element) => element switch
+    {
+        MEPCurve => true,
+        FamilyInstance familyInstance => familyInstance.MEPModel?.ConnectorManager is not null,
+        _ => false,
+    };
 }

@@ -9,14 +9,14 @@ internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
         ConnectorManager? connectorManager = targetElement switch
         {
             MEPCurve mepCurve => mepCurve.ConnectorManager,
-            FamilyInstance familyInstance => familyInstance.MEPModel.ConnectorManager,
-            _ => throw new InvalidOperationException($"Element {targetElement.Id} of type {targetElement.GetType()} does not support connectors."),
+            FamilyInstance familyInstance => familyInstance.MEPModel?.ConnectorManager,
+            _ => null,
         };
 
         if (connectorManager is null) return new(DiagnosticVerdict.Valid);
         foreach (Connector connector in connectorManager.Connectors)
         {
-            if (connector.ConnectorType != ConnectorType.Physical) continue; //todo Без этого не работало иногда. Убедиться, что все ок.
+            if (connector.ConnectorType == ConnectorType.Logical) continue;
             if (!connector.IsConnected) return new(DiagnosticVerdict.NotValid);
         }
 
