@@ -1,3 +1,5 @@
+#pragma warning disable S6966 // Asynchronous file APIs are unavailable in .NET Framework 4.8.
+
 namespace Revit.Linter.ConfigurationPath.Tests;
 
 public sealed class ConfigurationFileChangeSourceTests : IDisposable
@@ -127,3 +129,5 @@ public sealed class ConfigurationFileChangeSourceTests : IDisposable
         Assert.True(notified.Task.Status == TaskStatus.RanToCompletion);
     }
 }
+
+#pragma warning restore S6966

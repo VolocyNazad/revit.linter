@@ -1,3 +1,5 @@
+#pragma warning disable S6966 // Asynchronous file APIs are unavailable in .NET Framework 4.8.
+
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ValueStore.Abstractions;
 using Revit.Linter.ValueStore.Services;
@@ -274,3 +276,5 @@ public sealed class YmlFileValueStoreTests : IDisposable
         Assert.True(notified);
     }
 }
+
+#pragma warning restore S6966
