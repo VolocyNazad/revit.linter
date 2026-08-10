@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
-using Revit.Events.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Localization;
@@ -27,11 +27,11 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private bool _applyingExternalChanges;
 
     public RunDiagnosticViewModel(
-            IRevitContext revitContext, IAsyncExternalEvent externalEvent,
+            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
             IDiagnosticService diagnosticService,
             IDiagnosticReportPresenter diagnosticReportViewModel,
             IValueStore<RunDiagnosticSettings> store,
-            IDialog dialog) : base(externalEvent)
+            IDialog dialog) : base(idlingScheduler)
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;

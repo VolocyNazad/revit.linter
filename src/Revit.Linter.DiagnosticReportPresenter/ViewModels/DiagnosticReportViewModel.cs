@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
-using Revit.Events.Abstractions.Services;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
@@ -75,12 +75,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private Dispatcher? _dispatcher;
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IAsyncExternalEvent externalEvent,
+            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
             IEnumerable<IAccentElementsService> accentElementsServices,
             IFixReportSender fixReportSender,
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
             IDiagnosticCatalog diagnosticCatalog,
-            IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider) : base(externalEvent)
+            IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;

@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Revit.Context.Abstractions.Services;
-using Revit.Events.Abstractions.Services;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.OpenedDocuments.ViewModels.Base;
 using System.Collections.ObjectModel;
 
@@ -13,7 +13,7 @@ public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
     private readonly IRevitContext _revitContext;
 
     public OpenedDocumentsViewModel(
-        IRevitContext revitContext, IAsyncExternalEvent externalEvent) : base(externalEvent)
+        IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler) : base(idlingScheduler)
     {
         _revitContext = revitContext;
     }

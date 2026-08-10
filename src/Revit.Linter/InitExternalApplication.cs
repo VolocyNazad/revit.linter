@@ -41,6 +41,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     public override void OnStartup()
     {
         RevitTask.Initialize(Application);
+        Program.Provider.GetRequiredService<RevitIdlingScheduler>().Initialize(Application);
 
         AssemblyLoadService.LoadAssemblies();
 
@@ -61,9 +62,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 
-        AddShowHideErrorListCommand(panel);
-        AddShowHideFixListCommand(panel);
-        AddShowHideDiagnosticListCommand(panel);
+        AddShowAllPanesCommand(panel);
         AddOpenConfigurationFolderCommand(panel);
 
         var elementChangesMonitor = Program.Provider.GetRequiredService<IElementChangesMonitor>();
@@ -94,6 +93,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         Application.ThemeChanged -= Application_ThemeChanged;
 #endif
 
+        Program.Provider.GetRequiredService<RevitIdlingScheduler>().Dispose();
         RevitTask.Shutdown();
     }
 
@@ -217,32 +217,15 @@ internal sealed class InitExternalApplication : ExternalApplication
         panel.AddItem(buttonData);
     }
 
-    private static void AddShowHideErrorListCommand(RibbonPanel panel)
+    private static void AddShowAllPanesCommand(RibbonPanel panel)
     {
         PushButtonData buttonData = new(
-            "ShowHideErrorListButton",
-            Localizer["showHideErrors_buttonText"],
-            AssemblyPath, typeof(ShowHideErrorListCommand).FullName)
+            "ShowAllPanesButton",
+            Localizer["showAllPanes_buttonText"],
+            AssemblyPath, typeof(ShowAllPanesCommand).FullName)
         {
-            ToolTip = Localizer["showHideErrors_toolTip"],
-            LongDescription = Localizer["showHideErrors_longDescription"],
-            LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
-        };
-
-        panel.AddItem(buttonData);
-    }
-
-    private static void AddShowHideFixListCommand(RibbonPanel panel)
-    {
-        PushButtonData buttonData = new(
-            "ShowHideFixListButton",
-            Localizer["showHideFixes_buttonText"],
-            AssemblyPath, typeof(ShowHideFixListCommand).FullName)
-        {
-            ToolTip = Localizer["showHideFixes_toolTip"],
-            LongDescription = Localizer["showHideFixes_longDescription"],
+            ToolTip = Localizer["showAllPanes_toolTip"],
+            LongDescription = Localizer["showAllPanes_longDescription"],
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
@@ -252,23 +235,6 @@ internal sealed class InitExternalApplication : ExternalApplication
     }
 
     private static BitmapImage LoadImage(string path) => new(new Uri(path));
-
-    private static void AddShowHideDiagnosticListCommand(RibbonPanel panel)
-    {
-        PushButtonData buttonData = new(
-            "ShowHideDiagnosticListButton",
-            Localizer["showHideDiagnostics_buttonText"],
-            AssemblyPath, typeof(ShowHideDiagnosticListCommand).FullName)
-        {
-            ToolTip = Localizer["showHideDiagnostics_toolTip"],
-            LongDescription = Localizer["showHideDiagnostics_longDescription"],
-            LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
-        };
-
-        panel.AddItem(buttonData);
-    }
 
     private void InitializeRevitContext()
         => Program.Provider.GetRequiredService<IRevitContextInitializer>().Initialize(Application);

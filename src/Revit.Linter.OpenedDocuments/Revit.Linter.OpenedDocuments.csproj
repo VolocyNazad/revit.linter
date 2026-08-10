@@ -11,4 +11,7 @@
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 		<PackageReference Include="VolocyNazad.Revit.Async" />
 	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+	</ItemGroup>
 </Project>

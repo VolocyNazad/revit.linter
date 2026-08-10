@@ -152,6 +152,10 @@
 конфигурации</value></data>
   <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Открыть папку конфигурации линтера</value></data>
   <data name="openConfigurationFolder_longDescription" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
+  <data name="showAllPanes_buttonText" xml:space="preserve"><value>Показать/Скрыть
+проверки</value></data>
+  <data name="showAllPanes_toolTip" xml:space="preserve"><value>Показать или скрыть все панели проверок</value></data>
+  <data name="showAllPanes_longDescription" xml:space="preserve"><value>Показывает или скрывает панели отчётов диагностик, истории исправлений и доступных проверок.</value></data>
   <data name="showHideErrors_buttonText" xml:space="preserve"><value>Показать/скрыть
 отчёты</value></data>
   <data name="showHideErrors_toolTip" xml:space="preserve"><value>Показать или скрыть панель отчётов</value></data>

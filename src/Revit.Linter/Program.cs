@@ -68,6 +68,8 @@ internal sealed class Program
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddSingleton<DiagnosticCatalogNotifier>()
                 .AddSingleton<ValueStoreNotifier>()
+                .AddSingleton<RevitIdlingScheduler>()
+                .AddSingleton<IRevitIdlingScheduler>(provider => provider.GetRequiredService<RevitIdlingScheduler>())
                 .AddSingleton<IFormulaCompilationNotifier, FormulaCompilationNotifier>()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()

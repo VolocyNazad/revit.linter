@@ -152,6 +152,10 @@
 folder</value></data>
   <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Open the linter configuration folder</value></data>
   <data name="openConfigurationFolder_longDescription" xml:space="preserve"><value>Opens the folder containing configuration files that define the linter rules.</value></data>
+  <data name="showAllPanes_buttonText" xml:space="preserve"><value>Show/Hide
+diagnostics</value></data>
+  <data name="showAllPanes_toolTip" xml:space="preserve"><value>Show or hide all diagnostic panels</value></data>
+  <data name="showAllPanes_longDescription" xml:space="preserve"><value>Shows or hides the diagnostic reports, fix history, and available diagnostics panels.</value></data>
   <data name="showHideErrors_buttonText" xml:space="preserve"><value>Show/Hide
 reports</value></data>
   <data name="showHideErrors_toolTip" xml:space="preserve"><value>Show or hide the report panel</value></data>
