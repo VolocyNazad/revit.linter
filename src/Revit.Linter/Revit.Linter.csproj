@@ -6,7 +6,8 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<LaunchRevit>true</LaunchRevit>
-		<GenerateAddinOnBuild>true</GenerateAddinOnBuild>
+		<GenerateAddinOnBuild Condition="'$(IsDebug)' == 'true'">true</GenerateAddinOnBuild>
+		<AddinOutputDirectory>$(AppData)\Autodesk\Revit</AddinOutputDirectory>
 		<IsRepackable>true</IsRepackable>
 		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll;Revit.Linter.Localization.dll</RepackBinariesExcludes>
 		<StartArguments>/language RUS</StartArguments>
