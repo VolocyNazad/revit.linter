@@ -1,11 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.ElementDiagnostics.DI;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.Diagnostic.Tests;

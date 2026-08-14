@@ -29,6 +29,7 @@ using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.Linter.ValueStore.DI;
+using Revit.Linter.ValueStore.Serialization;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
 using System.Reflection;
@@ -73,7 +74,13 @@ internal sealed class Program
                 .AddSingleton<IFormulaCompilationNotifier, FormulaCompilationNotifier>()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
-                .AddValueStoreModule()
+                .AddValueStore<YamlValueStoreSerializer>(options =>
+                {
+                    options.DirectoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "RevitLinter");
+                    options.WatchForExternalChanges = true;
+                })
             )
         ;
 

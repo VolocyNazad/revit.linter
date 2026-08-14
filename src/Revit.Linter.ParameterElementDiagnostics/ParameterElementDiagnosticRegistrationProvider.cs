@@ -1,6 +1,6 @@
-using Revit.Linter.ConfigurationPath;
+﻿using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ParameterElementDiagnostics.Models;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.ParameterElementDiagnostics;

@@ -1,9 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.ValueStore.Abstractions.Models;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using System.IO;
 using System.Windows.Threading;
 

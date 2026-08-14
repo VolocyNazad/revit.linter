@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;

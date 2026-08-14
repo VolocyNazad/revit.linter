@@ -9,7 +9,7 @@ using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Localization;
 using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using System.Diagnostics;
 
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;

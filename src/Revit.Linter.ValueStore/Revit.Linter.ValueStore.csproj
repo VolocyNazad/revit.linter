@@ -1,7 +1,8 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="YamlDotNet" />
   </ItemGroup>
 

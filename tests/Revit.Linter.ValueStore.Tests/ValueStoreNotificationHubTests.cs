@@ -1,4 +1,4 @@
-using Revit.Linter.ValueStore.Abstractions.Models;
+﻿using Revit.Linter.ValueStore.Abstractions;
 using Revit.Linter.ValueStore.Services;
 
 namespace Revit.Linter.ValueStore.Tests;
@@ -28,7 +28,7 @@ public sealed class ValueStoreNotificationHubTests
         using IDisposable subscription = hub.OnLoadFailed(args => received = args);
 
         Assert.NotNull(received);
-        Assert.Equal(typeof(TestSettings), received.SettingsType);
+        Assert.Equal(typeof(TestSettings), received.ValueType);
         Assert.Equal("settings.yml", received.FilePath);
     }
 

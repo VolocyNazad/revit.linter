@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Models;
 using Revit.Linter.ConfigurationPath;
-using Revit.Linter.ValueStore.Abstractions.Services;
+using Revit.Linter.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics;
