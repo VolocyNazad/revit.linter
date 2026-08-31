@@ -4,5 +4,10 @@
     <BuildType Name="Release" />
     <Platform Name="Any CPU" />
   </Configurations>
+  <Folder Name="/solutionItems/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Revit.Linter.Build.csproj" />
 </Solution>
