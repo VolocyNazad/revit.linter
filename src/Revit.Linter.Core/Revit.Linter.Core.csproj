@@ -3,6 +3,6 @@
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
+		<PackageReference Include="VolocyNazad.ValueStore" />
 	</ItemGroup>
 </Project>

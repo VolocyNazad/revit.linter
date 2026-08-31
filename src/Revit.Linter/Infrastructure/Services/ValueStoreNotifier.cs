@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.ValueStore.Abstractions;
+using Toolkit.ValueStore.Abstractions;
 using System.IO;
 using System.Windows.Threading;
 

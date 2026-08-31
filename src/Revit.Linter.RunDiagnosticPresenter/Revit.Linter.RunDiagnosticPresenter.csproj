@@ -28,7 +28,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
-		<ProjectReference Include="..\Revit.Linter.ValueStore\Revit.Linter.ValueStore.csproj" />
+		<PackageReference Include="VolocyNazad.ValueStore" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />

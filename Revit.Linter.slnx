@@ -77,9 +77,6 @@
     <Project Path="src/Revit.Linter.ThemeManaging/Revit.Linter.ThemeManaging.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.ValueStore/Revit.Linter.ValueStore.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Toolkit.Revit.Extensions/Toolkit.Revit.Extensions.csproj" Id="870e61cb-2af9-458e-af3f-ee17ad3b3486">
       <Platform Project="x64" />
     </Project>
@@ -97,6 +94,9 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.Core.Tests/Revit.Linter.Core.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Diagnostic.Tests/Revit.Linter.Diagnostic.Tests.csproj">
@@ -130,9 +130,6 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.SerilogEnrichers.Tests/Revit.Linter.SerilogEnrichers.Tests.csproj">
-      <Platform Project="x64" />
-    </Project>
-    <Project Path="tests/Revit.Linter.ValueStore.Tests/Revit.Linter.ValueStore.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

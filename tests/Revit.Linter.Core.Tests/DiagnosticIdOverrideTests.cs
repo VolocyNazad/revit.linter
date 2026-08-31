@@ -1,7 +1,7 @@
 ﻿using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.ValueStore.Abstractions;
+using Toolkit.ValueStore.Abstractions;
 
-namespace Revit.Linter.ValueStore.Tests;
+namespace Revit.Linter.Core.Tests;
 
 public sealed class DiagnosticIdOverrideTests
 {

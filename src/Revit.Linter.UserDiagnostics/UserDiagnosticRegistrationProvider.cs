@@ -1,6 +1,6 @@
 ﻿using Revit.Linter.ConfigurationPath;
 using Revit.Linter.UserDiagnostics.Models;
-using Revit.Linter.ValueStore.Abstractions;
+using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.UserDiagnostics;
 

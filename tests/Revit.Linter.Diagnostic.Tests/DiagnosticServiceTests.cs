@@ -12,7 +12,7 @@ using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
-using Revit.Linter.ValueStore.Abstractions;
+using Toolkit.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using TUnit.Core.Executors;
 
