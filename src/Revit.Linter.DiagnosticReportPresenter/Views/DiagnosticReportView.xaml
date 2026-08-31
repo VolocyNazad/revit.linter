@@ -205,27 +205,22 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <DataTemplate.Resources>
-                                    <Style
-                                        x:Key="SeverityChipStyle"
-                                        BasedOn="{StaticResource MaterialDesignOutlineChip}"
-                                        TargetType="{x:Type materialDesign:Chip}">
+                                    <Style x:Key="SeverityTextBlockStyle" TargetType="{x:Type TextBlock}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Severity}" Value="Warning">
-                                                <Setter Property="BorderBrush" Value="#FFB74D" />
                                                 <Setter Property="Foreground" Value="#FFB74D" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Severity}" Value="Error">
-                                                <Setter Property="BorderBrush" Value="#EF5350" />
                                                 <Setter Property="Foreground" Value="#EF5350" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </DataTemplate.Resources>
-                                <materialDesign:Chip
-                                    Margin="0"
-                                    d:Content="Severity"
-                                    Content="{Binding Severity}"
-                                    Style="{StaticResource SeverityChipStyle}" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    d:Text="Severity"
+                                    Style="{StaticResource SeverityTextBlockStyle}"
+                                    Text="{Binding Severity}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -256,7 +251,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <FlowDocumentScrollViewer
-                                    Width="1800"
+                                    Width="1200"
                                     Document="{Binding Message}"
                                     HorizontalScrollBarVisibility="Disabled"
                                     IsSelectionEnabled="True"

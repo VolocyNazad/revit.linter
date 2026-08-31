@@ -4,5 +4,5 @@ internal sealed class FamilyUnusedDiagnosticDocumentFilter : IElementDiagnosticD
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

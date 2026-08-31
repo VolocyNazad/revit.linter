@@ -4,5 +4,5 @@ internal sealed class DetailCurveExistsDiagnosticDocumentFilter : IElementDiagno
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.DetailCurveExists;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

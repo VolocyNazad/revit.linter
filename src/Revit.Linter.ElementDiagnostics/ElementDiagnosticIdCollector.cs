@@ -206,11 +206,19 @@ internal static class ElementDiagnosticIdCollector
         true,
         false,
         string.Empty);
-    public readonly static ElementDiagnosticId GroupNested = new(
+public readonly static ElementDiagnosticId GroupNested = new(
         "SHRD0021",
         "Проверка групп на отсутствие вложения в другие группы.",
         "Группа с именем '{elementName}' и идентификатором '{elementId}' вложена в другую группу. Время выполнения '{duration}' мс.",
         DiagnosticSeverity.Warning,
+        true,
+        false,
+        string.Empty);
+    public readonly static ElementDiagnosticId MaterialUnused = new(
+        "SHRD0022",
+        "Проверка материалов на их использование в документе.",
+        "Материал с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
+        DiagnosticSeverity.Message,
         true,
         false,
         string.Empty);

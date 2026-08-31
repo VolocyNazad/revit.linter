@@ -16,4 +16,5 @@
   <data name="fixElementsFailed_message" xml:space="preserve"><value>Не удалось исправить некоторые элементы.</value></data><data name="fixElementsSucceeded_message" xml:space="preserve"><value>Элементы успешно исправлены.</value></data>
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Не удалось исправить документ «{documentTitle}».</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Документ «{documentTitle}» успешно исправлен.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
+  <data name="retry_title" xml:space="preserve"><value>Повторить</value></data>
 </root>

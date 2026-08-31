@@ -6,19 +6,15 @@ internal sealed class ElementEqualityComparer : IEqualityComparer<Element>
 {
 	public static ElementEqualityComparer Instance { get; } = new();
 
+	// Document не переопределяет Equals, а разные обращения к одному и тому же элементу не
+	// гарантируют один и тот же управляемый объект - сравниваем только по Id.
 	public bool Equals(Element? x, Element? y)
 		=> ReferenceEquals(x, y)
 		|| x is not null
 		&& y is not null
-		&& ReferenceEquals(x.Document, y.Document)
 		&& x.Id == y.Id;
 
 	public int GetHashCode(Element element)
-	{
-		unchecked
-		{
-			return (element.Document.GetHashCode() * 397) ^ element.Id.GetHashCode();
-		}
-	}
+		=> element.Id.GetHashCode();
 }
 

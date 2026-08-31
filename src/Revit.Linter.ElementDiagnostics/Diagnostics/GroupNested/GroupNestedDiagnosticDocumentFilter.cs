@@ -4,5 +4,5 @@ internal sealed class GroupNestedDiagnosticDocumentFilter : IElementDiagnosticDo
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.GroupNested;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

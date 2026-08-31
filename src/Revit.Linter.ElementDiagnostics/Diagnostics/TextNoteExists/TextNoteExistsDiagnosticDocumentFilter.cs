@@ -4,5 +4,5 @@ internal sealed class TextNoteExistsDiagnosticDocumentFilter : IElementDiagnosti
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.TextNoteExists;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

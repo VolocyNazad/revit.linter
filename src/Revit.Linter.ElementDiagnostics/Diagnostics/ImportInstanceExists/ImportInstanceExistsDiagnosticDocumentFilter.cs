@@ -4,5 +4,5 @@ internal sealed class ImportInstanceExistsDiagnosticDocumentFilter : IElementDia
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ImportInstanceExists;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

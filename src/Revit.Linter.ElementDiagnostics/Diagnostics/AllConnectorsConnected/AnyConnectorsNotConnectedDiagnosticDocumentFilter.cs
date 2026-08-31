@@ -4,5 +4,5 @@ internal sealed class AnyConnectorsNotConnectedDiagnosticDocumentFilter : IEleme
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.AnyConnectorsNotConnected;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

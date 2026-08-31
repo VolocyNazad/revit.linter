@@ -5,6 +5,7 @@ using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
+using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
@@ -70,9 +71,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
+    private readonly IDialog _dialog;
+    private readonly IConfirmationDialog _confirmationDialog;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
+
+    private bool _elementChangesEnabled;
+    private bool _elementRefreshScheduled;
+    private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
 
     public DiagnosticReportViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
@@ -80,7 +87,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IFixReportSender fixReportSender,
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
             IDiagnosticCatalog diagnosticCatalog,
-            IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider) : base(idlingScheduler)
+            IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
+            IDialog dialog, IConfirmationDialog confirmationDialog) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
@@ -90,6 +98,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog = diagnosticCatalog;
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
+        _dialog = dialog;
+        _confirmationDialog = confirmationDialog;
 
         Collection = [];
     }
@@ -417,8 +427,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
             && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
-            && ((viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)));
+            && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
     }
 
     private void ClearFilters()
@@ -459,6 +469,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
 
         _diagnosticReportReceiver.ReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
+        _elementChangesEnabled = true;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
@@ -474,7 +485,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
+        _elementChangesEnabled = false;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
+        _pendingElementRefreshes.Clear();
         _catalogLease?.Dispose();
         _catalogLease = null;
         _dispatcher = null;
@@ -519,12 +532,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void ElementChangesReceiver_ElementChangesSent(object? sender, ElementChangesSentEventArgs e)
     {
-        IList<ElementId> toRefresh = [];
-
         var changes = e.Changes;
 
         Document? targetDocument = changes.Document;
         if (targetDocument is not { IsValidObject: true }) return;
+
+        HashSet<ElementId> toRefresh = [];
 
         foreach (var id in changes.Modified)
         {
@@ -553,7 +566,17 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             }
         }
 
-        _diagnosticService.Execute(targetDocument, toRefresh);
+        if (toRefresh.Count > 0)
+        {
+            if (!_pendingElementRefreshes.TryGetValue(targetDocument, out HashSet<ElementId>? pending))
+            {
+                pending = [];
+                _pendingElementRefreshes[targetDocument] = pending;
+            }
+            pending.UnionWith(toRefresh);
+
+            ScheduleElementDiagnosticsRefresh();
+        }
 
         List<DiagnosticReportItemViewModel> GetTargetItemsBy(ElementId id) {
             return Collection
@@ -565,6 +588,31 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         // todo Нужно учитывать зависимые элеметы при обработке изменений. При коллизиях например. Создать еще поле
         // todo упростить
+    }
+
+    private void ScheduleElementDiagnosticsRefresh()
+    {
+        if (_elementRefreshScheduled) return;
+        _elementRefreshScheduled = true;
+
+        _ = _idlingScheduler.RunAsync(_ => FlushPendingElementDiagnosticsRefreshes());
+    }
+
+    private void FlushPendingElementDiagnosticsRefreshes()
+    {
+        _elementRefreshScheduled = false;
+
+        if (!_elementChangesEnabled || _pendingElementRefreshes.Count == 0) return;
+
+        List<KeyValuePair<Document, HashSet<ElementId>>> pending = [.. _pendingElementRefreshes];
+        _pendingElementRefreshes.Clear();
+
+        foreach ((Document document, HashSet<ElementId> elementIds) in pending)
+        {
+            if (document is not { IsValidObject: true } || elementIds.Count == 0) continue;
+
+            _diagnosticService.Execute(document, elementIds);
+        }
     }
 
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, DiagnosticMessageSentEventArgs e)
@@ -632,6 +680,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         : IgnoreElementSucceededMessage;
                     _fixReportSender.Send(new FixReport(
                         report.Code, report.Document.Title, new(message, ("elementId", elementId))));
+
+                    if (!success)
+                    {
+                        string resolvedMessage = message.Replace("{elementId}", elementId.ToString());
+                        await _dialog.Show(new DialogRequest(resolvedMessage), cancellationToken);
+                    }
                 }
             };
 
@@ -641,51 +695,70 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 Kind = PackIconKind.Idea,
                 Foreground = new SolidColorBrush(iconColor)
             };
+            async Task RunIgnoreFixAll(CancellationToken cancellationToken)
+            {
+                if (doc is null or { IsValidObject: false }) return;
+
+                if (!element.IsValidObject) return;
+
+                StringBuilder feedbackMessage = new();
+                bool hasErrors = false;
+                string transactionName = "Игнорирование провери для элементов";
+
+                // Транзакция всегда коммитится (возвращаем true), чтобы успешно проигнорированные
+                // элементы не откатывались из-за того, что часть элементов не удалось проигнорировать.
+                await ExecuteTransaction(doc, transactionName, () => {
+                        foreach (var reportItem in Collection)
+                        {
+                            if (reportItem.Code != report.Code) continue;
+                            if (reportItem.Target is null) continue;
+
+                            Element element = (Element)reportItem.Target;
+
+                            if (!element.IsValidObject) continue;
+
+                            try
+                            {
+                                var feedback = _ignoreElementProvider.Ignore(report.Code, element);
+                                feedbackMessage.Append($"id {element.Id}: ").Append(feedback.Message);
+                                feedbackMessage.Append(Environment.NewLine);
+                                if (feedback.Result == IgnoreElementResult.Failed) hasErrors = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                hasErrors = true;
+                                feedbackMessage.Append($"id {element.Id}: {ex.Message}");
+                                feedbackMessage.Append(Environment.NewLine);
+                            }
+                        }
+                        return true;
+                    }, cancellationToken);
+
+                string message = GetLocalizedString(hasErrors
+                    ? "ignoreElementsFailed_message"
+                    : "ignoreElementsSucceeded_message");
+                _fixReportSender.Send(new FixReport(
+                    report.Code, report.Document.Title, new(message, ("elementId", elementId))));
+
+                if (hasErrors)
+                {
+                    string dialogMessage = message + Environment.NewLine
+                        + GetLocalizedString("details_message", feedbackMessage.ToString());
+
+                    bool retry = await _confirmationDialog.Show(
+                        new ConfirmationDialogRequest(dialogMessage, RetryTitle), cancellationToken);
+
+                    // Уже проигнорированные элементы пропадут из отчёта (диагностика для них больше
+                    // не сработает), поэтому повтор затронет только оставшиеся проблемные элементы.
+                    if (retry) await RunIgnoreFixAll(cancellationToken);
+                }
+            }
+
             FixViewModel ignoreFixAll = new()
             {
                 Icon = icon,
                 Title = GetLocalizedString("all_title", IgnoreFixTitle),
-                FixDelegate = async (cancellationToken) =>
-                {
-                    if (doc is null or { IsValidObject: false }) return;
-
-                    if (!element.IsValidObject) return;
-
-                    StringBuilder? feedbackMessage = new();
-                    string transactionName = "Игнорирование провери для элементов";
-                    bool success = await ExecuteTransaction(doc, transactionName, () => {
-                            bool hasErrors = false;
-                            foreach (var reportItem in Collection)
-                            {
-                                if (reportItem.Code != report.Code) continue;
-                                if (reportItem.Target is null) continue;
-
-                                Element element = (Element)reportItem.Target;
-
-                                if (!element.IsValidObject) continue;
-
-                                try
-                                {
-                                    var feedback = _ignoreElementProvider.Ignore(report.Code, element);
-                                    feedbackMessage.Append(feedback.Message);
-                                    feedbackMessage.Append(Environment.NewLine);
-                                    if (feedback.Result == IgnoreElementResult.Failed) hasErrors = true;
-                                }
-                                catch (Exception)
-                                {
-                                    hasErrors = true;
-                                }
-                            }
-                            return !hasErrors;
-                        }, cancellationToken);
-
-                    string message = !success
-                        ? IgnoreElementsFailedMessage + Environment.NewLine
-                            + GetLocalizedString("details_message", feedbackMessage)
-                        : IgnoreElementsSucceededMessage;
-                    _fixReportSender.Send(new FixReport(
-                        report.Code, report.Document.Title, new(message, ("elementId", elementId))));
-                }
+                FixDelegate = RunIgnoreFixAll
             };
 
             return GetCatalogSnapshot().ElementDiagnostics.SelectMany(registration => registration.Fixes)
@@ -709,7 +782,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             if (!element.IsValidObject) return;
 
                             string transactionName = i.Value;
-                            bool success = await ExecuteTransaction(
+                            (bool success, string? error) = await ExecuteTransactionWithError(
                                 doc, transactionName, () => i.Execute(element), cancellationToken);
 
                             string message = GetLocalizedString(success
@@ -717,6 +790,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 : "fixElementFailed_message");
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title, new(message, ("elementId", elementId))));
+
+                            if (!success)
+                            {
+                                string resolvedMessage = message.Replace("{elementId}", elementId.ToString());
+                                string dialogMessage = string.IsNullOrWhiteSpace(error)
+                                    ? resolvedMessage
+                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error);
+                                await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
+                            }
                         }
                     };
                     fixes.Add(fix);
@@ -727,42 +809,68 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         Kind = PackIconKind.Idea,
                         Foreground = new SolidColorBrush(iconColor)
                     };
+                    async Task RunFixAll(CancellationToken cancellationToken)
+                    {
+                        if (doc is null or { IsValidObject: false }) return;
+
+                        StringBuilder errors = new();
+                        bool hasErrors = false;
+                        string transactionName = GetLocalizedString("all_title", i.Value);
+
+                        // Транзакция всегда коммитится (возвращаем true), чтобы успешно исправленные
+                        // элементы не откатывались из-за того, что часть элементов не удалось исправить.
+                        await ExecuteTransaction(doc, transactionName, () => {
+                                foreach (var reportItem in Collection)
+                                {
+                                    if (reportItem.Code != report.Code) continue;
+                                    if (reportItem.Target is null) continue;
+
+                                    Element element = (Element)reportItem.Target;
+
+                                    if (!element.IsValidObject) continue;
+
+                                    try
+                                    {
+                                        bool result = i.Execute(element);
+                                        if (!result)
+                                        {
+                                            hasErrors = true;
+                                            errors.AppendLine(GetLocalizedString(
+                                                "fixElementFailed_message") + $" (id: {element.Id})");
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        hasErrors = true;
+                                        errors.AppendLine($"id {element.Id}: {ex.Message}");
+                                    }
+                                }
+                                return true;
+                            }, cancellationToken);
+
+                        string message = GetLocalizedString(hasErrors
+                            ? "fixElementsFailed_message"
+                            : "fixElementsSucceeded_message");
+                        _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
+
+                        if (hasErrors)
+                        {
+                            string dialogMessage = message + Environment.NewLine
+                                + GetLocalizedString("details_message", errors.ToString());
+
+                            bool retry = await _confirmationDialog.Show(
+                                new ConfirmationDialogRequest(dialogMessage, RetryTitle), cancellationToken);
+
+                            // Уже исправленные элементы стали невалидными (IsValidObject == false) и будут
+                            // пропущены в следующем проходе — повтор затронет только оставшиеся проблемные.
+                            if (retry) await RunFixAll(cancellationToken);
+                        }
+                    }
+
                     FixViewModel fixAll = new() {
                         Icon = icon,
                         Title = GetLocalizedString("all_title", i.Value),
-                        FixDelegate = async (cancellationToken) => {
-                            if (doc is null or { IsValidObject: false }) return;
-
-                            string transactionName = GetLocalizedString("all_title", i.Value);
-                            bool success = await ExecuteTransaction(doc, transactionName, () => {
-                                    bool hasErrors = false;
-                                    foreach (var reportItem in Collection)
-                                    {
-                                        if (reportItem.Code != report.Code) continue;
-                                        if (reportItem.Target is null) continue;
-
-                                        Element element = (Element)reportItem.Target;
-
-                                        if (!element.IsValidObject) continue;
-
-                                        try
-                                        {
-                                            bool result = i.Execute(element);
-                                            if (!result) hasErrors = true;
-                                        }
-                                        catch (Exception)
-                                        {
-                                            hasErrors = true;
-                                        }
-                                    }
-                                    return !hasErrors;
-                                }, cancellationToken);
-
-                            string message = GetLocalizedString(success
-                                ? "fixElementsSucceeded_message"
-                                : "fixElementsFailed_message");
-                            _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
-                        }
+                        FixDelegate = RunFixAll
                     };
                     fixes.Add(fixAll);
 
@@ -789,7 +897,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             if (document is null or { IsValidObject: false }) return;
 
                             string transactionName = i.Value;
-                            bool success = await ExecuteTransaction(
+                            (bool success, string? error) = await ExecuteTransactionWithError(
                                 document, transactionName, () => i.Execute(document), cancellationToken);
 
                             string message = GetLocalizedString(success
@@ -798,6 +906,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title,
                                 new(message, ("documentTitle", documentTitle))));
+
+                            if (!success)
+                            {
+                                string resolvedMessage = message.Replace("{documentTitle}", documentTitle);
+                                string dialogMessage = string.IsNullOrWhiteSpace(error)
+                                    ? resolvedMessage
+                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error);
+                                await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
+                            }
                         }
                     };
                     return fix;
@@ -806,7 +923,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return [];
     }
 
-    private static Task<bool> ExecuteTransaction(
+    private static async Task<bool> ExecuteTransaction(
+        Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
+    {
+        (bool success, _) = await ExecuteTransactionWithError(document, transactionName, action, cancellationToken);
+        return success;
+    }
+
+    private static Task<(bool Success, string? Error)> ExecuteTransactionWithError(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
         => RevitTask.RunAsync(_ => {
             cancellationToken.ThrowIfCancellationRequested();
@@ -814,14 +938,16 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             using Transaction transaction = new(document, transactionName);
             try
             {
-                if (transaction.Start() != TransactionStatus.Started) return false;
-                if (!action()) return false;
+                if (transaction.Start() != TransactionStatus.Started)
+                    return (false, (string?)"Не удалось начать транзакцию.");
+                if (!action())
+                    return (false, (string?)"Операция вернула отрицательный результат: элемент не может быть изменён (возможно, он используется как тип по умолчанию, в спецификации, шаблоне вида или другом семействе).");
 
-                return transaction.Commit() == TransactionStatus.Committed;
+                return (transaction.Commit() == TransactionStatus.Committed, (string?)null);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return (false, (string?)ex.Message);
             }
         });
 

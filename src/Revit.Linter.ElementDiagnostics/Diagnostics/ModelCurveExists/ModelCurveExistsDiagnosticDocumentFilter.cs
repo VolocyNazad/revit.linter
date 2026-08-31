@@ -4,5 +4,5 @@ internal sealed class ModelCurveExistsDiagnosticDocumentFilter : IElementDiagnos
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ModelCurveExists;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

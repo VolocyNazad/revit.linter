@@ -16,4 +16,5 @@
   <data name="fixElementsFailed_message" xml:space="preserve"><value>Some elements could not be fixed.</value></data><data name="fixElementsSucceeded_message" xml:space="preserve"><value>Elements were fixed successfully.</value></data>
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Failed to fix document '{documentTitle}'.</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was fixed successfully.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
+  <data name="retry_title" xml:space="preserve"><value>Retry</value></data>
 </root>

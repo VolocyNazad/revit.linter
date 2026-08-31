@@ -1,42 +1,46 @@
+using System.Collections.Generic;
+using Autodesk.Revit.DB;
+
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
 
 internal static class ElementGeometryExtensions
 {
     private const double Epsilon = 1e-6;
 
-    public static ICollection<Solid> GetSolids(this GeometryElement geometryElement)
+    public static IReadOnlyCollection<Solid> GetSolids(this GeometryElement geometryElement)
     {
-        ICollection<Solid> collection = []; // todo нужно не создавать список, если это не требуется
+        List<Solid>? list = null;
 
-        foreach (var geometryObject in geometryElement)
-            AddSolids(geometryObject, collection);
+        foreach (GeometryObject geometryObject in geometryElement)
+            CollectSolids(geometryObject, ref list);
 
-        return collection;
+        return list is not null ? list : Array.Empty<Solid>();
     }
-    public static ICollection<Solid> GetSolids(this Element element, Options opt)
+
+    public static IReadOnlyCollection<Solid> GetSolids(this Element element, Options options)
     {
-        ICollection<Solid> collection = []; // todo нужно не создавать список, если это не требуется
+        List<Solid>? list = null;
 
-        var geometryElement = element.get_Geometry(opt);
-        if (geometryElement is not null)
-        {
-            foreach (var geometryObject in geometryElement)
-                AddSolids(geometryObject, collection);
-        }
+        var geometryElement = element.get_Geometry(options);
+        if (geometryElement is null)
+            return Array.Empty<Solid>();
 
-        return collection;
+        foreach (GeometryObject geometryObject in geometryElement)
+            CollectSolids(geometryObject, ref list);
+
+        return list is not null ? list : Array.Empty<Solid>();
     }
-    private static void AddSolids(GeometryObject geometryObject, ICollection<Solid> collection)
+
+    private static void CollectSolids(GeometryObject geometryObject, ref List<Solid>? list)
     {
         if (geometryObject is Solid { Volume: > Epsilon } solid)
-            collection.Add(solid);
+        {
+            (list ??= []).Add(solid);
+        }
         else if (geometryObject is GeometryInstance geometryInstance)
-            geometryInstance.ExplodeGeometryInstance(collection);
-    }
-
-    private static void ExplodeGeometryInstance(this GeometryInstance geometry, ICollection<Solid> collection)
-    {
-        foreach (GeometryObject geometryObject in geometry.GetInstanceGeometry())
-            AddSolids(geometryObject, collection);
+        {
+            foreach (GeometryObject nested in geometryInstance.GetInstanceGeometry())
+                CollectSolids(nested, ref list);
+        }
     }
 }

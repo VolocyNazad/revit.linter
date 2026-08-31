@@ -9,7 +9,7 @@ namespace Revit.Linter.ElementDependencyDefiners;
 /// </summary>
 public class InstanceMembersDependencyDefiner : IElementsDependencyDefiner
 {
-public IElementsDependencyDefiner Inversed => DefinerInstance<InstanceMembersDependencyDefiner>.Value;
+public IElementsDependencyDefiner Inversed => DefinerInstance<GeneralGroupTypeDependencyDefiner>.Value;
 
 	public IEnumerable<Element> All(Element element)
 	{

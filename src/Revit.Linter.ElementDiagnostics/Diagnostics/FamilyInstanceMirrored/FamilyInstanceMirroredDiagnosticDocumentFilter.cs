@@ -4,5 +4,5 @@ internal sealed class FamilyInstanceMirroredDiagnosticDocumentFilter : IElementD
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceMirrored;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

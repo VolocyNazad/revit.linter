@@ -21,6 +21,10 @@
 		<None Include="ViewModels\DialogViewModel.resx"><DependentUpon>DialogViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\DialogViewModel.ru-RU.resx"><DependentUpon>DialogViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\DialogViewModel.resx" />
+		<EmbeddedResource Remove="ViewModels\ConfirmationDialogViewModel*.resx" />
+		<None Include="ViewModels\ConfirmationDialogViewModel.resx"><DependentUpon>ConfirmationDialogViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\ConfirmationDialogViewModel.ru-RU.resx"><DependentUpon>ConfirmationDialogViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\ConfirmationDialogViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>

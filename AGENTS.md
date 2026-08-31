@@ -1,51 +1,52 @@
-# AGENTS.md
+## Policy
 
-Инструкции для AI-агентов (opencode, Codex, Claude и др.), работающих с этим репозиторием.
+Стек, описанный ниже, используется по умолчанию и имеет приоритет над
+тем, что агент мог бы выбрать сам. Предпочитайте то, что уже используется
+в затрагиваемой части репозитория, а не альтернативу — даже если она
+кажется более удачной. Если отклонение от стека действительно необходимо,
+не делайте это молча: явно скажите об этом пользователю, объясните
+причину и дождитесь подтверждения.
 
 ## О проекте
 
-Revit.Linter — расширение для Autodesk Revit (C#/.NET, WPF), которое позволяет пользователю следить за чистотой проектов и семейств.
-Проверки настраиваются YAML-конфигурациями отдельно для каждой версии Revit.
-
-## Требования
+Revit.Linter — расширение для Autodesk Revit, которое позволяет пользователю следить за чистотой проектов и семейств.
 
 ## Решение и структура
 
-- `Revit.Linter.slnx` — решение add-in (проекты в `src/`, тесты в `tests/`).
-- Итоговые артефакты/установщики пишутся в `output/`.
-- Проект для формирования msi `installer/`
-- Документация `docs/`
-- Сборка `build/`
-- `build/Revit.Linter.Build.slnx` — отдельное решение пайплайна сборки (ModularPipelines),
-  компилирует расширение и собирает MSI.
+- `Revit.Linter.slnx` — solution
+- `src/` - projects
+- `tests/` - tests
+- `docs/` - documentation
+- `installer/` -msi installer
+- `build/` - solution building, compilation, package
+- `output/` - artifacts after building
+- `benchmark/` - benchmarking
+- `sandbox/` - отдельное solution (`Revit.Linter.Sandbox.slnx`) для
+  локальных экспериментов, не часть основной сборки/тестов
+- `wiki/` - Obsidian-вики с документацией (`Home.md`, `Setup.md`)
 
-## Команды
+`src/` содержит десятки небольших проектов по одной ответственности на
+проект (диагностики, презентеры, менеджеры состояния и т.д.) — большинство
+названо `Revit.Linter.<Область>`. `Toolkit.Revit.Extensions` — расширения
+для Revit API, отдельные от `Revit.Linter.*`.
 
-## Тесты
+## Технологический стек
 
-Тесты на xunit.v3 в папке `tests/`. Многие зависят от Revit API и идут с суффиксом
-`RevitTests` (запуск требует уровня в Revit), остальные — обычные unit-тесты. Команда
-запуска уточняется в конкретном тестовом проекте; при изменении логики добавляй/прави
-соответствующие тесты.
-
-## Правила
-
-- Язык компиляции: C# 14, `Nullable` включён, `ImplicitUsings` включены.
-- 
-- Центральное управление пакетами (Central Package Management): версии только в
-  `Directory.Packages.props`.
-
-- Мульти-таргет по версиям Revit через `$(MajorRevitVersion)` / `$(RevitVersion)` —
-  не хардкодь выполнения кода под конкретную версию без необходимости.
-
-- Код-анализ: включён SonarAnalyzer (`SonarAnalyzer.CSharp`) как глобальный анализатор
-  на все проекты — следуй его предупреждениям.
-
-- Поддерживаемые версии Revit: 2021, 2023, 2025. Сборка мульти-таргет: конфигурации
-`Debug_<Revit>` / `Release_<Revit>` для каждой версии.
-
-- UI построен по MVVM, соблюдай этот паттерн при внесении изменений:
-	- Основной приоритет — архитектура MVVM: логика в ViewModel, не в code-behind окна.
-	- Используется `CommunityToolkit.Mvvm`
-
-## Полезные ссылки
+- `VolocyNazad.Revit.Sdk` (кастомный MSBuild SDK, исходники в отдельном
+  репозитории `toolkit.revit.sdk`) + `Revit_All_Main_Versions_API_x64`
+- WPF, CommunityToolkit.Mvvm, MaterialDesignThemes, Microsoft.Xaml.Behaviors.Wpf
+- `VolocyNazad.Revit.Async`, `VolocyNazad.Revit.Context`,
+  `VolocyNazad.Revit.Events`, `VolocyNazad.Revit.TransactionMemoryCache`,
+  `VolocyNazad.MVVM.DependencyInjection`, `VolocyNazad.AssemblyResolver` —
+  пакеты из семейства репозиториев `toolkit.revit.*`
+- `Nice3point.TUnit.Revit` — тестирование внутри среды Revit
+- Microsoft.Extensions.* (DependencyInjection, Logging, Localization,
+  Options, Hosting)
+- Microsoft.CodeAnalysis.CSharp (Roslyn — вероятно, для анализа кода/парсинга)
+- YamlDotNet, StringToExpression, Humanizer.Core(.ru)
+- Serilog + Serilog.Sinks.* (Console, Debug, File)
+- ILRepack (объединение сборок при публикации)
+- Тесты: **xunit.v3** + xunit.runner.visualstudio + Microsoft.NET.Test.Sdk
+- Central package management через `Directory.Packages.props`;
+  AutoConstructor, PolySharp, SonarAnalyzer.CSharp подключены глобально
+  через `GlobalPackageReference` на все проекты
