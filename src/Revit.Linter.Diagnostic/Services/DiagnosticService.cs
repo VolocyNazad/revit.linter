@@ -4,7 +4,7 @@ using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using System.Diagnostics;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 
 namespace Revit.Linter.Diagnostic.Services;
 

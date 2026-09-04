@@ -1,5 +1,5 @@
 ﻿#if BEFORE2024
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 #endif
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.DetailCurveExists;

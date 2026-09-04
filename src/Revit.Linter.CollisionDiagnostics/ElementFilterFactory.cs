@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Languages.Languages;
 using StringToExpression;
 using System.Linq.Expressions;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 
 namespace Revit.Linter.CollisionDiagnostics;
 

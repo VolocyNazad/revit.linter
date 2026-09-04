@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Windows.Media.Imaging;
 using MediaColor = System.Windows.Media.Color;
 #if BEFORE2024
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 #endif
 
 namespace Revit.Linter;

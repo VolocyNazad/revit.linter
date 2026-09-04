@@ -1,5 +1,5 @@
 using Revit.TransactionMemoryCache.Abstractions.Services;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.MaterialUnused;
 

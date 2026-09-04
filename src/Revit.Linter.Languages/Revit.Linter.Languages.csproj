@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
 
 	<ItemGroup>
 		<PackageReference Include="Humanizer.Core" />
@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementDependencyDefiners\Revit.Linter.ElementDependencyDefiners.csproj" />
-		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
+		<PackageReference Include="VolocyNazad.Revit.Sugar" />
 	</ItemGroup>
 
 </Project>

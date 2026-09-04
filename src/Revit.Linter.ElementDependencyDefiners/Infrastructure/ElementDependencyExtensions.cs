@@ -1,7 +1,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Mechanical;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 
 namespace Revit.Linter.ElementDependencyDefiners.Infrastructure;
 

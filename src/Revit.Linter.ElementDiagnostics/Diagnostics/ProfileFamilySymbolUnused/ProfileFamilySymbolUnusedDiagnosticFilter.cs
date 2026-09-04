@@ -1,4 +1,4 @@
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.ProfileFamilySymbolUnused;
 

@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
 
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -88,7 +88,7 @@
 		<ProjectReference Include="..\Revit.Linter.SerilogEnrichers\Revit.Linter.SerilogEnrichers.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
-		<ProjectReference Include="..\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
+		<PackageReference Include="VolocyNazad.Revit.Sugar" />
 	</ItemGroup>
 
 	<ItemGroup>

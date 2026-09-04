@@ -1,5 +1,5 @@
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Services;

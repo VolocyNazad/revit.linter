@@ -1,6 +1,6 @@
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Spatial;
-using Toolkit.Revit.Extensions;
+using Revit.Sugar;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 

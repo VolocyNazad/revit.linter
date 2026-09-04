@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -10,7 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
-    <ProjectReference Include="..\..\src\Toolkit.Revit.Extensions\Toolkit.Revit.Extensions.csproj" />
+    <PackageReference Include="VolocyNazad.Revit.Sugar" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="required-revit-project-parameters.txt" CopyToOutputDirectory="PreserveNewest" />
