@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.43">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
 	<ItemGroup>
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
