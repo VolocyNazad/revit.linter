@@ -21,8 +21,10 @@ var configuration = ManualConfig.Create(DefaultConfig.Instance)
     .AddExporter(MarkdownExporter.GitHub);
 
 
-BenchmarkRunner.Run<ElementGeometryWithSolidsBenchmarks>(configuration);
-BenchmarkRunner.Run<ElementGeometryNoSolidsBenchmarks>(configuration);
+//BenchmarkRunner.Run<ElementGeometryWithSolidsBenchmarks>(configuration);
+//BenchmarkRunner.Run<ElementGeometryNoSolidsBenchmarks>(configuration);
+//BenchmarkRunner.Run<CollisionPairIntersectionBenchmarks>(configuration);
+BenchmarkRunner.Run<SpatialIndexScanBenchmarks>(configuration);
 
 static string FindBenchmarkDirectory()
 {
