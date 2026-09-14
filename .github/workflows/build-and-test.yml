@@ -1,0 +1,60 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test (${{ matrix.configuration }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Release_2021.1.9
+          - Release_2023.0.0
+          - Release_2025.0.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Build solution
+        shell: pwsh
+        run: dotnet build Revit.Linter.slnx --configuration "${{ matrix.configuration }}" /nologo
+
+      - name: Run headless tests
+        shell: pwsh
+        run: |
+          $testProjects = @(Get-ChildItem tests -Recurse -Filter *.csproj |
+            Where-Object { $_.Name.EndsWith('.Tests.csproj', [StringComparison]::Ordinal) })
+
+          if ($testProjects.Count -eq 0) {
+            throw "No headless test projects were found."
+          }
+
+          foreach ($project in $testProjects) {
+            $configuration = "${{ matrix.configuration }}"
+            $executables = @(Get-ChildItem (Join-Path $project.DirectoryName 'bin') -Recurse -File -Filter "$($project.BaseName).exe" |
+              Where-Object { $_.FullName -match "[\\/]$([regex]::Escape($configuration))[\\/]" })
+            if ($executables.Count -ne 1) {
+              throw "Expected exactly one test executable for $($project.FullName) and $configuration; found $($executables.Count)."
+            }
+            & $executables[0].FullName
+            if ($LASTEXITCODE -ne 0) {
+              throw "Tests failed for $($project.FullName) with exit code $LASTEXITCODE."
+            }
+          }
