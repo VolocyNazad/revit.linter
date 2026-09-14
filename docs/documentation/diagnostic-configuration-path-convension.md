@@ -1,8 +1,8 @@
 
-## Соглашения по путям расположения конфигураций проверок
+## Diagnostic Configuration Path Conventions
 
-Все конфигурации расположены в папке по указанному пути: 
+All configurations are located in the folder at the specified path:
 
-![[diagnostic-configuration-path]] 
+![[diagnostic-configuration-path]]
 
-Пример: *C:\Users\Owner\Documents\Revit Linter/2021/*
+Example: *C:\Users\Owner\Documents\Revit Linter/2021/*

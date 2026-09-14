@@ -1,4 +1,4 @@
-/* Скрывает заголовок у встроенных заметок */
+/* Hides the title of embedded notes */
 .markdown-embed-title {
   display: none;
 }

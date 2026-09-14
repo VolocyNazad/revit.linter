@@ -1,26 +1,26 @@
 ---
 aliases:
-  - Синтаксис языка формул
+  - Formula Language Syntax
 tags:
   - documentation
   - formulas
 ---
 
-# Значения, операторы и приоритет
+# Values, Operators, and Precedence
 
-## Значения
+## Values
 
-| Тип | Синтаксис | Примеры |
+| Type | Syntax | Examples |
 | --- | --- | --- |
-| Число (`double`) | целая или дробная запись с точкой | `0`, `-3`, `12.5` |
-| Строка (`string`) | одинарные кавычки | `'Wall 01'`, `''` |
-| Логическое значение (`bool`) | `true` или `false` | `true` |
-| Пустое значение | `null` | `null` |
-| Число π | `pi` | `2 * pi` |
+| Number (`double`) | integer or decimal notation with a point | `0`, `-3`, `12.5` |
+| String (`string`) | single quotes | `'Wall 01'`, `''` |
+| Boolean (`bool`) | `true` or `false` | `true` |
+| Empty value | `null` | `null` |
+| Number π | `pi` | `2 * pi` |
 
-### Экранирование строк
+### String escaping
 
-Поддерживаются `\'`, `\\`, `\n`, `\r`, `\t`, `\f` и `\b`. Неизвестная последовательность сохраняется без изменения.
+`\'`, `\\`, `\n`, `\r`, `\t`, `\f`, and `\b` are supported. An unknown escape sequence is preserved unchanged.
 
 ```text
 'it\'s'       // it's
@@ -28,20 +28,20 @@ tags:
 'line1\nline2'
 ```
 
-## Операторы
+## Operators
 
-Операторы перечислены от более высокого приоритета к более низкому.
+Operators are listed from highest to lowest precedence.
 
-| Приоритет | Операторы | Назначение |
+| Precedence | Operators | Purpose |
 | ---: | --- | --- |
-| 1 | `^` | Возведение в степень |
-| 2 | `*`, `/`, `%` | Умножение, деление, остаток |
-| 3 | `+`, `-` | Сложение/конкатенация, вычитание |
-| 4 | `!` | Логическое НЕ |
-| 5 | `>`, `>=`, `<`, `<=` | Сравнение чисел |
-| 6 | `==`, `!=` | Равенство и неравенство |
-| 7 | `&` | Логическое И |
-| 8 | `\|` | Логическое ИЛИ |
+| 1 | `^` | Exponentiation |
+| 2 | `*`, `/`, `%` | Multiplication, division, remainder |
+| 3 | `+`, `-` | Addition/concatenation, subtraction |
+| 4 | `!` | Logical NOT |
+| 5 | `>`, `>=`, `<`, `<=` | Numeric comparison |
+| 6 | `==`, `!=` | Equality and inequality |
+| 7 | `&` | Logical AND |
+| 8 | `\|` | Logical OR |
 
 ```text
 2 + 3 * 4              // 14
@@ -50,11 +50,11 @@ true | false & false   // true
 !(1 > 2)               // true
 ```
 
-`+` складывает числа и объединяет строки. Если хотя бы один операнд — строка, второй преобразуется в строку. При сложении строки с `null` пустое значение превращается в пустую строку; `null + null` возвращает `null`.
+`+` adds numbers and concatenates strings. If at least one operand is a string, the other is converted to a string. When adding a string to `null`, the empty value becomes an empty string; `null + null` returns `null`.
 
-Числа в `==` и `!=` сравниваются с допуском около `1e-9`. Операторы `&` и `|` вычисляют оба операнда.
+Numbers in `==` and `!=` are compared with a tolerance of about `1e-9`. The `&` and `|` operators evaluate both operands.
 
 > [!note]
-> Деление использует поведение `double`: например, `1 / 0` возвращает положительную бесконечность.
+> Division follows `double` behavior: for example, `1 / 0` returns positive infinity.
 
-Использование формул: [[user-diagnostics|пользовательские проверки]], [[collision-diagnostics|проверки коллизий]], [[project-parameter-diagnostics|проверки параметров проекта]]. См. также: [[formula-functions|Функции]], [[formula-revit|Объекты Revit]].
+Formula usage: [[user-diagnostics|user diagnostics]], [[collision-diagnostics|collision diagnostics]], [[project-parameter-diagnostics|project parameter diagnostics]]. See also: [[formula-functions|Functions]], [[formula-revit|Revit objects]].

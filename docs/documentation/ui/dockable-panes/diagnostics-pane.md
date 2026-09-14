@@ -1,14 +1,14 @@
 
-## Список проверок
-Панель со списком всех доступных проверок. 
+## Diagnostics List
+Panel with the list of all available diagnostics.
 
 ---
-Действия:
-- Посмотреть код и описание проверки
-- Вкл./Выкл. проверку(проверки)
-- Изменить уровень серьезности проверки(проверок)
+Actions:
+- View the code and description of a diagnostic
+- Enable/disable a diagnostic (diagnostics)
+- Change the severity level of a diagnostic (diagnostics)
 ---
-Возможности:
-- Поиск, сортировка и фильтрация списка проверок
-- Копирование текста
-- Пакетное Вкл./Выкл. проверок
+Features:
+- Search, sort, and filter the diagnostics list
+- Copy text
+- Batch enable/disable diagnostics

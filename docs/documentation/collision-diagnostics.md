@@ -1,16 +1,16 @@
-## 📋 Проверки коллизий
+## 📋 Collision Diagnostics
 
-Список и поведение проверок задается через конфигурационный файл с расширением `.yaml`, который, в свою очередь, должен быть расположен по указанному в соглашении [[diagnostic-configuration-path-convension|пути]]. Наименование файла должно быть `collision.config.yaml`.
+The list and behavior of diagnostics is defined through a configuration file with a `.yaml` extension, which in turn must be located at the [[diagnostic-configuration-path-convension|path]] specified by the convention. The file must be named `collision.config.yaml`.
 
-Готовый файл: [collision.config.yaml](../examples/configuration/collision.config.yaml).
+Ready-made file: [collision.config.yaml](../examples/configuration/collision.config.yaml).
 
 ---
 
-**Пример конфигурации:**
+**Example configuration:**
 ```yml
 - code: "CLSN001"
   description: "custom"
-  message: "Элемент с именем '{elementName}' и идентификатором '{elementId}' образует пересечение c элементом '{intersection.elementName}' и идентификатором '{intersection.elementId}'. Время выполнения '{duration}' мс."
+  message: "Element named '{elementName}' with identifier '{elementId}' intersects element '{intersection.elementName}' with identifier '{intersection.elementId}'. Execution time '{duration}' ms."
   severity: "Warning"
   isActive: true
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
@@ -23,25 +23,25 @@
 
 ---
 
-**Параметры:**
+**Parameters:**
 
-| Поле                  | Тип             | Тип вводимых данных | Тип возвращаемых данных формулой | Назначение                                                                                                                                               |
+| Field                  | Type             | Input data type | Formula return type | Purpose                                                                                                                                               |
 | --------------------- | --------------- | ------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code`                | строка          | `string`            | `-`                              | Уникальный идентификатор проверки                                                                                                                        |
-| `description`         | строка          | `string`            | `-`                              | Описание проверки                                                                                                                                        |
-| `message`             | строка          | `string`            | `-`                              | Шаблон сообщения об ошибке. Доступные переменные: `{elementName}`, `{elementId}`, `{intersection.elementName}`, `{intersection.elementId}`, `{duration}` |
-| `severity`            | перечисление    | `string`            | `-`                              | [[diagnostic-severity\|Уровень серьёзности]] (по умолчанию: `Message`) (не обязательно)                                                                  |
-| `isActive`            | булево значение | `bool`              | `-`                              | Активна ли проверка (по умолчанию: `true`) (не обязательно)                                                                                              |
-| `isObsolete`          | булевo значение | `bool`              | `-`                              | [[obsolete-diagnostic\|Устарела ли проверка]] (по умолчанию: `false`) (не обязательно)                                                                   |
-| `obsoleteDescription` | строка          | `string`            | `-`                              | [[obsolete-diagnostic\|Описание причины устаревания проверки]] (отображается при `isObsolete: true`) (не обязательно)                                    |
-| `takeDocument`        | строка          | `string`            | `bool`                           | [[syntax/formula-syntax\|Формула]] фильтрации документов                                                                                                 |
-| `take`                | строка          | `string`            | `ElementFilter`                  | [[syntax/formula-revit\|Формула]] отбора первой группы элементов для проверки коллизий                                                                   |
-| `andTake`             | строка          | `string`            | `ElementFilter`                  | [[syntax/formula-revit\|Формула]] отбора второй группы элементов, с которой проверяются пересечения                                                      |
-| `groupBy`             | строка          | `string`            | `object`                         | [[syntax/formula-revit\|Формула группировки]] элементов. Поиск коллизий выполняется внутри групп                                                         |
+| `code`                | string          | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                                                        |
+| `description`         | string          | `string`            | `-`                              | Description of the diagnostic                                                                                                                                        |
+| `message`             | string          | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{intersection.elementName}`, `{intersection.elementId}`, `{duration}` |
+| `severity`            | enum    | `string`            | `-`                              | [[diagnostic-severity\|Severity level]] (default: `Message`) (optional)                                                                  |
+| `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                                                              |
+| `isObsolete`          | boolean | `bool`              | `-`                              | [[obsolete-diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                                                   |
+| `obsoleteDescription` | string          | `string`            | `-`                              | [[obsolete-diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional)                                    |
+| `takeDocument`        | string          | `string`            | `bool`                           | Document filtering [[syntax/formula-syntax\|formula]]                                                                                                 |
+| `take`                | string          | `string`            | `ElementFilter`                  | [[syntax/formula-revit\|Formula]] selecting the first group of elements to check for collisions                                                                   |
+| `andTake`             | string          | `string`            | `ElementFilter`                  | [[syntax/formula-revit\|Formula]] selecting the second group of elements against which intersections are checked                                                      |
+| `groupBy`             | string          | `string`            | `object`                         | Element [[syntax/formula-revit\|grouping formula]]. Collision detection runs within groups                                                         |
 
 ---
 
-**Примечания:**
-- Если не указывать поле `severity`, оно будет равно `Message`
-- Если не указывать поле `isActive`, оно будет равно `true`
-- Если не указывать поле `isObsolete`, оно будет равно `false`
+**Notes:**
+- If the `severity` field is not specified, it defaults to `Message`
+- If the `isActive` field is not specified, it defaults to `true`
+- If the `isObsolete` field is not specified, it defaults to `false`

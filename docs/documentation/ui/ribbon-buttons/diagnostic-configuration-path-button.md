@@ -1,3 +1,3 @@
 
-## Открыть [[diagnostic-configuration-path-convension|директорию]] с конфигурациями проверок
-Открывает папку, в которой расположены файлы конфигураций проверок.
+## Open the [[diagnostic-configuration-path-convension|directory]] with diagnostic configurations
+Opens the folder where diagnostic configuration files are located.

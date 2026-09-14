@@ -1,6 +1,6 @@
-# 📋 Проверки
+# 📋 Diagnostics
 
-- [[diagnostic-modules|Модули]]
-- [[diagnostic-conventions|Соглашения]]
-- [[diagnostic-types-by-target|Типы проверок]]
-- [[diagnostic-parameters|Параметры проверок]]
+- [[diagnostic-modules|Modules]]
+- [[diagnostic-conventions|Conventions]]
+- [[diagnostic-types-by-target|Diagnostic types]]
+- [[diagnostic-parameters|Diagnostic parameters]]

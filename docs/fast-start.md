@@ -1,7 +1,7 @@
-# 🚀Быстрый старт
+# 🚀Quick Start
 
-1. Выполните установку Revit Linter.
-2. Откройте любой документ Revit.
-3. В нижней части экрана должны появиться [[dockable-panes|панели]] управления проверками. Если этого не произошло, то откройте панели используя [[ribbon-buttons|кнопки]] на ленте Revit:
-4. Выполните настройку проверок с помощью [[diagnostics-pane|панели управления проверками]].
-5. Запустите проверки используя кнопку на панели
+1. Install Revit Linter.
+2. Open any Revit document.
+3. The diagnostic control [[dockable-panes|panels]] should appear at the bottom of the screen. If this doesn't happen, open the panels using the [[ribbon-buttons|buttons]] on the Revit ribbon:
+4. Configure the diagnostics using the [[diagnostics-pane|diagnostics control panel]].
+5. Run the diagnostics using the button on the panel

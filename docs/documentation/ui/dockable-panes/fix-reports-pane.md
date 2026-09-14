@@ -1,3 +1,3 @@
 
-## Результаты исправлений
-Панель с результатами выполнения исправлений
+## Fix results
+Panel with the results of fix execution

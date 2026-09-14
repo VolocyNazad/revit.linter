@@ -1,16 +1,16 @@
-## 📋 Проверки параметров проекта
+## 📋 Project Parameter Diagnostics
 
-Список и поведение проверок задается через конфигурационный файл с расширением `.yaml`, который, в свою очередь, должен быть расположен по указанному в соглашении [[diagnostic-configuration-path-convension|пути]]. Наименование файла должно быть `parameter-element.config.yaml`.
+The list and behavior of diagnostics is defined through a configuration file with a `.yaml` extension, which in turn must be located at the [[diagnostic-configuration-path-convension|path]] specified by the convention. The file must be named `parameter-element.config.yaml`.
 
-Готовый файл: [parameter-element.config.yaml](../examples/configuration/parameter-element.config.yaml).
+Ready-made file: [parameter-element.config.yaml](../examples/configuration/parameter-element.config.yaml).
 
 ---
 
-**Пример конфигурации:**`
+**Example configuration:**`
 ```yml
 - code: "PRMTR001"
   description: "custom"
-  message: "Документ с наименованием '{documentTitle}' содержит не валидные параметры проекта. Детали: \n\n{details} \n\nВремя выполнения '{duration}' мс."
+  message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details} \n\nExecution time '{duration}' ms."
   severity: "Message"
   isActive: false
   take: "!property('IsFamilyDocument')"
@@ -38,36 +38,36 @@
 
 ---
 
-**Параметры:**
+**Parameters:**
 
-| Поле                  | Тип              | Тип вводимых данных | Тип возвращаемых данных формулой | Назначение                                                                                                            |
+| Field                  | Type              | Input data type | Formula return type | Purpose                                                                                                            |
 | --------------------- | ---------------- | ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `code`                | строка           | `string`            | `-`                              | Уникальный идентификатор проверки                                                                                     |
-| `description`         | строка           | `string`            | `-`                              | Описание проверки                                                                                                     |
-| `message`             | строка           | `string`            | `-`                              | Шаблон сообщения об ошибке. Доступные переменные: `{documentTitle}`, `{details}`, `{duration}`                        |
-| `severity`            | перечисление     | `string`            | `-`                              | [[diagnostic-severity\|Уровень серьёзности]] <br>(по умолчанию: `Message`) (не обязательно)                           |
-| `isObsolete`          | булевое значение | `bool`              | `-`                              | [[obsolete-diagnostic\|Устарела ли проверка]] (по умолчанию: `false`) (не обязательно)                                |
-| `obsoleteDescription` | строка           | `string`            | `-`                              | [[obsolete-diagnostic\|Описание причины устаревания проверки]] (отображается при `isObsolete: true`) (не обязательно) |
-| `isActive`            | булевое значение | `bool`              | `-`                              | Активна ли проверка (по умолчанию: `true`) (не обязательно)                                                           |
-| `take`                | строка           | `string`            | `bool`                           | [[syntax/formula-syntax\|Формула]] фильтрации документов                                                              |
-| `parameters`          | список           | `array`             | `-`                              | Список параметров проекта для проверки                                                                                |
+| `code`                | string           | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                     |
+| `description`         | string           | `string`            | `-`                              | Description of the diagnostic                                                                                                     |
+| `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{documentTitle}`, `{details}`, `{duration}`                        |
+| `severity`            | enum     | `string`            | `-`                              | [[diagnostic-severity\|Severity level]] <br>(default: `Message`) (optional)                           |
+| `isObsolete`          | boolean | `bool`              | `-`                              | [[obsolete-diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
+| `obsoleteDescription` | string           | `string`            | `-`                              | [[obsolete-diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
+| `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
+| `take`                | string           | `string`            | `bool`                           | Document filtering [[syntax/formula-syntax\|formula]]                                                              |
+| `parameters`          | list           | `array`             | `-`                              | The list of project parameters to check                                                                                |
 
 ---
 
-**Параметры (поля внутри `parameters`):**
+**Parameters (fields inside `parameters`):**
 
-|Поле|Тип|Тип вводимых данных|Тип возвращаемых данных формулой|Назначение|
+|Field|Type|Input data type|Formula return type|Purpose|
 |---|---|---|---|---|
-|`guid`|строка|`string`|`-`|GUID параметра|
-|`name`|строка|`string`|`-`|Имя параметра|
-|`group`|перечисление|`string`|`-`|Ожидаемое группирование параметра|
-|`isInstance`|булевое значение|`bool`|`-`|Должен ли являться параметр параметром экземпляра (true) или параметром типа (false)|
-|`categories`|список|`array`|`-`|Ожидаемый список категорий, к которым применим параметр (по ID или встроенным именам)|
-|`allowVaryBetweenGroups`|булевое значение|`bool`|`-`|Должно ли быть разрешено различие параметра между группами|
+|`guid`|string|`string`|`-`|Parameter GUID|
+|`name`|string|`string`|`-`|Parameter name|
+|`group`|enum|`string`|`-`|Expected parameter grouping|
+|`isInstance`|boolean|`bool`|`-`|Whether the parameter should be an instance parameter (true) or a type parameter (false)|
+|`categories`|list|`array`|`-`|Expected list of categories the parameter applies to (by ID or built-in names)|
+|`allowVaryBetweenGroups`|boolean|`bool`|`-`|Whether the parameter is allowed to vary between groups|
 
 ---
 
-**Примечания:**
-- Если не указывать поле `severity`, оно будет равно `Message`
-- Если не указывать поле `isActive`, оно будет равно `true`
-- Если не указывать поле `isObsolete`, оно будет равно `false`
+**Notes:**
+- If the `severity` field is not specified, it defaults to `Message`
+- If the `isActive` field is not specified, it defaults to `true`
+- If the `isObsolete` field is not specified, it defaults to `false`

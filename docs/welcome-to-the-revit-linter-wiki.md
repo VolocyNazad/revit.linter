@@ -1,7 +1,7 @@
 
 # Welcome to the RevitLinter Wiki
 
-🧹 RevitLinter — это инструмент для проектировщиков и сотрудников BIM-отдела. который поможет поддерживать «чистоту» модели Revit, выявляя проблемы на ранних этапах проектирования, до того, как они вызовут ошибки и сбои в работе или потерю данных.
+🧹 RevitLinter is a tool for designers and BIM department staff that helps keep a Revit model "clean" by catching issues early in the design process, before they cause errors, malfunctions, or data loss.
 
 - [[fast-start|Fast start]]
 - [[how-to-install|How to install]]

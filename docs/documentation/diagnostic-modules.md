@@ -1,7 +1,7 @@
-# Модули проверок
+# Diagnostic Modules
 
-- [[element-built-in diagnostics|Встроенные проверки элементов]]
-- [[document-built-in diagnostics|Встроенные проверки документов]]
-- [[collision-diagnostics|Проверки коллизий]]
-- [[project-parameter-diagnostics|Проверки параметров проекта]]
-- [[user-diagnostics|Пользовательские проверки]]
+- [[element-built-in diagnostics|Built-in element diagnostics]]
+- [[document-built-in diagnostics|Built-in document diagnostics]]
+- [[collision-diagnostics|Collision diagnostics]]
+- [[project-parameter-diagnostics|Project parameter diagnostics]]
+- [[user-diagnostics|User diagnostics]]

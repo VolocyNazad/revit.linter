@@ -1,13 +1,13 @@
-# 🛠️ Установка
+# 🛠️ Installation
 
 ## Windows
 
-Загрузите **исполняемый файл установщика Windows** для нужной вам версии со [страницы релизов](https://github.com/VolocyNazad/revit.linter/releases) .
+Download the **Windows installer executable** for the version you need from the [releases page](https://github.com/VolocyNazad/revit.linter/releases) .
 
-### Поиск неисправностей:
+### Troubleshooting:
 
 (todo)
 
-### Диспетчер пакетов Windows
+### Windows Package Manager
 
 (todo)

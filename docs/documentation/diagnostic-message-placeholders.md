@@ -1,10 +1,10 @@
-## 📌 Плейсхолдеры в сообщениях
+## 📌 Message Placeholders
 
-В шаблонах сообщений могут использоваться следующие плейсхолдеры:
+The following placeholders can be used in message templates:
 
-|Плейсхолдер|Описание|Доступен в диагностиках|
+|Placeholder|Description|Available in diagnostics|
 |---|---|---|
-|`{elementName}`|Имя элемента в модели.|`Элемент`|
-|`{elementId}`|Уникальный идентификатор элемента в документе.|`Элемент`|
-|`{documentTitle}`|Наименование документа.|`Документ`|
-|`{duration}`|Время выполнения проверки в миллисекундах.|`Элемент`, `Документ`|
+|`{elementName}`|The name of the element in the model.|`Element`|
+|`{elementId}`|The unique identifier of the element in the document.|`Element`|
+|`{documentTitle}`|The title of the document.|`Document`|
+|`{duration}`|The execution time of the check in milliseconds.|`Element`, `Document`|

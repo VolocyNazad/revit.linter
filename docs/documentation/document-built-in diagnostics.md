@@ -1,10 +1,10 @@
-## 📋 Встроенные проверки документов
+## 📋 Built-in Document Diagnostics
 
-**Соглашение об идентификаторах:** `DOC` — проверки, связанные с документом в целом.
+**Identifier convention:** `DOC` — diagnostics related to the document as a whole.
 
-| ID         | Описание                                     | Уровень      | Пример сообщения                                                             |
+| ID         | Description                                     | Level      | Example message                                                             |
 | :--------- | :------------------------------------------- | :----------- | :--------------------------------------------------------------------------- |
-| **DOC001** | Проверка "Задан ли начальный вид документу". | 💬 Сообщение | `Документу с наименованием 'Проект_А.dwg' не задано начальное окно. (10 мс)` |
+| **DOC001** | Checks whether the document has a starting view set. | 💬 Message | `Document named 'Проект_А.dwg' has no starting view set. (10 ms)` |
 
 ---
 

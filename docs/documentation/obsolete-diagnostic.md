@@ -1,5 +1,5 @@
-## Актуальность проверки
+## Diagnostic Obsolescence
 
-Иногда случается, что проверка теряет свою актуальность. В таких случаях для возможности плавного перехода предусмотрен определенный механизм.
-Если проверка устарела, то она помечается соответствующим образом, то есть ее параметр `IsObsolete` переходит в состояние `true`. 
-Также существует возможность добавить описание заполнив параметр `ObsoleteDesctiption`. Описание может содержать причину устаревания или указатель на новую проверку, которая ее заменила.
+Sometimes a diagnostic becomes obsolete. For such cases, a mechanism is provided to allow a smooth transition.
+If a diagnostic is obsolete, it is marked accordingly — that is, its `IsObsolete` parameter is set to `true`.
+It is also possible to add a description by filling in the `ObsoleteDesctiption` parameter. The description can state the reason for obsolescence or point to the new diagnostic that replaced it.

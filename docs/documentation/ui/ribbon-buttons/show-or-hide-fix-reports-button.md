@@ -1,3 +1,3 @@
 
-## Показать/Скрыть [[fix-reports-pane|результаты исправлений]]
-Показывает/Скрывает панель с результатами исправлений.
+## Show/Hide the [[fix-reports-pane|fix results]]
+Shows/Hides the panel with fix results.

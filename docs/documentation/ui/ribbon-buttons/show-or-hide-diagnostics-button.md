@@ -1,3 +1,3 @@
 
-## Показать/Скрыть [[diagnostic-reports-pane|результаты проверок
-Показывает/Скрывает панель с результатами проверок.
+## Show/Hide [[diagnostic-reports-pane|diagnostic results
+Shows/Hides the panel with diagnostic results.

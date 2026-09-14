@@ -4,35 +4,43 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/VolocyNazad/revit.linter)](https://github.com/VolocyNazad/revit.linter/releases)
 
-Revit.Linter — расширение для Autodesk Revit, которое помогает находить проблемы в проектах и семействах до того, как они повлияют на выпуск документации или совместную работу.
+Revit.Linter is an extension for Autodesk Revit that helps find issues in projects and families before they affect documentation output or collaborative work.
 
-## Возможности
+## Features
 
-- встроенные проверки документов, семейств и элементов;
-- пользовательские проверки на основе YAML-конфигураций;
-- поиск коллизий и проверка параметров проекта;
-- фильтрация и сортировка результатов;
-- переход от сообщения к проблемному элементу;
-- настройка активности и уровня серьёзности проверок;
-- сохранение истории диагностик и исправлений.
+- built-in diagnostics for documents, families, and elements;
+- user diagnostics based on YAML configurations;
+- collision detection and project parameter checks;
+- filtering and sorting of results;
+- navigation from a message to the problem element;
+- configurable activity and severity level for diagnostics;
+- saved history of diagnostics and fixes.
 
-## Поддерживаемые версии
+## Supported versions
 
-Готовые сборки выпускаются для Revit 2021, 2023 и 2025.
+Ready-made builds are released for Revit 2021, 2023, and 2025.
 
-## Установка
+## Installation
 
-1. Откройте страницу [Releases](https://github.com/VolocyNazad/revit.linter/releases).
-2. Скачайте установщик для своей версии Revit.
-3. Закройте Revit и запустите установщик.
-4. После установки откройте Revit — команды расширения появятся на вкладке **Volocy**.
+1. Open the [Releases](https://github.com/VolocyNazad/revit.linter/releases) page.
+2. Download the installer for your version of Revit.
+3. Close Revit and run the installer.
+4. After installation, open Revit — the extension's commands will appear on the **Volocy** tab.
 
-## Использование
+## Usage
 
-На вкладке **Volocy** можно открыть панели диагностик, результатов и исправлений, а также перейти к папке с конфигурациями.
+On the **Volocy** tab you can open the diagnostics, results, and fixes panels, as well as navigate to the configuration folder.
 
-Проверки настраиваются YAML-файлами отдельно для каждой версии Revit. Подробное описание интерфейса, встроенных проверок, формул и формата конфигураций готовится в [документации](docs/documentation.md).
+Diagnostics are configured with YAML files, separately for each version of Revit. A detailed description of the interface, built-in diagnostics, formulas, and configuration format is being prepared in the [documentation](docs/documentation.md).
 
-## Лицензия
+## License
 
-Проект распространяется по лицензии [Apache License 2.0](LICENSE).
+The project is distributed under the [Apache License 2.0](LICENSE).
+
+## Development documentation
+
+- [Development policy](docs/policies/development.md)
+- [Repository guide and technology stack](docs/repository.md)
+
+## Contributing
+ [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.

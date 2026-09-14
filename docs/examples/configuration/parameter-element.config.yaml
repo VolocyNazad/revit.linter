@@ -1,6 +1,6 @@
 - code: "PRMTR001"
   description: "custom"
-  message: "Документ с наименованием '{documentTitle}' содержит невалидные параметры проекта. Детали: \n\n{details} \n\nВремя выполнения '{duration}' мс."
+  message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details} \n\nExecution time '{duration}' ms."
   severity: "Message"
   isActive: false
   take: "!property('IsFamilyDocument')"

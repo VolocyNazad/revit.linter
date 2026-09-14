@@ -1,4 +1,4 @@
-# Документация Revit Linter
+# Revit Linter Documentation
 
-- [[diagnostics|Диагностики]]
-- [[ui|Интерфейс]]
+- [[diagnostics|Diagnostics]]
+- [[ui|UI]]

@@ -1,18 +1,18 @@
 ---
 aliases:
-  - Формулы Revit
-  - Фильтры элементов Revit
+  - Revit Formulas
+  - Revit Element Filters
 tags:
   - documentation
   - formulas
   - revit
 ---
 
-# Объекты Revit и фильтры элементов
+# Revit Objects and Element Filters
 
-## Свойства и методы
+## Properties and methods
 
-`property(name)` читает публичное свойство текущего объекта. В `takeDocument` текущий объект — `Autodesk.Revit.DB.Document`, в `check` — проверяемый `Autodesk.Revit.DB.Element` фактического типа.
+`property(name)` reads a public property of the current object. In `takeDocument`, the current object is `Autodesk.Revit.DB.Document`; in `check`, it is the `Autodesk.Revit.DB.Element` being checked, of its actual type.
 
 ```text
 !property('IsFamilyDocument')
@@ -20,22 +20,22 @@ property('Name') == 'Wall 01'
 property('Width') > 0
 ```
 
-`method(name)` вызывает публичный метод без параметров. Метод должен возвращать значение и не должен быть обобщённым (`generic`).
+`method(name)` calls a public parameterless method. The method must return a value and must not be generic.
 
 ```text
 !isnull(method('GetWarnings'))
 !isnull(method('GetTypeId'))
 ```
 
-Если свойство или подходящий метод не найден, возвращается `null`. Имя чувствительно к регистру. Имя можно вычислить другой формулой: `property(if(true, 'Name', 'Id'))`.
+If no matching property or method is found, `null` is returned. The name is case-sensitive. The name can be computed by another formula: `property(if(true, 'Name', 'Id'))`.
 
-## Параметры элемента
+## Element parameters
 
-`parameter(elementDefiner, identifier)` доступна только в формулах элемента. Первый аргумент выбирает источник параметра: `me` означает текущий элемент, `type` — его тип, `host` — основу и так далее. Если определитель возвращает несколько элементов, используется первый. Идентификатор разрешается в следующем порядке:
+`parameter(elementDefiner, identifier)` is only available in element formulas. The first argument selects the parameter source: `me` means the current element, `type` its type, `host` its host, and so on. If the definer returns multiple elements, the first one is used. The identifier is resolved in the following order:
 
-1. имя перечисления `BuiltInParameter`;
-2. GUID общего параметра;
-3. отображаемое имя параметра (`LookupParameter`).
+1. a `BuiltInParameter` enum name;
+2. a shared parameter GUID;
+3. the parameter's display name (`LookupParameter`).
 
 ```text
 parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS') == 'checked'
@@ -44,7 +44,7 @@ parameter(type, 'ALL_MODEL_TYPE_COMMENTS') == 'checked'
 isnull(parameter(me, 'Missing parameter'))
 ```
 
-Проверить наличие параметра или заполненного значения можно функциями:
+You can check whether a parameter exists or has a value set using these functions:
 
 ```text
 hasparameter('Марка', me)
@@ -52,31 +52,31 @@ hasparametervalue('Марка', me)
 ```
 
 
-| StorageType Revit | Значение в формуле |
+| Revit StorageType | Formula value |
 | --- | --- |
 | `String` | `string` |
 | `Integer` | `double` |
-| `Double` | `double`, преобразованный из внутренних единиц в единицы проекта |
+| `Double` | `double`, converted from internal units to project units |
 | `ElementId` | `ElementId` |
 
-Отсутствующий параметр возвращает `null`. Сейчас величины `Double` преобразуются с настройками единиц длины документа, поэтому формулы для иных физических величин следует проверять отдельно.
+A missing parameter returns `null`. Currently, `Double` values are converted using the document's length unit settings, so formulas for other physical quantities should be verified separately.
 
-## Фильтры элементов
+## Element filters
 
-| Выражение | Что пропускает |
+| Expression | What it matches |
 | --- | --- |
-| `instance` | Экземпляры, но не типы |
-| `type` | Типы элементов |
-| `room` | Помещения |
-| `all` | Все элементы |
-| `empty` | Ни одного элемента |
+| `instance` | Instances, but not types |
+| `type` | Element types |
+| `room` | Rooms |
+| `all` | All elements |
+| `empty` | No elements |
 
-| Функция | Назначение | Пример |
+| Function | Purpose | Example |
 | --- | --- | --- |
-| `builtincategory(name)` | Фильтр по `BuiltInCategory` | `builtincategory('OST_Walls')` |
-| `class(name)` | Фильтр по имени класса Revit API | `class('Wall')` |
+| `builtincategory(name)` | Filter by `BuiltInCategory` | `builtincategory('OST_Walls')` |
+| `class(name)` | Filter by Revit API class name | `class('Wall')` |
 
-Фильтры объединяются словами `and` и `or`; `and` имеет более высокий приоритет. Поддерживаются скобки.
+Filters are combined with the words `and` and `or`; `and` has higher precedence. Parentheses are supported.
 
 ```text
 instance and builtincategory('OST_Walls')
@@ -85,6 +85,6 @@ instance and (class('Wall') or class('Floor'))
 ```
 
 > [!warning]
-> В формулах фильтрации используются слова `and` и `or`. В логических формулах `takeDocument` и `check` используются символы `&` и `|`.
+> Filtering formulas use the words `and` and `or`. Logical formulas in `takeDocument` and `check` use the symbols `&` and `|`.
 
-Использование формул: [[user-diagnostics|пользовательские проверки]], [[collision-diagnostics|проверки коллизий]], [[project-parameter-diagnostics|проверки параметров проекта]]. См. также: [[formula-syntax|Синтаксис]], [[formula-functions|Функции]].
+Formula usage: [[user-diagnostics|user diagnostics]], [[collision-diagnostics|collision diagnostics]], [[project-parameter-diagnostics|project parameter diagnostics]]. See also: [[formula-syntax|Syntax]], [[formula-functions|Functions]].

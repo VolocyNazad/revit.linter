@@ -1,6 +1,6 @@
 - code: "CLSN001"
   description: "custom"
-  message: "Элемент с именем '{elementName}' и идентификатором '{elementId}' образует пересечение c элементом '{intersection.elementName}' и идентификатором '{intersection.elementId}'. Время выполнения '{duration}' мс."
+  message: "Element named '{elementName}' with identifier '{elementId}' intersects element '{intersection.elementName}' with identifier '{intersection.elementId}'. Execution time '{duration}' ms."
   severity: "Warning"
   isActive: true
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"

@@ -1,8 +1,8 @@
-#  🧩 Типы проверок
+#  🧩 Diagnostic Types
 
-Каждая диагностика нацелена на проверку определенного типа объекта. Доступны два типа диагностик:
+Each diagnostic targets the inspection of a specific type of object. Two types of diagnostics are available:
 
-| Тип          | Назначение                                                           | Пример                                  |
-| :----------- | :------------------------------------------------------------------- | :-------------------------------------- |
-| 🧱 `Элемент` | Проверка отдельных элементов модели (стены, трубы, помещения и т.д.) | `SYST001` — Неприсоединённые коннекторы |
-| 📄`Документ` | Проверка документа в целом (проекта, семейства или шаблона)          | `DOC001` — Не задан начальный вид       |
+| Type            | Purpose                                                              | Example                                 |
+| :--------------- | :-------------------------------------------------------------------- | :--------------------------------------- |
+| 🧱 `Element`    | Checks individual model elements (walls, pipes, rooms, etc.)          | `SYST001` — Unconnected connectors       |
+| 📄 `Document`   | Checks the document as a whole (project, family, or template)         | `DOC001` — Starting view not set         |

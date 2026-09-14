@@ -1,5 +1,5 @@
 
-**Ribbon buttons (Кнопки ленты)** в Revit — это основной элемент интерфейса, через который вы взаимодействуете с командами. Их можно рассматривать с двух сторон: как их использует пользователь и как их создают разработчики.
+**Ribbon buttons** in Revit are the main interface element through which you interact with commands. They can be looked at from two sides: how users use them and how developers create them.
 
 - [[show-or -hide-diagnostic-report-button|Show/Hide diagnostic report button]]
 - [[show-or-hide-fix-reports-button|Show/Hide fix report button]]

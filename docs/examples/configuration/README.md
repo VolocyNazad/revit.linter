@@ -1,11 +1,11 @@
-# Примеры конфигурации
+# Configuration Examples
 
-В каталоге находятся примеры файлов для трёх конфигурируемых модулей:
+This directory contains example files for three configurable modules:
 
-- `config.yaml` — пользовательские проверки элементов;
-- `collision.config.yaml` — проверки коллизий;
-- `parameter-element.config.yaml` — проверки параметров проекта.
+- `config.yaml` — user element diagnostics;
+- `collision.config.yaml` — collision diagnostics;
+- `parameter-element.config.yaml` — project parameter diagnostics.
 
-Перед использованием замените демонстрационные условия, GUID, имена параметров и категории значениями своего проекта. Правила с `isActive: false` по умолчанию не выполняются.
+Before use, replace the sample conditions, GUIDs, parameter names, and categories with your project's values. Rules with `isActive: false` are not run by default.
 
-Файлы следует скопировать в каталог конфигурации Revit Linter с сохранением их имён.
+The files should be copied into the Revit Linter configuration directory, keeping their names unchanged.

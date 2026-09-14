@@ -1,4 +1,4 @@
 
-## Результаты проверок
-Панель с результатами выполнения проверок
+## Diagnostic Results
+Panel with the results of running diagnostics
 

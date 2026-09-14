@@ -1,26 +1,26 @@
-## 📋 Встроенные проверки элементов
+## 📋 Built-in Element Diagnostics
 
-| ID           | Описание                                                                                                                               | Уровень           | Пример сообщения                                                            |
+| ID           | Description                                                                                                                               | Level           | Example message                                                            |
 | :----------- | :------------------------------------------------------------------------------------------------------------------------------------- | :---------------- | :-------------------------------------------------------------------------- |
-| **SHRD003**  | Проверка экземпляров семейств на отсутствие отзеркаливания.                                                                            | ⚠️ Предупреждение | `Экземпляр 'Окно_Стандарт' (ID:99887) отзеркален. (12 мс)`                  |
-| **SHRD004**  | Проверка видов, размещены ли они на листах.                                                                                            | ⚠️ Предупреждение | `Вид 'Разрез А-А' (ID:55443) не размещён на листе. (9 мс)`                  |
-| **SHRD005**  | Проверка стены, задана ли привязка верха.                                                                                              | ⚠️ Предупреждение | `Стена 'Стена_Внешняя' (ID:33221) не имеет привязки сверху. (7 мс)`         |
-| **SHRD006**  | Проверка элементов на основе линии на толерантность координат размещения.                                                              | ⚠️ Предупреждение | `Элемент 'Ось 1' (ID:77665) имеет невалидные координаты. (14 мс)`           |
-| **SHRD007**  | Проверка элементов на основе линии на толерантность значения длины.                                                                    | ⚠️ Предупреждение | `Элемент 'Балка_01' (ID:44332) имеет невалидную длину. (11 мс)`             |
-| **SHRD008**  | Проверка уровней на толерантность значения высоты.                                                                                     | ⚠️ Предупреждение | `Уровень 'Уровень 2' (ID:55667) имеет невалидную высоту. (5 мс)`            |
-| **SHRD009*** | Проверка перекрытий на толерантность координат размещения.                                                                             | ⚠️ Предупреждение | `Перекрытие 'Плита_01' (ID:88990) имеет невалидные координаты. (13 мс)`     |
-| **SHRD0010** | Проверка экземпляров семейств на толерантность высоты размещения.                                                                      | ⚠️ Предупреждение | `Экземпляр 'Светильник_01' (ID:22334) имеет невалидную высоту. (10 мс)`     |
-| **SHRD0011** | Проверка используемости элементов-параметров.                                                                                          | ⚠️ Предупреждение | `Параметр 'Заказчик_ДопПоле' (ID:44556) не используется. (8 мс)`            |
-| **ARCH004**  | Проверка стен на толерантность значения высоты.                                                                                        | ⚠️ Предупреждение | `Стена 'Стена_Внутренняя' (ID:77889) имеет невалидную высоту. (8 мс)`       |
-| **ARCH001**  | Проверка помещения, размещено ли оно.                                                                                                  | ❌ Ошибка          | `Помещение 'Комната 101' (ID:11223) не размещено. (6 мс)`                   |
-| **ARCH002**  | Проверка помещения, окружено ли оно.                                                                                                   | ❌ Ошибка          | `Помещение 'Комната 102' (ID:33445) не окружено. (7 мс)`                    |
-| **ARCH003**  | Проверка помещения, избыточно ли оно.                                                                                                  | ❌ Ошибка          | `Помещение 'Комната 103' (ID:55667) избыточно. (5 мс)`                      |
-| **SYST001**  | Проверка экземпляров труб, воздуховодов, коробов, лотков, пользовательских семейств на отсутствие у него неприсоединенных коннекторов. | 💬 Сообщение      | `Элемент 'Труба-01' (ID:12345) имеет неприсоединённые коннекторы. (15 мс)`  |
-| **SHRD001**  | Проверка семейств на их использование в документе.                                                                                     | 💬 Сообщение      | `Семейство 'Вентилятор_Старый' (ID:67890) не используется. (8 мс)`          |
-| **SHRD002**  | Проверка типоразмеров семейств на их использование в документе.                                                                        | 💬 Сообщение      | `Типоразмер 'Дверь_1200x2400' (ID:11223) не используется. (6 мс)`           |
-| **SHRD0012** | Проверка привязки экземпляра семейства к ближайшему уровню.                                                                            | 💬 Сообщение      | `Экземпляр 'Колонна_01' (ID:66778) привязан не к ближайшему уровню. (9 мс)` |
+| **SHRD003**  | Checks family instances for the absence of mirroring.                                                                            | ⚠️ Warning | `Instance 'Окно_Стандарт' (ID:99887) is mirrored. (12 ms)`                  |
+| **SHRD004**  | Checks whether views are placed on sheets.                                                                                            | ⚠️ Warning | `View 'Разрез А-А' (ID:55443) is not placed on a sheet. (9 ms)`                  |
+| **SHRD005**  | Checks whether a wall has a top attachment set.                                                                                              | ⚠️ Warning | `Wall 'Стена_Внешняя' (ID:33221) has no top attachment. (7 ms)`         |
+| **SHRD006**  | Checks line-based elements for placement coordinate tolerance.                                                              | ⚠️ Warning | `Element 'Ось 1' (ID:77665) has invalid coordinates. (14 ms)`           |
+| **SHRD007**  | Checks line-based elements for length value tolerance.                                                                    | ⚠️ Warning | `Element 'Балка_01' (ID:44332) has an invalid length. (11 ms)`             |
+| **SHRD008**  | Checks levels for height value tolerance.                                                                                     | ⚠️ Warning | `Level 'Уровень 2' (ID:55667) has an invalid height. (5 ms)`            |
+| **SHRD009*** | Checks floors for placement coordinate tolerance.                                                                             | ⚠️ Warning | `Floor 'Плита_01' (ID:88990) has invalid coordinates. (13 ms)`     |
+| **SHRD0010** | Checks family instances for placement height tolerance.                                                                      | ⚠️ Warning | `Instance 'Светильник_01' (ID:22334) has an invalid height. (10 ms)`     |
+| **SHRD0011** | Checks whether parameter elements are used.                                                                                          | ⚠️ Warning | `Parameter 'Заказчик_ДопПоле' (ID:44556) is not used. (8 ms)`            |
+| **ARCH004**  | Checks walls for height value tolerance.                                                                                        | ⚠️ Warning | `Wall 'Стена_Внутренняя' (ID:77889) has an invalid height. (8 ms)`       |
+| **ARCH001**  | Checks whether a room is placed.                                                                                                  | ❌ Error          | `Room 'Комната 101' (ID:11223) is not placed. (6 ms)`                   |
+| **ARCH002**  | Checks whether a room is enclosed.                                                                                                   | ❌ Error          | `Room 'Комната 102' (ID:33445) is not enclosed. (7 ms)`                    |
+| **ARCH003**  | Checks whether a room is redundant.                                                                                                  | ❌ Error          | `Room 'Комната 103' (ID:55667) is redundant. (5 ms)`                      |
+| **SYST001**  | Checks pipe, duct, cable tray, conduit, and custom family instances for unconnected connectors. | 💬 Message      | `Element 'Труба-01' (ID:12345) has unconnected connectors. (15 ms)`  |
+| **SHRD001**  | Checks families for usage in the document.                                                                                     | 💬 Message      | `Family 'Вентилятор_Старый' (ID:67890) is not used. (8 ms)`          |
+| **SHRD002**  | Checks family types for usage in the document.                                                                        | 💬 Message      | `Type 'Дверь_1200x2400' (ID:11223) is not used. (6 ms)`           |
+| **SHRD0012** | Checks whether a family instance is associated with the nearest level.                                                                            | 💬 Message      | `Instance 'Колонна_01' (ID:66778) is not associated with the nearest level. (9 ms)` |
 
-> \* `SHRD009` доступен только в версиях Revit **AFTER2023**.
+> \* `SHRD009` is only available in Revit versions **AFTER2023**.
 
 ---
 

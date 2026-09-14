@@ -1,15 +1,15 @@
-**Соглашение об идентификаторах:**  
-`SYST` — системные проверки, `SHRD` — общие проверки элементов, `ARCH` — архитектурные проверки, `DOC` — диагностики, связанные с документом в целом.
+**Identifier convention:**
+`SYST` — system diagnostics, `SHRD` — shared element diagnostics, `ARCH` — architectural diagnostics, `DOC` — diagnostics related to the document as a whole.
 
-Номер `001`…`999` — уникальный в рамках префикса.
+The number `001`…`999` is unique within its prefix.
 
-Идентификатор каждой проверки должен быть уникальным
+Each diagnostic's identifier must be unique
 
-## 🏷️ Префиксы идентификаторов
+## 🏷️ Identifier Prefixes
 
-|Префикс|Категория|Тип диагностики|
+|Prefix|Category|Diagnostic type|
 |:--|:--|:--|
-|`SYST`|Системные проверки (коннекторы, связи)|`ElementDiagnosticId`|
-|`SHRD`|Общие проверки элементов (семейства, виды, уровни)|`ElementDiagnosticId`|
-|`ARCH`|Архитектурные проверки (помещения, стены)|`ElementDiagnosticId`|
-|`DOC`|Проверки документа (начальный вид и др.)|`DocumentDiagnosticId`|
+|`SYST`|System diagnostics (connectors, links)|`ElementDiagnosticId`|
+|`SHRD`|Shared element diagnostics (families, views, levels)|`ElementDiagnosticId`|
+|`ARCH`|Architectural diagnostics (rooms, walls)|`ElementDiagnosticId`|
+|`DOC`|Document diagnostics (starting view, etc.)|`DocumentDiagnosticId`|
