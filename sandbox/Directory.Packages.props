@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion)" />
+    <PackageVersion Include="ModularPipelines" Version="3.2.8" />
+    <PackageVersion Include="ModularPipelines.DotNet" Version="3.2.8" />
+    <PackageVersion Include="ModularPipelines.Git" Version="3.2.8" />
+  </ItemGroup>
+</Project>

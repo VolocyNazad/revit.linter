@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug_2025.0.0" />
+    <BuildType Name="Release_2025.0.0" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/solutionItems/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/app/">
+    <Project Path="Revit.Linter.Sandbox/Revit.Linter.Sandbox.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/host/">
+    <Project Path="Revit.Linter.Sandbox.Host/Revit.Linter.Sandbox.Host.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+</Solution>

@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Sandbox (Debug 2025)": {
+      "commandName": "Project",
+      "commandLineArgs": "--configuration Debug_2025.0.0"
+    }
+  }
+}
