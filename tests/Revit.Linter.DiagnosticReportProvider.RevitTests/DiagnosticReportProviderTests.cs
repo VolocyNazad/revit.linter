@@ -5,7 +5,7 @@ using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.DiagnosticReportProvider.DI;
 
-namespace Revit.Linter.DiagnosticReportProvider.Tests;
+namespace Revit.Linter.DiagnosticReportProvider.RevitTests;
 
 public sealed class DiagnosticReportProviderTests : RevitApiTest
 {

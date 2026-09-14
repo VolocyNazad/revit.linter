@@ -1,7 +1,7 @@
 using Nice3point.TUnit.Revit;
 using Revit.Linter.ElementIgnoring.Abstractions.Models;
 
-namespace Revit.Linter.ElementIgnoring.Tests;
+namespace Revit.Linter.ElementIgnoring.RevitTests;
 
 public sealed class IgnoreElementFeedbackTests : RevitApiTest
 {

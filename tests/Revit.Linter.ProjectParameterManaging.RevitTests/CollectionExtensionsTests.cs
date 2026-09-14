@@ -1,7 +1,7 @@
 using Nice3point.TUnit.Revit;
 using Revit.Linter.ProjectParameterManaging.Infrastructure.Extensions;
 
-namespace Revit.Linter.ProjectParameterManaging.Tests;
+namespace Revit.Linter.ProjectParameterManaging.RevitTests;
 
 public sealed class CollectionExtensionsTests : RevitApiTest
 {

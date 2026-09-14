@@ -9,7 +9,7 @@ using TUnit.Core.Executors;
 using Revit.Sugar;
 #endif
 
-namespace Revit.Linter.ProjectParameterManaging.Tests;
+namespace Revit.Linter.ProjectParameterManaging.RevitTests;
 
 public sealed class ProjectParameterProviderTests : RevitApiTest
 {

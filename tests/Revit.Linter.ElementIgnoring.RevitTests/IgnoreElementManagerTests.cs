@@ -7,7 +7,7 @@ using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.DI;
 using TUnit.Core.Executors;
 
-namespace Revit.Linter.ElementIgnoring.Tests;
+namespace Revit.Linter.ElementIgnoring.RevitTests;
 
 public sealed class IgnoreElementManagerTests : RevitApiTest
 {

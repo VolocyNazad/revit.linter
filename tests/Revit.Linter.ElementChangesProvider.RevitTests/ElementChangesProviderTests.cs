@@ -5,7 +5,7 @@ using Revit.Linter.ElementChangesProvider.Abstractions.Models;
 using Revit.Linter.ElementChangesProvider.Abstractions.Services;
 using Revit.Linter.ElementChangesProvider.DI;
 
-namespace Revit.Linter.ElementChangesProvider.Tests;
+namespace Revit.Linter.ElementChangesProvider.RevitTests;
 
 public sealed class ElementChangesProviderTests : RevitApiTest
 {
