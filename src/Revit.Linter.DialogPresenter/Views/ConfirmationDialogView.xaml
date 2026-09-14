@@ -53,7 +53,7 @@
                 Orientation="Horizontal">
                 <Button
                     MinWidth="80"
-                    d:Content="Закрыть"
+                    d:Content="Close"
                     Content="{Binding CloseButtonText}"
                     IsCancel="True"
                     Style="{StaticResource MaterialDesignFlatButton}"
@@ -61,7 +61,7 @@
                 <Button
                     MinWidth="80"
                     Margin="8,0,0,0"
-                    d:Content="Повторить"
+                    d:Content="Retry"
                     Content="{Binding ConfirmButtonText}"
                     IsDefault="True"
                     Style="{StaticResource MaterialDesignFlatButton}"

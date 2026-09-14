@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить типоразмер, который явяется типоразмером основы текущей изоляции
+/// Resolves the type of the host of the current insulation
 /// </summary>
 [SuppressMessage("SonarAnalyzer", "S101", Justification = "MEP is a standard abbreviation")]
 public class MEPCurveHostTypeDependencyDefiner : IElementsDependencyDefiner

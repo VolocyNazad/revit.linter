@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляр родительского семейства, к которому принадлежит текущий экземпляр
+/// Resolves the parent family instance the current instance belongs to
 /// </summary>
 public class GeneralSuperComponentDependencyDefiner : IElementsDependencyDefiner
 {

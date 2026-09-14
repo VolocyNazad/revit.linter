@@ -6,7 +6,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, которые расположены в текущем помещении
+/// Resolves the instances placed inside the current room
 /// </summary>
 public class PlacedInsideRoomDependencyDefiner : IElementsDependencyDefiner
 {

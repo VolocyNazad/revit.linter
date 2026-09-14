@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, для которых текущий элемент является группой
+/// Resolves the instances for which the current element is the group
 /// </summary>
 public class MembersDependencyDefiner : IElementsDependencyDefiner
 {

@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, которые принадлежат семейству
+/// Resolves the instances that belong to the family
 /// </summary>
 public class InstancesByFamilyDependencyDefiner : IElementsDependencyDefiner
 {

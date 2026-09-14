@@ -13,5 +13,15 @@
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
 	</ItemGroup>
 
-</Project>
+	<ItemGroup>
+	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
+	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+</Project>

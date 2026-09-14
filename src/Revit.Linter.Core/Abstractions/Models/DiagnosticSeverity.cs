@@ -1,7 +1,7 @@
 ﻿namespace Revit.Linter.Core.Abstractions.Models;
 
 /// <summary>
-/// Уровень серьезности диагностики
+/// Diagnostic severity level
 /// </summary>
 public enum DiagnosticSeverity
 {

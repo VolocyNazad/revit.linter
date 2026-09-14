@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, для которых изоляция является типоразмером основы
+/// Resolves the instances for which the insulation is the host's type
 /// </summary>
 public class InstanceInsulationsDependencyDefiner : IElementsDependencyDefiner
 {

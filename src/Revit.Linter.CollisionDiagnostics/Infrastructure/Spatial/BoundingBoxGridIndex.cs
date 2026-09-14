@@ -79,18 +79,18 @@ internal sealed class BoundingBoxGridIndex
         if (TryGetCellRange(box, out CellRange range))
         {
             for (int x = range.MinX; x <= range.MaxX; x++)
-            for (int y = range.MinY; y <= range.MaxY; y++)
-            for (int z = range.MinZ; z <= range.MaxZ; z++)
-            {
-                if (!_cells.TryGetValue((x, y, z), out List<Element>? candidates)) continue;
+                for (int y = range.MinY; y <= range.MaxY; y++)
+                    for (int z = range.MinZ; z <= range.MaxZ; z++)
+                    {
+                        if (!_cells.TryGetValue((x, y, z), out List<Element>? candidates)) continue;
 
-                foreach (Element element in candidates)
-                {
-                    seen ??= [];
-                    if (seen.Add(element.Id.Value()))
-                        yield return element;
-                }
-            }
+                        foreach (Element element in candidates)
+                        {
+                            seen ??= [];
+                            if (seen.Add(element.Id.Value()))
+                                yield return element;
+                        }
+                    }
 
             foreach (Element element in _uncellable)
             {
@@ -120,15 +120,15 @@ internal sealed class BoundingBoxGridIndex
         }
 
         for (int x = range.MinX; x <= range.MaxX; x++)
-        for (int y = range.MinY; y <= range.MaxY; y++)
-        for (int z = range.MinZ; z <= range.MaxZ; z++)
-        {
-            var cell = (x, y, z);
-            if (!_cells.TryGetValue(cell, out List<Element>? bucket))
-                _cells[cell] = bucket = [];
+            for (int y = range.MinY; y <= range.MaxY; y++)
+                for (int z = range.MinZ; z <= range.MaxZ; z++)
+                {
+                    var cell = (x, y, z);
+                    if (!_cells.TryGetValue(cell, out List<Element>? bucket))
+                        _cells[cell] = bucket = [];
 
-            bucket.Add(element);
-        }
+                    bucket.Add(element);
+                }
     }
 
     // False when the box is non-finite/inverted, or would need more than MaxCellsPerEntry cells.
@@ -154,7 +154,10 @@ internal sealed class BoundingBoxGridIndex
     private int ToCell(double value) => (int)Math.Floor(value / _cellSize);
 
     private static bool IsFinite(XYZ point) =>
-        double.IsFinite(point.X) && double.IsFinite(point.Y) && double.IsFinite(point.Z);
+        IsFinite(point.X) && IsFinite(point.Y) && IsFinite(point.Z);
+
+    private static bool IsFinite(double value) =>
+        !double.IsNaN(value) && !double.IsInfinity(value);
 
     // The MEDIAN (not mean) of elements' largest bounding-box extent. Using the median means a
     // small number of outliers (huge or tiny relative to the rest of the group) can't drag the

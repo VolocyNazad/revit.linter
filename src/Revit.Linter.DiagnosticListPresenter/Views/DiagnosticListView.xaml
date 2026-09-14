@@ -116,7 +116,7 @@
                                                     <DockPanel>
                                                         <TextBlock
                                                             VerticalAlignment="Center"
-                                                            d:Text="Имя группы"
+                                                            d:Text="Group name"
                                                             Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                                                             Text="{Binding Name}" />
                                                     </DockPanel>

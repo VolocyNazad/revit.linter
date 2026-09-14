@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace Revit.Linter.CollisionDiagnostics;
 
 internal sealed class ElementDiagnostic(
-    ElementFilterFactory elementFilterFactory, 
+    ElementFilterFactory elementFilterFactory,
     ElementFunctionFactory elementFunctionFactory,
     IGetElementBoundingBoxService getElementBoundingBox,
     IGetElementGeometryService getElementGeometry,
@@ -19,18 +19,18 @@ internal sealed class ElementDiagnostic(
     public required ElementDiagnosticId Identity { get; init; }
     public required string TakeFormula { get; init; }
     public required string GroupByFormula { get; init; }
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement) //todo в результат попадает 2 пересечки (1 с 2,  2 с 1)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement) //todo the result includes 2 intersections (1 with 2, 2 with 1)
     {
         var targetElementId = targetElement.Id.Value();
 
         Options? options = revitTransactionMemoryCache
-            .GetOrCreate("options", () => view is null 
-                ? new Options() 
+            .GetOrCreate("options", () => view is null
+                ? new Options()
                 : new Options() { View = view }
             );
 
         GeometryElement? targetGeometryElement = revitTransactionMemoryCache
-            .GetOrCreate($"element:element-geometry:id:{targetElementId}", () 
+            .GetOrCreate($"element:element-geometry:id:{targetElementId}", ()
                 => targetElement.get_Geometry(options)) ?? throw new InvalidOperationException($"Failed to get object from cache.");
 
         var targetSolids = getElementGeometry.Execute(targetElementId, targetGeometryElement);

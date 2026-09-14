@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Определяет самого себя
+/// Resolves itself
 /// </summary>
 public class InternalDependencyDefiner : IElementsDependencyDefiner
 {

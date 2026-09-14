@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
@@ -7,9 +7,9 @@ public abstract partial class InitializableObservableObject : ObservableObject
 {
     private bool _initialized;
 
-    #region [Initialize] Command - Инициализировать 
+    #region [Initialize] Command - Initialize
 
-    /// <summary> Инициализировать </summary>
+    /// <summary> Initialize </summary>
     [RelayCommand(CanExecute = nameof(CanInitialize))]
     internal async Task Initialize(CancellationToken cancellationToken = default)
     {
@@ -21,9 +21,9 @@ public abstract partial class InitializableObservableObject : ObservableObject
 
     #endregion
 
-    #region [Deinitialize] Command - Деинициализировать 
+    #region [Deinitialize] Command - Deinitialize
 
-    /// <summary> Деинициализировать </summary>
+    /// <summary> Deinitialize </summary>
     [RelayCommand(CanExecute = nameof(CanDeinitialize))]
     internal async Task Deinitialize(CancellationToken cancellationToken = default)
     {

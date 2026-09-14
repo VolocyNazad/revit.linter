@@ -13,7 +13,7 @@ internal sealed class RevitIdlingScheduler : IRevitIdlingScheduler, IDisposable
 
     public void Initialize(UIControlledApplication application)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
         if (_application is not null) return;
 
         _application = application;
@@ -22,8 +22,8 @@ internal sealed class RevitIdlingScheduler : IRevitIdlingScheduler, IDisposable
 
     public Task RunAsync(Action<UIApplication> action, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (action is null) throw new ArgumentNullException(nameof(action));
+        ThrowIfDisposed();
 
         if (cancellationToken.IsCancellationRequested)
             return Task.FromCanceled(cancellationToken);
@@ -54,6 +54,11 @@ internal sealed class RevitIdlingScheduler : IRevitIdlingScheduler, IDisposable
 
         while (_actions.TryDequeue(out ScheduledAction? action))
             action.Cancel();
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_disposed) throw new ObjectDisposedException(nameof(RevitIdlingScheduler));
     }
 
     private sealed class ScheduledAction

@@ -51,7 +51,7 @@
                 MinWidth="80"
                 Margin="0,16,0,0"
                 HorizontalAlignment="Right"
-                d:Content="Закрыть"
+                d:Content="Close"
                 Content="{Binding CloseButtonText}"
                 IsCancel="True"
                 IsDefault="True"

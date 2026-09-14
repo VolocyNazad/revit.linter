@@ -32,7 +32,8 @@ namespace Revit.Linter;
 internal sealed class InitExternalApplication : ExternalApplication
 {
     private static readonly string AssemblyPath = Assembly.GetExecutingAssembly().Location;
-    private static readonly string AssemblyDirectory = Path.GetDirectoryName(AssemblyPath);
+    private static readonly string AssemblyDirectory = Path.GetDirectoryName(AssemblyPath)
+        ?? throw new InvalidOperationException("The executing assembly path has no directory.");
     private static IStringLocalizer<GlobalLocalizations> Localizer =>
         Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
     private DiagnosticCatalogNotifier? _diagnosticCatalogNotifier;
@@ -58,7 +59,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         {
             Application.CreateRibbonTab(tabName);
         }
-        catch { /* Вкладка уже существует - игнорируем ошибку */ }
+        catch { /* Tab already exists - ignore the error */ }
 
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 

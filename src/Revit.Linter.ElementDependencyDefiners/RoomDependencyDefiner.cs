@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляр помещения, в котором расположен текущий экземпляр
+/// Resolves the room instance the current instance is located in
 /// </summary>
 public class RoomDependencyDefiner : IElementsDependencyDefiner
 {

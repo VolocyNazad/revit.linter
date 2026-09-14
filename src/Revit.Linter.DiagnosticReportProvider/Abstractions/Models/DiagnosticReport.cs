@@ -3,16 +3,16 @@
 namespace Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 
 /// <summary>
-/// Отчет диагностики
+/// Diagnostic report
 /// </summary>
-/// <param name="Code"> Код диагностики </param>
-/// <param name="Severity"> Серьезность </param>
-/// <param name="Document"> Документ, в котором выполнялась диагностика </param>
-/// <param name="Target"> Объект проверки </param>
-/// <param name="TargetDependencies"> Объекты зависимости </param>
-/// <param name="Message"> Сообщение о результатах диагностики </param>
-/// <param name="IsObsolete"> Указывает, это отчет об устаревшей проверке или нет </param>
-/// <param name="ObsoleteDescription"> Описание причины устаревания </param>
+/// <param name="Code"> Diagnostic code </param>
+/// <param name="Severity"> Severity </param>
+/// <param name="Document"> The document the diagnostic was run in </param>
+/// <param name="Target"> The object being checked </param>
+/// <param name="TargetDependencies"> Dependency objects </param>
+/// <param name="Message"> Diagnostic results message </param>
+/// <param name="IsObsolete"> Indicates whether this is a report for an obsolete diagnostic </param>
+/// <param name="ObsoleteDescription"> Description of the reason for obsolescence </param>
 public sealed record DiagnosticReport(
     string Code, DiagnosticSeverity Severity, 
     Document Document, 

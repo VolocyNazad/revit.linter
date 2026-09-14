@@ -64,9 +64,9 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     public partial string? TargetDocumentTitle { get; set; }
     partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
 
-    #region [SelectElement] Command - Выбрать элемент  
+    #region [SelectElement] Command - Select element
 
-    /// <summary> Выбрать элемент </summary>
+    /// <summary> Select element </summary>
     [RelayCommand(CanExecute = nameof(CanSelectElement))]
     private void SelectElement(object? parameter)
     {
@@ -110,7 +110,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
        => args.Accepted = args.Item is FixReportItemViewModel viewModel
-        && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
+        && (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
        && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
@@ -132,7 +132,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         FixReportItemViewModel item = new() {
             DocumentTitle = report.DocumentTitle,
             Created = report.Created,
-            Code = report.Code, 
+            Code = report.Code,
             Template = report.Message.Format,
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             AccentElementDelegate = i => SelectElement(i),

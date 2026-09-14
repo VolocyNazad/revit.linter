@@ -1,9 +1,9 @@
 namespace Revit.Linter.Core.Abstractions.Models;
 
 /// <summary>
-/// Результат диагностики
+/// Diagnostic result
 /// </summary>
-/// <param name="Verdict"> Вердикт </param>
+/// <param name="Verdict"> Verdict </param>
 /// <param name="AdditionalMessageArguments"></param>
 /// <param name="AdditionalTargetDependencies"></param>
 public record DiagnosticFeedback(DiagnosticVerdict Verdict, Dictionary<string, object>? AdditionalMessageArguments = null, params object[] AdditionalTargetDependencies)

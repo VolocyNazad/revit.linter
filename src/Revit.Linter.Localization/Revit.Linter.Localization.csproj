@@ -13,4 +13,13 @@
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.ru-RU.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
 </Project>

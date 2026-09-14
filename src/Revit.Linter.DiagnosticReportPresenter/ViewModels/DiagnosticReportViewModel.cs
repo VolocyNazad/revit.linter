@@ -148,9 +148,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     public partial string? TargetDocumentTitle { get; set; }
     partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
 
-    #region [ShowElement] Command - Показать элемент  
+    #region [ShowElement] Command - Show element
 
-    /// <summary> Показать элемент </summary>
+    /// <summary> Show element </summary>
     [RelayCommand(CanExecute = nameof(CanShowElement))]
     private void ShowElement(object? parameter)
     {
@@ -177,9 +177,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     #endregion
 
-    #region [SelectElement] Command - Выбрать элемент  
+    #region [SelectElement] Command - Select element
 
-    /// <summary> Выбрать элемент </summary>
+    /// <summary> Select element </summary>
     [RelayCommand(CanExecute = nameof(CanSelectElement))]
     private void SelectElement(object? parameter)
     {
@@ -206,9 +206,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     #endregion
 
-    #region [IsolateElementsOnView] Command - Изолировать элемент на активном виде 
+    #region [IsolateElementsOnView] Command - Isolate element in the active view
 
-    /// <summary> Изолировать элемент на активном виде </summary>
+    /// <summary> Isolate element in the active view </summary>
     [RelayCommand(CanExecute = nameof(CanIsolateElementsOnView))]
     private void IsolateElementsOnView(object? parameter)
     {
@@ -234,9 +234,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     #endregion
 
-    #region [CutViewByElement] Command - Обрезать активный 3D-вид по элементу 
+    #region [CutViewByElement] Command - Crop the active 3D view by element
 
-    /// <summary> Обрезать активный 3D-вид по элементу </summary>
+    /// <summary> Crop the active 3D view by element </summary>
     [RelayCommand(CanExecute = nameof(CanCutViewByElement))]
     private void CutViewByElement(object? parameter)
     {
@@ -262,17 +262,17 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     #endregion
 
-    #region [CopyToClipboard] Command - Копировать текст в буфер обмена
+    #region [CopyToClipboard] Command - Copy text to clipboard
 
-    /// <summary> Копировать текст в буфер обмена </summary>
+    /// <summary> Copy text to clipboard </summary>
     [RelayCommand]
     private void CopyToClipboard(object item) => Clipboard.SetText(item.ToString() ?? string.Empty);
 
     #endregion
 
-    #region [Export] Command - Экспортировать
+    #region [Export] Command - Export
 
-    /// <summary> Экспортировать </summary>
+    /// <summary> Export </summary>
     [RelayCommand]
     private void Export()
     {
@@ -323,7 +323,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void ExportCsv(string fileName, IEnumerable<DiagnosticReportExportItem> items)
     {
-        char delimiter = CultureInfo.CurrentCulture.TextInfo.ListSeparator.FirstOrDefault(',');
+        string listSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+        char delimiter = listSeparator.Length > 0 ? listSeparator[0] : ',';
         StringBuilder content = new();
         AppendCsvRow(content, delimiter,
             SeverityHeader, CodeHeader, MessageHeader, DocumentHeader, CreatedHeader);
@@ -361,7 +362,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         string document = string.IsNullOrWhiteSpace(TargetDocumentTitle)
             ? "DiagnosticReport"
-            : TargetDocumentTitle;
+            : TargetDocumentTitle ?? "DiagnosticReport";
         char[] invalidCharacters = Path.GetInvalidFileNameChars();
         string safeDocument = string.Concat(document.Select(character =>
             invalidCharacters.Contains(character) ? '_' : character));
@@ -424,7 +425,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
     {
         args.Accepted = args.Item is DiagnosticReportItemViewModel viewModel
-            && (string.IsNullOrEmpty(TargetDocumentTitle) || TargetDocumentTitle.Equals(viewModel.DocumentTitle))
+            && (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
             && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
@@ -586,8 +587,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
 
 
-        // todo Нужно учитывать зависимые элеметы при обработке изменений. При коллизиях например. Создать еще поле
-        // todo упростить
+        // todo Need to account for dependent elements when processing changes. For collisions, for example. Add another field
+        // todo simplify
     }
 
     private void ScheduleElementDiagnosticsRefresh()
@@ -607,8 +608,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         List<KeyValuePair<Document, HashSet<ElementId>>> pending = [.. _pendingElementRefreshes];
         _pendingElementRefreshes.Clear();
 
-        foreach ((Document document, HashSet<ElementId> elementIds) in pending)
+        foreach (KeyValuePair<Document, HashSet<ElementId>> entry in pending)
         {
+            Document document = entry.Key;
+            HashSet<ElementId> elementIds = entry.Value;
+
             if (document is not { IsValidObject: true } || elementIds.Count == 0) continue;
 
             _diagnosticService.Execute(document, elementIds);
@@ -660,7 +664,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             {
                 Icon = icon,
                 Title = IgnoreFixTitle,
-                FixDelegate = async (cancellationToken) => 
+                FixDelegate = async (cancellationToken) =>
                 {
                     if (doc is null or { IsValidObject: false }) return;
 
@@ -705,8 +709,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 bool hasErrors = false;
                 string transactionName = "Игнорирование провери для элементов";
 
-                // Транзакция всегда коммитится (возвращаем true), чтобы успешно проигнорированные
-                // элементы не откатывались из-за того, что часть элементов не удалось проигнорировать.
+                // The transaction is always committed (we return true) so that successfully ignored
+                // elements are not rolled back just because some elements could not be ignored.
                 await ExecuteTransaction(doc, transactionName, () => {
                         foreach (var reportItem in Collection)
                         {
@@ -748,8 +752,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     bool retry = await _confirmationDialog.Show(
                         new ConfirmationDialogRequest(dialogMessage, RetryTitle), cancellationToken);
 
-                    // Уже проигнорированные элементы пропадут из отчёта (диагностика для них больше
-                    // не сработает), поэтому повтор затронет только оставшиеся проблемные элементы.
+                    // Already-ignored elements will disappear from the report (the diagnostic will no
+                    // longer trigger for them), so a retry will only affect the remaining problem elements.
                     if (retry) await RunIgnoreFixAll(cancellationToken);
                 }
             }
@@ -796,7 +800,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 string resolvedMessage = message.Replace("{elementId}", elementId.ToString());
                                 string dialogMessage = string.IsNullOrWhiteSpace(error)
                                     ? resolvedMessage
-                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error);
+                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error!);
                                 await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
                             }
                         }
@@ -817,8 +821,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         bool hasErrors = false;
                         string transactionName = GetLocalizedString("all_title", i.Value);
 
-                        // Транзакция всегда коммитится (возвращаем true), чтобы успешно исправленные
-                        // элементы не откатывались из-за того, что часть элементов не удалось исправить.
+                        // The transaction is always committed (we return true) so that successfully fixed
+                        // elements are not rolled back just because some elements could not be fixed.
                         await ExecuteTransaction(doc, transactionName, () => {
                                 foreach (var reportItem in Collection)
                                 {
@@ -861,8 +865,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             bool retry = await _confirmationDialog.Show(
                                 new ConfirmationDialogRequest(dialogMessage, RetryTitle), cancellationToken);
 
-                            // Уже исправленные элементы стали невалидными (IsValidObject == false) и будут
-                            // пропущены в следующем проходе — повтор затронет только оставшиеся проблемные.
+                            // Already-fixed elements have become invalid (IsValidObject == false) and will
+                            // be skipped on the next pass — a retry will only affect the remaining problem elements.
                             if (retry) await RunFixAll(cancellationToken);
                         }
                     }
@@ -912,7 +916,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 string resolvedMessage = message.Replace("{documentTitle}", documentTitle);
                                 string dialogMessage = string.IsNullOrWhiteSpace(error)
                                     ? resolvedMessage
-                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error);
+                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error!);
                                 await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
                             }
                         }

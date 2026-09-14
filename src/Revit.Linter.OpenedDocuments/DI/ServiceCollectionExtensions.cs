@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
             => services.AddSingleton(provider =>
             {
                 var service = ActivatorUtilities.CreateInstance<OpenedDocumentsViewModel>(provider);
-                service.Initialize();
+                _ = service.Initialize();
                 return service;
             })
         ;

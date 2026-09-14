@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить типоразмер родительского семейства, к которому принадлежит текущий экземпляр
+/// Resolves the type of the parent family that the current instance belongs to
 /// </summary>
 public class GeneralSuperComponentTypeDependencyDefiner : IElementsDependencyDefiner
 {

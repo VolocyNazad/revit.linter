@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
@@ -62,7 +62,7 @@ internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         _store.Update(s => s.OnActiveViewMode = value);
     }
 
-    #region [RunDiagnostic] Command - Запустить диагностику  
+    #region [RunDiagnostic] Command - Run diagnostics
 
     [RelayCommand(CanExecute = nameof(CanRunDiagnostic))]
     private async Task RunDiagnostic(CancellationToken cancellationToken = default)

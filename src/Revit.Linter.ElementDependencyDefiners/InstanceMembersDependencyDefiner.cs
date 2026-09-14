@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, для которых текущий элемент является типоразмером группы
+/// Resolves the instances for which the current element is the group's type
 /// </summary>
 public class InstanceMembersDependencyDefiner : IElementsDependencyDefiner
 {

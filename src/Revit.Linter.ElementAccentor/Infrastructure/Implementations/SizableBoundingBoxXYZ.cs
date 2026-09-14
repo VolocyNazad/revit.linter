@@ -20,19 +20,19 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
         NewOrigin(boundingBox.Transform.Origin).NewSize(boundingBox.Min, boundingBox.Max);
     }
 
-    /// <summary> Длина </summary>
+    /// <summary> Length </summary>
     public double Length { get => GetDimension(Dimension.Length); set => SetDimension(Dimension.Length, value); }
 
-    /// <summary> Ширина </summary>
+    /// <summary> Width </summary>
     public double Width { get => GetDimension(Dimension.Width); set => SetDimension(Dimension.Width, value); }
 
-    /// <summary> Высота </summary>
+    /// <summary> Height </summary>
     public double Height { get => GetDimension(Dimension.Height); set => SetDimension(Dimension.Height, value); }
 
-    /// <summary> Центр </summary>
+    /// <summary> Center </summary>
     public XYZ Center => (Min + Max) / 2;
 
-    /// <summary> Точка начала координат ящика </summary>
+    /// <summary> The box's coordinate origin point </summary>
     public XYZ Origin
     {
         get => Transform.Origin;
@@ -45,8 +45,8 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
     }
 
     private readonly Align[] _alignments;
-    /// <summary> Выравнивание </summary>
-    /// <param name="dimension"> Габарит </param>
+    /// <summary> Alignment </summary>
+    /// <param name="dimension"> Dimension </param>
     /// <returns></returns>
     public Align this[Dimension dimension]
     {
@@ -54,10 +54,10 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
         set => _alignments[(int)dimension] = value;
     }
 
-    /// <summary> Задает выравнивание указанному габариту ящика. </summary>
-    /// <param name="dimension"> Тип габарита </param>
-    /// <param name="align"> Выравнивание </param>
-    /// <returns> Возвращает ссылку на габаритный ящик </returns>
+    /// <summary> Sets the alignment for the specified dimension of the box. </summary>
+    /// <param name="dimension"> Dimension type </param>
+    /// <param name="align"> Alignment </param>
+    /// <returns> Returns a reference to the bounding box </returns>
     public SizableBoundingBoxXYZ NewAlign(Dimension dimension, Align align = Align.Center)
     {
         this[dimension] = align;
@@ -65,9 +65,9 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
         return this;
     }
 
-    /// <summary> Задает выравнивание сразу всем габаритам ящика </summary>
-    /// <param name="align"> Выравнивание </param>
-    /// <returns> Возвращает ссылку на габаритный ящик </returns>
+    /// <summary> Sets the alignment for all dimensions of the box at once </summary>
+    /// <param name="align"> Alignment </param>
+    /// <returns> Returns a reference to the bounding box </returns>
     public SizableBoundingBoxXYZ NewAlign(Align align = Align.Center)
     {
         this[Dimension.Height] = align;
@@ -77,11 +77,11 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
         return this;
     }
 
-    /// <summary> Задает выравнивание сразу всем габаритам ящика </summary>
-    /// <param name="heightAlign"> Выравнивание по высоте </param>
-    /// <param name="widthAlign"> Выравнивание по ширине </param>
-    /// <param name="lengthAlign"> Выравнивание по длине </param>
-    /// <returns> Возвращает ссылку на габаритный ящик </returns>
+    /// <summary> Sets the alignment for all dimensions of the box at once </summary>
+    /// <param name="heightAlign"> Height alignment </param>
+    /// <param name="widthAlign"> Width alignment </param>
+    /// <param name="lengthAlign"> Length alignment </param>
+    /// <returns> Returns a reference to the bounding box </returns>
     public SizableBoundingBoxXYZ NewAlign(Align heightAlign, Align widthAlign, Align lengthAlign)
     {
         this[Dimension.Height] = heightAlign;
@@ -177,18 +177,18 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
         return this;
     }
 
-    /// <summary> Получение величины одного из трех габаритов ящика </summary>
-    /// <param name="dimension"> Тип габарита </param>
-    /// <returns> Возвращает величину одного из габаритов </returns>
+    /// <summary> Gets the value of one of the box's three dimensions </summary>
+    /// <param name="dimension"> Dimension type </param>
+    /// <returns> Returns the value of one of the dimensions </returns>
     private double GetDimension(Dimension dimension)
     {
         double value = Max[(int)dimension] - Min[(int)dimension];
         return value;
     }
 
-    /// <summary> Изменение величины одного из трех габаритов ящика </summary>
-    /// <param name="dimension"> Тип габарита </param>
-    /// <param name="value"> Значение </param>
+    /// <summary> Changes the value of one of the box's three dimensions </summary>
+    /// <param name="dimension"> Dimension type </param>
+    /// <param name="value"> Value </param>
     private void SetDimension(Dimension dimension, double value)
     {
         double minValue;
@@ -211,7 +211,7 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
     }
 }
 
-/// <summary> Габариты </summary>
+/// <summary> Dimensions </summary>
 public enum Dimension
 {
     Length,
@@ -219,7 +219,7 @@ public enum Dimension
     Height,
 }
 
-/// <summary> Выравнивание </summary>
+/// <summary> Alignment </summary>
 public enum Align
 {
     Start,

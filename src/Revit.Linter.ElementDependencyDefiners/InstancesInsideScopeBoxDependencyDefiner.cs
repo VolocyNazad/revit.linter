@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, которые пересекаются со случайной областью видимости
+/// Resolves the instances that intersect an arbitrary scope box
 /// </summary>
 public class InstancesInsideScopeBoxDependencyDefiner : IElementsDependencyDefiner
 {

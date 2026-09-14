@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры изоляции, для текущего экземпляра
+/// Resolves the insulation instances for the current instance
 /// </summary>
 public class InsulationsDependencyDefiner : IElementsDependencyDefiner
 {

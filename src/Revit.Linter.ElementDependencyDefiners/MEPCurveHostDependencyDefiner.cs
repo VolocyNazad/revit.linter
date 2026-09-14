@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляр, который является основой для текущей изоляции
+/// Resolves the instance that hosts the current insulation
 /// </summary>
 [SuppressMessage("SonarAnalyzer", "S101", Justification = "MEP is a standard abbreviation")]
 public class MEPCurveHostDependencyDefiner : IElementsDependencyDefiner

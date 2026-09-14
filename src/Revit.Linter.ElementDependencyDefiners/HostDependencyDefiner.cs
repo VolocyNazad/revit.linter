@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляр, на основе которого размещен текущий экземпляр
+/// Resolves the instance the current instance is hosted on
 /// </summary>
 public class HostDependencyDefiner : IElementsDependencyDefiner
 {

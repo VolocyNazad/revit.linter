@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Services;
@@ -53,54 +53,54 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         => RefreshCollectionView();
 
-    #region [CheckAll] Command - Выделить все
+    #region [CheckAll] Command - Check all
 
-    /// <summary> Выделить все </summary>
+    /// <summary> Check all </summary>
     [RelayCommand]
     private void CheckAll()
         => UpdateIsActive(Collection, _ => true);
 
     #endregion
 
-    #region [UncheckAll] Command - Снять все
+    #region [UncheckAll] Command - Uncheck all
 
-    /// <summary> Снять все </summary>
+    /// <summary> Uncheck all </summary>
     [RelayCommand]
     private void UncheckAll()
         => UpdateIsActive(Collection, _ => false);
 
     #endregion
 
-    #region [InvertAll] Command - Инвертировать все
+    #region [InvertAll] Command - Invert all
 
-    /// <summary> Инвертировать все </summary>
+    /// <summary> Invert all </summary>
     [RelayCommand]
     private void InvertAll()
         => UpdateIsActive(Collection, value => !value);
 
     #endregion
 
-    #region [CheckVisible] Command - Выделить видимое
+    #region [CheckVisible] Command - Check visible
 
-    /// <summary> Выделить видимое </summary>
+    /// <summary> Check visible </summary>
     [RelayCommand]
     private void CheckVisible()
         => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), _ => true);
 
     #endregion
 
-    #region [UncheckVisible] Command - Снять видимое
+    #region [UncheckVisible] Command - Uncheck visible
 
-    /// <summary> Снять видимое </summary>
+    /// <summary> Uncheck visible </summary>
     [RelayCommand]
     private void UncheckVisible()
         => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), _ => false);
 
     #endregion
 
-    #region [InvertVisible] Command - Инвертировать видимое
+    #region [InvertVisible] Command - Invert visible
 
-    /// <summary> Инвертировать видимое </summary>
+    /// <summary> Invert visible </summary>
     [RelayCommand]
     private void InvertVisible()
         => UpdateIsActive(CollectionViewSource!.View.Cast<DiagnosticItemViewModel>(), value => !value);

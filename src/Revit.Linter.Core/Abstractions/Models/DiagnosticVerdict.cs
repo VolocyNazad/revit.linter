@@ -1,7 +1,7 @@
 ﻿namespace Revit.Linter.Core.Abstractions.Models;
 
 /// <summary>
-/// Вердикт диагностики
+/// Diagnostic verdict
 /// </summary>
 public enum DiagnosticVerdict
 {

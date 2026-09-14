@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, которые являются вложенными для текущего экземпляра
+/// Resolves the instances nested within the current instance
 /// </summary>
 public class SubComponentsDependencyDefiner : IElementsDependencyDefiner
 {

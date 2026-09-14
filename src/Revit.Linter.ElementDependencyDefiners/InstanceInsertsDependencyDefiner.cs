@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить экземпляры, для которых текущий элемент является типоразмером основы
+/// Resolves the instances for which the current element is the host's type
 /// </summary>
 public class InstanceInsertsDependencyDefiner : IElementsDependencyDefiner
 {

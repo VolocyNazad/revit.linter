@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Позволяет определить типоразмер для текущего элемента
+/// Resolves the type for the current element
 /// </summary>
 public class TypeDependencyDefiner : IElementsDependencyDefiner
 {
@@ -21,7 +21,7 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<InstancesDependenc
 }
 
 /// <summary>
-/// Позволяет определить семейство для текущего элемента
+/// Resolves the family for the current element
 /// </summary>
 public class FamilyDependencyDefiner : IElementsDependencyDefiner
 {

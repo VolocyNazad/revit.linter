@@ -1,15 +1,15 @@
 namespace Revit.Linter.DialogPresenter.Abstractions;
 
 /// <summary>
-/// Диалог с двумя кнопками — подтверждение и закрытие.
-/// В отличие от <see cref="IDialog"/> (информационное окно с одной кнопкой), возвращает выбор пользователя.
+/// A dialog with two buttons — confirm and close.
+/// Unlike <see cref="IDialog"/> (an informational window with a single button), it returns the user's choice.
 /// </summary>
 public interface IConfirmationDialog
 {
     /// <summary>
-    /// Показывает диалог и возвращает true, если пользователь нажал кнопку подтверждения
-    /// (<see cref="ConfirmationDialogRequest.ConfirmButtonText"/>), и false — если он закрыл диалог
-    /// иначе (кнопка закрытия, крестик) или показ был отменён через <paramref name="cancellationToken"/>.
+    /// Shows the dialog and returns true if the user pressed the confirm button
+    /// (<see cref="ConfirmationDialogRequest.ConfirmButtonText"/>), and false if they closed the dialog
+    /// some other way (close button, X) or the display was cancelled via <paramref name="cancellationToken"/>.
     /// </summary>
     Task<bool> Show(ConfirmationDialogRequest request, CancellationToken cancellationToken = default);
 }
