@@ -82,12 +82,15 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="AGENTS.md" />
+    <File Path="global.json" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="GitVersion.yml" />
     <File Path="LICENSE" />
     <File Path="nuget.config" />
     <File Path="README.md" />
+    <File Path="CHANGELOG.md" />
+    <File Path="CONTRIBUTING.md" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">
@@ -96,19 +99,19 @@
     <Project Path="tests/Revit.Linter.Core.Tests/Revit.Linter.Core.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.Diagnostic.Tests/Revit.Linter.Diagnostic.Tests.csproj">
+    <Project Path="tests/Revit.Linter.Diagnostic.RevitTests/Revit.Linter.Diagnostic.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.DiagnosticReportProvider.Tests/Revit.Linter.DiagnosticReportProvider.Tests.csproj">
+    <Project Path="tests/Revit.Linter.DiagnosticReportProvider.RevitTests/Revit.Linter.DiagnosticReportProvider.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.ElementChangesProvider.Tests/Revit.Linter.ElementChangesProvider.Tests.csproj">
+    <Project Path="tests/Revit.Linter.ElementChangesProvider.RevitTests/Revit.Linter.ElementChangesProvider.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ElementDependencyDefiners.RevitTests/Revit.Linter.ElementDependencyDefiners.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.ElementIgnoring.Tests/Revit.Linter.ElementIgnoring.Tests.csproj">
+    <Project Path="tests/Revit.Linter.ElementIgnoring.RevitTests/Revit.Linter.ElementIgnoring.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.FixReportProvider.Tests/Revit.Linter.FixReportProvider.Tests.csproj">
@@ -123,7 +126,7 @@
     <Project Path="tests/Revit.Linter.Localization.Generator.Tests/Revit.Linter.Localization.Generator.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.ProjectParameterManaging.Tests/Revit.Linter.ProjectParameterManaging.Tests.csproj">
+    <Project Path="tests/Revit.Linter.ProjectParameterManaging.RevitTests/Revit.Linter.ProjectParameterManaging.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.SerilogEnrichers.Tests/Revit.Linter.SerilogEnrichers.Tests.csproj">
@@ -159,4 +162,71 @@
   <Project Path="src/Revit.Linter/Revit.Linter.csproj">
     <Platform Project="x64" />
   </Project>
+  <Folder Name="/docs/">
+    <File Path="docs/documentation.md" />
+    <File Path="docs/fast-start.md" />
+    <File Path="docs/how-to-install.md" />
+    <File Path="docs/repository.md" />
+    <File Path="docs/welcome-to-the-revit-linter-wiki.md" />
+  </Folder>
+  <Folder Name="/docs/documentation/">
+    <File Path="docs/documentation/collision-diagnostics.md" />
+    <File Path="docs/documentation/diagnostic-configuration-path-convension.md" />
+    <File Path="docs/documentation/diagnostic-configuration-path.md" />
+    <File Path="docs/documentation/diagnostic-conventions.md" />
+    <File Path="docs/documentation/diagnostic-message-placeholders.md" />
+    <File Path="docs/documentation/diagnostic-modules.md" />
+    <File Path="docs/documentation/diagnostic-parameters.md" />
+    <File Path="docs/documentation/diagnostic-severity.md" />
+    <File Path="docs/documentation/diagnostic-types-by-target.md" />
+    <File Path="docs/documentation/diagnostics.md" />
+    <File Path="docs/documentation/document-built-in diagnostics.md" />
+    <File Path="docs/documentation/element-built-in diagnostics.md" />
+    <File Path="docs/documentation/obsolete-diagnostic.md" />
+    <File Path="docs/documentation/project-parameter-diagnostics.md" />
+    <File Path="docs/documentation/ui.md" />
+    <File Path="docs/documentation/user-diagnostics.md" />
+  </Folder>
+  <Folder Name="/docs/documentation/syntax/">
+    <File Path="docs/documentation/syntax/formula-functions.md" />
+    <File Path="docs/documentation/syntax/formula-revit.md" />
+    <File Path="docs/documentation/syntax/formula-syntax.md" />
+  </Folder>
+  <Folder Name="/docs/documentation/ui/">
+    <File Path="docs/documentation/ui/dockable-panes.md" />
+    <File Path="docs/documentation/ui/ribbon-buttons.md" />
+  </Folder>
+  <Folder Name="/docs/documentation/ui/dockable-panes/">
+    <File Path="docs/documentation/ui/dockable-panes/diagnostic-reports-pane.md" />
+    <File Path="docs/documentation/ui/dockable-panes/diagnostics-pane.md" />
+    <File Path="docs/documentation/ui/dockable-panes/fix-reports-pane.md" />
+  </Folder>
+  <Folder Name="/docs/documentation/ui/ribbon-buttons/">
+    <File Path="docs/documentation/ui/ribbon-buttons/diagnostic-configuration-path-button.md" />
+    <File Path="docs/documentation/ui/ribbon-buttons/show-or -hide-diagnostic-report-button.md" />
+    <File Path="docs/documentation/ui/ribbon-buttons/show-or-hide-diagnostics-button.md" />
+    <File Path="docs/documentation/ui/ribbon-buttons/show-or-hide-fix-reports-button.md" />
+  </Folder>
+  <Folder Name="/docs/examples/configuration/">
+    <File Path="docs/examples/configuration/collision.config.yaml" />
+    <File Path="docs/examples/configuration/config.yaml" />
+    <File Path="docs/examples/configuration/parameter-element.config.yaml" />
+    <File Path="docs/examples/configuration/README.md" />
+  </Folder>
+  <Folder Name="/docs/excalidraw/">
+    <File Path="docs/excalidraw/interaction-scheme.md" />
+    <File Path="docs/excalidraw/modules-scheme.md" />
+  </Folder>
+  <Folder Name="/docs/policies/">
+    <File Path="docs/policies/development.md" />
+  </Folder>
+  <Folder Name="/solutionItems/.github/workflows/">
+    <File Path=".github/workflows/build-and-test.yml" />
+    <File Path=".github/workflows/publish-release.yml" />
+    <File Path=".github/workflows/publish-wiki.yml" />
+    <File Path=".github/workflows/repository-policy.yml" />
+  </Folder>
+  <Folder Name="/solutionItems/scripts/">
+    <File Path="scripts/Validate-Repository.ps1" />
+  </Folder>
 </Solution>
