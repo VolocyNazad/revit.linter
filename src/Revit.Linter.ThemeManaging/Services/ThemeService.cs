@@ -10,7 +10,6 @@ internal sealed partial class ThemeService : IThemeService
 {
     private readonly List<WeakReference<FrameworkElement>> _elements = [];
     private bool _isDarkTheme;
-    private Color? _backgroundColor;
 
     public void Register(FrameworkElement element)
     {
@@ -22,64 +21,57 @@ internal sealed partial class ThemeService : IThemeService
             return;
 
         _elements.Add(new WeakReference<FrameworkElement>(element));
-        ApplyTheme(element, _isDarkTheme, _backgroundColor);
+        ApplyTheme(element, _isDarkTheme);
     }
 
-    public void ChangeTheme(bool isDarkTheme, Color? backgroundColor = null)
+    public void ChangeTheme(bool isDarkTheme)
     {
         _isDarkTheme = isDarkTheme;
-        _backgroundColor = backgroundColor;
 
         for (int index = _elements.Count - 1; index >= 0; index--)
         {
             if (_elements[index].TryGetTarget(out var element))
-                ApplyTheme(element, isDarkTheme, backgroundColor);
+                ApplyTheme(element, isDarkTheme);
             else
                 _elements.RemoveAt(index);
         }
     }
 
-    private static void ApplyTheme(DependencyObject root, bool isDarkTheme, Color? backgroundColor)
+    private static void ApplyTheme(DependencyObject root, bool isDarkTheme)
     {
         var visited = new HashSet<DependencyObject>(DependencyObjectReferenceComparer.Instance);
-        ApplyTheme(root, isDarkTheme, backgroundColor, visited);
+        ApplyTheme(root, isDarkTheme, visited);
     }
 
-    private static void ApplyTheme(DependencyObject element, bool isDarkTheme, Color? backgroundColor, ISet<DependencyObject> visited)
+    private static void ApplyTheme(DependencyObject element, bool isDarkTheme, ISet<DependencyObject> visited)
     {
         if (!visited.Add(element)) return;
 
         if (element is FrameworkElement frameworkElement)
-            UpdateResources(frameworkElement.Resources, isDarkTheme, backgroundColor);
+            UpdateResources(frameworkElement.Resources, isDarkTheme);
         else if (element is FrameworkContentElement frameworkContentElement)
-            UpdateResources(frameworkContentElement.Resources, isDarkTheme, backgroundColor);
+            UpdateResources(frameworkContentElement.Resources, isDarkTheme);
 
         foreach (object child in LogicalTreeHelper.GetChildren(element))
         {
             if (child is DependencyObject dependencyObject)
-                ApplyTheme(dependencyObject, isDarkTheme, backgroundColor, visited);
+                ApplyTheme(dependencyObject, isDarkTheme, visited);
         }
 
         if (element is not Visual and not Visual3D) return;
 
         for (int index = 0; index < VisualTreeHelper.GetChildrenCount(element); index++)
-            ApplyTheme(VisualTreeHelper.GetChild(element, index), isDarkTheme, backgroundColor, visited);
+            ApplyTheme(VisualTreeHelper.GetChild(element, index), isDarkTheme, visited);
     }
 
-    private static void UpdateResources(ResourceDictionary resources, bool isDarkTheme, Color? backgroundColor)
+    private static void UpdateResources(ResourceDictionary resources, bool isDarkTheme)
     {
         foreach (ResourceDictionary dictionary in resources.MergedDictionaries)
         {
             if (dictionary is BundledTheme bundledTheme)
                 bundledTheme.BaseTheme = isDarkTheme ? BaseTheme.Dark : BaseTheme.Light;
 
-            UpdateResources(dictionary, isDarkTheme, backgroundColor);
+            UpdateResources(dictionary, isDarkTheme);
         }
-
-        const string backgroundResourceKey = "MaterialDesign.Brush.Background";
-        if (backgroundColor.HasValue)
-            resources[backgroundResourceKey] = new SolidColorBrush(backgroundColor.Value);
-        else
-            resources.Remove(backgroundResourceKey);
     }
 }

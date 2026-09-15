@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Use the Material Design light or dark palette for panel backgrounds instead of the Revit frame color.
+
 - Handle nullable document titles, localization arguments, and the executing assembly directory explicitly.
 
 - Build collision indexing and JSON report export for the .NET Framework configurations used by Revit 2021 and 2023.

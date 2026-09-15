@@ -20,7 +20,6 @@ using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using MediaColor = System.Windows.Media.Color;
 #if BEFORE2024
 using Revit.Sugar;
 #endif
@@ -111,23 +110,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     private static void ChangePluginTheme()
     {
         bool isDarkTheme = UIThemeManager.CurrentTheme == UITheme.Dark;
-        MediaColor backgroundColor = GetRevitFrameBackgroundColor(isDarkTheme);
-
-        Program.Provider.GetRequiredService<IThemeService>().ChangeTheme(isDarkTheme, backgroundColor);
-    }
-
-    private static MediaColor GetRevitFrameBackgroundColor(bool isDarkTheme)
-    {
-        var method = typeof(UIThemeManager).GetMethod("GetCurrentFrameBackgroundColor", Type.EmptyTypes);
-        object? revitColor = method?.Invoke(null, null);
-        if (revitColor is null)
-            return isDarkTheme ? MediaColor.FromRgb(44, 52, 64) : MediaColor.FromRgb(245, 245, 245);
-
-        var colorType = revitColor.GetType();
-        return MediaColor.FromRgb(
-            Convert.ToByte(colorType.GetProperty("Red")?.GetValue(revitColor)),
-            Convert.ToByte(colorType.GetProperty("Green")?.GetValue(revitColor)),
-            Convert.ToByte(colorType.GetProperty("Blue")?.GetValue(revitColor)));
+        Program.Provider.GetRequiredService<IThemeService>().ChangeTheme(isDarkTheme);
     }
 #endif
 
