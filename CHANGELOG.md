@@ -36,6 +36,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Replace diagnostic-list grouping with interactive target-type filter chips matching the report panels.
+
 - Extract the duplicated report message template parser from the diagnostic and fix report presenters into the shared `Revit.Linter.ReportMessaging` project with headless tests.
 
 - Standardize GitHub Actions workflow filenames and display names by responsibility.

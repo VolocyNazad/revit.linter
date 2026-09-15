@@ -47,6 +47,24 @@
         <DockPanel>
             <DockPanel Height="45" DockPanel.Dock="Top">
                 <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
+                <Rectangle
+                    Width="1"
+                    Margin="0,5"
+                    VerticalAlignment="Stretch"
+                    DockPanel.Dock="Left"
+                    Fill="{DynamicResource MaterialDesignDivider}" />
+                <ListBox
+                    VerticalAlignment="Center"
+                    d:ItemsSource="{d:SampleData ItemCount=2}"
+                    DockPanel.Dock="Left"
+                    ItemsSource="{Binding Filters}"
+                    Style="{StaticResource MaterialDesignFilterChipSecondaryListBox}">
+                    <ListBox.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource MaterialDesignFilterChipSecondaryListBoxItem}" TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsSelected" Value="{Binding IsActive, Mode=TwoWay}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
                 <Button
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"
@@ -104,32 +122,6 @@
                         <MenuItem Command="{Binding InvertVisibleCommand}" Header="{Binding InvertVisibleText}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
-                <DataGrid.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander IsExpanded="True">
-                                                <Expander.Header>
-                                                    <DockPanel>
-                                                        <TextBlock
-                                                            VerticalAlignment="Center"
-                                                            d:Text="Group name"
-                                                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                                                            Text="{Binding Name}" />
-                                                    </DockPanel>
-                                                </Expander.Header>
-                                                <ItemsPresenter />
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </DataGrid.GroupStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
                         Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

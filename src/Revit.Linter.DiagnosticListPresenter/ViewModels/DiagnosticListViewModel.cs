@@ -28,7 +28,10 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;
     partial void OnCollectionChanged(ObservableCollection<DiagnosticItemViewModel> value)
-        => InitializeCollectionView();
+    {
+        InitializeCollectionView();
+        RefreshFilters();
+    }
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
@@ -147,17 +150,25 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         CollectionViewSource.SortDescriptions.Add(
             new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending));
 
-        CollectionViewSource.GroupDescriptions.Clear();
-        CollectionViewSource.GroupDescriptions.Add(
-            new PropertyGroupDescription(nameof(DiagnosticItemViewModel.TargetType)));
     }
     private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
         => args.Accepted = args.Item is DiagnosticItemViewModel viewModel
-        //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
+        && Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && (viewModel.Description.ToString().Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
         || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
+
+    private void RefreshFilters()
+    {
+        Filters = Enum.GetValues(typeof(TargetType))
+            .Cast<TargetType>()
+            .Select(targetType => (IDiagnosticListFilter)new DiagnosticTargetTypeFilterViewModel(
+                targetType,
+                Collection.Count(item => item.TargetType == targetType)))
+            .Where(filter => filter is DiagnosticTargetTypeFilterViewModel { Count: > 0 })
+            .ToArray();
+    }
 
     protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
