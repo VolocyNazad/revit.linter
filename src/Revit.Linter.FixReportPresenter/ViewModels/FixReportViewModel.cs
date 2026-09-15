@@ -70,6 +70,11 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     [RelayCommand(CanExecute = nameof(CanSelectElement))]
     private void SelectElement(object? parameter)
     {
+        if (parameter is ElementId element)
+        {
+            SelectElement(element);
+            return;
+        }
 #if BEFORE2024
         if (parameter is not int elementId) return;
 #else
@@ -88,7 +93,11 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             .Execute(targetdocument, elementId);
     }
     private bool CanSelectElement(object? elementId)
+#if BEFORE2024
         => elementId is int
+#else
+        => elementId is long or ElementId
+#endif
         && _revitContext.ActiveDocument is { IsFamilyDocument: false };
 
     #endregion

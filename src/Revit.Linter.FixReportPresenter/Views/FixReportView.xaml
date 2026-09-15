@@ -8,6 +8,7 @@
     xmlns:infrastructure="clr-namespace:Revit.Linter.FixReportPresenter.Infrastructure"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
     xmlns:viewModels="clr-namespace:Revit.Linter.FixReportPresenter.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:FixReportViewModel}}"
     d:DesignHeight="400"
@@ -98,19 +99,34 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="Message">
+                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="MessageText">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <FlowDocumentScrollViewer
+                                <DataTemplate.Resources>
+                                    <Style TargetType="Hyperlink">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                        <Setter Property="TextDecorations" Value="Underline" />
+                                        <Setter Property="Cursor" Value="Hand" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataTemplate.Resources>
+                                <messaging:ReportMessageView
                                     Width="1800"
-                                    Document="{Binding Message}"
                                     HorizontalScrollBarVisibility="Disabled"
                                     IsSelectionEnabled="True"
+                                    LinkCommand="{Binding AccentElementCommand}"
+                                    Parts="{Binding MessageParts}"
+                                    ToolTipFormat="{Binding ShowElementToolTipFormat}"
+                                    VerticalAlignment="Center"
                                     VerticalScrollBarVisibility="Disabled">
                                     <i:Interaction.Behaviors>
                                         <behaviors:PassMouseWheelToParentBehavior />
                                     </i:Interaction.Behaviors>
-                                </FlowDocumentScrollViewer>
+                                </messaging:ReportMessageView>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

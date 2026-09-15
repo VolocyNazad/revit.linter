@@ -10,6 +10,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Use the Material Design light or dark palette for panel backgrounds instead of the Revit frame color.
 
+- Preserve unknown report message placeholders verbatim instead of dropping their braces, and support `{{`/`}}` escapes for literal braces.
+
+- Route report message element links through `Hyperlink.Command` with a typed id parameter instead of `Click` handlers parsing the `Tag` string, and fix the fix-report accent delegate to use `long` ids on Revit 2024+.
+
+- Carry report message element links as typed `ElementId` values from parsing to the accent command instead of round-tripping through strings.
+
+- Parse and cache each report message as one text-and-parts model, then render it in a shared typed view without positional multi-bindings.
+
+- Fix element accent command guards to accept `long` ids on Revit 2024+ and make the fix-report item code immutable.
+
+- Build each report message `FlowDocument` once and reuse it instead of recreating it on every binding access.
+
+- Move report message link and text styling from view models to XAML: links use the theme-aware primary palette with a hover state instead of hardcoded blue, and both reports share the same message font.
+
 - Handle nullable document titles, localization arguments, and the executing assembly directory explicitly.
 
 - Build collision indexing and JSON report export for the .NET Framework configurations used by Revit 2021 and 2023.
@@ -21,6 +35,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Validate required repository files, navigation links, and Solution Items in CI.
 
 ### Changed
+
+- Extract the duplicated report message template parser from the diagnostic and fix report presenters into the shared `Revit.Linter.ReportMessaging` project with headless tests.
 
 - Standardize GitHub Actions workflow filenames and display names by responsibility.
 

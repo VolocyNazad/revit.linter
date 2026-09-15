@@ -8,3 +8,5 @@ The following placeholders can be used in message templates:
 |`{elementId}`|The unique identifier of the element in the document.|`Element`|
 |`{documentTitle}`|The title of the document.|`Document`|
 |`{duration}`|The execution time of the check in milliseconds.|`Element`, `Document`|
+
+Unknown placeholders are kept verbatim. Use `{{` and `}}` for literal braces.

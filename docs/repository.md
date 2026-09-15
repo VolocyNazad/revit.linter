@@ -23,8 +23,13 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 
 `src/` contains dozens of small, single-responsibility-per-project
 projects (diagnostics, presenters, state managers, etc.) — most are
-named `Revit.Linter.<Area>`. `Toolkit.Revit.Extensions` is Revit API
-extensions, separate from `Revit.Linter.*`.
+ named `Revit.Linter.<Area>`. `Toolkit.Revit.Extensions` is Revit API
+ extensions, separate from `Revit.Linter.*`.
+`Revit.Linter.ReportMessaging` holds the shared report message
+template parser (`Template` + `Args` to cached plain text and text parts with element links)
+and the typed WPF message view used by the diagnostic and fix report
+presenters. The project has no compile-time dependency on Revit API;
+presenters adapt `ElementId` values through the generic link factory.
 
 ## Technology stack
 
