@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1123.43 -800.88 1309.51 1024.38" role="img" aria-labelledby="title desc">
+<title id="title">Revit Linter interaction scheme</title>
+<desc id="desc">Flow from running diagnostics to the diagnostics pane, diagnostic reports, and fixes.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs>
+<rect x="-1123.43" y="-800.88" width="1309.51" height="1024.38" fill="#ffffff"/>
+<rect x="-322.43" y="-739.38" width="404.07" height="184.20" rx="10" fill="none" stroke="#334155" stroke-width="2"/>
+<text x="-268.78" y="-633.78" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-268.78" dy="0">Diagnostics pane</tspan>
+</text>
+<rect x="-789.03" y="-394.92" width="497.04" height="182.15" rx="10" fill="none" stroke="#334155" stroke-width="2"/>
+<text x="-751.20" y="-290.34" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-751.20" dy="0">Diagnostic reports pane</tspan>
+</text>
+<rect x="-1071.75" y="-584.92" width="185.30" height="169.36" rx="10" fill="none" stroke="#334155" stroke-width="2"/>
+<text x="-1011.67" y="-486.74" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-1011.67" dy="0">Run</tspan>
+</text>
+<polyline points="-880.44,-500.45 -650.78,-509.12 -536.66,-389.14" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="-312.42,-554.19 -550.79,-552.95 -604.21,-472.14" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="-509.57" y="-33.59" width="473.26" height="179.99" rx="10" fill="none" stroke="#334155" stroke-width="2"/>
+<text x="-483.63" y="69.91" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-483.63" dy="0">Diagnostic reports pane</tspan>
+</text>
+<text x="-809.66" y="-551.63" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-809.66" dy="0">Diagnostic</tspan>
+</text>
+<polyline points="-285.99,-291.90 -257.93,-236.14 -272.45,-39.59" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="-225.42" y="-120.80" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-225.42" dy="0">Fix</tspan>
+</text>
+<rect x="-1095.43" y="-772.88" width="1253.51" height="968.38" rx="10" fill="none" stroke="#334155" stroke-width="2.5"/>
+<text x="-1063.46" y="-711.03" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="600">
+<tspan x="-1063.46" dy="0">Interaction</tspan>
+</text>
+<text x="-546.46" y="-499.88" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="500">
+<tspan x="-546.46" dy="0">using</tspan>
+<tspan x="-546.46" dy="45.00">configuration</tspan>
+</text>
+</svg>

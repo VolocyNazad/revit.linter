@@ -169,59 +169,130 @@
     <Platform Project="x64" />
   </Project>
   <Folder Name="/docs/">
-    <File Path="docs/documentation.md" />
-    <File Path="docs/fast-start.md" />
-    <File Path="docs/how-to-install.md" />
     <File Path="docs/repository.md" />
-    <File Path="docs/welcome-to-the-revit-linter-wiki.md" />
   </Folder>
-  <Folder Name="/docs/documentation/">
-    <File Path="docs/documentation/collision-diagnostics.md" />
-    <File Path="docs/documentation/diagnostic-configuration-path-convension.md" />
-    <File Path="docs/documentation/diagnostic-configuration-path.md" />
-    <File Path="docs/documentation/diagnostic-conventions.md" />
-    <File Path="docs/documentation/diagnostic-message-placeholders.md" />
-    <File Path="docs/documentation/diagnostic-modules.md" />
-    <File Path="docs/documentation/diagnostic-parameters.md" />
-    <File Path="docs/documentation/diagnostic-severity.md" />
-    <File Path="docs/documentation/diagnostic-types-by-target.md" />
-    <File Path="docs/documentation/diagnostics.md" />
-    <File Path="docs/documentation/document-built-in diagnostics.md" />
-    <File Path="docs/documentation/element-built-in diagnostics.md" />
-    <File Path="docs/documentation/obsolete-diagnostic.md" />
-    <File Path="docs/documentation/project-parameter-diagnostics.md" />
-    <File Path="docs/documentation/ui.md" />
-    <File Path="docs/documentation/user-diagnostics.md" />
+  <Folder Name="/wiki/">
+    <File Path="wiki/Documentation.md" />
+    <File Path="wiki/English.md" />
+    <File Path="wiki/Home.md" />
   </Folder>
-  <Folder Name="/docs/documentation/syntax/">
-    <File Path="docs/documentation/syntax/formula-functions.md" />
-    <File Path="docs/documentation/syntax/formula-revit.md" />
-    <File Path="docs/documentation/syntax/formula-syntax.md" />
+  <Folder Name="/wiki/assets/diagrams/">
+    <File Path="wiki/assets/diagrams/interaction-scheme.svg" />
   </Folder>
-  <Folder Name="/docs/documentation/ui/">
-    <File Path="docs/documentation/ui/dockable-panes.md" />
-    <File Path="docs/documentation/ui/ribbon-buttons.md" />
+  <Folder Name="/wiki/diagnostics/">
+    <File Path="wiki/diagnostics/Diagnostic modules.md" />
+    <File Path="wiki/diagnostics/Diagnostics overview.md" />
   </Folder>
-  <Folder Name="/docs/documentation/ui/dockable-panes/">
-    <File Path="docs/documentation/ui/dockable-panes/diagnostic-reports-pane.md" />
-    <File Path="docs/documentation/ui/dockable-panes/diagnostics-pane.md" />
-    <File Path="docs/documentation/ui/dockable-panes/fix-reports-pane.md" />
+  <Folder Name="/wiki/diagnostics/built-in/">
+    <File Path="wiki/diagnostics/built-in/Built-in document diagnostics.md" />
+    <File Path="wiki/diagnostics/built-in/Built-in element diagnostics.md" />
   </Folder>
-  <Folder Name="/docs/documentation/ui/ribbon-buttons/">
-    <File Path="docs/documentation/ui/ribbon-buttons/diagnostic-configuration-path-button.md" />
-    <File Path="docs/documentation/ui/ribbon-buttons/show-or -hide-diagnostic-report-button.md" />
-    <File Path="docs/documentation/ui/ribbon-buttons/show-or-hide-diagnostics-button.md" />
-    <File Path="docs/documentation/ui/ribbon-buttons/show-or-hide-fix-reports-button.md" />
+  <Folder Name="/wiki/diagnostics/custom/">
+    <File Path="wiki/diagnostics/custom/Collision diagnostics.md" />
+    <File Path="wiki/diagnostics/custom/Project parameter diagnostics.md" />
+    <File Path="wiki/diagnostics/custom/User diagnostics.md" />
   </Folder>
-  <Folder Name="/docs/examples/configuration/">
-    <File Path="docs/examples/configuration/collision.config.yaml" />
-    <File Path="docs/examples/configuration/config.yaml" />
-    <File Path="docs/examples/configuration/parameter-element.config.yaml" />
-    <File Path="docs/examples/configuration/README.md" />
+  <Folder Name="/wiki/examples/configuration/">
+    <File Path="wiki/examples/configuration/collision.config.yaml" />
+    <File Path="wiki/examples/configuration/config.yaml" />
+    <File Path="wiki/examples/configuration/Configuration examples.md" />
+    <File Path="wiki/examples/configuration/parameter-element.config.yaml" />
   </Folder>
-  <Folder Name="/docs/excalidraw/">
-    <File Path="docs/excalidraw/interaction-scheme.md" />
-    <File Path="docs/excalidraw/modules-scheme.md" />
+  <Folder Name="/wiki/getting-started/">
+    <File Path="wiki/getting-started/Configuration setup.md" />
+    <File Path="wiki/getting-started/Installation.md" />
+    <File Path="wiki/getting-started/Quick start.md" />
+  </Folder>
+  <Folder Name="/wiki/getting-started/configuration/">
+    <File Path="wiki/getting-started/configuration/Diagnostic configuration path convention.md" />
+    <File Path="wiki/getting-started/configuration/Diagnostic configuration path.md" />
+  </Folder>
+  <Folder Name="/wiki/interface/">
+    <File Path="wiki/interface/Dockable panes.md" />
+    <File Path="wiki/interface/Ribbon buttons.md" />
+    <File Path="wiki/interface/User interface.md" />
+  </Folder>
+  <Folder Name="/wiki/interface/dockable-panes/">
+    <File Path="wiki/interface/dockable-panes/Diagnostic reports pane.md" />
+    <File Path="wiki/interface/dockable-panes/Diagnostics pane.md" />
+    <File Path="wiki/interface/dockable-panes/Fix reports pane.md" />
+  </Folder>
+  <Folder Name="/wiki/interface/ribbon-buttons/">
+    <File Path="wiki/interface/ribbon-buttons/Diagnostic configuration path button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostic report button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostics button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Show or hide fix reports button.md" />
+  </Folder>
+  <Folder Name="/wiki/reference/diagnostics/">
+    <File Path="wiki/reference/diagnostics/Diagnostic conventions.md" />
+    <File Path="wiki/reference/diagnostics/Diagnostic message placeholders.md" />
+    <File Path="wiki/reference/diagnostics/Diagnostic parameters.md" />
+    <File Path="wiki/reference/diagnostics/Diagnostic severity.md" />
+    <File Path="wiki/reference/diagnostics/Diagnostic types by target.md" />
+    <File Path="wiki/reference/diagnostics/Obsolete diagnostic.md" />
+  </Folder>
+  <Folder Name="/wiki/reference/formulas/">
+    <File Path="wiki/reference/formulas/Formula functions.md" />
+    <File Path="wiki/reference/formulas/Formula Revit.md" />
+    <File Path="wiki/reference/formulas/Formula syntax.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/">
+    <File Path="wiki/ru/Документация.md" />
+    <File Path="wiki/ru/Русский.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Диагностика/">
+    <File Path="wiki/ru/Диагностика/Модули диагностики.md" />
+    <File Path="wiki/ru/Диагностика/Обзор диагностики.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Диагностика/Встроенные/">
+    <File Path="wiki/ru/Диагностика/Встроенные/Встроенные проверки документа.md" />
+    <File Path="wiki/ru/Диагностика/Встроенные/Встроенные проверки элементов.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Диагностика/Пользовательские/">
+    <File Path="wiki/ru/Диагностика/Пользовательские/Пользовательские проверки.md" />
+    <File Path="wiki/ru/Диагностика/Пользовательские/Проверки коллизий.md" />
+    <File Path="wiki/ru/Диагностика/Пользовательские/Проверки параметров проекта.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Интерфейс/">
+    <File Path="wiki/ru/Интерфейс/Закрепляемые панели.md" />
+    <File Path="wiki/ru/Интерфейс/Интерфейс.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки ленты.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Интерфейс/Кнопки/">
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели диагностики.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов диагностики.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов исправлений.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка папки конфигурации.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Интерфейс/Панели/">
+    <File Path="wiki/ru/Интерфейс/Панели/Панель диагностики.md" />
+    <File Path="wiki/ru/Интерфейс/Панели/Панель результатов диагностики.md" />
+    <File Path="wiki/ru/Интерфейс/Панели/Панель результатов исправлений.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Начало работы/">
+    <File Path="wiki/ru/Начало работы/Быстрый старт.md" />
+    <File Path="wiki/ru/Начало работы/Настройка конфигурации.md" />
+    <File Path="wiki/ru/Начало работы/Установка.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Начало работы/Конфигурация/">
+    <File Path="wiki/ru/Начало работы/Конфигурация/Путь к конфигурации.md" />
+    <File Path="wiki/ru/Начало работы/Конфигурация/Размещение файлов конфигурации.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Примеры/Конфигурация/">
+    <File Path="wiki/ru/Примеры/Конфигурация/Примеры конфигурации.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Справочник/Диагностика/">
+    <File Path="wiki/ru/Справочник/Диагностика/Параметры диагностики.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Подстановки сообщений.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Соглашения диагностики.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Типы объектов проверки.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Уровни важности.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Устаревшие проверки.md" />
+  </Folder>
+  <Folder Name="/wiki/ru/Справочник/Формулы/">
+    <File Path="wiki/ru/Справочник/Формулы/Объекты Revit в формулах.md" />
+    <File Path="wiki/ru/Справочник/Формулы/Синтаксис формул.md" />
+    <File Path="wiki/ru/Справочник/Формулы/Функции формул.md" />
   </Folder>
   <Folder Name="/docs/policies/">
     <File Path="docs/policies/development.md" />

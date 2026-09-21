@@ -31,7 +31,7 @@ Ready-made builds are released for Revit 2021, 2023, and 2025.
 
 On the **Volocy** tab you can open the diagnostics, results, and fixes panels, as well as navigate to the configuration folder.
 
-Diagnostics are configured with YAML files, separately for each version of Revit. A detailed description of the interface, built-in diagnostics, formulas, and configuration format is being prepared in the [documentation](docs/documentation.md).
+Diagnostics are configured with YAML files, separately for each version of Revit. See the [user documentation](wiki/Home.md) for the interface, built-in diagnostics, formulas, and configuration format. The `wiki/` folder contains English and Russian documentation and can also be opened directly as an Obsidian vault.
 
 ## License
 
@@ -43,4 +43,5 @@ The project is distributed under the [Apache License 2.0](LICENSE).
 - [Repository guide and technology stack](docs/repository.md)
 
 ## Contributing
- [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.

@@ -420,3 +420,6 @@ FodyWeavers.xsd
 
 # Revit manifests
 *.addin
+
+# Local Obsidian vault settings
+/wiki/.obsidian/
