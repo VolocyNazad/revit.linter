@@ -14,7 +14,8 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
 
     public static void Initialize(IServiceProvider serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(serviceProvider);
+        if (serviceProvider is null)
+            throw new ArgumentNullException(nameof(serviceProvider));
         Interlocked.CompareExchange(ref _serviceProvider, serviceProvider, null);
     }
 
@@ -33,10 +34,10 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
             throw new InvalidOperationException($"View model type '{viewModelType.FullName}' must end with '{viewModelSuffix}'.");
 
         string? viewModelNamespace = viewModelType.Namespace;
-        if (viewModelNamespace is null || !viewModelNamespace.Contains(".ViewModels", StringComparison.Ordinal))
+        if (viewModelNamespace is null || viewModelNamespace.IndexOf(".ViewModels", StringComparison.Ordinal) < 0)
             throw new InvalidOperationException($"View model type '{viewModelType.FullName}' must be located in a ViewModels namespace.");
 
-        string viewNamespace = viewModelNamespace.Replace(".ViewModels", ".Views", StringComparison.Ordinal);
+        string viewNamespace = viewModelNamespace.Replace(".ViewModels", ".Views");
         string viewName = viewModelType.Name[..^viewModelSuffix.Length] + "View";
         string viewFullName = $"{viewNamespace}.{viewName}";
         return viewModelType.Assembly.GetType(viewFullName)
