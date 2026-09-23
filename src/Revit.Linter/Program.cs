@@ -24,15 +24,16 @@ using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
+using Revit.Linter.Presentation;
 using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
-using Toolkit.ValueStore.DI;
-using Toolkit.ValueStore.Serialization;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
 using System.Reflection;
+using Toolkit.ValueStore.DI;
+using Toolkit.ValueStore.Serialization;
 
 namespace Revit.Linter;
 
@@ -41,7 +42,15 @@ internal sealed class Program
     private Program() { }
 
     private static IHost Host => field ??= CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-    public static IServiceProvider Provider => Host.Services;
+    public static IServiceProvider Provider
+    {
+        get
+        {
+            IServiceProvider provider = Host.Services;
+            ViewLocatorExtension.Initialize(provider);
+            return provider;
+        }
+    }
     private static string Location => field ??= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         ?? throw new HostLocationNotFoundException();
 
@@ -83,5 +92,4 @@ internal sealed class Program
                 })
             )
         ;
-
 }

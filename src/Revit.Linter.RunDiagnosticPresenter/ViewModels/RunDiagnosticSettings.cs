@@ -3,7 +3,7 @@ using Toolkit.ValueStore.Abstractions;
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 
 [StoreFile("settings.yml")]
-internal sealed class RunDiagnosticSettings
+public sealed class RunDiagnosticSettings
 {
     public bool OnActiveViewMode { get; set; }
 

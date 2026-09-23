@@ -1,15 +1,18 @@
-﻿using Revit.Linter.DiagnosticReportPresenter.ViewModels;
-
+using Revit.Linter.OpenedDocuments.ViewModels;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 
 namespace Revit.Linter.DiagnosticReportPresenter.Views;
 
 public sealed partial class DiagnosticReportView
 {
-    public DiagnosticReportView(IServiceProvider serviceProvider, IThemeService themeService)
+    public DiagnosticReportView(
+        OpenedDocumentsViewModel openedDocumentsViewModel,
+        IThemeService themeService)
     {
-        ServiceLocator.Initialize(serviceProvider);
+        OpenedDocumentsViewModel = openedDocumentsViewModel;
         InitializeComponent();
         themeService.Register(this);
     }
+
+    public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
 }

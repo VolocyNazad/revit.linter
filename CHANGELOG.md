@@ -36,6 +36,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Compose the shared diagnostic runner through a centralized view locator and keep document state explicit through view constructor injection instead of presenter-specific static service locators.
+
 - Publish the user documentation in English and Russian with language navigation compatible with Obsidian and GitHub Wiki.
 
 - Reorganize user documentation as an Obsidian-compatible `wiki/` vault with a task-oriented home page and corrected navigation.

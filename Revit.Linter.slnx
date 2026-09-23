@@ -155,6 +155,9 @@
     <Project Path="src/Revit.Linter.OpenedDocuments/Revit.Linter.OpenedDocuments.csproj" Id="d3b29ecb-d6af-46c9-894a-3467ea471a90">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.Presentation/Revit.Linter.Presentation.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ReportMessaging/Revit.Linter.ReportMessaging.csproj">
       <Platform Project="x64" />
     </Project>

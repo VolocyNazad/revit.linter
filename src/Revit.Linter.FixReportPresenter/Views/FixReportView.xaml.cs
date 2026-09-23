@@ -1,15 +1,18 @@
-﻿using Revit.Linter.FixReportPresenter.ViewModels;
-
+using Revit.Linter.OpenedDocuments.ViewModels;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 
 namespace Revit.Linter.FixReportPresenter.Views;
 
 public sealed partial class FixReportView
 {
-    public FixReportView(IServiceProvider serviceProvider, IThemeService themeService)
+    public FixReportView(
+        OpenedDocumentsViewModel openedDocumentsViewModel,
+        IThemeService themeService)
     {
-        ServiceLocator.Initialize(serviceProvider);
+        OpenedDocumentsViewModel = openedDocumentsViewModel;
         InitializeComponent();
         themeService.Register(this);
     }
+
+    public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
 }

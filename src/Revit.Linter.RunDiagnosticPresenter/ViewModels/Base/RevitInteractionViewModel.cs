@@ -5,7 +5,7 @@ using Revit.Linter.Core.Abstractions.Services;
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
 
 [XamlConstructor, AutoConstructor]
-internal abstract partial class RevitInteractionViewModel : InitializableObservableObject
+public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
     protected readonly IRevitIdlingScheduler _idlingScheduler;
 

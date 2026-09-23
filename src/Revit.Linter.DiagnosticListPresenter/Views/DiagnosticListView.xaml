@@ -1,5 +1,6 @@
 <UserControl
     x:Class="Revit.Linter.DiagnosticListPresenter.Views.DiagnosticListView"
+    x:Name="Root"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:core="clr-namespace:Revit.Linter.Core.Abstractions.Models;assembly=Revit.Linter.Core"
@@ -8,6 +9,8 @@
     xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticListPresenter.Infrastructure"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
+    xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModels="clr-namespace:Revit.Linter.DiagnosticListPresenter.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticListViewModel}}"
@@ -31,7 +34,6 @@
                     <x:Type TypeName="core:DiagnosticSeverity" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-            <viewModels:ServiceLocator x:Key="ServiceLocator" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -46,7 +48,7 @@
         VerticalContentAlignment="Stretch">
         <DockPanel>
             <DockPanel Height="45" DockPanel.Dock="Top">
-                <ContentControl Content="{Binding RunDiagnosticView, Source={StaticResource ServiceLocator}}" />
+                <ContentControl Content="{composition:ViewLocator {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"

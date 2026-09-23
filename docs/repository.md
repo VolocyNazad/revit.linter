@@ -30,6 +30,9 @@ template parser (`Template` + `Args` to cached plain text and text parts with el
 and the typed WPF message view used by the diagnostic and fix report
 presenters. The project has no compile-time dependency on Revit API;
 presenters adapt `ElementId` values through the generic link factory.
+`Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
+`ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
+use it only at module composition boundaries, not as a general service locator.
 
 ## Technology stack
 

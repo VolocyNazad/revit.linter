@@ -16,7 +16,7 @@ namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 
 [XamlConstructor]
 [GenerateLocalizedProperties]
-internal sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
+public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 {
     private readonly IRevitContext _revitContext;
     private readonly IDiagnosticService _diagnosticService;
