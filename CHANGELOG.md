@@ -6,60 +6,32 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Fixed
-
-- Validate Wiki page links and translate Obsidian link aliases to GitHub Wiki order during publication so labeled navigation opens the intended pages.
-
-- Use the Material Design light or dark palette for panel backgrounds instead of the Revit frame color.
-
-- Preserve unknown report message placeholders verbatim instead of dropping their braces, and support `{{`/`}}` escapes for literal braces.
-
-- Route report message element links through `Hyperlink.Command` with a typed id parameter instead of `Click` handlers parsing the `Tag` string, and fix the fix-report accent delegate to use `long` ids on Revit 2024+.
-
-- Carry report message element links as typed `ElementId` values from parsing to the accent command instead of round-tripping through strings.
-
-- Parse and cache each report message as one text-and-parts model, then render it in a shared typed view without positional multi-bindings.
-
-- Fix element accent command guards to accept `long` ids on Revit 2024+ and make the fix-report item code immutable.
-
-- Build each report message `FlowDocument` once and reuse it instead of recreating it on every binding access.
-
-- Move report message link and text styling from view models to XAML: links use the theme-aware primary palette with a hover state instead of hardcoded blue, and both reports share the same message font.
-
-- Handle nullable document titles, localization arguments, and the executing assembly directory explicitly.
-
-- Build collision indexing and JSON report export for the .NET Framework configurations used by Revit 2021 and 2023.
+## [1.7.0] - 2026-09-23
 
 ### Added
 
-- Build the supported Revit matrix and run headless tests on pushes and pull requests.
-
-- Validate required repository files, navigation links, and Solution Items in CI.
+- Export diagnostic reports for further analysis and sharing.
+- Filter the diagnostics list by target type using interactive filter chips.
+- Detect Revit warnings, unused materials, and unused profile family types.
+- Notify users when a diagnostic formula cannot be compiled.
+- Enrich application logs with Revit application, document, model, and add-in context.
+- Publish task-oriented user documentation in English and Russian for both Obsidian and GitHub Wiki.
+- Provide a local Revit sandbox launcher and benchmarks for collision detection and spatial indexing.
 
 ### Changed
 
-- Compose the shared diagnostic runner through a centralized view locator and keep document state explicit through view constructor injection instead of presenter-specific static service locators.
+- Improve collision diagnostics with spatial indexing and support configuration that allows values to vary between groups.
+- Present Revit warnings as document diagnostics alongside the other linting results.
+- Replace diagnostic grouping with target-type filters and use theme-aware colors throughout report panels.
+- Render diagnostic and fix messages through a shared parser with typed element links and cached message content.
+- Compose shared views through dependency injection and a centralized view locator.
+- Support the configured Revit 2021, 2023, and 2025 build targets in local and CI builds.
+- Separate headless tests from tests that require a running Revit process, and add repository validation to CI.
 
-- Publish the user documentation in English and Russian with language navigation compatible with Obsidian and GitHub Wiki.
+### Fixed
 
-- Reorganize user documentation as an Obsidian-compatible `wiki/` vault with a task-oriented home page and corrected navigation.
-
-- Replace diagnostic-list grouping with interactive target-type filter chips matching the report panels.
-
-- Extract the duplicated report message template parser from the diagnostic and fix report presenters into the shared `Revit.Linter.ReportMessaging` project with headless tests.
-
-- Standardize GitHub Actions workflow filenames and display names by responsibility.
-
-- Set the Roslyn compatibility baseline to Microsoft.CodeAnalysis 4.14 for Visual Studio 2022 version 17.14.
-
-- Configure xUnit v3 test execution through Microsoft.Testing.Platform and fail test runs when no tests are discovered.
-
-- Establish a shared EditorConfig baseline and use the repository-policy validator as the single structural CI check.
-
-- Complete solution items for repository documents, configuration, workflows and maintenance scripts; document the shared layout.
-
-- Standardize local and CI SDK selection on stable .NET 10.0 through global.json, restrict roll-forward to that major/minor line, and configure setup-dotnet to read the file.
-
-- Show documentation in Visual Studio Solution Explorer under a `docs` solution folder with matching subfolders.
-
-- Move development policies and repository guidance from `AGENTS.md` to `docs/policies/development.md` and `docs/repository.md`; keep required reading links in `AGENTS.md` and add README navigation.
+- Correct connector connection checks and avoid reporting connected connectors as disconnected.
+- Delay Revit external-event work until the application is ready to process it.
+- Preserve unknown message placeholders, support escaped braces, and handle element identifiers correctly on Revit 2024 and later.
+- Use the active Material Design palette for panel backgrounds in both light and dark themes.
+- Publish Wiki links with the correct targets when source pages use Obsidian aliases.
