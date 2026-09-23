@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Validate Wiki page links and translate Obsidian link aliases to GitHub Wiki order during publication so labeled navigation opens the intended pages.
+
 - Use the Material Design light or dark palette for panel backgrounds instead of the Revit frame color.
 
 - Preserve unknown report message placeholders verbatim instead of dropping their braces, and support `{{`/`}}` escapes for literal braces.

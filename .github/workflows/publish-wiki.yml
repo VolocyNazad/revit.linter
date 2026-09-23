@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'wiki/**'
+      - 'scripts/Prepare-Wiki.ps1'
+      - '.github/workflows/publish-wiki.yml'
   workflow_dispatch:
 
 concurrency:
@@ -22,9 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Prepare wiki
+        shell: pwsh
+        run: ./scripts/Prepare-Wiki.ps1
+
       - name: Publish wiki
         uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
-          path: wiki/
+          path: .wiki-publish/
           disable-empty-commits: true
           ignore: ".obsidian/"

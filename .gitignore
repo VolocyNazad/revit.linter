@@ -423,3 +423,4 @@ FodyWeavers.xsd
 
 # Local Obsidian vault settings
 /wiki/.obsidian/
+.wiki-publish/

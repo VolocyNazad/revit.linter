@@ -70,6 +70,7 @@ use it only at module composition boundaries, not as a general service locator.
 - English pages live in the task-oriented folders directly under `wiki/`; Russian pages mirror that structure under `wiki/ru/`.
 - `wiki/Home.md` is the language selector. Every localized page links to its counterpart and declares `lang: en` or `lang: ru` in YAML front matter.
 - Page names must remain unique across both languages because GitHub Wiki addresses pages by name rather than by language folder.
+- Wiki sources use Obsidian's `[[Target|Label]]` alias order. The publication workflow runs `scripts/Prepare-Wiki.ps1` to validate page targets and convert aliased links to GitHub Wiki's `[[Label|Target]]` order in a staging directory without changing the Obsidian sources.
 
 Local Obsidian settings under `wiki/.obsidian/` are ignored. Keep shared content and navigation in Markdown so the same files work in Obsidian and GitHub Wiki.
 
