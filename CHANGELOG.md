@@ -12,7 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Declare English as the neutral resource language and use a parent-culture `ru` satellite for all Russian regional cultures.
+- Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global and view-model strings through the same localization reader.
 
 ### Fixed
 

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
@@ -75,7 +76,7 @@ internal sealed class Program
 #endif
             .ConfigureServices((context, services) => services
                 .AddAndConfigureSerilog()
-                .AddLocalization(i => i.ResourcesPath = "Resources")
+                .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
                 .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddElementAccentor()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()

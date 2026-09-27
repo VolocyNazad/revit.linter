@@ -3,6 +3,8 @@
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 	<ItemGroup>
+		<EmbeddedResource Include="..\Revit.Linter\Resources\GlobalLocalizations.resx" LogicalName="Revit.Linter.Localization.GlobalLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter\Resources\GlobalLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.GlobalLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticReportPresenter\ViewModels\DiagnosticReportViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel.resources" />

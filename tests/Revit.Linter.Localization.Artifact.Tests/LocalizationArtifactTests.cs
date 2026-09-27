@@ -7,8 +7,9 @@ namespace Revit.Linter.Localization.Artifact.Tests;
 
 public sealed class LocalizationArtifactTests
 {
-    private const string ResourceBaseName =
+    private const string ViewModelResourceBaseName =
         "Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel";
+    private const string GlobalResourceBaseName = "Revit.Linter.Localization.GlobalLocalizations";
 
     [Fact]
     public void Repacked_output_resolves_neutral_russian_and_fallback_resources()
@@ -36,20 +37,25 @@ public sealed class LocalizationArtifactTests
             "GetString",
             BindingFlags.Public | BindingFlags.Static)!;
 
-        Assert.Equal("Reports:", ReadString(getString, "en-US"));
-        Assert.Equal("Отчеты:", ReadString(getString, "ru"));
-        Assert.Equal("Отчеты:", ReadString(getString, "ru-RU"));
-        Assert.Equal("Отчеты:", ReadString(getString, "ru-KZ"));
-        Assert.Equal("Reports:", ReadString(getString, "de-DE"));
+        Assert.Equal("Reports:", ReadString(getString, ViewModelResourceBaseName, "reports_text", "en-US"));
+        Assert.Equal("Отчеты:", ReadString(getString, ViewModelResourceBaseName, "reports_text", "ru"));
+        Assert.Equal("Отчеты:", ReadString(getString, ViewModelResourceBaseName, "reports_text", "ru-RU"));
+        Assert.Equal("Отчеты:", ReadString(getString, ViewModelResourceBaseName, "reports_text", "ru-KZ"));
+        Assert.Equal("Reports:", ReadString(getString, ViewModelResourceBaseName, "reports_text", "de-DE"));
+
+        Assert.Equal("Diagnostics", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "en-US"));
+        Assert.Equal("Проверки", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "ru-RU"));
+        Assert.Equal("Проверки", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "ru-KZ"));
+        Assert.Equal("Diagnostics", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "de-DE"));
     }
 
-    private static string ReadString(MethodInfo getString, string cultureName)
+    private static string ReadString(MethodInfo getString, string baseName, string key, string cultureName)
     {
         CultureInfo previousCulture = CultureInfo.CurrentUICulture;
         try
         {
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(cultureName);
-            return (string)getString.Invoke(null, [ResourceBaseName, "reports_text"])!;
+            return (string)getString.Invoke(null, [baseName, key])!;
         }
         finally
         {

@@ -15,6 +15,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="required-revit-project-parameters.txt" />
+	  <EmbeddedResource Remove="Resources\GlobalLocalizations*.resx" />
 	</ItemGroup>
 	<ItemGroup>
 		<ExternalApplication Include="Revit.Linter">
@@ -91,21 +92,6 @@
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
 		<PackageReference Include="VolocyNazad.Revit.Sugar" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Resources\GlobalLocalizations.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>GlobalLocalizations.resx</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Update="Resources\GlobalLocalizations.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>GlobalLocalizations.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

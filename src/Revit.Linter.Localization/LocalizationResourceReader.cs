@@ -12,14 +12,50 @@ public static class LocalizationResourceReader
 
     public static string GetString(string baseName, string key)
     {
+        _ = TryGetString(baseName, key, out string value);
+        return value;
+    }
+
+    public static bool TryGetString(string baseName, string key, out string value)
+    {
         for (CultureInfo culture = CultureInfo.CurrentUICulture; !string.IsNullOrEmpty(culture.Name); culture = culture.Parent)
         {
-            if (GetResources(baseName, culture).TryGetValue(key, out string? value)) return value;
+            if (GetResources(baseName, culture).TryGetValue(key, out string? localizedValue))
+            {
+                value = localizedValue;
+                return true;
+            }
         }
 
-        return GetResources(baseName, CultureInfo.InvariantCulture).TryGetValue(key, out string? fallback)
-            ? fallback
-            : key;
+        if (GetResources(baseName, CultureInfo.InvariantCulture).TryGetValue(key, out string? fallback))
+        {
+            value = fallback;
+            return true;
+        }
+
+        value = key;
+        return false;
+    }
+
+    public static IEnumerable<KeyValuePair<string, string>> GetAllStrings(string baseName, bool includeParentCultures)
+    {
+        HashSet<string> keys = new(StringComparer.Ordinal);
+        CultureInfo culture = CultureInfo.CurrentUICulture;
+        while (!string.IsNullOrEmpty(culture.Name))
+        {
+            foreach (KeyValuePair<string, string> resource in GetResources(baseName, culture))
+            {
+                if (keys.Add(resource.Key)) yield return resource;
+            }
+
+            if (!includeParentCultures) break;
+            culture = culture.Parent;
+        }
+
+        foreach (KeyValuePair<string, string> resource in GetResources(baseName, CultureInfo.InvariantCulture))
+        {
+            if (keys.Add(resource.Key)) yield return resource;
+        }
     }
 
     private static IReadOnlyDictionary<string, string> GetResources(string baseName, CultureInfo culture) =>

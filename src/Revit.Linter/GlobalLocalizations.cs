@@ -2,5 +2,5 @@
 
 namespace Revit.Linter;
 
-[SuppressMessage("SonarAnalyzer", "S2094", Justification = "Stub class for localization .resx file creation")]
+[SuppressMessage("SonarAnalyzer", "S2094", Justification = "Marker type for the typed global string localizer")]
 internal sealed class GlobalLocalizations;
