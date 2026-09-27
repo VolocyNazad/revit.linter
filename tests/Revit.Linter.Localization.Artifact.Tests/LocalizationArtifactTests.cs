@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reflection;
+using System.Resources;
 using Xunit;
 
 namespace Revit.Linter.Localization.Artifact.Tests;
@@ -23,6 +24,11 @@ public sealed class LocalizationArtifactTests
         Assert.True(File.Exists(russianSatellitePath), $"Russian satellite assembly was not found: {russianSatellitePath}");
 
         Assembly localizationAssembly = Assembly.LoadFrom(localizationAssemblyPath);
+        NeutralResourcesLanguageAttribute? neutralLanguage =
+            localizationAssembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>();
+        Assert.NotNull(neutralLanguage);
+        Assert.Equal("en", neutralLanguage.CultureName);
+
         Type readerType = localizationAssembly.GetType(
             "Revit.Linter.Localization.LocalizationResourceReader",
             throwOnError: true)!;

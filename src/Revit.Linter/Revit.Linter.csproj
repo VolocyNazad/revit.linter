@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 		<Authors>VolocyNazad</Authors>
+		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 	<PropertyGroup>
 		<LaunchRevit>true</LaunchRevit>

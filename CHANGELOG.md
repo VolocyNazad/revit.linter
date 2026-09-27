@@ -10,6 +10,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Verify localization key and placeholder parity, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
 
+### Changed
+
+- Declare English as the neutral resource language for the add-in and its ILRepack-excluded localization assembly.
+
 ### Fixed
 
 - Store add-in logs under `%LOCALAPPDATA%` without the machine-name property, bound them to the newest 14 daily or 20 MB files, keep Console/Debug sinks development-only, record startup and shutdown lifecycle events, capture fatal lifecycle failures, and dispose the logging host during Revit shutdown so buffered events are flushed.
