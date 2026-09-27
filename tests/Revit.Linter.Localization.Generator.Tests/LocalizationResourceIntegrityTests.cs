@@ -24,7 +24,7 @@ public sealed class LocalizationResourceIntegrityTests
         {
             string russianPath = Path.Combine(
                 Path.GetDirectoryName(neutralPath)!,
-                $"{Path.GetFileNameWithoutExtension(neutralPath)}.ru-RU.resx");
+                $"{Path.GetFileNameWithoutExtension(neutralPath)}.ru.resx");
             Assert.True(File.Exists(russianPath), $"Russian resource file was not found for {neutralPath}");
 
             IReadOnlyDictionary<string, string> neutral = ReadResources(neutralPath);

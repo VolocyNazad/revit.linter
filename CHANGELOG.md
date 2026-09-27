@@ -12,7 +12,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Declare English as the neutral resource language for the add-in and its ILRepack-excluded localization assembly.
+- Declare English as the neutral resource language and use a parent-culture `ru` satellite for all Russian regional cultures.
 
 ### Fixed
 

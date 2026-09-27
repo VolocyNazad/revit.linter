@@ -47,7 +47,7 @@ use it only at module composition boundaries, not as a general service locator.
 - Microsoft.Extensions.* (DependencyInjection, Logging, Localization,
   Options, Hosting) and System.Text.Json
 - English is the explicitly declared neutral resource language; Russian UI resources use
-  `ru-RU` satellite assemblies, including the localization assembly excluded from ILRepack
+  parent-culture `ru` satellite assemblies, including the localization assembly excluded from ILRepack
 - Microsoft.CodeAnalysis.CSharp (Roslyn — presumably for code analysis/parsing)
 - YamlDotNet, StringToExpression, Humanizer.Core(.ru)
 - Serilog + Serilog.Sinks.* (Console and Debug in development, File in all builds); add-in logs

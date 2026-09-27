@@ -20,7 +20,7 @@
 	<ItemGroup>
 		<EmbeddedResource Remove="ViewModels\FixReportViewModel*.resx" />
 		<None Include="ViewModels\FixReportViewModel.resx"><DependentUpon>FixReportViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\FixReportViewModel.ru-RU.resx"><DependentUpon>FixReportViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\FixReportViewModel.ru.resx"><DependentUpon>FixReportViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\FixReportViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

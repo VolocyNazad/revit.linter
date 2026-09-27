@@ -5,7 +5,7 @@
 	<ItemGroup>
 		<EmbeddedResource Remove="ViewModels\DiagnosticListViewModel*.resx" />
 		<None Include="ViewModels\DiagnosticListViewModel.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\DiagnosticListViewModel.ru-RU.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\DiagnosticListViewModel.ru.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\DiagnosticListViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

@@ -17,7 +17,7 @@ public sealed class LocalizationArtifactTests
         string localizationAssemblyPath = Path.Combine(artifactDirectory, "Revit.Linter.Localization.dll");
         string russianSatellitePath = Path.Combine(
             artifactDirectory,
-            "ru-RU",
+            "ru",
             "Revit.Linter.Localization.resources.dll");
 
         Assert.True(File.Exists(localizationAssemblyPath), $"Localization assembly was not found: {localizationAssemblyPath}");
@@ -37,7 +37,9 @@ public sealed class LocalizationArtifactTests
             BindingFlags.Public | BindingFlags.Static)!;
 
         Assert.Equal("Reports:", ReadString(getString, "en-US"));
+        Assert.Equal("Отчеты:", ReadString(getString, "ru"));
         Assert.Equal("Отчеты:", ReadString(getString, "ru-RU"));
+        Assert.Equal("Отчеты:", ReadString(getString, "ru-KZ"));
         Assert.Equal("Reports:", ReadString(getString, "de-DE"));
     }
 
