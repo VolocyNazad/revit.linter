@@ -40,6 +40,20 @@ internal sealed class InitExternalApplication : ExternalApplication
 
     public override void OnStartup()
     {
+        try
+        {
+            StartApplication();
+        }
+        catch (Exception exception)
+        {
+            Serilog.Log.Fatal(exception, "Revit.Linter failed to start");
+            Result = Autodesk.Revit.UI.Result.Failed;
+            Program.Shutdown();
+        }
+    }
+
+    private void StartApplication()
+    {
         RevitTask.Initialize(Application);
         Program.Provider.GetRequiredService<RevitIdlingScheduler>().Initialize(Application);
 
@@ -79,22 +93,29 @@ internal sealed class InitExternalApplication : ExternalApplication
 
     public override void OnShutdown()
     {
-        Program.Provider.GetRequiredService<IElementChangesMonitor>().Stop();
-        _diagnosticCatalogNotifier?.Dispose();
-        _diagnosticCatalogNotifier = null;
-        _valueStoreNotifier?.Dispose();
-        _valueStoreNotifier = null;
+        try
+        {
+            Program.Provider.GetRequiredService<IElementChangesMonitor>().Stop();
+            _diagnosticCatalogNotifier?.Dispose();
+            _diagnosticCatalogNotifier = null;
+            _valueStoreNotifier?.Dispose();
+            _valueStoreNotifier = null;
 
-        var app = Application.ControlledApplication;
-        app.DocumentCreated -= App_DocumentCreated;
-        app.DocumentOpened -= App_DocumentOpened;
+            var app = Application.ControlledApplication;
+            app.DocumentCreated -= App_DocumentCreated;
+            app.DocumentOpened -= App_DocumentOpened;
 
 #if !BEFORE2024
-        Application.ThemeChanged -= Application_ThemeChanged;
+            Application.ThemeChanged -= Application_ThemeChanged;
 #endif
 
-        Program.Provider.GetRequiredService<RevitIdlingScheduler>().Dispose();
-        RevitTask.Shutdown();
+            Program.Provider.GetRequiredService<RevitIdlingScheduler>().Dispose();
+            RevitTask.Shutdown();
+        }
+        finally
+        {
+            Program.Shutdown();
+        }
     }
 
 #if !BEFORE2024

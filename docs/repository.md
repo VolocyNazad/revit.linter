@@ -48,7 +48,10 @@ use it only at module composition boundaries, not as a general service locator.
   Options, Hosting) and System.Text.Json
 - Microsoft.CodeAnalysis.CSharp (Roslyn — presumably for code analysis/parsing)
 - YamlDotNet, StringToExpression, Humanizer.Core(.ru)
-- Serilog + Serilog.Sinks.* (Console, Debug, File)
+- Serilog + Serilog.Sinks.* (Console and Debug in development, File in all builds); add-in logs
+  are stored under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\`, roll daily and at 20 MB,
+  retain the newest 14 files, capture fatal failures within the Revit startup boundary,
+  and are flushed when the add-in host shuts down
 - ILRepack (assembly merging during publishing)
 - Tests: **xunit.v3** + xunit.runner.visualstudio + Microsoft.NET.Test.Sdk
 - Central package management via `Directory.Packages.props`;

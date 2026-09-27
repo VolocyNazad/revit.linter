@@ -5,35 +5,49 @@ using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 
 namespace Revit.Linter.Infrastructure.Extensions;
 
 internal static class ServiceCollectionExtensions
 {
+    private const long LogFileSizeLimitBytes = 20 * 1024 * 1024;
+    private const int RetainedLogFileCountLimit = 14;
+
     extension(IServiceCollection services)
     {
         public IServiceCollection AddAndConfigureSerilog()
         {
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                ?? throw new InvalidOperationException("Log path is null");
-            string logPath = Path.Combine(path, "logs.txt");
+            string logDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Volocy",
+                "Revit.Linter",
+                "logs");
+            Directory.CreateDirectory(logDirectory);
+            string logPath = Path.Combine(logDirectory, "revit-linter-.log");
 
-            Log.Logger = new LoggerConfiguration()
+            var loggerConfiguration = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 .Enrich.WithProperty("isDebug", Debugger.IsAttached)
                 .Enrich.FromLogContext()
-                .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentName()
-                .Enrich.WithRevitContext(() => Program.Provider.GetService<IRevitContext>())
+                .Enrich.WithRevitContext(() => Program.Provider.GetService<IRevitContext>());
+#if DEBUG
+            loggerConfiguration
                 .WriteTo.Console()
-                .WriteTo.Debug()
-                .WriteTo.File(logPath)
+                .WriteTo.Debug();
+#endif
+            Log.Logger = loggerConfiguration
+                .WriteTo.File(
+                    logPath,
+                    rollingInterval: RollingInterval.Day,
+                    fileSizeLimitBytes: LogFileSizeLimitBytes,
+                    rollOnFileSizeLimit: true,
+                    retainedFileCountLimit: RetainedLogFileCountLimit)
                 .CreateLogger();
 
-            return services.AddSerilog();
+            return services.AddSerilog(dispose: true);
         }
     }
 }

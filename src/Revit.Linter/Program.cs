@@ -39,9 +39,11 @@ namespace Revit.Linter;
 
 internal sealed class Program
 {
+    private static IHost? _host;
+
     private Program() { }
 
-    private static IHost Host => field ??= CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    private static IHost Host => _host ??= CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
     public static IServiceProvider Provider
     {
         get
@@ -53,6 +55,13 @@ internal sealed class Program
     }
     private static string Location => field ??= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         ?? throw new HostLocationNotFoundException();
+
+    internal static void Shutdown()
+    {
+        IHost? host = _host;
+        _host = null;
+        host?.Dispose();
+    }
 
     private static IHostBuilder CreateHostBuilder(string[] args) =>
         Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
