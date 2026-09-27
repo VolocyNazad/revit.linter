@@ -27,6 +27,6 @@ else if (args.Contains("version", StringComparer.OrdinalIgnoreCase))
 else if (args.Contains("pack", StringComparer.OrdinalIgnoreCase))
     builder.Services.AddModule<CreateInstallersModule>();
 else
-    builder.Services.AddModule<CompileProjectModule>();
+    builder.Services.AddModule<VerifyLocalizationArtifactsModule>();
 
 await (await builder.BuildAsync()).RunAsync();

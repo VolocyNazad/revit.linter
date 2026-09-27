@@ -1,8 +1,8 @@
 # Build pipeline
 
 The separate `Revit.Linter.Build.slnx` solution contains the build pipeline. It compiles
-Revit.Linter for every Revit version configured in `appsettings.json` and
-creates one MSI per version.
+Revit.Linter for every Revit version configured in `appsettings.json`, verifies localization
+assemblies and culture fallback in each final build output, and creates one MSI per version.
 
 Build the pipeline solution itself:
 

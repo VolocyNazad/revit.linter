@@ -54,6 +54,8 @@ use it only at module composition boundaries, not as a general service locator.
   and are flushed when the add-in host shuts down
 - ILRepack (assembly merging during publishing)
 - Tests: **xunit.v3** + xunit.runner.visualstudio + Microsoft.NET.Test.Sdk
+- Localization tests validate resource key/placeholder parity and load the excluded localization
+  assembly plus its Russian satellite from each final ILRepack output before MSI creation
 - Central package management via `Directory.Packages.props`;
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
   via `GlobalPackageReference` for all projects

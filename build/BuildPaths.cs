@@ -5,6 +5,11 @@ internal static class BuildPaths
     public static string Root { get; } = FindRoot();
     public static string Solution => Path.Combine(Root, "Revit.Linter.slnx");
     public static string AddInProject => Path.Combine(Root, "src", "Revit.Linter", "Revit.Linter.csproj");
+    public static string LocalizationArtifactTestsProject => Path.Combine(
+        Root,
+        "tests",
+        "Revit.Linter.Localization.Artifact.Tests",
+        "Revit.Linter.Localization.Artifact.Tests.csproj");
     public static string InstallerProject => Path.Combine(Root, "installer", "Revit.Linter.Installer", "Revit.Linter.Installer.csproj");
 
     public static string GetAddInOutput(string configuration)

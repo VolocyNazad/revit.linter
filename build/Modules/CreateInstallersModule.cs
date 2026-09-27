@@ -10,7 +10,7 @@ using Shouldly;
 
 namespace Revit.Linter.Build.Modules;
 
-[DependsOn<CompileProjectModule>]
+[DependsOn<VerifyLocalizationArtifactsModule>]
 [DependsOn<ResolveVersioningModule>]
 public sealed class CreateInstallersModule(IOptions<BuildOptions> options) : Module
 {
