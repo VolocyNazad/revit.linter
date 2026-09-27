@@ -89,10 +89,16 @@ internal sealed class InitExternalApplication : ExternalApplication
 #if !BEFORE2024
         InitializeThemeHandling();
 #endif
+
+        Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
+            .LogInformation("Revit.Linter started (Revit {Version})", Application.ControlledApplication.VersionNumber);
     }
 
     public override void OnShutdown()
     {
+        var logger = Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>();
+        logger.LogInformation("Revit.Linter shutting down");
+
         try
         {
             Program.Provider.GetRequiredService<IElementChangesMonitor>().Stop();
@@ -111,6 +117,11 @@ internal sealed class InitExternalApplication : ExternalApplication
 
             Program.Provider.GetRequiredService<RevitIdlingScheduler>().Dispose();
             RevitTask.Shutdown();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Revit.Linter failed to shut down cleanly");
+            throw;
         }
         finally
         {
