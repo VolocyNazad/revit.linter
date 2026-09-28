@@ -15,7 +15,6 @@ using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
-using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;

@@ -1,6 +1,5 @@
-﻿using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI.Events;
-using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 

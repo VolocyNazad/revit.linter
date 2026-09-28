@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Autodesk.Revit.DB;
-
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
 
 internal static class ElementGeometryExtensions

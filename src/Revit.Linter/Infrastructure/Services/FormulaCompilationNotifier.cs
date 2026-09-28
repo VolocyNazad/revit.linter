@@ -3,7 +3,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
-using System.Threading;
 using System.Windows.Threading;
 
 namespace Revit.Linter.Infrastructure.Services;

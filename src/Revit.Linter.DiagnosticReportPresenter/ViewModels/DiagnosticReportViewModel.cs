@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;

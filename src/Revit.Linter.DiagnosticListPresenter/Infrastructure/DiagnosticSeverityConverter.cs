@@ -1,4 +1,3 @@
-using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Localization;
 using System.Globalization;
 using System.Windows.Data;

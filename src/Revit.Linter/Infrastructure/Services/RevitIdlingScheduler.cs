@@ -1,4 +1,3 @@
-using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using Revit.Linter.Core.Abstractions.Services;
 using System.Collections.Concurrent;
