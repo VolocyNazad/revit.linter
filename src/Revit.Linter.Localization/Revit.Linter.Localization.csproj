@@ -3,6 +3,15 @@
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 	<ItemGroup>
+		<EmbeddedResource Remove="DiagnosticSeverityLocalizations*.resx" />
+		<EmbeddedResource Include="DiagnosticSeverityLocalizations.resx" LogicalName="Revit.Linter.Localization.DiagnosticSeverityLocalizations.resources" />
+		<EmbeddedResource Include="DiagnosticSeverityLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticSeverityLocalizations.resources" />
+		<EmbeddedResource Remove="DiagnosticTargetTypeLocalizations*.resx" />
+		<EmbeddedResource Include="DiagnosticTargetTypeLocalizations.resx" LogicalName="Revit.Linter.Localization.DiagnosticTargetTypeLocalizations.resources" />
+		<EmbeddedResource Include="DiagnosticTargetTypeLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticTargetTypeLocalizations.resources" />
+		<EmbeddedResource Remove="DiagnosticReportFilterLocalizations*.resx" />
+		<EmbeddedResource Include="DiagnosticReportFilterLocalizations.resx" LogicalName="Revit.Linter.Localization.DiagnosticReportFilterLocalizations.resources" />
+		<EmbeddedResource Include="DiagnosticReportFilterLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticReportFilterLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter\Resources\GlobalLocalizations.resx" LogicalName="Revit.Linter.Localization.GlobalLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter\Resources\GlobalLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.GlobalLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DiagnosticListPresenter\ViewModels\DiagnosticListViewModel.resx" LogicalName="Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel.resources" />
@@ -17,6 +26,16 @@
 		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.ru.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.ru.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.OpenedDocuments\ViewModels\OpenedDocumentsViewModel.resx" LogicalName="Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.OpenedDocuments\ViewModels\OpenedDocumentsViewModel.ru.resx" LogicalName="Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ElementDiagnostics\ElementDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementDiagnostics.ElementDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ElementDiagnostics\ElementDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ElementDiagnostics.ElementDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ElementIgnoring\ElementIgnoringLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementIgnoring.ElementIgnoringLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ElementIgnoring\ElementIgnoringLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ElementIgnoring.ElementIgnoringLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ParameterElementDiagnostics\ParameterElementDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.ParameterElementDiagnostics.ParameterElementDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.ParameterElementDiagnostics\ParameterElementDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ParameterElementDiagnostics.ParameterElementDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DocumentDiagnostics\DocumentDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.DocumentDiagnostics.DocumentDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.DocumentDiagnostics\DocumentDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DocumentDiagnostics.DocumentDiagnosticLocalizations.resources" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />

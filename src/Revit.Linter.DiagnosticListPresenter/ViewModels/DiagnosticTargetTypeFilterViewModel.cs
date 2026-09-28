@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using Revit.Linter.Localization;
+
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
 internal sealed partial class DiagnosticTargetTypeFilterViewModel : ObservableObject, IDiagnosticListFilter
@@ -19,5 +21,6 @@ internal sealed partial class DiagnosticTargetTypeFilterViewModel : ObservableOb
 
     public bool IsValid(DiagnosticItemViewModel item) => item.TargetType == Value;
 
-    public override string ToString() => $"{Count} {Value}";
+    public override string ToString()
+        => $"{Count} {DiagnosticTargetTypeLocalizations.GetString(Value.ToString())}";
 }

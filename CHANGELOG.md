@@ -17,6 +17,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Store add-in logs under `%LOCALAPPDATA%` without the machine-name property, bound them to the newest 14 daily or 20 MB files, keep Console/Debug sinks development-only, record startup and shutdown lifecycle events, capture fatal lifecycle failures, and dispose the logging host during Revit shutdown so buffered events are flushed.
+- Localize built-in diagnostics, report filters, severity and target labels, document filters, fixes, transactions, ignore-parameter feedback, and parameter diagnostic details in English and Russian.
 
 ## [1.7.0] - 2026-09-23
 

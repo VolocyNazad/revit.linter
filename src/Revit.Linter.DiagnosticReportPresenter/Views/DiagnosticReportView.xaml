@@ -223,7 +223,7 @@
                                     VerticalAlignment="Center"
                                     d:Text="Severity"
                                     Style="{StaticResource SeverityTextBlockStyle}"
-                                    Text="{Binding Severity}" />
+                                    Text="{Binding SeverityText}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

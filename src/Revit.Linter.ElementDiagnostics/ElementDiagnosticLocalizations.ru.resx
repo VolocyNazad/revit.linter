@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="deleteDetailCurve_fix" xml:space="preserve"><value>Удалить линию детализации</value></data>
+  <data name="deleteUnusedFamilySymbol_fix" xml:space="preserve"><value>Удалить неиспользуемый типоразмер семейства</value></data>
+  <data name="deleteUnusedFamily_fix" xml:space="preserve"><value>Удалить неиспользуемое семейство</value></data>
+  <data name="deleteImportInstance_fix" xml:space="preserve"><value>Удалить импортированный объект</value></data>
+  <data name="deleteUnusedMaterial_fix" xml:space="preserve"><value>Удалить неиспользуемый материал</value></data>
+  <data name="deleteModelCurve_fix" xml:space="preserve"><value>Удалить линию модели</value></data>
+  <data name="deleteRedundantRoom_fix" xml:space="preserve"><value>Удалить избыточное помещение</value></data>
+  <data name="deleteNotEnclosedRoom_fix" xml:space="preserve"><value>Удалить неокружённое помещение</value></data>
+  <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Удалить неразмещённое помещение</value></data>
+  <data name="deleteTextNote_fix" xml:space="preserve"><value>Удалить текстовое примечание</value></data>
+  <data name="SYST001_description" xml:space="preserve"><value>Проверяет экземпляры труб, воздуховодов, коробов, лотков и семейств на наличие неприсоединённых коннекторов.</value></data>
+  <data name="SYST001_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) имеет неприсоединённые коннекторы. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD001_description" xml:space="preserve"><value>Проверяет использование семейств в документе.</value></data>
+  <data name="SHRD001_message" xml:space="preserve"><value>Семейство «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD002_description" xml:space="preserve"><value>Проверяет использование типоразмеров семейств в документе.</value></data>
+  <data name="SHRD002_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD003_description" xml:space="preserve"><value>Проверяет наличие отзеркаленных экземпляров семейств.</value></data>
+  <data name="SHRD003_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) отзеркален. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD004_description" xml:space="preserve"><value>Проверяет размещение видов на листах.</value></data>
+  <data name="SHRD004_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) не размещён на листе. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD005_description" xml:space="preserve"><value>Проверяет наличие привязки верха стен.</value></data>
+  <data name="SHRD005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) не имеет привязки сверху. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD006_description" xml:space="preserve"><value>Проверяет координаты размещения элементов на основе линии.</value></data>
+  <data name="SHRD006_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD007_description" xml:space="preserve"><value>Проверяет длину элементов на основе линии.</value></data>
+  <data name="SHRD007_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимую длину. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD008_description" xml:space="preserve"><value>Проверяет высотные отметки уровней.</value></data>
+  <data name="SHRD008_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) имеет недопустимую высотную отметку. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD009_description" xml:space="preserve"><value>Проверяет координаты эскизов перекрытий.</value></data>
+  <data name="SHRD009_message" xml:space="preserve"><value>Перекрытие «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0010_description" xml:space="preserve"><value>Проверяет высоту размещения экземпляров семейств.</value></data>
+  <data name="SHRD0010_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) имеет недопустимую высоту размещения. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0011_description" xml:space="preserve"><value>Проверяет использование элементов-параметров.</value></data>
+  <data name="SHRD0011_message" xml:space="preserve"><value>Элемент-параметр «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0012_description" xml:space="preserve"><value>Проверяет привязку экземпляров семейств к ближайшему уровню.</value></data>
+  <data name="SHRD0012_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) привязан не к ближайшему уровню. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0013_description" xml:space="preserve"><value>Проверяет наличие линий модели.</value></data>
+  <data name="SHRD0013_message" xml:space="preserve"><value>В модели существует линия модели «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0014_description" xml:space="preserve"><value>Проверяет наличие линий детализации.</value></data>
+  <data name="SHRD0014_message" xml:space="preserve"><value>В модели существует линия детализации «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0015_description" xml:space="preserve"><value>Проверяет наличие текстовых примечаний.</value></data>
+  <data name="SHRD0015_message" xml:space="preserve"><value>В модели существует текстовое примечание «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0016_description" xml:space="preserve"><value>Проверяет наличие импортированных объектов.</value></data>
+  <data name="SHRD0016_message" xml:space="preserve"><value>В модели существует импортированный объект «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH001_description" xml:space="preserve"><value>Проверяет размещение помещений.</value></data>
+  <data name="ARCH001_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не размещено. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH002_description" xml:space="preserve"><value>Проверяет окружение помещений.</value></data>
+  <data name="ARCH002_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не окружено. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH003_description" xml:space="preserve"><value>Проверяет наличие избыточных помещений.</value></data>
+  <data name="ARCH003_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) избыточно. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH004_description" xml:space="preserve"><value>Проверяет высоту стен.</value></data>
+  <data name="ARCH004_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет недопустимую высоту. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0017_description" xml:space="preserve"><value>Проверяет наличие размещённых видов и спецификаций на листах.</value></data>
+  <data name="SHRD0017_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) пуст. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0018_description" xml:space="preserve"><value>Проверяет наличие шаблона у размещённых на листах видов.</value></data>
+  <data name="SHRD0018_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) размещён на листе без шаблона вида. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0019_description" xml:space="preserve"><value>Проверяет наличие основной надписи на листах.</value></data>
+  <data name="SHRD0019_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) не содержит основную надпись. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0020_description" xml:space="preserve"><value>Проверяет, что на листе находится не более одной основной надписи.</value></data>
+  <data name="SHRD0020_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) содержит несколько основных надписей. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0021_description" xml:space="preserve"><value>Проверяет отсутствие групп, вложенных в другие группы.</value></data>
+  <data name="SHRD0021_message" xml:space="preserve"><value>Группа «{elementName}» ({elementId}) вложена в другую группу. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0022_description" xml:space="preserve"><value>Проверяет использование материалов в документе.</value></data>
+  <data name="SHRD0022_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0023_description" xml:space="preserve"><value>Проверяет использование типоразмеров семейств профилей в документе.</value></data>
+  <data name="SHRD0023_message" xml:space="preserve"><value>Типоразмер профиля «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+</root>

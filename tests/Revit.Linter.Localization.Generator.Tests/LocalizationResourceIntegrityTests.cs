@@ -42,6 +42,32 @@ public sealed class LocalizationResourceIntegrityTests
         }
     }
 
+    [Fact]
+    public void Every_source_resource_is_declared_in_the_localization_project()
+    {
+        string root = FindRepositoryRoot();
+        string sourceDirectory = Path.Combine(root, "src");
+        string localizationProjectDirectory = Path.Combine(sourceDirectory, "Revit.Linter.Localization");
+        string localizationProjectPath = Path.Combine(
+            localizationProjectDirectory,
+            "Revit.Linter.Localization.csproj");
+
+        string[] expected = Directory.GetFiles(sourceDirectory, "*.resx", SearchOption.AllDirectories)
+            .Where(path => !IsBuildOutput(path))
+            .Select(Path.GetFullPath)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        string[] declared = XDocument.Load(localizationProjectPath)
+            .Descendants("EmbeddedResource")
+            .Select(element => element.Attribute("Include")?.Value)
+            .Where(path => path is not null && path.EndsWith(".resx", StringComparison.OrdinalIgnoreCase))
+            .Select(path => Path.GetFullPath(Path.Combine(localizationProjectDirectory, path!)))
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.Equal(expected, declared, StringComparer.OrdinalIgnoreCase);
+    }
+
     private static IReadOnlyDictionary<string, string> ReadResources(string path) =>
         XDocument.Load(path)
             .Root!
@@ -57,6 +83,10 @@ public sealed class LocalizationResourceIntegrityTests
         .Select(match => match.Value)
         .OrderBy(placeholder => placeholder, StringComparer.Ordinal)
         .ToArray();
+
+    private static bool IsBuildOutput(string path) => path
+        .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        .Any(segment => segment is "bin" or "obj");
 
     private static string FindRepositoryRoot()
     {

@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.Localization;
 using Revit.Linter.OpenedDocuments.ViewModels.Base;
 using System.Collections.ObjectModel;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels;
 
+[GenerateLocalizedProperties]
 [XamlConstructor]
 public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
 {
@@ -33,7 +35,7 @@ public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
         IEnumerable<DocumentViewModel> collection = _revitContext.Application!.Documents
             .Cast<Document>().Where(i => !i.IsLinked)
             .Select(i => new DocumentViewModel { Title = i.Title, DisplayName = i.Title })
-            .Prepend(new DocumentViewModel { Title = string.Empty, DisplayName = "All" });
+            .Prepend(new DocumentViewModel { Title = string.Empty, DisplayName = AllDocumentsText });
         Collection = new(collection);
     }
 }

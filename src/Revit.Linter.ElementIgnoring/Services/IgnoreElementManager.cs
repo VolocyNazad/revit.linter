@@ -14,11 +14,11 @@ internal sealed class IgnoreElementManager : IIgnoreElementDetector, IIgnoreElem
     {
         Parameter? parameter = element.get_Parameter(GetParameterId(element));
         if (parameter is null) 
-            return IgnoreElementFeedback.Failed("Parameter not found.");
+            return IgnoreElementFeedback.Failed(ElementIgnoringLocalizations.GetString("parameterNotFound_message"));
         if (parameter.StorageType != StorageType.String) 
-            return IgnoreElementFeedback.Failed("Parameter storage type not string.");
+            return IgnoreElementFeedback.Failed(ElementIgnoringLocalizations.GetString("parameterStorageType_message"));
         if (parameter.IsReadOnly) 
-            return IgnoreElementFeedback.Failed("Parameter is readonly.");
+            return IgnoreElementFeedback.Failed(ElementIgnoringLocalizations.GetString("parameterReadOnly_message"));
 
         string line = parameter.AsString();
         if (line is null || line == string.Empty) {

@@ -16,7 +16,7 @@ internal sealed class DocumentDiagnostic(
     {
         if (targetDocument.IsFamilyDocument)
             return [new(DiagnosticVerdict.NotValid, new() {
-                { "details", "Parameter diagnostics are not supported on family documents." }
+                { "details", ParameterElementDiagnosticLocalizations.GetString("familyDocumentNotSupported_message") }
             })];
         ICollection<string> messages = [];
         foreach (ParameterElementData parameterData in Parameters)
@@ -32,7 +32,8 @@ internal sealed class DocumentDiagnostic(
 
                 target = parameterElement.FirstOrDefault(i => i.Name == parameterData.Name);
                 if (target is null) {
-                    messages.Add($"parameter name: '{parameterData.Name}'. Not exists.");
+                    messages.Add(ParameterElementDiagnosticLocalizations.GetString(
+                        "parameterNotFound_message", parameterData.Name));
                     continue;
                 }
             }
@@ -46,7 +47,8 @@ internal sealed class DocumentDiagnostic(
 
                 target = parameterElement.FirstOrDefault(i => i.GuidValue == Guid.Parse(parameterData.Guid));
                 if (target is null) {
-                    messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not exists.");
+                    messages.Add(ParameterElementDiagnosticLocalizations.GetString(
+                        "sharedParameterNotFound_message", parameterData.Name, parameterData.Guid));
                     continue;
                 }
             }
@@ -56,19 +58,19 @@ internal sealed class DocumentDiagnostic(
             var binging = (ElementBinding)bindingMap.get_Item(definition);
 
             if (definition.Name != parameterData.Name)
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Name'.");
-            if (binging is InstanceBinding && !parameterData.IsInstance) 
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'IsInstance'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "Name"));
+            if (binging is InstanceBinding && !parameterData.IsInstance)
+                messages.Add(GetInvalidPropertyMessage(parameterData, "IsInstance"));
             if (binging is TypeBinding && parameterData.IsInstance)
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'IsInstance'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "IsInstance"));
             if (definition.VariesAcrossGroups != parameterData.AllowVaryBetweenGroups)
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'AllowVaryBetweenGroups'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "AllowVaryBetweenGroups"));
 #if BEFORE2024
-            var group = int.TryParse(parameterData.Group, out int id) 
+            var group = int.TryParse(parameterData.Group, out int id)
                 ? (BuiltInParameterGroup)Enum.Parse(typeof(BuiltInParameterGroup), parameterData.Group)
                 : (BuiltInParameterGroup)id;
             if (definition.ParameterGroup != group)
-                messages.Add("parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Group'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "Group"));
 
             IEnumerable<BuiltInCategory> catgories = parameterData.Categories
                 .Select(i => {
@@ -79,11 +81,11 @@ internal sealed class DocumentDiagnostic(
                     .Cast<Category>()
                     .Select(i => i.Id.ToBuiltInCategory())
                     .SetEquals(catgories))
-                messages.Add("parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Categories'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "Categories"));
 #else
             var group = new ForgeTypeId(parameterData.Group);
             if (definition.GetGroupTypeId() != group)
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Group'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "Group"));
 
             IEnumerable<BuiltInCategory> catgories = parameterData.Categories
                 .Select(i => {
@@ -94,7 +96,7 @@ internal sealed class DocumentDiagnostic(
                 .Cast<Category>()
                 .Select(i => (BuiltInCategory)i.Id.Value)
                 .SetEquals(catgories))
-                messages.Add($"parameter id: '{parameterData.Guid}' parameter name: '{parameterData.Name}'. Not valid 'Categories'.");
+                messages.Add(GetInvalidPropertyMessage(parameterData, "Categories"));
 #endif
         }
 
@@ -104,4 +106,11 @@ internal sealed class DocumentDiagnostic(
             { "details", string.Join(Environment.NewLine, messages) }
         })];
     }
+
+    private static string GetInvalidPropertyMessage(ParameterElementData parameterData, string propertyName) =>
+        ParameterElementDiagnosticLocalizations.GetString(
+            "parameterPropertyInvalid_message",
+            parameterData.Name,
+            parameterData.Guid ?? string.Empty,
+            propertyName);
 }

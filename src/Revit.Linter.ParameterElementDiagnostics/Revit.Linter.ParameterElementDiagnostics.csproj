@@ -9,7 +9,13 @@
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<PackageReference Include="VolocyNazad.Revit.Sugar" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Remove="ParameterElementDiagnosticLocalizations*.resx" />
+		<None Include="ParameterElementDiagnosticLocalizations.resx" />
+		<None Include="ParameterElementDiagnosticLocalizations.ru.resx" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />

@@ -6,7 +6,13 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	  <PackageReference Include="VolocyNazad.Revit.Sugar" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Remove="ElementDiagnosticLocalizations*.resx" />
+	  <None Include="ElementDiagnosticLocalizations.resx" />
+	  <None Include="ElementDiagnosticLocalizations.ru.resx" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />

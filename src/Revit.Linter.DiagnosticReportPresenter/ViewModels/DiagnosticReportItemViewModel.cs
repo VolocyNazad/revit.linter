@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
 using Revit.Linter.ReportMessaging;
+using Revit.Linter.Localization;
 using System.Globalization;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
@@ -8,6 +9,7 @@ namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 internal sealed partial class DiagnosticReportItemViewModel
 {
     public required DiagnosticSeverity Severity { get; init; }
+    public string SeverityText => DiagnosticSeverityLocalizations.GetString(Severity.ToString());
     public required string Code { get; init; }
     public required string DocumentTitle { get; init; }
     public required object? Target { get; init; }

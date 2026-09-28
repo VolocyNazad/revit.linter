@@ -1,32 +1,11 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Revit.Linter.DocumentDiagnostics;
 
 internal static class DocumentDiagnosticIdCollector
 {
-    public readonly static DocumentDiagnosticId StartingViewNotSet = new(
-        "DOC001",
-        "Проверка 'Задан ли начальный вид документу'.",
-        "Документу с наименованием '{documentTitle}' не задано начальное окно. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false, 
-        string.Empty);
-
-    public readonly static DocumentDiagnosticId RevitWarnings = new(
-        "RVT",
-        "Проверка предупреждений Revit.",
-        """
-        В документе с наименованием '{documentTitle}' обнаружены предупреждения.
-        Элементы: {elementIds}
-        Детали: {details}
-        Время выполнения '{duration}' мс.
-        """,
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-
+    public static readonly DocumentDiagnosticId StartingViewNotSet = Create("DOC001", DiagnosticSeverity.Message);
+    public static readonly DocumentDiagnosticId RevitWarnings = Create("RVT", DiagnosticSeverity.Warning);
 
     private static readonly Lazy<IReadOnlyList<DocumentDiagnosticId>> _allDiagnosticIds =
         new(typeof(DocumentDiagnosticIdCollector)
@@ -34,5 +13,15 @@ internal static class DocumentDiagnosticIdCollector
             .Where(field => field.FieldType == typeof(DocumentDiagnosticId))
             .Select(field => (DocumentDiagnosticId)field.GetValue(null)!).Where(i => i != null)
             .ToList);
+
     internal static IReadOnlyList<DocumentDiagnosticId> GetAllDiagnosticIds() => _allDiagnosticIds.Value;
+
+    private static DocumentDiagnosticId Create(string code, DiagnosticSeverity severity) => new(
+        code,
+        DocumentDiagnosticLocalizations.GetString($"{code}_description"),
+        DocumentDiagnosticLocalizations.GetString($"{code}_message"),
+        severity,
+        true,
+        false,
+        string.Empty);
 }

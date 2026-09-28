@@ -34,6 +34,7 @@
                     <x:Type TypeName="core:DiagnosticSeverity" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <infrastructure:DiagnosticSeverityConverter x:Key="DiagnosticSeverityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -156,10 +157,14 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox
-                                    IsEditable="True"
-                                    IsReadOnly="True"
                                     ItemsSource="{Binding Source={StaticResource DiagnosticSeverities}}"
-                                    SelectedItem="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    SelectedItem="{Binding Severity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource DiagnosticSeverityConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

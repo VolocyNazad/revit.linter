@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="deleteDetailCurve_fix" xml:space="preserve"><value>Delete detail line</value></data>
+  <data name="deleteUnusedFamilySymbol_fix" xml:space="preserve"><value>Delete unused family type</value></data>
+  <data name="deleteUnusedFamily_fix" xml:space="preserve"><value>Delete unused family</value></data>
+  <data name="deleteImportInstance_fix" xml:space="preserve"><value>Delete imported object</value></data>
+  <data name="deleteUnusedMaterial_fix" xml:space="preserve"><value>Delete unused material</value></data>
+  <data name="deleteModelCurve_fix" xml:space="preserve"><value>Delete model line</value></data>
+  <data name="deleteRedundantRoom_fix" xml:space="preserve"><value>Delete redundant room</value></data>
+  <data name="deleteNotEnclosedRoom_fix" xml:space="preserve"><value>Delete unenclosed room</value></data>
+  <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Delete unplaced room</value></data>
+  <data name="deleteTextNote_fix" xml:space="preserve"><value>Delete text note</value></data>
+  <data name="SYST001_description" xml:space="preserve"><value>Checks pipes, ducts, conduits, cable trays, and family instances for unconnected connectors.</value></data>
+  <data name="SYST001_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) has unconnected connectors. Duration: {duration} ms.</value></data>
+  <data name="SHRD001_description" xml:space="preserve"><value>Checks whether families are used in the document.</value></data>
+  <data name="SHRD001_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+  <data name="SHRD002_description" xml:space="preserve"><value>Checks whether family types are used in the document.</value></data>
+  <data name="SHRD002_message" xml:space="preserve"><value>Family type '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+  <data name="SHRD003_description" xml:space="preserve"><value>Checks for mirrored family instances.</value></data>
+  <data name="SHRD003_message" xml:space="preserve"><value>Family instance '{elementName}' ({elementId}) is mirrored. Duration: {duration} ms.</value></data>
+  <data name="SHRD004_description" xml:space="preserve"><value>Checks whether views are placed on sheets.</value></data>
+  <data name="SHRD004_message" xml:space="preserve"><value>View '{elementName}' ({elementId}) is not placed on a sheet. Duration: {duration} ms.</value></data>
+  <data name="SHRD005_description" xml:space="preserve"><value>Checks whether walls have a top constraint.</value></data>
+  <data name="SHRD005_message" xml:space="preserve"><value>Wall '{elementName}' ({elementId}) has no top constraint. Duration: {duration} ms.</value></data>
+  <data name="SHRD006_description" xml:space="preserve"><value>Checks line-based elements for placement coordinate tolerance.</value></data>
+  <data name="SHRD006_message" xml:space="preserve"><value>Line-based element '{elementName}' ({elementId}) has invalid coordinates relative to the base point. Duration: {duration} ms.</value></data>
+  <data name="SHRD007_description" xml:space="preserve"><value>Checks line-based elements for length tolerance.</value></data>
+  <data name="SHRD007_message" xml:space="preserve"><value>Line-based element '{elementName}' ({elementId}) has an invalid length. Duration: {duration} ms.</value></data>
+  <data name="SHRD008_description" xml:space="preserve"><value>Checks levels for elevation tolerance.</value></data>
+  <data name="SHRD008_message" xml:space="preserve"><value>Level '{elementName}' ({elementId}) has an invalid elevation. Duration: {duration} ms.</value></data>
+  <data name="SHRD009_description" xml:space="preserve"><value>Checks floor sketches for placement coordinate tolerance.</value></data>
+  <data name="SHRD009_message" xml:space="preserve"><value>Floor '{elementName}' ({elementId}) has invalid coordinates relative to the base point. Duration: {duration} ms.</value></data>
+  <data name="SHRD0010_description" xml:space="preserve"><value>Checks family instances for elevation tolerance.</value></data>
+  <data name="SHRD0010_message" xml:space="preserve"><value>Family instance '{elementName}' ({elementId}) has an invalid elevation. Duration: {duration} ms.</value></data>
+  <data name="SHRD0011_description" xml:space="preserve"><value>Checks whether parameter elements are used.</value></data>
+  <data name="SHRD0011_message" xml:space="preserve"><value>Parameter element '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+  <data name="SHRD0012_description" xml:space="preserve"><value>Checks whether family instances are associated with the nearest level.</value></data>
+  <data name="SHRD0012_message" xml:space="preserve"><value>Family instance '{elementName}' ({elementId}) is not associated with the nearest level. Duration: {duration} ms.</value></data>
+  <data name="SHRD0013_description" xml:space="preserve"><value>Checks for model lines.</value></data>
+  <data name="SHRD0013_message" xml:space="preserve"><value>Model line '{elementName}' ({elementId}) exists in the model. Duration: {duration} ms.</value></data>
+  <data name="SHRD0014_description" xml:space="preserve"><value>Checks for detail lines.</value></data>
+  <data name="SHRD0014_message" xml:space="preserve"><value>Detail line '{elementName}' ({elementId}) exists in the model. Duration: {duration} ms.</value></data>
+  <data name="SHRD0015_description" xml:space="preserve"><value>Checks for text notes.</value></data>
+  <data name="SHRD0015_message" xml:space="preserve"><value>Text note '{elementName}' ({elementId}) exists in the model. Duration: {duration} ms.</value></data>
+  <data name="SHRD0016_description" xml:space="preserve"><value>Checks for imported objects.</value></data>
+  <data name="SHRD0016_message" xml:space="preserve"><value>Imported object '{elementName}' ({elementId}) exists in the model. Duration: {duration} ms.</value></data>
+  <data name="ARCH001_description" xml:space="preserve"><value>Checks whether rooms are placed.</value></data>
+  <data name="ARCH001_message" xml:space="preserve"><value>Room '{elementName}' ({elementId}) is not placed. Duration: {duration} ms.</value></data>
+  <data name="ARCH002_description" xml:space="preserve"><value>Checks whether rooms are enclosed.</value></data>
+  <data name="ARCH002_message" xml:space="preserve"><value>Room '{elementName}' ({elementId}) is not enclosed. Duration: {duration} ms.</value></data>
+  <data name="ARCH003_description" xml:space="preserve"><value>Checks for redundant rooms.</value></data>
+  <data name="ARCH003_message" xml:space="preserve"><value>Room '{elementName}' ({elementId}) is redundant. Duration: {duration} ms.</value></data>
+  <data name="ARCH004_description" xml:space="preserve"><value>Checks walls for height tolerance.</value></data>
+  <data name="ARCH004_message" xml:space="preserve"><value>Wall '{elementName}' ({elementId}) has an invalid height. Duration: {duration} ms.</value></data>
+  <data name="SHRD0017_description" xml:space="preserve"><value>Checks sheets for placed views and schedules.</value></data>
+  <data name="SHRD0017_message" xml:space="preserve"><value>Sheet '{elementName}' ({elementId}) is empty. Duration: {duration} ms.</value></data>
+  <data name="SHRD0018_description" xml:space="preserve"><value>Checks whether views placed on sheets have a view template.</value></data>
+  <data name="SHRD0018_message" xml:space="preserve"><value>View '{elementName}' ({elementId}) is placed on a sheet without a view template. Duration: {duration} ms.</value></data>
+  <data name="SHRD0019_description" xml:space="preserve"><value>Checks whether sheets have a title block.</value></data>
+  <data name="SHRD0019_message" xml:space="preserve"><value>Sheet '{elementName}' ({elementId}) has no title block. Duration: {duration} ms.</value></data>
+  <data name="SHRD0020_description" xml:space="preserve"><value>Checks that sheets have no more than one title block.</value></data>
+  <data name="SHRD0020_message" xml:space="preserve"><value>Sheet '{elementName}' ({elementId}) has multiple title blocks. Duration: {duration} ms.</value></data>
+  <data name="SHRD0021_description" xml:space="preserve"><value>Checks for groups nested inside other groups.</value></data>
+  <data name="SHRD0021_message" xml:space="preserve"><value>Group '{elementName}' ({elementId}) is nested inside another group. Duration: {duration} ms.</value></data>
+  <data name="SHRD0022_description" xml:space="preserve"><value>Checks whether materials are used in the document.</value></data>
+  <data name="SHRD0022_message" xml:space="preserve"><value>Material '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+  <data name="SHRD0023_description" xml:space="preserve"><value>Checks whether profile family types are used in the document.</value></data>
+  <data name="SHRD0023_message" xml:space="preserve"><value>Profile type '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+</root>

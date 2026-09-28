@@ -313,7 +313,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             .Cast<object>()
             .OfType<DiagnosticReportItemViewModel>() ?? [])
             .Select(item => new DiagnosticReportExportItem(
-                item.Severity.ToString(),
+                item.SeverityText,
                 item.Code,
                 item.MessageText,
                 item.DocumentTitle,
@@ -692,7 +692,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     if (!element.IsValidObject) return;
 
                     string? feedbackMessage = null;
-                    string transactionName = "Игнорирование проверки для элемента";
+                    string transactionName = GetLocalizedString("ignoreElement_transaction");
                     bool success = await ExecuteTransaction(doc, transactionName, () => {
                             var feedback = _ignoreElementProvider.Ignore(report.Code, element);
                             feedbackMessage = feedback.Message;
@@ -728,7 +728,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                 StringBuilder feedbackMessage = new();
                 bool hasErrors = false;
-                string transactionName = "Игнорирование провери для элементов";
+                string transactionName = GetLocalizedString("ignoreElements_transaction");
 
                 // The transaction is always committed (we return true) so that successfully ignored
                 // elements are not rolled back just because some elements could not be ignored.
@@ -948,14 +948,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return [];
     }
 
-    private static async Task<bool> ExecuteTransaction(
+    private async Task<bool> ExecuteTransaction(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
     {
         (bool success, _) = await ExecuteTransactionWithError(document, transactionName, action, cancellationToken);
         return success;
     }
 
-    private static Task<(bool Success, string? Error)> ExecuteTransactionWithError(
+    private Task<(bool Success, string? Error)> ExecuteTransactionWithError(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
         => RevitTask.RunAsync(_ => {
             cancellationToken.ThrowIfCancellationRequested();
@@ -964,9 +964,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             try
             {
                 if (transaction.Start() != TransactionStatus.Started)
-                    return (false, (string?)"Не удалось начать транзакцию.");
+                    return (false, (string?)GetLocalizedString("transactionStartFailed_message"));
                 if (!action())
-                    return (false, (string?)"Операция вернула отрицательный результат: элемент не может быть изменён (возможно, он используется как тип по умолчанию, в спецификации, шаблоне вида или другом семействе).");
+                    return (false, (string?)GetLocalizedString("operationFailed_message"));
 
                 return (transaction.Commit() == TransactionStatus.Committed, (string?)null);
             }

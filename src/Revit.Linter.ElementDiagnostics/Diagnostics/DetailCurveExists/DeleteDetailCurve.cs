@@ -4,7 +4,7 @@ internal sealed class DeleteDetailCurve : IElementFix
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.DetailCurveExists;
 
-    public string Value => "Удалить линию детализации";
+    public string Value => ElementDiagnosticLocalizations.GetString("deleteDetailCurve_fix");
     public bool Execute(Element targetElement)
         => targetElement.Document.Delete(targetElement.Id).Any();
 }

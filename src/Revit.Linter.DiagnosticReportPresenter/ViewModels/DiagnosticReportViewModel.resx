@@ -17,4 +17,8 @@
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Failed to fix document '{documentTitle}'.</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was fixed successfully.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
   <data name="retry_title" xml:space="preserve"><value>Retry</value></data>
+  <data name="ignoreElement_transaction" xml:space="preserve"><value>Ignore diagnostic for element</value></data>
+  <data name="ignoreElements_transaction" xml:space="preserve"><value>Ignore diagnostic for elements</value></data>
+  <data name="transactionStartFailed_message" xml:space="preserve"><value>Failed to start the transaction.</value></data>
+  <data name="operationFailed_message" xml:space="preserve"><value>The operation returned a negative result: the element cannot be modified. It may be used as a default type, in a schedule, in a view template, or in another family.</value></data>
 </root>

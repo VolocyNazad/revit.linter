@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
+using Revit.Linter.Localization;
+
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
 internal sealed partial class DiagnosticReportActualFilterViewModel : ObservableObject, IDiagnosticReportFilter
@@ -17,5 +19,6 @@ internal sealed partial class DiagnosticReportActualFilterViewModel : Observable
 
     public bool IsValid(DiagnosticReportItemViewModel item) => !item.IsObsolete;
 
-    public override string ToString() => $"{Count} Actual";
+    public override string ToString()
+        => $"{Count} {DiagnosticReportFilterLocalizations.GetString("Actual")}";
 }

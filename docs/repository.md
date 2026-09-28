@@ -47,8 +47,9 @@ use it only at module composition boundaries, not as a general service locator.
 - Microsoft.Extensions.* (DependencyInjection, Logging, Localization,
   Options, Hosting) and System.Text.Json
 - English is the explicitly declared neutral resource language; Russian UI resources use
-  parent-culture `ru` satellite assemblies. Global and view-model strings are both resolved by
-  `LocalizationResourceReader` from the localization assembly excluded from ILRepack
+  parent-culture `ru` satellite assemblies. Global, view-model, and feature-owned user-facing
+  strings are resolved by `LocalizationResourceReader` from the localization assembly excluded
+  from ILRepack
 - Microsoft.CodeAnalysis.CSharp (Roslyn — presumably for code analysis/parsing)
 - YamlDotNet, StringToExpression, Humanizer.Core(.ru)
 - Serilog + Serilog.Sinks.* (Console and Debug in development, File in all builds); add-in logs
@@ -57,8 +58,9 @@ use it only at module composition boundaries, not as a general service locator.
   and are flushed when the add-in host shuts down
 - ILRepack (assembly merging during publishing)
 - Tests: **xunit.v3** + xunit.runner.visualstudio + Microsoft.NET.Test.Sdk
-- Localization tests validate resource key/placeholder parity and load the excluded localization
-  assembly plus its Russian satellite from each final ILRepack output before MSI creation
+- Localization tests validate resource key/placeholder parity, require every source `.resx` to be
+  declared by the localization project, and load every declared resource from the excluded
+  localization assembly plus its Russian satellite in each final ILRepack output before MSI creation
 - Central package management via `Directory.Packages.props`;
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
   via `GlobalPackageReference` for all projects

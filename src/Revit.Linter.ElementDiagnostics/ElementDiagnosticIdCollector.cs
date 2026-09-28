@@ -4,238 +4,52 @@ namespace Revit.Linter.ElementDiagnostics;
 
 internal static class ElementDiagnosticIdCollector
 {
-    public readonly static ElementDiagnosticId AnyConnectorsNotConnected = new(
-        "SYST001",
-        "Проверка экземпляров труб, воздуховодов, коробов, лотков, пользовательских семейств на отсутствие у него неприсоединенных коннекторов.",
-        "Элемент с именем '{elementName}' и идентификатором '{elementId}' имеет неприсоединенные коннекторы. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId FamilyUnused = new(
-        "SHRD001",
-        "Проверка семейств на их использование в документе.",
-        "Семейство с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId FamilySymbolUnused = new(
-        "SHRD002",
-        "Проверка типоразмеров семейств на их использование в документе.",
-        "Типоразмер семейства с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId FamilyInstanceMirrored = new(
-        "SHRD003",
-        "Проверка экземпляров семейств на отсутствие отзеркаливания.",
-        "Экземпляр семейства с именем '{elementName}' и идентификатором '{elementId}' отзеркален. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ViewUnplaced = new(
-        "SHRD004",
-        "Проверка видов, размещены ли они на листах.",
-        "Вид с именем '{elementName}' и идентификатором '{elementId}' не резмещен на листе. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId WallTopOffsetUnconnected = new(
-        "SHRD005",
-        "Проверка стены, задана ли привязка верха.",
-        "Стена с именем '{elementName}' и идентификатором '{elementId}' не имеет привяки сверху. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId LocationLineElementWithTolerantCoordinates = new(
-        "SHRD006",
-        "Проверка элементов на основе линии на толерантность координат размещения.",
-        "Элемент на основе линии с именем '{elementName}' и идентификатором '{elementId}' имеет не валидные значения координат относительно базовой точки. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId LocationLineElementWithTolerantLength = new(
-        "SHRD007",
-        "Проверка элементов на основе линии на толерантность значения длины.",
-        "Элемент на основе линии с именем '{elementName}' и идентификатором '{elementId}' имеет не валидную длину. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId LevelHeightIsTolerant = new(
-        "SHRD008",
-        "Проверка уровней на толерантность значения высоты.",
-        "Уровень с именем '{elementName}' и идентификатором '{elementId}' имеет не валидную высоту. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
+    public static readonly ElementDiagnosticId AnyConnectorsNotConnected = Create("SYST001", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId FamilyUnused = Create("SHRD001", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId FamilySymbolUnused = Create("SHRD002", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId FamilyInstanceMirrored = Create("SHRD003", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId ViewUnplaced = Create("SHRD004", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId WallTopOffsetUnconnected = Create("SHRD005", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId LocationLineElementWithTolerantCoordinates = Create("SHRD006", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId LocationLineElementWithTolerantLength = Create("SHRD007", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId LevelHeightIsTolerant = Create("SHRD008", DiagnosticSeverity.Warning);
 #if AFTER2023
-    public readonly static ElementDiagnosticId FloorWithTolerantSketchCoordinates = new(
-        "SHRD009",
-        "Проверка перекрытий на толерантность координат размещения.",
-        "Перекрытие с именем '{elementName}' и идентификатором '{elementId}' имеет не валидные значения координат относительно базовой точки. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
+    public static readonly ElementDiagnosticId FloorWithTolerantSketchCoordinates = Create("SHRD009", DiagnosticSeverity.Warning);
 #endif
-    public readonly static ElementDiagnosticId FamilyInstanceElevationIsTolerant = new(
-        "SHRD0010",
-        "Проверка экземпляров семейств на толерантность высоты размещения.",
-        "Экземпляр семейств с именем '{elementName}' и идентификатором '{elementId}' имеет не валидную высоту размещения. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ParameterElementUnused = new(
-        "SHRD0011",
-        "Проверка исппользуемости элементов-параметров.",
-        "Элемент с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId FamilyInstanceLevelIsNearest = new(
-        "SHRD0012",
-        "Проверка привязки экземпляра семейства к ближайшему уровню.",
-        "Экземпляр семейства с именем '{elementName}' и идентификатором '{elementId}' привязан не к ближайшему уровню. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ModelCurveExists = new(
-        "SHRD0013",
-        "Проверка существования линии модели.",
-        "В модели существует линия модели с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId DetailCurveExists = new(
-        "SHRD0014",
-        "Проверка существования линии детализации.",
-        "В модели существует линия детализации с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId TextNoteExists = new(
-        "SHRD0015",
-        "Проверка существования текстовых примечаний.",
-        "В модели существует текстовое примечание с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ImportInstanceExists = new(
-        "SHRD0016",
-        "Проверка существования импортированных объектов.",
-        "В модели существует импортированный объект с именем '{elementName}' и идентификатором '{elementId}'. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId RoomUnplaced = new(
-        "ARCH001",
-        "Проверка помещения, размещено ли оно.",
-        "Помещение с именем '{elementName}' и идентификатором '{elementId}' не резмещено. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Error,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId RoomNotEnclosed = new(
-        "ARCH002",
-        "Проверка помещения, окружено ли оно.",
-        "Помещение с именем '{elementName}' и идентификатором '{elementId}' не окружено. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Error,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId RoomIsRedundant = new(
-        "ARCH003",
-        "Проверка помещения, избыточно ли оно.",
-        "Помещение с именем '{elementName}' и идентификатором '{elementId}' избыточно. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Error,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId WallHeightIsTolerant = new(
-        "ARCH004",
-        "Проверка стен на толерантность значения высоты.",
-        "Стена с именем '{elementName}' и идентификатором '{elementId}' имеет не валидную высоту. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId SheetEmpty = new(
-        "SHRD0017",
-        "Проверка листов на наличие размещенных видов и спецификаций.",
-        "Лист с именем '{elementName}' и идентификатором '{elementId}' пуст. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ViewOnSheetWithoutTemplate = new(
-        "SHRD0018",
-        "Проверка размещенных на листах видов на наличие шаблона вида.",
-        "Вид с именем '{elementName}' и идентификатором '{elementId}' размещен на листе без шаблона вида. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId SheetWithoutTitleBlock = new(
-        "SHRD0019",
-        "Проверка листов на наличие основной надписи.",
-        "Лист с именем '{elementName}' и идентификатором '{elementId}' не содержит основную надпись. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Error,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId SheetWithMultipleTitleBlocks = new(
-        "SHRD0020",
-        "Проверка листов на наличие не более одной основной надписи.",
-        "Лист с именем '{elementName}' и идентификатором '{elementId}' содержит несколько основных надписей. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Error,
-        true,
-        false,
-        string.Empty);
-public readonly static ElementDiagnosticId GroupNested = new(
-        "SHRD0021",
-        "Проверка групп на отсутствие вложения в другие группы.",
-        "Группа с именем '{elementName}' и идентификатором '{elementId}' вложена в другую группу. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Warning,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId MaterialUnused = new(
-        "SHRD0022",
-        "Проверка материалов на их использование в документе.",
-        "Материал с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
-    public readonly static ElementDiagnosticId ProfileFamilySymbolUnused = new(
-        "SHRD0023",
-        "Проверка типоразмеров семейств профилей на их использование в документе.",
-        "Типоразмер профиля с именем '{elementName}' и идентификатором '{elementId}' не используется. Время выполнения '{duration}' мс.",
-        DiagnosticSeverity.Message,
-        true,
-        false,
-        string.Empty);
+    public static readonly ElementDiagnosticId FamilyInstanceElevationIsTolerant = Create("SHRD0010", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId ParameterElementUnused = Create("SHRD0011", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId FamilyInstanceLevelIsNearest = Create("SHRD0012", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId ModelCurveExists = Create("SHRD0013", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId DetailCurveExists = Create("SHRD0014", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId TextNoteExists = Create("SHRD0015", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId ImportInstanceExists = Create("SHRD0016", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId RoomUnplaced = Create("ARCH001", DiagnosticSeverity.Error);
+    public static readonly ElementDiagnosticId RoomNotEnclosed = Create("ARCH002", DiagnosticSeverity.Error);
+    public static readonly ElementDiagnosticId RoomIsRedundant = Create("ARCH003", DiagnosticSeverity.Error);
+    public static readonly ElementDiagnosticId WallHeightIsTolerant = Create("ARCH004", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId SheetEmpty = Create("SHRD0017", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId ViewOnSheetWithoutTemplate = Create("SHRD0018", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId SheetWithoutTitleBlock = Create("SHRD0019", DiagnosticSeverity.Error);
+    public static readonly ElementDiagnosticId SheetWithMultipleTitleBlocks = Create("SHRD0020", DiagnosticSeverity.Error);
+    public static readonly ElementDiagnosticId GroupNested = Create("SHRD0021", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId MaterialUnused = Create("SHRD0022", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId ProfileFamilySymbolUnused = Create("SHRD0023", DiagnosticSeverity.Message);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)
-        .GetFields(BindingFlags.Public | BindingFlags.Static)
-        .Where(field => field.FieldType == typeof(ElementDiagnosticId))
-        .Select(field => (ElementDiagnosticId)field.GetValue(null)!).Where(i => i != null)
-        .ToList);
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(field => field.FieldType == typeof(ElementDiagnosticId))
+            .Select(field => (ElementDiagnosticId)field.GetValue(null)!).Where(i => i != null)
+            .ToList);
+
     internal static IReadOnlyList<ElementDiagnosticId> GetAllDiagnosticIds() => _allDiagnosticIds.Value;
+
+    private static ElementDiagnosticId Create(string code, DiagnosticSeverity severity) => new(
+        code,
+        ElementDiagnosticLocalizations.GetString($"{code}_description"),
+        ElementDiagnosticLocalizations.GetString($"{code}_message"),
+        severity,
+        true,
+        false,
+        string.Empty);
 }

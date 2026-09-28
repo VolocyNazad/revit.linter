@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Revit.Linter.Localization.Artifact.Tests;
@@ -10,6 +11,14 @@ public sealed class LocalizationArtifactTests
     private const string ViewModelResourceBaseName =
         "Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel";
     private const string GlobalResourceBaseName = "Revit.Linter.Localization.GlobalLocalizations";
+    private const string OpenedDocumentsResourceBaseName =
+        "Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel";
+    private const string ElementDiagnosticsResourceBaseName =
+        "Revit.Linter.Localization.ElementDiagnostics.ElementDiagnosticLocalizations";
+    private const string DiagnosticSeverityResourceBaseName =
+        "Revit.Linter.Localization.DiagnosticSeverityLocalizations";
+    private const string DiagnosticTargetTypeResourceBaseName =
+        "Revit.Linter.Localization.DiagnosticTargetTypeLocalizations";
 
     [Fact]
     public void Repacked_output_resolves_neutral_russian_and_fallback_resources()
@@ -25,10 +34,19 @@ public sealed class LocalizationArtifactTests
         Assert.True(File.Exists(russianSatellitePath), $"Russian satellite assembly was not found: {russianSatellitePath}");
 
         Assembly localizationAssembly = Assembly.LoadFrom(localizationAssemblyPath);
+        Assembly russianSatelliteAssembly = Assembly.LoadFrom(russianSatellitePath);
         NeutralResourcesLanguageAttribute? neutralLanguage =
             localizationAssembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>();
         Assert.NotNull(neutralLanguage);
         Assert.Equal("en", neutralLanguage.CultureName);
+
+        string[] expectedResourceNames = GetExpectedResourceNames();
+        Assert.Equal(
+            expectedResourceNames,
+            localizationAssembly.GetManifestResourceNames().OrderBy(name => name, StringComparer.Ordinal));
+        Assert.Equal(
+            expectedResourceNames,
+            russianSatelliteAssembly.GetManifestResourceNames().OrderBy(name => name, StringComparer.Ordinal));
 
         Type readerType = localizationAssembly.GetType(
             "Revit.Linter.Localization.LocalizationResourceReader",
@@ -47,6 +65,15 @@ public sealed class LocalizationArtifactTests
         Assert.Equal("Проверки", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "ru-RU"));
         Assert.Equal("Проверки", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "ru-KZ"));
         Assert.Equal("Diagnostics", ReadString(getString, GlobalResourceBaseName, "ribbonPanel_diagnostics_name", "de-DE"));
+
+        Assert.Equal("All", ReadString(getString, OpenedDocumentsResourceBaseName, "allDocuments_text", "en-US"));
+        Assert.Equal("Все", ReadString(getString, OpenedDocumentsResourceBaseName, "allDocuments_text", "ru-RU"));
+        Assert.Equal("Delete unused material", ReadString(getString, ElementDiagnosticsResourceBaseName, "deleteUnusedMaterial_fix", "en-US"));
+        Assert.Equal("Удалить неиспользуемый материал", ReadString(getString, ElementDiagnosticsResourceBaseName, "deleteUnusedMaterial_fix", "ru-RU"));
+        Assert.Equal("Warning", ReadString(getString, DiagnosticSeverityResourceBaseName, "Warning", "en-US"));
+        Assert.Equal("Предупреждение", ReadString(getString, DiagnosticSeverityResourceBaseName, "Warning", "ru-RU"));
+        Assert.Equal("Document", ReadString(getString, DiagnosticTargetTypeResourceBaseName, "Document", "en-US"));
+        Assert.Equal("Документ", ReadString(getString, DiagnosticTargetTypeResourceBaseName, "Document", "ru-RU"));
     }
 
     private static string ReadString(MethodInfo getString, string baseName, string key, string cultureName)
@@ -97,5 +124,23 @@ public sealed class LocalizationArtifactTests
 
         return directory?.FullName
             ?? throw new DirectoryNotFoundException("Could not find the Revit.Linter repository root.");
+    }
+
+    private static string[] GetExpectedResourceNames()
+    {
+        string projectPath = Path.Combine(
+            FindRepositoryRoot(),
+            "src",
+            "Revit.Linter.Localization",
+            "Revit.Linter.Localization.csproj");
+
+        return XDocument.Load(projectPath)
+            .Descendants("EmbeddedResource")
+            .Select(element => element.Attribute("LogicalName")?.Value)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name!)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
     }
 }

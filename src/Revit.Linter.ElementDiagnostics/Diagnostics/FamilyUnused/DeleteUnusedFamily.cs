@@ -4,7 +4,7 @@ internal sealed class DeleteUnusedFamily : IElementFix
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
 
-    public string Value => "Удалить неиспользуемое семейство";
+    public string Value => ElementDiagnosticLocalizations.GetString("deleteUnusedFamily_fix");
     public bool Execute(Element targetElement)
         => targetElement.Document.Delete(targetElement.Id).Any();
 }
