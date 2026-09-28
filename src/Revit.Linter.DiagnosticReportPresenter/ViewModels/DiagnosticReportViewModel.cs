@@ -7,6 +7,7 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
+using Revit.Linter.DiagnosticReportPresenter.Exporting;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
@@ -23,16 +24,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -74,6 +71,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IIgnoreElementProvider _ignoreElementProvider;
     private readonly IDialog _dialog;
     private readonly IConfirmationDialog _confirmationDialog;
+    private readonly IReadOnlyList<IDiagnosticReportExporter> _reportExporters;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
@@ -89,7 +87,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
-            IDialog dialog, IConfirmationDialog confirmationDialog) : base(idlingScheduler)
+            IDialog dialog, IConfirmationDialog confirmationDialog,
+            IEnumerable<IDiagnosticReportExporter> reportExporters) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
@@ -101,6 +100,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _ignoreElementProvider = ignoreElementProvider;
         _dialog = dialog;
         _confirmationDialog = confirmationDialog;
+        _reportExporters = reportExporters.ToArray();
 
         Collection = [];
     }
@@ -298,12 +298,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [RelayCommand]
     private void Export()
     {
+        if (_reportExporters.Count == 0) return;
+
         SaveFileDialog dialog = new()
         {
             AddExtension = true,
-            DefaultExt = ".csv",
+            DefaultExt = _reportExporters[0].Extension,
             FileName = CreateExportFileName(),
-            Filter = "CSV (*.csv)|*.csv|JSON (*.json)|*.json|YAML (*.yaml)|*.yaml|HTML (*.html)|*.html",
+            Filter = string.Join("|", _reportExporters.Select(exporter => exporter.Filter)),
             FilterIndex = 1,
             OverwritePrompt = true
         };
@@ -321,168 +323,36 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 item.Created))
             .ToList();
 
-        string extension = dialog.FilterIndex switch
+        int exporterIndex = dialog.FilterIndex - 1;
+        IDiagnosticReportExporter exporter = exporterIndex >= 0 && exporterIndex < _reportExporters.Count
+            ? _reportExporters[exporterIndex]
+            : _reportExporters[0];
+        string fileName = Path.ChangeExtension(dialog.FileName, exporter.Extension);
+        DiagnosticReportExportContext context = new()
         {
-            2 => ".json",
-            3 => ".yaml",
-            4 => ".html",
-            _ => ".csv"
+            Culture = CultureInfo.CurrentCulture,
+            UiCulture = CultureInfo.CurrentUICulture,
+            DocumentTitle = string.IsNullOrWhiteSpace(TargetDocumentTitle)
+                ? HtmlAllDocumentsText
+                : TargetDocumentTitle ?? HtmlAllDocumentsText,
+            ExportedAt = DateTime.Now,
+            SeverityHeader = SeverityHeader,
+            CodeHeader = CodeHeader,
+            MessageHeader = MessageHeader,
+            DocumentHeader = DocumentHeader,
+            CreatedHeader = CreatedHeader,
+            ReportTitle = HtmlReportTitle,
+            GeneratedLabel = HtmlGeneratedLabel,
+            TotalLabel = HtmlTotalLabel,
+            SummaryByCodeTitle = HtmlSummaryByCodeTitle,
+            CountHeader = HtmlCountHeader,
+            DetailsTitle = HtmlDetailsTitle,
+            NoResultsText = HtmlNoResultsText,
+            ErrorText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Error.ToString()),
+            WarningText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Warning.ToString()),
+            MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString())
         };
-        string fileName = Path.ChangeExtension(dialog.FileName, extension);
-
-        switch (dialog.FilterIndex)
-        {
-            case 2:
-                ExportJson(fileName, items);
-                break;
-            case 3:
-                ExportYaml(fileName, items);
-                break;
-            case 4:
-                ExportHtml(fileName, items);
-                break;
-            default:
-                ExportCsv(fileName, items);
-                break;
-        }
-    }
-
-    private void ExportCsv(string fileName, IEnumerable<DiagnosticReportExportItem> items)
-    {
-        string listSeparator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-        char delimiter = listSeparator.Length > 0 ? listSeparator[0] : ',';
-        StringBuilder content = new();
-        AppendCsvRow(content, delimiter,
-            SeverityHeader, CodeHeader, MessageHeader, DocumentHeader, CreatedHeader);
-
-        foreach (DiagnosticReportExportItem item in items)
-            AppendCsvRow(content, delimiter,
-                item.Severity,
-                item.Code,
-                item.Message,
-                item.Document,
-                item.Created.ToString("G", CultureInfo.CurrentCulture));
-
-        File.WriteAllText(fileName, content.ToString(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
-    }
-
-    private static void ExportJson(string fileName, IEnumerable<DiagnosticReportExportItem> items)
-    {
-        JsonSerializerOptions options = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-        File.WriteAllText(fileName, JsonSerializer.Serialize(items, options), new UTF8Encoding(false));
-    }
-
-    private static void ExportYaml(string fileName, IEnumerable<DiagnosticReportExportItem> items)
-    {
-        ISerializer serializer = new SerializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-        File.WriteAllText(fileName, serializer.Serialize(items), new UTF8Encoding(false));
-    }
-
-    private void ExportHtml(string fileName, IReadOnlyCollection<DiagnosticReportExportItem> items)
-    {
-        string Encode(string? value) => WebUtility.HtmlEncode(value ?? string.Empty);
-
-        string errorText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Error.ToString());
-        string warningText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Warning.ToString());
-        string messageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString());
-        int errorCount = items.Count(item => item.Severity == errorText);
-        int warningCount = items.Count(item => item.Severity == warningText);
-        int messageCount = items.Count(item => item.Severity == messageText);
-        string targetDocumentTitle = TargetDocumentTitle ?? string.Empty;
-        string document = string.IsNullOrWhiteSpace(targetDocumentTitle)
-            ? HtmlAllDocumentsText
-            : targetDocumentTitle;
-
-        StringBuilder content = new();
-        content.AppendLine("<!DOCTYPE html>")
-            .Append("<html lang=\"").Append(Encode(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)).AppendLine("\">")
-            .AppendLine("<head>")
-            .AppendLine("<meta charset=\"utf-8\">")
-            .AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
-            .Append("<title>").Append(Encode(HtmlReportTitle)).AppendLine("</title>")
-            .AppendLine("<style>")
-            .AppendLine("body{margin:0;background:#f5f7fa;color:#172033;font-family:Segoe UI,Arial,sans-serif;font-size:14px}")
-            .AppendLine("main{max-width:1200px;margin:0 auto;padding:32px 24px 48px}")
-            .AppendLine("h1{margin:0 0 8px;font-size:28px}h2{margin:32px 0 12px;font-size:18px}")
-            .AppendLine(".meta{color:#5d6678;margin-bottom:24px}.meta span+span:before{content:' · ';padding:0 6px}")
-            .AppendLine(".cards{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px}")
-            .AppendLine(".card{background:#fff;border:1px solid #dfe3eb;border-radius:8px;padding:16px}.card strong{display:block;font-size:26px;margin-bottom:4px}")
-            .AppendLine(".error{border-top:4px solid #c62828}.warning{border-top:4px solid #ef8c00}.message{border-top:4px solid #1976d2}.total{border-top:4px solid #48566a}")
-            .AppendLine(".table-wrap{overflow-x:auto;background:#fff;border:1px solid #dfe3eb;border-radius:8px}")
-            .AppendLine("table{width:100%;border-collapse:collapse}th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #e6e9ef}th{background:#eef1f6;white-space:nowrap}tr:last-child td{border-bottom:0}.count{width:1%;text-align:right}.message-cell{white-space:pre-wrap;min-width:320px}")
-            .AppendLine(".empty{padding:24px;text-align:center;color:#5d6678}")
-            .AppendLine("@media(max-width:700px){main{padding:20px 12px}.cards{grid-template-columns:repeat(2,1fr)}}")
-            .AppendLine("@media print{body{background:#fff}main{max-width:none;padding:0}.card,.table-wrap{break-inside:avoid}.table-wrap{overflow:visible}}")
-            .AppendLine("</style>")
-            .AppendLine("</head>")
-            .AppendLine("<body><main>")
-            .Append("<h1>").Append(Encode(HtmlReportTitle)).AppendLine("</h1>")
-            .Append("<div class=\"meta\"><span>").Append(Encode(DocumentHeader)).Append(": ")
-            .Append(Encode(document)).Append("</span><span>").Append(Encode(HtmlGeneratedLabel)).Append(": ")
-            .Append(Encode(DateTime.Now.ToString("G", CultureInfo.CurrentCulture))).AppendLine("</span></div>")
-            .AppendLine("<section class=\"cards\">");
-
-        AppendHtmlSummaryCard(content, "total", HtmlTotalLabel, items.Count);
-        AppendHtmlSummaryCard(content, "error", errorText, errorCount);
-        AppendHtmlSummaryCard(content, "warning", warningText, warningCount);
-        AppendHtmlSummaryCard(content, "message", messageText, messageCount);
-
-        content.AppendLine("</section>")
-            .Append("<h2>").Append(Encode(HtmlSummaryByCodeTitle)).AppendLine("</h2>")
-            .AppendLine("<div class=\"table-wrap\"><table><thead><tr>")
-            .Append("<th>").Append(Encode(CodeHeader)).Append("</th><th class=\"count\">")
-            .Append(Encode(HtmlCountHeader)).AppendLine("</th></tr></thead><tbody>");
-
-        foreach (IGrouping<string, DiagnosticReportExportItem> group in items
-                     .GroupBy(item => item.Code)
-                     .OrderByDescending(group => group.Count())
-                     .ThenBy(group => group.Key, StringComparer.CurrentCulture))
-        {
-            content.Append("<tr><td>").Append(Encode(group.Key)).Append("</td><td class=\"count\">")
-                .Append(group.Count().ToString(CultureInfo.CurrentCulture)).AppendLine("</td></tr>");
-        }
-
-        content.AppendLine("</tbody></table></div>")
-            .Append("<h2>").Append(Encode(HtmlDetailsTitle)).AppendLine("</h2>");
-
-        if (items.Count == 0)
-        {
-            content.Append("<div class=\"table-wrap empty\">").Append(Encode(HtmlNoResultsText)).AppendLine("</div>");
-        }
-        else
-        {
-            content.AppendLine("<div class=\"table-wrap\"><table><thead><tr>")
-                .Append("<th>").Append(Encode(SeverityHeader)).Append("</th><th>").Append(Encode(CodeHeader))
-                .Append("</th><th>").Append(Encode(MessageHeader)).Append("</th><th>").Append(Encode(DocumentHeader))
-                .Append("</th><th>").Append(Encode(CreatedHeader)).AppendLine("</th></tr></thead><tbody>");
-
-            foreach (DiagnosticReportExportItem item in items)
-            {
-                content.Append("<tr><td>").Append(Encode(item.Severity)).Append("</td><td>")
-                    .Append(Encode(item.Code)).Append("</td><td class=\"message-cell\">")
-                    .Append(Encode(item.Message)).Append("</td><td>").Append(Encode(item.Document))
-                    .Append("</td><td>").Append(Encode(item.Created.ToString("G", CultureInfo.CurrentCulture)))
-                    .AppendLine("</td></tr>");
-            }
-
-            content.AppendLine("</tbody></table></div>");
-        }
-
-        content.AppendLine("</main></body></html>");
-        File.WriteAllText(fileName, content.ToString(), new UTF8Encoding(false));
-    }
-
-    private static void AppendHtmlSummaryCard(StringBuilder content, string style, string title, int count)
-    {
-        content.Append("<div class=\"card ").Append(style).Append("\"><strong>")
-            .Append(count.ToString(CultureInfo.CurrentCulture)).Append("</strong><span>")
-            .Append(WebUtility.HtmlEncode(title)).AppendLine("</span></div>");
+        exporter.Export(fileName, context, items);
     }
 
     private string CreateExportFileName()
@@ -495,38 +365,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             invalidCharacters.Contains(character) ? '_' : character));
         return $"{safeDocument}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
     }
-
-    private static void AppendCsvRow(StringBuilder builder, char delimiter, params string?[] values)
-    {
-        for (int index = 0; index < values.Length; index++)
-        {
-            if (index > 0) builder.Append(delimiter);
-
-            string value = values[index] ?? string.Empty;
-            bool requiresEscaping = value.Contains(delimiter)
-                || value.Contains('"')
-                || value.Contains('\r')
-                || value.Contains('\n');
-            if (!requiresEscaping)
-            {
-                builder.Append(value);
-                continue;
-            }
-
-            builder.Append('"');
-            builder.Append(value.Replace("\"", "\"\""));
-            builder.Append('"');
-        }
-
-        builder.AppendLine();
-    }
-
-    private sealed record DiagnosticReportExportItem(
-        string Severity,
-        string Code,
-        string Message,
-        string Document,
-        DateTime Created);
 
     #endregion
 
