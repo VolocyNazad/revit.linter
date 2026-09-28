@@ -8,16 +8,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Verify localization key and placeholder parity, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
+- Verify localization key and placeholder parity, source resource registration, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
 
 ### Changed
 
-- Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global and view-model strings through the same localization reader.
+- Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global, view-model, and feature strings through the same localization reader.
 
 ### Fixed
 
 - Store add-in logs under `%LOCALAPPDATA%` without the machine-name property, bound them to the newest 14 daily or 20 MB files, keep Console/Debug sinks development-only, record startup and shutdown lifecycle events, capture fatal lifecycle failures, and dispose the logging host during Revit shutdown so buffered events are flushed.
-- Localize built-in diagnostics, report filters, severity and target labels, document filters, fixes, transactions, ignore-parameter feedback, and parameter diagnostic details in English and Russian.
+- Localize built-in diagnostics, report filters, selected severity and target labels, document filters, fixes, transactions, ignore-parameter feedback, and parameter diagnostic details in English and Russian.
 
 ## [1.7.0] - 2026-09-23
 
