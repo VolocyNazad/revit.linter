@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Export the currently displayed diagnostic findings as a self-contained HTML report with severity and diagnostic-code summaries.
 - Verify localization key and placeholder parity, source resource registration, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
 
 ### Changed

@@ -7,6 +7,10 @@
   <data name="severity_header" xml:space="preserve"><value>Severity</value></data><data name="code_header" xml:space="preserve"><value>Code</value></data>
   <data name="message_header" xml:space="preserve"><value>Message</value></data><data name="document_header" xml:space="preserve"><value>Document</value></data>
   <data name="created_header" xml:space="preserve"><value>Created</value></data>
+  <data name="htmlReport_title" xml:space="preserve"><value>Diagnostic report</value></data><data name="htmlGenerated_label" xml:space="preserve"><value>Generated</value></data>
+  <data name="htmlTotal_label" xml:space="preserve"><value>Total findings</value></data><data name="htmlAllDocuments_text" xml:space="preserve"><value>All documents</value></data>
+  <data name="htmlSummaryByCode_title" xml:space="preserve"><value>Summary by diagnostic</value></data><data name="htmlCount_header" xml:space="preserve"><value>Count</value></data>
+  <data name="htmlDetails_title" xml:space="preserve"><value>Findings</value></data><data name="htmlNoResults_text" xml:space="preserve"><value>No findings match the current filters.</value></data>
   <data name="all_title" xml:space="preserve"><value>{0} (all)</value></data>
   <data name="ignoreFix_title" xml:space="preserve"><value>Ignore</value></data>
   <data name="ignoreElementFailed_message" xml:space="preserve"><value>Failed to ignore element '{elementId}'.</value></data><data name="ignoreElementSucceeded_message" xml:space="preserve"><value>Element '{elementId}' was ignored successfully.</value></data>

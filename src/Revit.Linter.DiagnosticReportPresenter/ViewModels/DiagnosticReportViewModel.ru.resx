@@ -7,6 +7,10 @@
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data><data name="code_header" xml:space="preserve"><value>Код</value></data>
   <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
   <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
+  <data name="htmlReport_title" xml:space="preserve"><value>Отчёт диагностики</value></data><data name="htmlGenerated_label" xml:space="preserve"><value>Сформирован</value></data>
+  <data name="htmlTotal_label" xml:space="preserve"><value>Всего нарушений</value></data><data name="htmlAllDocuments_text" xml:space="preserve"><value>Все документы</value></data>
+  <data name="htmlSummaryByCode_title" xml:space="preserve"><value>Сводка по проверкам</value></data><data name="htmlCount_header" xml:space="preserve"><value>Количество</value></data>
+  <data name="htmlDetails_title" xml:space="preserve"><value>Нарушения</value></data><data name="htmlNoResults_text" xml:space="preserve"><value>Текущим фильтрам не соответствует ни одного нарушения.</value></data>
   <data name="all_title" xml:space="preserve"><value>{0} (все)</value></data>
   <data name="ignoreFix_title" xml:space="preserve"><value>Игнорировать</value></data>
   <data name="ignoreElementFailed_message" xml:space="preserve"><value>Не удалось игнорировать элемент «{elementId}».</value></data><data name="ignoreElementSucceeded_message" xml:space="preserve"><value>Элемент «{elementId}» успешно проигнорирован.</value></data>
