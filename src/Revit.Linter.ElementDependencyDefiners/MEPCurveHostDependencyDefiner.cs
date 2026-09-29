@@ -6,13 +6,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instance that hosts the current insulation
+/// Resolves the MEP curve that hosts an insulation or lining element.
 /// </summary>
 [SuppressMessage("SonarAnalyzer", "S101", Justification = "MEP is a standard abbreviation")]
 public class MEPCurveHostDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<InsulationsDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		var collection = new List<Element>();
@@ -29,6 +31,7 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<InsulationsDepende
 		return collection;
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element)
 	{
 		if (element is not InsulationLiningBase insulation) return null;

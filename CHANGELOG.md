@@ -25,6 +25,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the public element-dependency composition and filtering definers.
 - Document the public element type, family, and instance dependency definers.
 - Document the public group membership and nested-component dependency definers.
+- Document the public host, insert, and MEP insulation dependency definers.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.

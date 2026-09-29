@@ -5,12 +5,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instances for which the current element is the host's type
+/// Resolves elements inserted into instances of the specified host type.
 /// </summary>
 public class InstanceInsertsDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<HostTypeDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		if (element is not ElementType elementType) return [];
@@ -25,5 +27,6 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<HostTypeDependency
 			});
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => All(element).FirstOrDefault();
 }
