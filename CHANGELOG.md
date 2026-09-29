@@ -34,6 +34,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the diagnostic report presenter interaction contract.
 - Document the public localization source-generator entry point.
 - Document the public WPF theme-management contract and dependency-injection entry point.
+- Document the project-parameter management contract and keep its collection helper internal.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
