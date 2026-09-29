@@ -74,6 +74,8 @@ visualization pipelines and restores their sessions in reverse order.
 - `AGENTS.md` links to the required repository guidance.
 - `docs/policies/development.md` contains the development policy.
 - `docs/repository.md` describes the project, repository structure, and technology stack.
+- `docs/architecture.md` records stable module boundaries and design decisions.
+- `docs/FEATURES.md` summarizes the current product scope and compatibility contract.
 - `wiki/Home.md` is the entry point for user documentation. Wiki pages use Obsidian-compatible links and are published to GitHub Wiki by `.github/workflows/publish-wiki.yml`.
 - `wiki/getting-started/` contains installation, quick-start, and configuration setup.
 - `wiki/diagnostics/` contains diagnostic modules and their configuration.
@@ -89,6 +91,8 @@ visualization pipelines and restores their sessions in reverse order.
 Local Obsidian settings under `wiki/.obsidian/` are ignored. Keep shared content and navigation in Markdown so the same files work in Obsidian and GitHub Wiki.
 
 The root solution exposes contributor documentation under `docs` and user documentation under `wiki`, preserving their subfolder structure. When adding documentation files, also add them as solution items; solution folders do not automatically include new files.
+
+Production projects generate XML documentation; test projects are exempt from missing-comment diagnostics. Set `EnforcePublicApiDocumentation=true` to promote missing documentation for public APIs (`CS1591`) to an error during the baseline migration. The shared settings live in `Directory.Build.props` and `Directory.Build.targets`.
 
 The root `global.json` selects stable .NET SDK 10.0 (minimum `10.0.103`, `rollForward: latestFeature`). CI and publishing install the SDK from this file. Additional SDK installations may provide older test runtimes. See the [SDK selection policy](policies/development.md#net-sdk-selection).
 

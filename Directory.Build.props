@@ -1,12 +1,14 @@
 <Project>
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
-		<LangVersion>14.0</LangVersion>
-		<Platforms>x64;Any CPU</Platforms>
-		<Configurations>
-			Debug_2021.1.9;Debug_2023.0.0;Debug_2025.0.0;
-			Release_2021.1.9;Release_2023.0.0;Release_2025.0.0;
-		</Configurations>
-    </PropertyGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>true</ImplicitUsings>
+    <LangVersion>14.0</LangVersion>
+    <Platforms>x64;Any CPU</Platforms>
+    <Configurations>
+      Debug_2021.1.9;Debug_2023.0.0;Debug_2025.0.0;
+      Release_2021.1.9;Release_2023.0.0;Release_2025.0.0;
+    </Configurations>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsAsErrors Condition="'$(EnforcePublicApiDocumentation)' == 'true'">$(WarningsAsErrors);CS1591</WarningsAsErrors>
+  </PropertyGroup>
 </Project>
