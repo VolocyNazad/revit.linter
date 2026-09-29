@@ -29,6 +29,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the public room, space, scope-box, connection, and identity dependency definers.
 - Document discovery of built-in element dependency definer types.
 - Document the shared localization lookup API and keep its assembly marker internal.
+- Document the diagnostic execution, registration, and duplicate-code error contracts.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
