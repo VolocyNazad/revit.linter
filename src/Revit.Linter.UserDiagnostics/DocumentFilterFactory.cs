@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.UserDiagnostics;
 
-public class DocumentFilterFactory(
+internal sealed class DocumentFilterFactory(
     ILogger<DocumentFilterFactory> logger,
     IFormulaCompilationNotifier notifier)
 {
