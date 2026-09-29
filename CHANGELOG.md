@@ -16,6 +16,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Generate XML documentation for production projects, exempt test projects, and provide an opt-in strict build that treats undocumented public APIs as errors while the existing API baseline is documented.
+- Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
 - Document the planned class-based diagnostic visualizations, internal reusable pipelines, safe highlighting session, custom-rule registration, and compact Show action.
 - Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global, view-model, and feature strings through the same localization reader.

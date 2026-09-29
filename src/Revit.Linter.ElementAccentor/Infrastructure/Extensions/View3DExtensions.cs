@@ -2,7 +2,7 @@ using Revit.Linter.ElementAccentor.Infrastructure.Implementations;
 
 namespace Revit.Linter.ElementAccentor.Infrastructure.Extensions;
 
-public static class View3DExtensions
+internal static class View3DExtensions
 {
     extension(View3D view)
     {

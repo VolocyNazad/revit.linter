@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Revit.Linter.ElementAccentor.Infrastructure.Implementations;
 
 [SuppressMessage("SonarAnalyzer", "S101", Justification = "XYZ is coordinate system")]
-public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
+internal sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
 {
     public SizableBoundingBoxXYZ(double height = 1, double width = 1, double length = 1)
     {
@@ -212,7 +212,7 @@ public sealed class SizableBoundingBoxXYZ : BoundingBoxXYZ
 }
 
 /// <summary> Dimensions </summary>
-public enum Dimension
+internal enum Dimension
 {
     Length,
     Width,
@@ -220,7 +220,7 @@ public enum Dimension
 }
 
 /// <summary> Alignment </summary>
-public enum Align
+internal enum Align
 {
     Start,
     Center,
