@@ -5,17 +5,33 @@ using System.Resources;
 
 namespace Revit.Linter.Localization;
 
+/// <summary>
+/// Reads localized strings from resources embedded in the localization assembly.
+/// </summary>
 public static class LocalizationResourceReader
 {
     private static readonly Assembly ResourceAssembly = typeof(LocalizationAssembly).Assembly;
     private static readonly ConcurrentDictionary<(string BaseName, string Culture), IReadOnlyDictionary<string, string>> Resources = new();
 
+    /// <summary>
+    /// Gets a localized string using the current UI culture and its parent cultures.
+    /// </summary>
+    /// <param name="baseName">The fully qualified base name of the resource set.</param>
+    /// <param name="key">The resource key.</param>
+    /// <returns>The localized value, or <paramref name="key"/> when no resource exists.</returns>
     public static string GetString(string baseName, string key)
     {
         _ = TryGetString(baseName, key, out string value);
         return value;
     }
 
+    /// <summary>
+    /// Attempts to get a localized string using the current UI culture and its parent cultures.
+    /// </summary>
+    /// <param name="baseName">The fully qualified base name of the resource set.</param>
+    /// <param name="key">The resource key.</param>
+    /// <param name="value">The localized value when found; otherwise, <paramref name="key"/>.</param>
+    /// <returns><see langword="true"/> when a resource was found; otherwise, <see langword="false"/>.</returns>
     public static bool TryGetString(string baseName, string key, out string value)
     {
         for (CultureInfo culture = CultureInfo.CurrentUICulture; !string.IsNullOrEmpty(culture.Name); culture = culture.Parent)
@@ -37,6 +53,14 @@ public static class LocalizationResourceReader
         return false;
     }
 
+    /// <summary>
+    /// Enumerates the distinct localized strings in a resource set for the current UI culture.
+    /// </summary>
+    /// <param name="baseName">The fully qualified base name of the resource set.</param>
+    /// <param name="includeParentCultures">
+    /// A value indicating whether strings from parent cultures are included before invariant-culture fallbacks.
+    /// </param>
+    /// <returns>The localized key-value pairs, with values from more specific cultures taking precedence.</returns>
     public static IEnumerable<KeyValuePair<string, string>> GetAllStrings(string baseName, bool includeParentCultures)
     {
         HashSet<string> keys = new(StringComparer.Ordinal);
