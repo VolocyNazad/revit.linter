@@ -7,14 +7,19 @@ using Microsoft.Xaml.Behaviors;
 
 namespace Revit.Linter.Behaviors;
 
+/// <summary>
+/// Forwards mouse-wheel input from a flow-document viewer to its visual parent so an enclosing scroller can respond.
+/// </summary>
 public sealed class PassMouseWheelToParentBehavior : Behavior<FlowDocumentScrollViewer>
 {
+    /// <inheritdoc />
     protected override void OnAttached()
     {
         base.OnAttached();
         AssociatedObject.PreviewMouseWheel += OnPreviewMouseWheel;
     }
 
+    /// <inheritdoc />
     protected override void OnDetaching()
     {
         AssociatedObject.PreviewMouseWheel -= OnPreviewMouseWheel;
