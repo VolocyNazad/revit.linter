@@ -4,11 +4,27 @@ using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
 
-[XamlConstructor, AutoConstructor]
+/// <summary>
+/// Maintains Revit event subscriptions for view models whose command availability depends on application state.
+/// </summary>
+[XamlConstructor]
 public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
+    /// <summary>
+    /// Schedules subscription work in a valid Revit API context.
+    /// </summary>
     protected readonly IRevitIdlingScheduler _idlingScheduler;
 
+    /// <summary>
+    /// Initializes the view model with a scheduler for Revit API work.
+    /// </summary>
+    /// <param name="idlingScheduler">Schedules work in a valid Revit API context.</param>
+    protected RevitInteractionViewModel(IRevitIdlingScheduler idlingScheduler)
+    {
+        _idlingScheduler = idlingScheduler;
+    }
+
+    /// <inheritdoc />
     protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await _idlingScheduler.RunAsync(uiapp => {
@@ -23,6 +39,7 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
         }, cancellationToken);
 
     }
+    /// <inheritdoc />
     protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         await _idlingScheduler.RunAsync(uiapp => {
@@ -50,5 +67,8 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
         OnRevitChanged();
     }
 
+    /// <summary>
+    /// Responds when a subscribed Revit application event may have changed presentation state.
+    /// </summary>
     protected abstract void OnRevitChanged();
 }

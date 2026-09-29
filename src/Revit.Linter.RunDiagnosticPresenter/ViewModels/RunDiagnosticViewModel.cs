@@ -14,6 +14,9 @@ using System.Diagnostics;
 
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 
+/// <summary>
+/// Coordinates diagnostic execution, persisted scope settings, and report presentation for the current document.
+/// </summary>
 [XamlConstructor]
 [GenerateLocalizedProperties]
 public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
@@ -26,6 +29,15 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private readonly IDisposable _changeSubscription;
     private bool _applyingExternalChanges;
 
+    /// <summary>
+    /// Initializes the diagnostic-run view model and subscribes it to persisted setting changes.
+    /// </summary>
+    /// <param name="revitContext">Provides the current Revit document and application.</param>
+    /// <param name="idlingScheduler">Schedules subscription work in a valid Revit API context.</param>
+    /// <param name="diagnosticService">Executes registered diagnostics.</param>
+    /// <param name="diagnosticReportViewModel">Presents and refreshes diagnostic results.</param>
+    /// <param name="store">Persists diagnostic-run settings.</param>
+    /// <param name="dialog">Displays diagnostic execution failures.</param>
     public RunDiagnosticViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
             IDiagnosticService diagnosticService,
@@ -51,9 +63,15 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         _applyingExternalChanges = false;
     }
 
+    /// <summary>
+    /// Gets the localized duration of the most recent diagnostic run.
+    /// </summary>
     [ObservableProperty]
     public partial string DiagnosticTime { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets whether diagnostics are restricted to the active view.
+    /// </summary>
     [ObservableProperty]
     public partial bool OnActiveViewMode { get; set; } = false;
     partial void OnOnActiveViewModeChanged(bool value)
@@ -91,18 +109,21 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 
     #endregion
 
+    /// <inheritdoc />
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await base.OnInitializing(cancellationToken);
 
         RunDiagnosticCommand.NotifyCanExecuteChanged();
     }
+    /// <inheritdoc />
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         _changeSubscription.Dispose();
         await base.OnDeinitializing(cancellationToken);
     }
 
+    /// <inheritdoc />
     protected override void OnRevitChanged()
     {
         RunDiagnosticCommand.NotifyCanExecuteChanged();
