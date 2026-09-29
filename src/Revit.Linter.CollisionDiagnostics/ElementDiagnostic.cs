@@ -19,7 +19,7 @@ internal sealed class ElementDiagnostic(
     public required ElementDiagnosticId Identity { get; init; }
     public required string TakeFormula { get; init; }
     public required string GroupByFormula { get; init; }
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement) //todo the result includes 2 intersections (1 with 2, 2 with 1)
+    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var targetElementId = targetElement.Id.Value();
 

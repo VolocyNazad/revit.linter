@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.CollisionDiagnostics;
 
-public class ElementFunctionFactory(
+internal sealed class ElementFunctionFactory(
     ILogger<ElementFunctionFactory> logger,
     IFormulaCompilationNotifier notifier)
 {

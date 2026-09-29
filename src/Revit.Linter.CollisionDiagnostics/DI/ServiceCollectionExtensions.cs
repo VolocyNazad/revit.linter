@@ -4,10 +4,17 @@ using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 
 namespace Revit.Linter.CollisionDiagnostics.DI;
 
+/// <summary>
+/// Provides dependency-injection registration for collision diagnostics.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
+        /// <summary>
+        /// Registers collision diagnostics and their supporting services.
+        /// </summary>
+        /// <returns>The service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddCollisionDiagnostics()
         {
             services.AddSingleton<ElementFilterFactory>()

@@ -6,7 +6,7 @@ using Revit.Sugar;
 
 namespace Revit.Linter.CollisionDiagnostics;
 
-public class ElementFilterFactory(
+internal sealed class ElementFilterFactory(
     ILogger<ElementFilterFactory> logger,
     IFormulaCompilationNotifier notifier)
 {
