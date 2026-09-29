@@ -4,10 +4,17 @@ using Provider = Revit.Linter.ElementChangesProvider.Services.ElementChangesProv
 
 namespace Revit.Linter.ElementChangesProvider.DI;
 
+/// <summary>
+/// Registers element-change notification services.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
+        /// <summary>
+        /// Adds the shared element-changes provider as both a sender and a receiver.
+        /// </summary>
+        /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddElementChangesProviderModule() => services
            .AddSingleton<Provider>()
            .AddSingleton<IElementChangesReceiver>(provider => provider.GetRequiredService<Provider>())

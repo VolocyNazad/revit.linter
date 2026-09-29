@@ -2,7 +2,13 @@
 
 namespace Revit.Linter.ElementChangesProvider.Abstractions.Services;
 
+/// <summary>
+/// Exposes notifications about reported element changes.
+/// </summary>
 public interface IElementChangesReceiver
 {
-    public event ElementChangesHandler? Sent;
+    /// <summary>
+    /// Occurs when a set of element changes is reported.
+    /// </summary>
+    event ElementChangesHandler? Sent;
 }

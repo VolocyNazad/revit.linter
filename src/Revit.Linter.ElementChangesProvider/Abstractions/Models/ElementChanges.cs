@@ -3,10 +3,10 @@
 namespace Revit.Linter.ElementChangesProvider.Abstractions.Models;
 
 /// <summary>
-/// Report of changed elements
+/// Describes element changes reported for a Revit document.
 /// </summary>
-/// <param name="Document"> Document </param>
-/// <param name="Creared"> Created </param>
-/// <param name="Modified"> Modified </param>
-/// <param name="Deleted"> Deleted </param>
+/// <param name="Document">The document whose elements changed.</param>
+/// <param name="Creared">The identifiers of elements that were created.</param>
+/// <param name="Modified">The identifiers of elements that were modified.</param>
+/// <param name="Deleted">The identifiers of elements that were deleted.</param>
 public sealed record ElementChanges(Document Document, IEnumerable<ElementId> Creared, IEnumerable<ElementId> Modified, IEnumerable<ElementId> Deleted) { }
