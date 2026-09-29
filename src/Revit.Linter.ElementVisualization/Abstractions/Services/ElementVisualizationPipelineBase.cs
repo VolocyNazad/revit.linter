@@ -25,6 +25,7 @@ public abstract class ElementVisualizationPipelineBase(
     private readonly IReadOnlyDictionary<AccentElementsType, IAccentElementsService> _services =
         services.ToDictionary(service => service.Type);
     private readonly List<IElementAccentSession> _sessions = [];
+    private Document? _sessionDocument;
     private bool _disposed;
 
     /// <inheritdoc />
@@ -48,6 +49,9 @@ public abstract class ElementVisualizationPipelineBase(
             Value, Identity.Code, context.Document.Title, context.View.Name, Steps.Count, context.ElementSets.Count);
         Restore();
 
+        List<IElementAccentSession> appliedSessions = [];
+        using TransactionGroup? transactionGroup = StartTransactionGroup(
+            context.Document, $"Apply visualization: {Value}");
         try
         {
             for (int index = 0; index < Steps.Count; index++)
@@ -71,12 +75,15 @@ public abstract class ElementVisualizationPipelineBase(
                     _ => throw new InvalidOperationException(
                         $"Unsupported visualization step '{step.GetType().Name}'.")
                 };
-                _sessions.Add(session);
+                appliedSessions.Add(session);
                 logger.LogInformation(
                     "Visualization step {StepNumber}/{StepCount} completed: {StepType}",
                     index + 1, Steps.Count, step.GetType().Name);
             }
 
+            Assimilate(transactionGroup);
+            _sessions.AddRange(appliedSessions);
+            _sessionDocument = context.Document;
             logger.LogInformation(
                 "Visualization pipeline {VisualizationName} for diagnostic {DiagnosticCode} applied successfully",
                 Value, Identity.Code);
@@ -84,15 +91,16 @@ public abstract class ElementVisualizationPipelineBase(
         }
         catch (Exception exception)
         {
+            RollBack(transactionGroup);
+            Exception? cleanupError = RestoreSessions(appliedSessions);
             logger.LogError(
                 exception,
                 "Visualization pipeline {VisualizationName} for diagnostic {DiagnosticCode} failed; " +
                 "restoring {SessionCount} completed sessions",
-                Value, Identity.Code, _sessions.Count);
-            Restore();
+                Value, Identity.Code, appliedSessions.Count);
             throw new InvalidOperationException(
                 $"Visualization pipeline '{Value}' failed for diagnostic '{Identity.Code}'.",
-                exception);
+                cleanupError is null ? exception : new AggregateException(exception, cleanupError));
         }
     }
 
@@ -106,31 +114,45 @@ public abstract class ElementVisualizationPipelineBase(
                 "Sessions: {SessionCount}",
                 Value, Identity.Code, sessionCount);
 
-        Exception? error = null;
+        using TransactionGroup? transactionGroup = _sessionDocument is null
+            ? null
+            : StartTransactionGroup(_sessionDocument, $"Restore visualization: {Value}");
+        List<IElementAccentSession> restoredSessions = [];
+        List<Exception> errors = [];
         for (int index = _sessions.Count - 1; index >= 0; index--)
         {
+            IElementAccentSession session = _sessions[index];
             try
             {
-                _sessions[index].Restore();
+                session.Restore();
+                restoredSessions.Add(session);
             }
             catch (Exception exception)
             {
-                error ??= exception;
-                logger.LogError(
-                    exception,
-                    "Failed to restore visualization session {SessionNumber} in pipeline {VisualizationName} " +
-                    "for diagnostic {DiagnosticCode}",
-                    index + 1, Value, Identity.Code);
-            }
-            finally
-            {
-                _sessions[index].Dispose();
+                errors.Add(new InvalidOperationException(
+                    $"Failed to restore visualization session {index + 1}.", exception));
             }
         }
-        _sessions.Clear();
+        Assimilate(transactionGroup);
 
-        if (error is not null)
+        foreach (IElementAccentSession session in restoredSessions)
+        {
+            _sessions.Remove(session);
+            session.Dispose();
+        }
+
+        if (errors.Count > 0)
+        {
+            AggregateException error = new(errors);
+            logger.LogError(
+                error,
+                "Failed to restore {FailedSessionCount} visualization sessions in pipeline " +
+                "{VisualizationName} for diagnostic {DiagnosticCode}; sessions retained for retry",
+                errors.Count, Value, Identity.Code);
             throw new InvalidOperationException("Failed to restore the previous visualization state.", error);
+        }
+
+        _sessionDocument = null;
 
         if (sessionCount > 0)
             logger.LogInformation(
@@ -179,6 +201,47 @@ public abstract class ElementVisualizationPipelineBase(
                 : throw new InvalidOperationException($"Visualization element set '{key}' was not provided."));
 
         return sets.SelectMany(set => set).Distinct().ToArray();
+    }
+
+    private static TransactionGroup? StartTransactionGroup(Document document, string name)
+    {
+        if (document.IsModifiable) return null;
+
+        TransactionGroup group = new(document, name);
+        if (group.Start() == TransactionStatus.Started) return group;
+
+        group.Dispose();
+        throw new InvalidOperationException($"Failed to start transaction group '{name}'.");
+    }
+
+    private static void Assimilate(TransactionGroup? group)
+    {
+        if (group is null) return;
+        if (group.Assimilate() != TransactionStatus.Committed)
+            throw new InvalidOperationException($"Failed to assimilate transaction group '{group.GetName()}'.");
+    }
+
+    private static void RollBack(TransactionGroup? group)
+    {
+        if (group is null || group.GetStatus() != TransactionStatus.Started) return;
+        group.RollBack();
+    }
+
+    private static Exception? RestoreSessions(IEnumerable<IElementAccentSession> sessions)
+    {
+        List<Exception> errors = [];
+        foreach (IElementAccentSession session in sessions.Reverse())
+        {
+            try
+            {
+                session.Dispose();
+            }
+            catch (Exception exception)
+            {
+                errors.Add(exception);
+            }
+        }
+        return errors.Count == 0 ? null : new AggregateException(errors);
     }
 
 }

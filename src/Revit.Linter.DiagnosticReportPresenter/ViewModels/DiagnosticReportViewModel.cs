@@ -455,7 +455,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
-        RestoreActiveVisualization();
+        await RestoreActiveVisualizationAsync(cancellationToken);
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
@@ -495,8 +495,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     }
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
-
-        RestoreActiveVisualization();
+        _ = RestoreActiveVisualizationAsync();
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
 
         ShowElementCommand.NotifyCanExecuteChanged();
@@ -743,13 +742,27 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private void RestoreActiveVisualization()
     {
         IElementVisualizationPipeline? pipeline = _activeVisualizationPipeline;
-        _activeVisualizationPipeline = null;
-        _activeVisualizationTargetId = null;
         if (pipeline is not null)
             _logger.LogInformation(
                 "Restoring active visualization {VisualizationName} for diagnostic {DiagnosticCode}",
                 pipeline.Value, pipeline.Identity.Code);
         pipeline?.Restore();
+        _activeVisualizationPipeline = null;
+        _activeVisualizationTargetId = null;
+    }
+
+    private async Task RestoreActiveVisualizationAsync(CancellationToken cancellationToken = default)
+    {
+        if (_activeVisualizationPipeline is null) return;
+
+        try
+        {
+            await _idlingScheduler.RunAsync(_ => RestoreActiveVisualization(), cancellationToken);
+        }
+        catch (Exception)
+        {
+            // The pipeline logs the failure and retains sessions that still need restoration.
+        }
     }
 
     private List<FixViewModel> CreateFixes(DiagnosticReport report)
