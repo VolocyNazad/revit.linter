@@ -16,15 +16,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Generate XML documentation for production projects, exempt test projects, and provide an opt-in strict build that treats undocumented public APIs as errors while the existing API baseline is documented.
+- Document the public diagnostic catalog, identity, verdict, registration, and override models in the core contract module.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
+- Document the planned branching diagnostic report history and file-based storage design.
 - Document the planned class-based diagnostic visualizations, internal reusable pipelines, safe highlighting session, custom-rule registration, and compact Show action.
 - Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global, view-model, and feature strings through the same localization reader.
 
 ### Fixed
 
-- Restore the application project's theme-service import and remove empty global-using files.
 - Apply visualization pipelines through a transaction group, retain failed restoration sessions for retry, and defer restoration triggered by Revit events to a modifiable API context.
+- Restore the application project's theme-service import and remove empty global-using files.
 - Store add-in logs under `%LOCALAPPDATA%` without the machine-name property, bound them to the newest 14 daily or 20 MB files, keep Console/Debug sinks development-only, record startup and shutdown lifecycle events, capture fatal lifecycle failures, and dispose the logging host during Revit shutdown so buffered events are flushed.
 - Localize built-in diagnostics, report filters, selected severity and target labels, document filters, fixes, transactions, ignore-parameter feedback, and parameter diagnostic details in English and Russian.
 

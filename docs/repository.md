@@ -72,6 +72,7 @@ visualization pipelines and restores their sessions in reverse order.
 ## Documentation layout
 
 - `AGENTS.md` links to the required repository guidance.
+- `TODO.md` records agreed future work that is not yet implemented.
 - `docs/policies/development.md` contains the development policy.
 - `docs/repository.md` describes the project, repository structure, and technology stack.
 - `docs/architecture.md` records stable module boundaries and design decisions.
