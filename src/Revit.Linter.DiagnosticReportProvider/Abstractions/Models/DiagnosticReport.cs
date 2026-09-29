@@ -3,16 +3,16 @@
 namespace Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 
 /// <summary>
-/// Diagnostic report
+/// Describes the result of evaluating a diagnostic target.
 /// </summary>
-/// <param name="Code"> Diagnostic code </param>
-/// <param name="Severity"> Severity </param>
-/// <param name="Document"> The document the diagnostic was run in </param>
-/// <param name="Target"> The object being checked </param>
-/// <param name="TargetDependencies"> Dependency objects </param>
-/// <param name="Message"> Diagnostic results message </param>
-/// <param name="IsObsolete"> Indicates whether this is a report for an obsolete diagnostic </param>
-/// <param name="ObsoleteDescription"> Description of the reason for obsolescence </param>
+/// <param name="Code">The diagnostic code.</param>
+/// <param name="Severity">The severity assigned to the finding.</param>
+/// <param name="Document">The document in which the diagnostic was evaluated.</param>
+/// <param name="Message">The message describing the diagnostic result.</param>
+/// <param name="Target">The object evaluated by the diagnostic, if any.</param>
+/// <param name="TargetDependencies">Objects on which the diagnostic target depends, if any.</param>
+/// <param name="IsObsolete">A value indicating whether the report belongs to an obsolete diagnostic.</param>
+/// <param name="ObsoleteDescription">The description of why the diagnostic is obsolete.</param>
 public sealed record DiagnosticReport(
     string Code, DiagnosticSeverity Severity, 
     Document Document, 
@@ -21,5 +21,8 @@ public sealed record DiagnosticReport(
     object[]? TargetDependencies = null,
     bool IsObsolete = false, string ObsoleteDescription = "")
 {
+    /// <summary>
+    /// Gets the local time at which the report was created.
+    /// </summary>
     public DateTime Created { get; } = DateTime.Now;
 }
