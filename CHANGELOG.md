@@ -19,6 +19,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the public diagnostic catalog, identity, verdict, registration, override, and service contracts in the core module.
 - Document the public diagnostic-report contracts and dependency-injection entry point.
 - Document the public fix-report contracts and dependency-injection entry point.
+- Document the public element-ignore contracts and dependency-injection entry point.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
