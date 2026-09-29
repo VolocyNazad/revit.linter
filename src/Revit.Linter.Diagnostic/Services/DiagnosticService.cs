@@ -13,7 +13,7 @@ internal sealed class DiagnosticService(
         IDiagnosticCatalog diagnosticCatalog,
         IIgnoreElementDetector ignoreElementDetector,
         ILogger<DiagnosticService> logger)
-    : IDiagnosticService // todo add progress
+    : IDiagnosticService
 {
     private readonly ElementFilter _elementFilter = ElementFilterUtils.AllFilter();
 
