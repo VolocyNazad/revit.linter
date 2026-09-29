@@ -121,7 +121,6 @@ internal sealed class InitExternalApplication : ExternalApplication
         catch (Exception exception)
         {
             logger.LogError(exception, "Revit.Linter failed to shut down cleanly");
-            throw;
         }
         finally
         {

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Revit.Linter.Infrastructure.Services;
 
-public static class AssemblyLoadService
+internal static class AssemblyLoadService
 {
     private static readonly IEnumerable<string> Troubled = [
             "Microsoft.Xaml.Behaviors",
@@ -34,6 +34,10 @@ public static class AssemblyLoadService
             .Select(assembly => assembly.GetName())
             .Any(assemblyName => AssemblyName.ReferenceMatchesDefinition(assemblyName, targetAssemblyName));
 
+        // Revit does not probe the add-in directory reliably, so these WPF dependencies must be
+        // loaded from the exact deployment path before their types are requested.
+#pragma warning disable S3885
         if (!isLoaded) Assembly.LoadFrom(target);
+#pragma warning restore S3885
     }
 }

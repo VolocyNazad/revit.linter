@@ -4,9 +4,11 @@ using Revit.Linter.Infrastructure.Utils;
 
 namespace Revit.Linter;
 
+/// <summary>Toggles all Revit Linter dockable panes as a group.</summary>
 [Transaction(TransactionMode.Manual)]
 public class ShowAllPanesCommand : ExternalCommand
 {
+    /// <inheritdoc />
     public override void Execute()
     {
         DockablePane[] panes =

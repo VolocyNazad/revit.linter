@@ -2,7 +2,7 @@
 
 namespace Revit.Linter;
 
-public class DiagnosticReportDockablePaneProvider(UserControl uiControl) : IDockablePaneProvider
+internal sealed class DiagnosticReportDockablePaneProvider(UserControl uiControl) : IDockablePaneProvider
 {
     public void SetupDockablePane(DockablePaneProviderData data)
     {

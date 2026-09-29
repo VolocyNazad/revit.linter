@@ -5,16 +5,30 @@ using System.Runtime.Loader;
 
 namespace Revit.Linter.Infrastructure.ExternalCommands;
 
+/// <summary>
+/// Provides the Revit external-command entry point and exposes the active command context to derived commands.
+/// </summary>
 public abstract class ExternalCommand : IExternalCommand
 {
+    /// <summary>Gets the Revit UI application for the active command.</summary>
     public UIApplication Application { get; private set; } = null!;
+
+    /// <summary>Gets the active Revit view for the command.</summary>
     public View View { get; private set; } = null!;
+
+    /// <summary>Gets the journal data supplied by Revit.</summary>
     public IDictionary<string, string> JournalData { get; private set; } = null!;
+
+    /// <summary>Gets or sets the error message returned to Revit when the command fails.</summary>
     public string ErrorMessage { get; set; } = string.Empty;
+
+    /// <summary>Gets the element set used to report command failures to Revit.</summary>
     public ElementSet ElementSet { get; private set; } = null!;
+
+    /// <summary>Gets or sets the command result returned to Revit.</summary>
     public Result Result { get; set; } = Result.Succeeded;
 
-
+    /// <inheritdoc />
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
         ElementSet = elements;
@@ -47,5 +61,6 @@ public abstract class ExternalCommand : IExternalCommand
         return Result;
     }
 
+    /// <summary>Executes the command after the active Revit context has been initialized.</summary>
     public abstract void Execute();
 }

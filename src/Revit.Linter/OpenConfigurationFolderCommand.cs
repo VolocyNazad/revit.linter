@@ -10,6 +10,7 @@ using System.IO;
 
 namespace Revit.Linter;
 
+/// <summary>Opens the configuration directory for the active Revit version.</summary>
 [Transaction(TransactionMode.Manual)]
 public class OpenConfigurationFolderCommand : ExternalCommand
 {
@@ -20,6 +21,7 @@ public class OpenConfigurationFolderCommand : ExternalCommand
     private IStringLocalizer<GlobalLocalizations> Localizer => field
         ??= Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
 
+    /// <inheritdoc />
     public override void Execute()
     {
         try

@@ -21,7 +21,6 @@ using Revit.Linter.ElementIgnoring.DI;
 using Revit.Linter.ElementVisualization.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
-using Revit.Linter.Infrastructure.Exceptions;
 using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.OpenedDocuments.DI;
@@ -56,7 +55,7 @@ internal sealed class Program
         }
     }
     private static string Location => field ??= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-        ?? throw new HostLocationNotFoundException();
+        ?? throw new InvalidOperationException("The Revit Linter host location is unavailable.");
 
     internal static void Shutdown()
     {

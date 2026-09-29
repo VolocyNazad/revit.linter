@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace Revit.Linter;
 
-public class FixReportDockablePaneProvider(UserControl uiControl) : IDockablePaneProvider
+internal sealed class FixReportDockablePaneProvider(UserControl uiControl) : IDockablePaneProvider
 {
     public void SetupDockablePane(DockablePaneProviderData data)
     {

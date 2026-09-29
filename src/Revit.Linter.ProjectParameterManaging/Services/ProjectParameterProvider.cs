@@ -60,11 +60,12 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
             DefinitionFile definitionFile = application.OpenSharedParameterFile();
             foreach (DefinitionGroup group in definitionFile.Groups)
             {
-                foreach (ExternalDefinition definition in group.Definitions)
+                foreach (Definition definition in group.Definitions)
                 {
-                    if (definition.GUID != targetParameterId) continue;
+                    if (definition is not ExternalDefinition externalDefinition ||
+                        externalDefinition.GUID != targetParameterId) continue;
                     bool inserted = AddSharedParameterToDocument(
-                        document, definition, builtInCategories, builtInParameterGroup, isInstance);
+                        document, externalDefinition, builtInCategories, builtInParameterGroup, isInstance);
                     SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
                     return inserted;
                 }
@@ -192,10 +193,11 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
             application.SharedParametersFilename = sharedParameterFile;
             DefinitionFile definitionFile = application.OpenSharedParameterFile();
             foreach (DefinitionGroup group in definitionFile.Groups) {
-                foreach (ExternalDefinition definition in group.Definitions) {
-                    if (definition.GUID != targetParameterId) continue;
+                foreach (Definition definition in group.Definitions) {
+                    if (definition is not ExternalDefinition externalDefinition ||
+                        externalDefinition.GUID != targetParameterId) continue;
                     bool inserted = AddSharedParameterToDocument(
-                        document, definition, builtInCategories, groupTypeId, isInstance);
+                        document, externalDefinition, builtInCategories, groupTypeId, isInstance);
                     SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
                     return inserted;
                 }
