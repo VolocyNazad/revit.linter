@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
 
+/// <summary>
+/// Provides one-time asynchronous initialization and deinitialization commands for observable view models.
+/// </summary>
 public abstract partial class InitializableObservableObject : ObservableObject
 {
     private bool _initialized;
@@ -35,6 +38,17 @@ public abstract partial class InitializableObservableObject : ObservableObject
 
     #endregion
 
+    /// <summary>
+    /// Performs derived initialization before the view model is marked as initialized.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can cancel initialization.</param>
+    /// <returns>A task representing initialization.</returns>
     protected virtual Task OnInitializing(CancellationToken cancellationToken = default) { return Task.CompletedTask; }
+
+    /// <summary>
+    /// Performs derived cleanup before the view model is marked as deinitialized.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can cancel deinitialization.</param>
+    /// <returns>A task representing deinitialization.</returns>
     protected virtual Task OnDeinitializing(CancellationToken cancellationToken = default) { return Task.CompletedTask; }
 }

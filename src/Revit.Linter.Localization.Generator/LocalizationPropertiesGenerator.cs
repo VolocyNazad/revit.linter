@@ -99,7 +99,8 @@ public sealed class LocalizationPropertiesGenerator : IIncrementalGenerator
             """);
 
         foreach (string key in resource.Keys)
-            source.Append("    public string ").Append(ToPropertyName(key))
+            source.AppendLine("    /// <summary>Gets the localized text associated with this property.</summary>")
+                .Append("    public string ").Append(ToPropertyName(key))
                 .Append(" => GetLocalizedString(\"").Append(Escape(key)).AppendLine("\");");
 
         source.AppendLine("}");

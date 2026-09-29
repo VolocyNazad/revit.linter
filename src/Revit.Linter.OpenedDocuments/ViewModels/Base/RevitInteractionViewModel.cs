@@ -4,11 +4,27 @@ using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
 
-[XamlConstructor, AutoConstructor]
+/// <summary>
+/// Maintains Revit event subscriptions for view models that react to document and view changes.
+/// </summary>
+[XamlConstructor]
 public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
+    /// <summary>
+    /// Schedules work in a valid Revit API context.
+    /// </summary>
     protected readonly IRevitIdlingScheduler _idlingScheduler;
 
+    /// <summary>
+    /// Initializes the view model with a scheduler for Revit API work.
+    /// </summary>
+    /// <param name="idlingScheduler">Schedules work in a valid Revit API context.</param>
+    protected RevitInteractionViewModel(IRevitIdlingScheduler idlingScheduler)
+    {
+        _idlingScheduler = idlingScheduler;
+    }
+
+    /// <inheritdoc />
     protected override async Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await _idlingScheduler.RunAsync(uiapp => {
@@ -23,6 +39,7 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
         }, cancellationToken);
 
     }
+    /// <inheritdoc />
     protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         await _idlingScheduler.RunAsync(uiapp => {
@@ -50,5 +67,9 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
         OnRevitChanged(RevitEventType.DocumentFocusChanged);
     }
 
+    /// <summary>
+    /// Responds to a subscribed Revit application event.
+    /// </summary>
+    /// <param name="revitEventType">The kind of Revit change that occurred.</param>
     protected abstract void OnRevitChanged(RevitEventType revitEventType);
 }
