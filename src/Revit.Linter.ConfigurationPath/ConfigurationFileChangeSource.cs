@@ -1,5 +1,8 @@
 namespace Revit.Linter.ConfigurationPath;
 
+/// <summary>
+/// Notifies subscribers when a configuration file is created, changed, deleted, renamed, or can no longer be watched.
+/// </summary>
 public sealed class ConfigurationFileChangeSource : IDisposable
 {
     private readonly object _sync = new();
@@ -7,6 +10,11 @@ public sealed class ConfigurationFileChangeSource : IDisposable
     private readonly FileSystemWatcher _watcher;
     private bool _disposed;
 
+    /// <summary>
+    /// Initializes a change source for a single configuration file and creates its parent directory when necessary.
+    /// </summary>
+    /// <param name="filePath">The path of the configuration file to watch.</param>
+    /// <exception cref="ArgumentException"><paramref name="filePath"/> does not contain a directory.</exception>
     public ConfigurationFileChangeSource(string filePath)
     {
         string directory = Path.GetDirectoryName(filePath)
@@ -24,6 +32,12 @@ public sealed class ConfigurationFileChangeSource : IDisposable
         _watcher.Error += WatcherError;
     }
 
+    /// <summary>
+    /// Subscribes a listener to configuration-file notifications.
+    /// </summary>
+    /// <param name="listener">The callback to invoke when the watched file or watcher state changes.</param>
+    /// <returns>A subscription that removes the listener when disposed.</returns>
+    /// <exception cref="ObjectDisposedException">The change source has already been disposed.</exception>
     public IDisposable OnChange(Action listener)
     {
         lock (_sync)
@@ -36,6 +50,9 @@ public sealed class ConfigurationFileChangeSource : IDisposable
         return new Subscription(this, listener);
     }
 
+    /// <summary>
+    /// Stops watching the file and removes all listeners.
+    /// </summary>
     public void Dispose()
     {
         lock (_sync)

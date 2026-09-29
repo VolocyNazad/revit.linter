@@ -3,6 +3,9 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Revit.Linter.ConfigurationPath;
 
+/// <summary>
+/// Locates, creates, and reads the version-specific Revit Linter configuration files.
+/// </summary>
 public static class ConfigurationPathUtils
 {
     private static int _revitVersion =
@@ -16,12 +19,20 @@ public static class ConfigurationPathUtils
     throw new InvalidOperationException("Unsupported Revit version");
 #endif
 
+    /// <summary>
+    /// The configuration directory for the current Revit version under the user's Documents folder.
+    /// </summary>
     public static readonly string Directory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
         "Revit Linter",
         _revitVersion.ToString()
     );
 
+    /// <summary>
+    /// Creates the parent directory and an empty file when the specified configuration file does not exist.
+    /// </summary>
+    /// <param name="path">The configuration file path.</param>
+    /// <exception cref="InvalidOperationException"><paramref name="path"/> does not contain a directory.</exception>
     public static void EnsureFileExists(string path)
     {
         string? directoryPath = Path.GetDirectoryName(path)
@@ -32,6 +43,13 @@ public static class ConfigurationPathUtils
             File.WriteAllText(path, string.Empty);
     }
 
+    /// <summary>
+    /// Reads and deserializes a YAML configuration file using camel-case member names.
+    /// </summary>
+    /// <typeparam name="T">The reference type represented by the configuration file.</typeparam>
+    /// <param name="configPath">The configuration file path.</param>
+    /// <returns>The deserialized configuration, or <see langword="null"/> when the file is empty.</returns>
+    /// <remarks>A missing file is created before it is read.</remarks>
     public static T? GetConfigurations<T>(string configPath) where T : class
     {
         IDeserializer deserializer = new DeserializerBuilder()
