@@ -5,12 +5,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instances that belong to the family
+/// Resolves the instances that belong to a family.
 /// </summary>
 public class InstancesByFamilyDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<FamilyDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		Document document = element.Document;
@@ -19,5 +21,6 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<FamilyDependencyDe
 		return [];
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => All(element).FirstOrDefault();
 }

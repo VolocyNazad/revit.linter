@@ -5,11 +5,13 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the type for the current element
+/// Resolves the type of an element.
 /// </summary>
 public class TypeDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<InstancesDependencyDefiner>.Value;
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		ElementType? target = element.FindElementType();
@@ -17,15 +19,18 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<InstancesDependenc
 			? []
 			: [target];
 	}
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => element.FindElementType();
 }
 
 /// <summary>
-/// Resolves the family for the current element
+/// Resolves the family of an element.
 /// </summary>
 public class FamilyDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<InstancesByFamilyDependencyDefiner>.Value;
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		Element? target = element.FindElementType();
@@ -33,6 +38,7 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<InstancesByFamilyD
 		target = familySymbol.Family;
 		return [target];
 	}
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element)
 	{
 		Element? target = element.FindElementType();
