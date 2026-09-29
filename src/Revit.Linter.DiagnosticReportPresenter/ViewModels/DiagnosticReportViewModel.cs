@@ -59,7 +59,6 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     }
 }
 
-[XamlConstructor]
 [GenerateLocalizedProperties]
 internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewModel
 {
@@ -128,19 +127,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     public partial IEnumerable<IDiagnosticReportFilter> SeverityFilters { get; set; } = [];
     partial void OnSeverityFiltersChanged(
         IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
-    {
-        if (oldValue != null)
-            foreach (var filter in oldValue)
-                filter.PropertyChanged -= Filter_PropertyChanged;
-        if (newValue != null)
-            foreach (var filter in newValue)
-                filter.PropertyChanged += Filter_PropertyChanged;
-        RefreshCollectionView();
-    }
+        => UpdateFilterSubscriptions(oldValue, newValue);
 
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticReportFilter> Filters { get; set; } = [];
     partial void OnFiltersChanged(
+        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        => UpdateFilterSubscriptions(oldValue, newValue);
+
+    private void UpdateFilterSubscriptions(
         IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
     {
         if (oldValue != null)
@@ -558,10 +553,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
                 .ToList();
         }
-
-
-        // todo Need to account for dependent elements when processing changes. For collisions, for example. Add another field
-        // todo simplify
     }
 
     private void ScheduleElementDiagnosticsRefresh()
@@ -919,7 +910,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 string resolvedMessage = message.Replace("{elementId}", elementId.ToString());
                                 string dialogMessage = string.IsNullOrWhiteSpace(error)
                                     ? resolvedMessage
-                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error!);
+                                    : resolvedMessage + Environment.NewLine
+                                        + GetLocalizedString("details_message", error ?? string.Empty);
                                 await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
                             }
                         }
@@ -1035,7 +1027,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 string resolvedMessage = message.Replace("{documentTitle}", documentTitle);
                                 string dialogMessage = string.IsNullOrWhiteSpace(error)
                                     ? resolvedMessage
-                                    : resolvedMessage + Environment.NewLine + GetLocalizedString("details_message", error!);
+                                    : resolvedMessage + Environment.NewLine
+                                        + GetLocalizedString("details_message", error ?? string.Empty);
                                 await _dialog.Show(new DialogRequest(dialogMessage), cancellationToken);
                             }
                         }
@@ -1046,14 +1039,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return [];
     }
 
-    private async Task<bool> ExecuteTransaction(
+    private static async Task<bool> ExecuteTransaction(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
     {
         (bool success, _) = await ExecuteTransactionWithError(document, transactionName, action, cancellationToken);
         return success;
     }
 
-    private Task<(bool Success, string? Error)> ExecuteTransactionWithError(
+    private static Task<(bool Success, string? Error)> ExecuteTransactionWithError(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)
         => RevitTask.RunAsync(_ => {
             cancellationToken.ThrowIfCancellationRequested();

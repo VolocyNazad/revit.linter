@@ -47,6 +47,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the shared report-message parsing, link, text-part, and WPF rendering contracts.
 - Document the element and document diagnostic composition entry points.
 - Document the diagnostic-report WPF composition API, keep its initialization base internal, and remove an unused debug converter.
+- Remove obsolete diagnostic-report presenter warnings without changing filtering, fixing, or transaction behavior.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
