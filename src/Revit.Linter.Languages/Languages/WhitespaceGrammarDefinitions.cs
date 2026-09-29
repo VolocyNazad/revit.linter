@@ -2,7 +2,7 @@ using StringToExpression.GrammerDefinitions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class WhitespaceGrammarDefinitions
+internal static class WhitespaceGrammarDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

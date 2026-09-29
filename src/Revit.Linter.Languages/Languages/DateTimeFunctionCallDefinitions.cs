@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class DateTimeFunctionCallDefinitions
+internal static class DateTimeFunctionCallDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

@@ -8,9 +8,18 @@ namespace Revit.Linter.Languages.Languages;
 /// </summary>
 public static class LanguageDefinitions
 {
+    /// <summary>
+    /// Creates the grammar used for formulas that do not require a Revit object context.
+    /// </summary>
+    /// <returns>The grammar definitions for common value formulas.</returns>
     public static GrammerDefinition[] CreateCommon()
         => CreateValueDefinitions(CreateCommonFunctions());
 
+    /// <summary>
+    /// Creates the grammar used for formulas evaluated against a Revit document.
+    /// </summary>
+    /// <param name="documentExpression">The expression that supplies the target document.</param>
+    /// <returns>The grammar definitions for document formulas.</returns>
     public static GrammerDefinition[] CreateForDocument(Expression documentExpression)
     {
         FunctionCallDefinition[] functions =
@@ -23,6 +32,11 @@ public static class LanguageDefinitions
         return CreateValueDefinitions(functions);
     }
 
+    /// <summary>
+    /// Creates the grammar used for formulas evaluated against a Revit element.
+    /// </summary>
+    /// <param name="elementExpression">The expression that supplies the target element.</param>
+    /// <returns>The grammar definitions for element formulas.</returns>
     public static GrammerDefinition[] CreateForElement(Expression elementExpression)
     {
         FunctionCallDefinition[] functions =
@@ -36,6 +50,10 @@ public static class LanguageDefinitions
         return CreateValueDefinitions(functions, ElementDependencyDefinerOperandDefinitions.Get());
     }
 
+    /// <summary>
+    /// Creates the grammar used to build native Revit element filters.
+    /// </summary>
+    /// <returns>The grammar definitions for element-filter formulas.</returns>
     public static GrammerDefinition[] CreateElementFilter()
     {
         FunctionCallDefinition[] functions = ElementFilterFunctionCallDefinitions.Get();

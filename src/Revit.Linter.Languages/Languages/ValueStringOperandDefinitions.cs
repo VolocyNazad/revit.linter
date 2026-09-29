@@ -4,8 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ValueStringOperandDefinitions
+internal static class ValueStringOperandDefinitions
 {
+    private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(1);
+
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {
         ["STRING"] = "string",
@@ -37,5 +39,7 @@ public static class ValueStringOperandDefinitions
             'b' => "\b",
             't' => "\t",
             _ => match.Value,
-        });
+        },
+        RegexOptions.None,
+        RegexTimeout);
 }

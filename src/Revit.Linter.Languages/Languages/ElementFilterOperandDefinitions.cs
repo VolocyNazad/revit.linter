@@ -5,7 +5,7 @@ using Revit.Sugar;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ElementFilterOperandDefinitions
+internal static class ElementFilterOperandDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

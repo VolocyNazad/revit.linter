@@ -4,11 +4,9 @@ using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.DB.Structure;
-using Revit.Linter.Languages.Exceptions;
-
 namespace Revit.Linter.Languages.Utils;
 
-public static class RevitClassUtils
+internal static class RevitClassUtils
 {
     private static readonly Type[] NamespaceTypes =
     [
@@ -27,7 +25,7 @@ public static class RevitClassUtils
     {
         if (Types.TryGetValue(typeName, out Type? type)) return type;
 
-        throw new RevitTypeNotFoundException(typeName);
+        throw new InvalidOperationException($"Type '{typeName}' was not found in the Revit API.");
     }
 
     private static IReadOnlyDictionary<string, Type> CreateTypes()

@@ -5,7 +5,7 @@ using Revit.Linter.ElementDependencyDefiners.Abstractions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ElementFunctionCallDefinitions
+internal static class ElementFunctionCallDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

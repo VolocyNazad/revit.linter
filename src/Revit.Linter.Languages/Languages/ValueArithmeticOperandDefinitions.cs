@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ValueArithmeticOperandDefinitions
+internal static class ValueArithmeticOperandDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

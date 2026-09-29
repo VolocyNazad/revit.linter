@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ElementDependencyDefinerOperandDefinitions
+internal static class ElementDependencyDefinerOperandDefinitions
 {
     private static readonly (string Syntax, Type Type)[] Definitions =
     [

@@ -49,6 +49,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the diagnostic-report WPF composition API, keep its initialization base internal, and remove an unused debug converter.
 - Remove obsolete diagnostic-report presenter warnings without changing filtering, fixing, or transaction behavior.
 - Use the existing category-ID compatibility helper in curve diagnostics across Revit 2021–2027.
+- Limit the formula-language public API to documented grammar profile factories.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ElementFilterOperatorDefinitions
+internal static class ElementFilterOperatorDefinitions
 {
     public static BinaryOperatorDefinition[] Get()
         => [

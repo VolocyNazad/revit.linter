@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class PropertyFunctionCallDefinitions
+internal static class PropertyFunctionCallDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

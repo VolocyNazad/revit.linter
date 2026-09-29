@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class StringFunctionCallDefinitions
+internal static class StringFunctionCallDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class ValueBooleanOperandDefinitions
+internal static class ValueBooleanOperandDefinitions
 {
     private static Dictionary<string, string> NameDictionary { get; } = new()
     {

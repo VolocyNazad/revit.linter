@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Revit.Linter.Languages.Languages;
 
-public static class MethodFunctionCallDefinitions
+internal static class MethodFunctionCallDefinitions
 {
     public static FunctionCallDefinition[] Get(Expression targetExpression)
         =>
