@@ -2,7 +2,13 @@
 
 namespace Revit.Linter.FixReportProvider.Abstractions.Services;
 
+/// <summary>
+/// Exposes notifications about fix reports.
+/// </summary>
 public interface IFixReportReceiver
 {
-    public event FixReportHandler? ReportSent;
+    /// <summary>
+    /// Occurs when a fix report is sent.
+    /// </summary>
+    event FixReportHandler? ReportSent;
 }
