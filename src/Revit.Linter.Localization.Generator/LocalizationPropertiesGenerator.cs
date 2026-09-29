@@ -7,11 +7,18 @@ using System.Xml.Linq;
 
 namespace Revit.Linter.Localization.Generator;
 
+/// <summary>
+/// Generates strongly typed localization properties for annotated view-model classes from neutral resource files.
+/// </summary>
 [Generator]
 public sealed class LocalizationPropertiesGenerator : IIncrementalGenerator
 {
     private const string AttributeName = "Revit.Linter.Localization.GenerateLocalizedPropertiesAttribute";
 
+    /// <summary>
+    /// Registers the attribute source and incremental localization generation pipeline.
+    /// </summary>
+    /// <param name="context">The Roslyn incremental generator initialization context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(output => output.AddSource(
