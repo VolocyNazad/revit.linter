@@ -5,12 +5,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instances for which the current element is the group's type
+/// Resolves members of groups that have the specified group type.
 /// </summary>
 public class InstanceMembersDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<GeneralGroupTypeDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		if (element is not ElementType elementType) return [];
@@ -20,5 +22,6 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<GeneralGroupTypeDe
 			.SelectMany(i => i.FindMembers());
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => All(element).FirstOrDefault();
 }

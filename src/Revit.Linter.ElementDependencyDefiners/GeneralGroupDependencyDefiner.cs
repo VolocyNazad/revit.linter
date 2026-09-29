@@ -5,12 +5,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the group the current instance is located in
+/// Resolves the group that contains an element.
 /// </summary>
 public class GeneralGroupDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<MembersDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		Group? group = element.FindGroup();
@@ -20,5 +22,6 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<MembersDependencyD
 			: [group];
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => element.FindGroup();
 }

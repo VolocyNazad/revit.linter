@@ -5,12 +5,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instances nested within the current instance
+/// Resolves the components nested within a family instance.
 /// </summary>
 public class SubComponentsDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<GeneralSuperComponentDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		IEnumerable<Element> result = element is FamilyInstance familyInstance
@@ -19,6 +21,7 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<GeneralSuperCompon
 		return result;
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element)
 	{
 		if (element is FamilyInstance familyInstance) {
