@@ -2,6 +2,9 @@ param([string]$RepositoryRoot = (Get-Location).Path)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 
+function Read-Utf8File([string]$Path) {
+    return [IO.File]::ReadAllText($Path, [Text.Encoding]::UTF8)
+}
 function Require-File([string]$RelativePath) {
     $path = Join-Path $root $RelativePath
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing required file: $RelativePath" }
@@ -12,7 +15,7 @@ function Require-One([string]$Label, [string[]]$Names) {
     if ($found.Count -ne 1) { throw "Expected exactly one $Label file; found: $($found.Name -join ', ')" }
 }
 function Require-Link([string]$Document, [string]$Target) {
-    $text = Get-Content -LiteralPath (Join-Path $root $Document) -Raw
+    $text = Read-Utf8File (Join-Path $root $Document)
     if ($text -notmatch [regex]::Escape("($Target)")) { throw "$Document must link to $Target" }
 }
 
@@ -55,10 +58,10 @@ foreach ($folder in @('docs', '.github', 'scripts')) {
 
 $solution = @(Get-ChildItem -LiteralPath $root -File | Where-Object Extension -in '.sln', '.slnx')[0]
 if ($solution.Extension -eq '.slnx') {
-    [xml]$xml = Get-Content -LiteralPath $solution.FullName -Raw
+    [xml]$xml = Read-Utf8File $solution.FullName
     $listed = @($xml.SelectNodes('//File') | ForEach-Object { $_.Path.Replace('\', '/') })
 } else {
-    $text = Get-Content -LiteralPath $solution.FullName -Raw
+    $text = Read-Utf8File $solution.FullName
     $listed = @([regex]::Matches($text, '(?ms)ProjectSection\(SolutionItems\).*?\n(.*?)\s*EndProjectSection') |
         ForEach-Object { [regex]::Matches($_.Groups[1].Value, '(?m)^\s*(.*?)\s*=') } |
         ForEach-Object { $_.Groups[1].Value.Trim().Replace('\', '/') })
