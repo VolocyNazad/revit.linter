@@ -16,4 +16,24 @@ internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) :
 
         return true;
     }
+
+    public IElementAccentSession Apply(
+        Document document,
+        View view,
+        IReadOnlyCollection<ElementId> elementIds)
+    {
+        UIView? uiView = new UIDocument(document).GetOpenUIViews()
+            .FirstOrDefault(candidate => candidate.ViewId == view.Id);
+        IList<XYZ>? previousCorners = uiView?.GetZoomCorners();
+        if (!Execute(document, elementIds.ToArray()))
+            return new ElementAccentSession(static () => { });
+
+        return new ElementAccentSession(() =>
+        {
+            if (!document.IsValidObject || previousCorners is not { Count: 2 }) return;
+            using UIView? currentView = new UIDocument(document).GetOpenUIViews()
+                .FirstOrDefault(candidate => candidate.ViewId == view.Id);
+            currentView?.ZoomAndCenterRectangle(previousCorners[0], previousCorners[1]);
+        });
+    }
 }

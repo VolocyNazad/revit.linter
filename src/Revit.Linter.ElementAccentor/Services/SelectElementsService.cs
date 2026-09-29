@@ -16,4 +16,21 @@ internal sealed class SelectElementsService(ILogger<SelectElementsService> logge
 
         return true;
     }
+
+    public IElementAccentSession Apply(
+        Document document,
+        View view,
+        IReadOnlyCollection<ElementId> elementIds)
+    {
+        UIDocument uiDocument = new(document);
+        ElementId[] previousSelection = uiDocument.Selection.GetElementIds().ToArray();
+        if (!Execute(document, elementIds.ToArray()))
+            return new ElementAccentSession(static () => { });
+
+        return new ElementAccentSession(() =>
+        {
+            if (document.IsValidObject)
+                new UIDocument(document).Selection.SetElementIds(previousSelection);
+        });
+    }
 }

@@ -166,6 +166,7 @@
                 </DataGrid.RowStyle>
                 <DataGrid.Resources>
                     <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
@@ -197,10 +198,25 @@
                                 <Button
                                     Width="25"
                                     Height="25"
-                                    Content="{materialDesign:PackIcon Kind=Refresh,
+                                    Click="VisualizationButton_OnClick"
+                                    Content="{materialDesign:PackIcon Kind=Eye,
                                                                       Size=20}"
-                                    IsEnabled="False"
-                                    Style="{StaticResource MaterialDesignIconButton}" />
+                                    IsEnabled="{Binding HasVisualizationPipelines}"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    ToolTip="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}}">
+                                    <Button.ContextMenu>
+                                        <ContextMenu
+                                            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                            ItemsSource="{Binding VisualizationPipelines}">
+                                            <ContextMenu.ItemContainerStyle>
+                                                <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                                    <Setter Property="Header" Value="{Binding Title}" />
+                                                    <Setter Property="Command" Value="{Binding ShowCommand}" />
+                                                </Style>
+                                            </ContextMenu.ItemContainerStyle>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

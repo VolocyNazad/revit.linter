@@ -1,4 +1,4 @@
-﻿using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath;
 using Revit.Linter.UserDiagnostics.Models;
 using Toolkit.ValueStore.Abstractions;
 
@@ -8,6 +8,7 @@ internal sealed class UserDiagnosticRegistrationProvider(
     ElementFilterFactory elementFilterFactory,
     ElementFunctionFactory elementFunctionFactory,
     DocumentFilterFactory documentFilterFactory,
+    IElementVisualizationPipelineFactory visualizationPipelineFactory,
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
@@ -34,7 +35,11 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
                     { Identity = identity, Formula = rule.TakeDocument },
                 new ElementDiagnosticIdOverride(identity, overrideStore),
-                []);
+                [],
+                rule.Visualizations
+                    .Select(pipeline => visualizationPipelineFactory.Create(
+                        identity, pipeline.Name, pipeline.Steps))
+                    .ToArray());
         }
     }
 

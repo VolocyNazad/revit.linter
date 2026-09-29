@@ -29,7 +29,8 @@ public sealed partial class DiagnosticServiceTests
             new ElementFilter(elementId, true),
             new ElementDocumentFilter(elementId, true),
             CreateOverride(elementId, DiagnosticSeverity.Warning, true),
-            [elementFix]);
+            [elementFix],
+            []);
         DocumentDiagnosticRegistration documentRegistration = new(
             documentId,
             new DocumentDiagnostic(documentId, DiagnosticFeedback.Valid),
@@ -77,7 +78,8 @@ public sealed partial class DiagnosticServiceTests
             new ElementFilter(id, true),
             new ElementDocumentFilter(id, true),
             diagnosticOverride,
-            [fix]);
+            [fix],
+            []);
         ServiceProvider services = CreateServices(configure: collection =>
             collection.AddSingleton<IDiagnosticRegistrationProvider>(
                 new TestRegistrationProvider(elementDiagnostics: [registration])));
@@ -103,7 +105,8 @@ public sealed partial class DiagnosticServiceTests
             new ElementFilter(id, true),
             new ElementDocumentFilter(id, true),
             new ElementDiagnosticIdOverride(id, store),
-            [fix]);
+            [fix],
+            []);
         ServiceProvider services = CreateServices(configure: collection =>
             collection.AddSingleton<IDiagnosticRegistrationProvider>(
                 new TestRegistrationProvider(elementDiagnostics: [registration])));
@@ -319,6 +322,7 @@ public sealed partial class DiagnosticServiceTests
             new ElementFilter(registrationId, true),
             new ElementDocumentFilter(registrationId, true),
             CreateOverride(registrationId, DiagnosticSeverity.Warning, true),
+            [],
             []);
         using ServiceProvider services = CreateServices(configure: collection =>
             collection.AddSingleton<IDiagnosticRegistrationProvider>(
@@ -349,7 +353,8 @@ public sealed partial class DiagnosticServiceTests
             new ElementFilter(registrationId, true),
             new ElementDocumentFilter(registrationId, true),
             new ElementDiagnosticIdOverride(registrationId, store),
-            [fix]);
+            [fix],
+            []);
         using ServiceProvider services = CreateServices(configure: collection =>
             collection.AddSingleton<IDiagnosticRegistrationProvider>(
                 new TestRegistrationProvider(elementDiagnostics: [registration])));

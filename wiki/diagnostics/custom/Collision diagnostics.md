@@ -21,6 +21,58 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
   take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "parameter(me, 'Комментарии')"
+  visualizations:
+    - name: "Locate collision"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            projectionLines: { color: "#E53935", weight: 6 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+        - type: "OverrideElements"
+          elementSets: ["Dependencies"]
+          style:
+            projectionLines: { color: "#43A047", weight: 6 }
+            surfaceForeground: { color: "#43A047", pattern: "SolidFill", isVisible: true }
+        - type: "Show"
+          elementSets: ["Target", "Dependencies"]
+        - type: "Cut"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Select collision"
+      steps:
+        - type: "Select"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Isolate collision"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target", "Dependencies"]
+        - type: "Show"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Show with filters"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            surfaceForeground: { color: "#FF9800", pattern: "SolidFill", isVisible: true }
+        - type: "OverrideFilter"
+          elementSets: ["Dependencies"]
+          style:
+            halftone: true
+            surfaceForeground: { color: "#1E88E5", pattern: "SolidFill", isVisible: true }
+    - name: "Test all graphics"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            halftone: true
+            transparency: 25
+            detailLevel: "Fine"
+            projectionLines: { color: "#D81B60", weight: 7 }
+            cutLines: { color: "#8E24AA", weight: 9 }
+            surfaceForeground: { color: "#D81B60", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#F8BBD0", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#8E24AA", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#E1BEE7", pattern: "SolidFill", isVisible: true }
 - code: "CLSN002"
 ...
 ```

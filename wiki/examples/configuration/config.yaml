@@ -5,6 +5,13 @@
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Walls')"
   check: "parameter(me, 'Комментарии') == 'Ура!' & parameter(me, 'Марка') == 'Ура!'"
+  visualizations:
+    - name: "Show and select"
+      steps:
+        - type: "Show"
+          elementSets: ["Target"]
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CSTM002"
   description: "custom"
   message: "For the element named '{elementName}' with identifier '{elementId}', the name is incorrectly set."

@@ -33,6 +33,10 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+`Revit.Linter.ElementAccentor` contains atomic, reversible element interaction and graphics
+operations such as show, select, isolate, crop, per-element overrides, and temporary-filter
+overrides. `Revit.Linter.ElementVisualization` composes those operations into diagnostic
+visualization pipelines and restores their sessions in reverse order.
 
 ## Technology stack
 

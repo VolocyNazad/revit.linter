@@ -53,6 +53,8 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
             ValidateCode(registration.Identity.Code, registration.DocumentFilter.Identity.Code, "document filter");
             foreach (IElementFix fix in registration.Fixes)
                 ValidateCode(registration.Identity.Code, fix.Identity.Code, "fix");
+            foreach (IElementVisualizationPipeline pipeline in registration.VisualizationPipelines)
+                ValidateCode(registration.Identity.Code, pipeline.Identity.Code, "visualization pipeline");
         }
 
         foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)

@@ -75,6 +75,7 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
                 new ElementFilter(id, true),
                 new ElementDocumentFilter(id, true),
                 CreateOverride(id, DiagnosticSeverity.Warning, true),
+                [],
                 []);
         }
 
@@ -220,7 +221,7 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
             collection.AddSingleton<IDiagnosticRegistrationProvider>(new TestRegistrationProvider(
                 elementDiagnostics:
                 [new(id, diagnostic, new ElementFilter(id, true), new ElementDocumentFilter(id, true),
-                    CreateOverride(id, DiagnosticSeverity.Warning, true), [])]));
+                    CreateOverride(id, DiagnosticSeverity.Warning, true), [], [])]));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
@@ -254,7 +255,7 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
             collection.AddSingleton<IDiagnosticRegistrationProvider>(new TestRegistrationProvider(
                 elementDiagnostics:
                 [new(id, diagnostic, new ElementFilter(id, true), new ElementDocumentFilter(id, true),
-                    CreateOverride(id, DiagnosticSeverity.Warning, true), [])]));
+                    CreateOverride(id, DiagnosticSeverity.Warning, true), [], [])]));
         });
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
@@ -438,7 +439,8 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
                     new ElementFilter(id, true),
                     new ElementDocumentFilter(id, true),
                     CreateOverride(id, DiagnosticSeverity.Warning, true),
-                    [fix]),
+                    [fix],
+                    []),
             ];
         }
     }
@@ -464,7 +466,8 @@ public sealed partial class DiagnosticServiceTests : RevitApiTest
                 new ElementFilter(_id, true),
                 new ElementDocumentFilter(_id, true),
                 CreateOverride(_id, DiagnosticSeverity.Warning, true),
-                [Fix]);
+                [Fix],
+                []);
             throw new InvalidOperationException("Provider failed.");
         }
 

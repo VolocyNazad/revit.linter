@@ -35,6 +35,8 @@ internal sealed class DiagnosticCatalogSnapshotOwner : IDisposable
             yield return registration.DocumentFilter;
             yield return registration.Override;
             foreach (IElementFix fix in registration.Fixes) yield return fix;
+            foreach (IElementVisualizationPipeline pipeline in registration.VisualizationPipelines)
+                yield return pipeline;
         }
 
         foreach (DocumentDiagnosticRegistration registration in Snapshot.DocumentDiagnostics)

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Logging;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
@@ -36,12 +37,14 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 {
     public void Clear()
     {
+        RestoreActiveVisualization();
         Collection.Clear();
         ClearFilters();
     }
 
     public void Clear(string documentTitle)
     {
+        RestoreActiveVisualization();
         var toRemove = Collection.Where(i => i.DocumentTitle == documentTitle).ToList();
 
         foreach (var item in toRemove) Collection.Remove(item);
@@ -69,9 +72,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
     private readonly IDialog _dialog;
+    private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IReadOnlyList<IDiagnosticReportExporter> _reportExporters;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    private IElementVisualizationPipeline? _activeVisualizationPipeline;
+    private ElementId? _activeVisualizationTargetId;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
 
@@ -87,7 +93,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
             IDialog dialog, IConfirmationDialog confirmationDialog,
-            IEnumerable<IDiagnosticReportExporter> reportExporters) : base(idlingScheduler)
+            IEnumerable<IDiagnosticReportExporter> reportExporters,
+            ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
@@ -98,6 +105,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
         _dialog = dialog;
+        _logger = logger;
         _confirmationDialog = confirmationDialog;
         _reportExporters = reportExporters.ToArray();
 
@@ -447,6 +455,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
+        RestoreActiveVisualization();
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
@@ -487,6 +496,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
 
+        RestoreActiveVisualization();
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
 
         ShowElementCommand.NotifyCanExecuteChanged();
@@ -600,6 +610,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 .Select(element => element.Id)
                 .ToArray() ?? [],
             Fixes = CreateFixes(report),
+            VisualizationPipelines = CreateVisualizationPipelines(report),
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
             DocumentTitle = report.Document.Title,
@@ -608,6 +619,137 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             ObsoleteDescription = report.ObsoleteDescription,
         };
         Collection.Add(item);
+    }
+
+    private IReadOnlyList<VisualizationPipelineViewModel> CreateVisualizationPipelines(DiagnosticReport report)
+    {
+        if (report.Target is not Element target)
+        {
+            _logger.LogWarning(
+                "Visualization is unavailable for diagnostic {DiagnosticCode}: report target is not a Revit element",
+                report.Code);
+            return [];
+        }
+
+        ElementDiagnosticRegistration? registration = GetCatalogSnapshot().ElementDiagnostics
+            .SingleOrDefault(item => string.Equals(
+                item.Identity.Code, report.Code, StringComparison.Ordinal));
+        if (registration is null)
+        {
+            _logger.LogWarning(
+                "Visualization is unavailable for diagnostic {DiagnosticCode}: registration was not found",
+                report.Code);
+            return [];
+        }
+
+        _logger.LogDebug(
+            "Created {VisualizationCount} visualization pipelines for diagnostic {DiagnosticCode}",
+            registration.VisualizationPipelines.Count, report.Code);
+
+        Element[] dependencies = report.TargetDependencies?.OfType<Element>().ToArray() ?? [];
+        return registration.VisualizationPipelines.Select(pipeline => new VisualizationPipelineViewModel
+        {
+            Title = pipeline.Value,
+            ShowDelegate = async cancellationToken =>
+            {
+                _logger.LogInformation(
+                    "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
+                    pipeline.Value, report.Code, target.Id);
+                Document document = report.Document;
+                if (document is not { IsValidObject: true })
+                {
+                    _logger.LogWarning(
+                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                        "report document is no longer valid",
+                        pipeline.Value, report.Code);
+                    return;
+                }
+                if (target is not { IsValidObject: true })
+                {
+                    _logger.LogWarning(
+                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                        "target element is no longer valid",
+                        pipeline.Value, report.Code);
+                    return;
+                }
+                Document? activeDocument = _revitContext.ActiveDocument;
+                if (activeDocument is null || !activeDocument.Equals(document))
+                {
+                    _logger.LogWarning(
+                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                        "report document is not active",
+                        pipeline.Value, report.Code);
+                    return;
+                }
+
+                try
+                {
+                    (bool success, bool restoredOnly) = await RevitTask.RunAsync(_ =>
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        Document? currentDocument = _revitContext.ActiveDocument;
+                        if (currentDocument is null || !currentDocument.Equals(document))
+                            throw new InvalidOperationException("The report document is no longer active.");
+                        if (!target.IsValidObject)
+                            throw new InvalidOperationException("The visualization target is no longer valid.");
+
+                        if (ReferenceEquals(_activeVisualizationPipeline, pipeline)
+                            && _activeVisualizationTargetId?.Equals(target.Id) == true)
+                        {
+                            _logger.LogInformation(
+                                "Visualization {VisualizationName} for diagnostic {DiagnosticCode} is already active; " +
+                                "restoring it",
+                                pipeline.Value, report.Code);
+                            RestoreActiveVisualization();
+                            return (true, true);
+                        }
+
+                        RestoreActiveVisualization();
+                        ElementId[] dependencyIds = dependencies
+                            .Where(element => element.IsValidObject)
+                            .Select(element => element.Id)
+                            .ToArray();
+                        var elementSets = new Dictionary<string, IReadOnlyCollection<ElementId>>
+                        {
+                            [ElementVisualizationSetKeys.Target] = [target.Id],
+                            [ElementVisualizationSetKeys.Dependencies] = dependencyIds
+                        };
+                        bool applied = pipeline.Apply(new(document, document.ActiveView, elementSets));
+                        if (applied)
+                        {
+                            _activeVisualizationPipeline = pipeline;
+                            _activeVisualizationTargetId = target.Id;
+                        }
+                        return (applied, false);
+                    });
+
+                    if (!success && !restoredOnly)
+                        await _dialog.Show(new DialogRequest(VisualizationFailedMessage), cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(
+                        exception,
+                        "Visualization {VisualizationName} failed for diagnostic {DiagnosticCode}, target {TargetId}",
+                        pipeline.Value, report.Code, target.Id);
+                    throw new InvalidOperationException(
+                        $"Visualization '{pipeline.Value}' failed for diagnostic '{report.Code}'.",
+                        exception);
+                }
+            }
+        }).ToArray();
+    }
+
+    private void RestoreActiveVisualization()
+    {
+        IElementVisualizationPipeline? pipeline = _activeVisualizationPipeline;
+        _activeVisualizationPipeline = null;
+        _activeVisualizationTargetId = null;
+        if (pipeline is not null)
+            _logger.LogInformation(
+                "Restoring active visualization {VisualizationName} for diagnostic {DiagnosticCode}",
+                pipeline.Value, pipeline.Identity.Code);
+        pipeline?.Restore();
     }
 
     private List<FixViewModel> CreateFixes(DiagnosticReport report)

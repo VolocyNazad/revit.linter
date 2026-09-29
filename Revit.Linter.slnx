@@ -59,6 +59,9 @@
     <Project Path="src/Revit.Linter.ElementAccentor/Revit.Linter.ElementAccentor.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.ElementVisualization/Revit.Linter.ElementVisualization.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ElementDependencyDefiners/Revit.Linter.ElementDependencyDefiners.csproj">
       <Platform Project="x64" />
     </Project>
@@ -103,6 +106,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.DiagnosticReportProvider.RevitTests/Revit.Linter.DiagnosticReportProvider.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ElementVisualization.RevitTests/Revit.Linter.ElementVisualization.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ElementChangesProvider.RevitTests/Revit.Linter.ElementChangesProvider.RevitTests.csproj">
@@ -236,6 +242,7 @@
     <File Path="wiki/reference/diagnostics/Diagnostic severity.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic types by target.md" />
     <File Path="wiki/reference/diagnostics/Obsolete diagnostic.md" />
+    <File Path="wiki/reference/diagnostics/Visualization pipelines.md" />
   </Folder>
   <Folder Name="/wiki/reference/formulas/">
     <File Path="wiki/reference/formulas/Formula functions.md" />
@@ -294,6 +301,7 @@
     <File Path="wiki/ru/Справочник/Диагностика/Типы объектов проверки.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Уровни важности.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Устаревшие проверки.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Пайплайны визуализации.md" />
   </Folder>
   <Folder Name="/wiki/ru/Справочник/Формулы/">
     <File Path="wiki/ru/Справочник/Формулы/Объекты Revit в формулах.md" />

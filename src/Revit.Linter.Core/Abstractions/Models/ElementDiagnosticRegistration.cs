@@ -8,4 +8,5 @@ public sealed record ElementDiagnosticRegistration(
     IElementDiagnosticFilter Filter,
     IElementDiagnosticDocumentFilter DocumentFilter,
     ElementDiagnosticIdOverride Override,
-    IReadOnlyList<IElementFix> Fixes);
+    IReadOnlyList<IElementFix> Fixes,
+    IReadOnlyList<IElementVisualizationPipeline> VisualizationPipelines);

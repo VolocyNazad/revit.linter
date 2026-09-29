@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Models;
 using Revit.Linter.ConfigurationPath;
@@ -15,6 +15,7 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
     IGetElementGeometryService geometryService,
     IRevitTransactionMemoryCache transactionMemoryCache,
     ILoggerFactory loggerFactory,
+    IElementVisualizationPipelineFactory visualizationPipelineFactory,
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
@@ -45,7 +46,11 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
                     { Identity = identity, Formula = rule.TakeDocument },
                 new ElementDiagnosticIdOverride(identity, overrideStore),
-                []);
+                [],
+                rule.Visualizations
+                    .Select(pipeline => visualizationPipelineFactory.Create(
+                        identity, pipeline.Name, pipeline.Steps))
+                    .ToArray());
         }
     }
 

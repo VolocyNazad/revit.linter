@@ -13,6 +13,8 @@ public static class ServiceCollectionExtensions
            .AddSingleton<IAccentElementsService, ShowElementsService>()
            .AddSingleton<IAccentElementsService, IsolateElementsOnViewService>()
            .AddSingleton<IAccentElementsService, CutViewByElementsService>()
+           .AddSingleton<IOverrideElementGraphicsService, OverrideElementGraphicsService>()
+           .AddSingleton<IOverrideFilterGraphicsService, OverrideFilterGraphicsService>()
        ;
     }
 }

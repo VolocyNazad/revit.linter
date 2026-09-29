@@ -18,6 +18,7 @@ using Revit.Linter.ElementChangesMonitor.DI;
 using Revit.Linter.ElementChangesProvider.DI;
 using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.ElementIgnoring.DI;
+using Revit.Linter.ElementVisualization.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
 using Revit.Linter.Infrastructure.Exceptions;
@@ -77,7 +78,8 @@ internal sealed class Program
             .ConfigureServices((context, services) => services
                 .AddAndConfigureSerilog()
                 .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
-                .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddElementAccentor()
+                .AddRevitContext().AddEvents().AddTransactionMemoryCache()
+                .AddElementAccentor().AddElementVisualization()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
