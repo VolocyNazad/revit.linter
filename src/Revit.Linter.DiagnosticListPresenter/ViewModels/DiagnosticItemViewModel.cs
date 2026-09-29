@@ -3,12 +3,15 @@ using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
-[XamlConstructor]
 internal sealed partial class DiagnosticItemViewModel : ObservableObject
 {
     private DocumentDiagnosticIdOverride? _documentOverride;
     private ElementDiagnosticIdOverride? _elementOverride;
     private Dispatcher? _dispatcher;
+
+    public DiagnosticItemViewModel()
+    {
+    }
 
     public string Code { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
