@@ -45,6 +45,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the fix-report WPF composition API and keep its initialization base internal.
 - Document the reusable WPF behavior that forwards nested report scrolling to its parent.
 - Document the shared report-message parsing, link, text-part, and WPF rendering contracts.
+- Document the element and document diagnostic composition entry points.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
