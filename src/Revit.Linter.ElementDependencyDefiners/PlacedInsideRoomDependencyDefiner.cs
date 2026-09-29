@@ -6,12 +6,14 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 namespace Revit.Linter.ElementDependencyDefiners;
 
 /// <summary>
-/// Resolves the instances placed inside the current room
+/// Resolves family instances placed inside a room.
 /// </summary>
 public class PlacedInsideRoomDependencyDefiner : IElementsDependencyDefiner
 {
+/// <inheritdoc />
 public IElementsDependencyDefiner Inversed => DefinerInstance<RoomDependencyDefiner>.Value;
 
+	/// <inheritdoc />
 	public IEnumerable<Element> All(Element element)
 	{
 		IEnumerable<Element> placed = element is Room room
@@ -20,6 +22,7 @@ public IElementsDependencyDefiner Inversed => DefinerInstance<RoomDependencyDefi
 		return placed;
 	}
 
+	/// <inheritdoc />
 	public Element? FirstOrDefault(Element element) => element is Room room
 			? room.FindPlaced<FamilyInstance>().FirstOrDefault()
 			: null;
