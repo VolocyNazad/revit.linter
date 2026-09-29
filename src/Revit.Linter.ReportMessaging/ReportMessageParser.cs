@@ -2,6 +2,9 @@ using System.Text;
 
 namespace Revit.Linter.ReportMessaging;
 
+/// <summary>
+/// Parses named placeholders in report messages into rich text parts.
+/// </summary>
 public static class ReportMessageParser
 {
     private const char OpenBrace = '{';
@@ -11,6 +14,15 @@ public static class ReportMessageParser
     private static bool IsEscapedAt(string text, int index, char brace)
         => index + 1 < text.Length && text[index] == brace && text[index + 1] == brace;
 
+    /// <summary>
+    /// Replaces named placeholders with text or links while preserving escaped braces.
+    /// </summary>
+    /// <param name="text">The message template to parse.</param>
+    /// <param name="args">The values keyed by placeholder name.</param>
+    /// <param name="linkProvider">
+    /// An optional function that converts a placeholder value into interactive links.
+    /// </param>
+    /// <returns>The ordered parts of the parsed message.</returns>
     public static IReadOnlyList<ReportTextPart> ParseTemplate(
         string text,
         IReadOnlyDictionary<string, object> args,
@@ -85,6 +97,15 @@ public static class ReportMessageParser
         return parts;
     }
 
+    /// <summary>
+    /// Parses a message template and creates both rich and plain-text representations.
+    /// </summary>
+    /// <param name="text">The message template to parse.</param>
+    /// <param name="args">The values keyed by placeholder name.</param>
+    /// <param name="linkProvider">
+    /// An optional function that converts a placeholder value into interactive links.
+    /// </param>
+    /// <returns>The parsed report message.</returns>
     public static ReportMessage Parse(
         string text,
         IReadOnlyDictionary<string, object> args,
@@ -118,6 +139,11 @@ public static class ReportMessageParser
         return parts;
     }
 
+    /// <summary>
+    /// Concatenates report parts into a plain-text message.
+    /// </summary>
+    /// <param name="parts">The ordered message parts.</param>
+    /// <returns>The concatenated message text.</returns>
     public static string BuildPlainText(IEnumerable<ReportTextPart> parts)
     {
         StringBuilder builder = new();
