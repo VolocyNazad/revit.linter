@@ -4,14 +4,27 @@ using System.Windows.Markup;
 
 namespace Revit.Linter.Presentation;
 
+/// <summary>
+/// Resolves a WPF view from dependency injection by applying the repository's ViewModel-to-View naming convention.
+/// </summary>
+/// <param name="viewModelType">The view-model type whose matching view is requested.</param>
 [MarkupExtensionReturnType(typeof(FrameworkElement))]
 public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
 {
     private static IServiceProvider? _serviceProvider;
 
+    /// <summary>
+    /// Gets or sets the view-model type used to locate the view.
+    /// </summary>
     [ConstructorArgument("viewModelType")]
     public Type ViewModelType { get; set; } = viewModelType;
 
+    /// <summary>
+    /// Initializes the process-wide service provider used by view-locator markup extensions.
+    /// </summary>
+    /// <param name="serviceProvider">The application service provider that contains registered views.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
+    /// <remarks>The first successful initialization wins; subsequent calls do not replace the provider.</remarks>
     public static void Initialize(IServiceProvider serviceProvider)
     {
         if (serviceProvider is null)
@@ -19,6 +32,15 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
         Interlocked.CompareExchange(ref _serviceProvider, serviceProvider, null);
     }
 
+    /// <summary>
+    /// Resolves the convention-matched view from the initialized application service provider.
+    /// </summary>
+    /// <param name="serviceProvider">The XAML service provider for the current markup-extension invocation.</param>
+    /// <returns>The registered view corresponding to <see cref="ViewModelType"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The locator is not initialized, the view-model type does not follow the naming convention,
+    /// or the corresponding view type cannot be found.
+    /// </exception>
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
         IServiceProvider provider = _serviceProvider

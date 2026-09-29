@@ -40,6 +40,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Keep localized resource enumeration warning-free while preserving specific-culture precedence.
 - Document the diagnostic-run settings, WPF presentation models, Revit event-aware base, and dependency-injection entry point.
 - Document the diagnostic-list WPF composition API and keep its initialization base internal.
+- Document the dependency-injection-backed WPF view-locator markup extension.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
