@@ -16,7 +16,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Generate XML documentation for production projects, exempt test projects, and provide an opt-in strict build that treats undocumented public APIs as errors while the existing API baseline is documented.
-- Document the public diagnostic catalog, identity, verdict, registration, and override models in the core contract module.
+- Document the public diagnostic catalog, identity, verdict, registration, override, and service contracts in the core module.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
 - Document the planned branching diagnostic report history and file-based storage design.
