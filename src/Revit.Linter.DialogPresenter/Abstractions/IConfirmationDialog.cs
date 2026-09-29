@@ -11,5 +11,8 @@ public interface IConfirmationDialog
     /// (<see cref="ConfirmationDialogRequest.ConfirmButtonText"/>), and false if they closed the dialog
     /// some other way (close button, X) or the display was cancelled via <paramref name="cancellationToken"/>.
     /// </summary>
+    /// <param name="request">The confirmation dialog request.</param>
+    /// <param name="cancellationToken">A token that cancels the display operation.</param>
+    /// <returns>A task containing <see langword="true"/> when the user confirms; otherwise, <see langword="false"/>.</returns>
     Task<bool> Show(ConfirmationDialogRequest request, CancellationToken cancellationToken = default);
 }
