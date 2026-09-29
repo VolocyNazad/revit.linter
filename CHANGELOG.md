@@ -52,6 +52,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Limit the formula-language public API to documented grammar profile factories.
 - Limit collision diagnostic composition to its documented dependency-injection entry point.
 - Limit user-defined diagnostic composition to its documented dependency-injection entry point.
+- Limit parameter element diagnostic composition to its documented dependency-injection entry point.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
