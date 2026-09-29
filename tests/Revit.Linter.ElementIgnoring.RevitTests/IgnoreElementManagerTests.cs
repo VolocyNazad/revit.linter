@@ -63,7 +63,7 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             .Ignore("TEST-001", wall);
 
         await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Failed);
-        await Assert.That(feedback.Message).IsEqualTo("Parameter not found.");
+        await Assert.That(feedback.Message).IsEqualTo("The ignore parameter was not found.");
     }
 
     [Test]
@@ -78,7 +78,7 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
             .IsElementIgnored("TEST-001", wall);
 
         await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Failed);
-        await Assert.That(feedback.Message).IsEqualTo("Parameter storage type not string.");
+        await Assert.That(feedback.Message).IsEqualTo("The ignore parameter must store text.");
         await Assert.That(isIgnored).IsFalse();
     }
 

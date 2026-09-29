@@ -20,8 +20,12 @@ internal static class ElementDependencyExtensions
     public static BuiltInCategory GetBuiltInCategory(this Category category)
     {
         long value = category.Id.Value();
-        return Enum.IsDefined(typeof(BuiltInCategory), value)
-            ? (BuiltInCategory)value
+        if (value is < int.MinValue or > int.MaxValue)
+            return BuiltInCategory.INVALID;
+
+        int categoryValue = (int)value;
+        return Enum.IsDefined(typeof(BuiltInCategory), categoryValue)
+            ? (BuiltInCategory)categoryValue
             : BuiltInCategory.INVALID;
     }
 
