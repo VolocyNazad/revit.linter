@@ -37,6 +37,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Document the project-parameter management contract and keep its collection helper internal.
 - Document the version-specific configuration path, YAML loading, and file-change notification APIs.
 - Document generated localization properties, opened-document selector models, the Revit event-aware view-model base, and its dependency-injection entry point.
+- Keep localized resource enumeration warning-free while preserving specific-culture precedence.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.

@@ -67,19 +67,17 @@ public static class LocalizationResourceReader
         CultureInfo culture = CultureInfo.CurrentUICulture;
         while (!string.IsNullOrEmpty(culture.Name))
         {
-            foreach (KeyValuePair<string, string> resource in GetResources(baseName, culture))
-            {
-                if (keys.Add(resource.Key)) yield return resource;
-            }
+            foreach (KeyValuePair<string, string> resource in GetResources(baseName, culture)
+                         .Where(resource => keys.Add(resource.Key)))
+                yield return resource;
 
             if (!includeParentCultures) break;
             culture = culture.Parent;
         }
 
-        foreach (KeyValuePair<string, string> resource in GetResources(baseName, CultureInfo.InvariantCulture))
-        {
-            if (keys.Add(resource.Key)) yield return resource;
-        }
+        foreach (KeyValuePair<string, string> resource in GetResources(baseName, CultureInfo.InvariantCulture)
+                     .Where(resource => keys.Add(resource.Key)))
+            yield return resource;
     }
 
     private static IReadOnlyDictionary<string, string> GetResources(string baseName, CultureInfo culture) =>
