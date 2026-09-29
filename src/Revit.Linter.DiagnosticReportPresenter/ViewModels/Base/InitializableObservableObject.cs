@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
-public abstract partial class InitializableObservableObject : ObservableObject
+internal abstract partial class InitializableObservableObject : ObservableObject
 {
     private bool _initialized;
 
