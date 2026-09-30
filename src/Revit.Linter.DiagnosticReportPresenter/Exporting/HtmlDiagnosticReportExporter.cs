@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using Revit.Linter.Core.Abstractions.Models;
 
 namespace Revit.Linter.DiagnosticReportPresenter.Exporting;
 
@@ -12,11 +13,12 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
     public void Export(
         string fileName,
         DiagnosticReportExportContext context,
-        IReadOnlyCollection<DiagnosticReportExportItem> items)
+        DiagnosticReportExportDocument document)
     {
-        int errorCount = items.Count(item => item.Severity == context.ErrorText);
-        int warningCount = items.Count(item => item.Severity == context.WarningText);
-        int messageCount = items.Count(item => item.Severity == context.MessageText);
+        IReadOnlyCollection<DiagnosticReportExportItem> items = document.Items;
+        int errorCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Error));
+        int warningCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Warning));
+        int messageCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Message));
 
         StringBuilder content = new();
         content.AppendLine("<!DOCTYPE html>")
@@ -43,8 +45,8 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
             .AppendLine("<body><main>")
             .Append("<h1>").Append(Encode(context.ReportTitle)).AppendLine("</h1>")
             .Append("<div class=\"meta\"><span>").Append(Encode(context.DocumentHeader)).Append(": ")
-            .Append(Encode(context.DocumentTitle)).Append("</span><span>").Append(Encode(context.GeneratedLabel)).Append(": ")
-            .Append(Encode(context.ExportedAt.ToString("G", context.Culture))).AppendLine("</span></div>")
+            .Append(Encode(document.Metadata.DocumentTitle)).Append("</span><span>").Append(Encode(context.GeneratedLabel)).Append(": ")
+            .Append(Encode(document.Metadata.ExportedAt.ToString("G", context.Culture))).AppendLine("</span></div>")
             .AppendLine("<section class=\"cards\">");
 
         AppendSummaryCard(content, context, "total", context.TotalLabel, items.Count);
@@ -107,7 +109,7 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
 
         foreach (DiagnosticReportExportItem item in items)
         {
-            content.Append("<tr><td>").Append(Encode(item.Severity)).Append("</td><td>")
+            content.Append("<tr><td>").Append(Encode(item.SeverityDisplayName)).Append("</td><td>")
                 .Append(Encode(item.Code)).Append("</td><td class=\"message-cell\">")
                 .Append(Encode(item.Message)).Append("</td><td>").Append(Encode(item.Document))
                 .Append("</td><td>").Append(Encode(item.Created.ToString("G", context.Culture)))

@@ -8,5 +8,5 @@ internal interface IDiagnosticReportExporter
     void Export(
         string fileName,
         DiagnosticReportExportContext context,
-        IReadOnlyCollection<DiagnosticReportExportItem> items);
+        DiagnosticReportExportDocument document);
 }

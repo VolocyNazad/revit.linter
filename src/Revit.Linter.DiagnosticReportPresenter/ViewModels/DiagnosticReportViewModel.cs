@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
@@ -318,11 +319,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             .Cast<object>()
             .OfType<DiagnosticReportItemViewModel>() ?? [])
             .Select(item => new DiagnosticReportExportItem(
+                item.Severity.ToString(),
                 item.SeverityText,
                 item.Code,
                 item.MessageText,
                 item.DocumentTitle,
-                item.Created))
+                new DateTimeOffset(item.Created),
+                item.IsObsolete,
+                string.IsNullOrWhiteSpace(item.ObsoleteDescription) ? null : item.ObsoleteDescription))
             .ToList();
 
         int exporterIndex = dialog.FilterIndex - 1;
@@ -330,14 +334,41 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             ? _reportExporters[exporterIndex]
             : _reportExporters[0];
         string fileName = Path.ChangeExtension(dialog.FileName, exporter.Extension);
+        string documentTitle = string.IsNullOrWhiteSpace(TargetDocumentTitle)
+            ? HtmlAllDocumentsText
+            : TargetDocumentTitle ?? HtmlAllDocumentsText;
+        Assembly assembly = typeof(DiagnosticReportViewModel).Assembly;
+        DiagnosticReportExportDocument document = new(
+            "1.0",
+            new DiagnosticReportExportMetadata(
+                DateTimeOffset.Now,
+                _revitContext.ControlledApplication?.VersionNumber ?? string.Empty,
+                _revitContext.ControlledApplication?.VersionBuild ?? string.Empty,
+                assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                    ?? assembly.GetName().Version?.ToString()
+                    ?? string.Empty,
+                documentTitle,
+                string.IsNullOrWhiteSpace(TargetDocumentTitle) ? "AllDocuments" : "Document",
+                new DiagnosticReportExportFilters(
+                    string.IsNullOrWhiteSpace(SearchField) ? null : SearchField,
+                    SeverityFilters
+                        .OfType<DiagnosticSeverityFilterViewModel>()
+                        .Where(filter => filter.IsActive)
+                        .Select(filter => filter.Value.ToString())
+                        .ToArray(),
+                    Filters
+                        .Where(filter => filter.IsActive)
+                        .Select(filter => filter is DiagnosticReportObsoleteFilterViewModel
+                            ? "Obsolete"
+                            : "Actual")
+                        .ToArray()),
+                Collection.Count,
+                items.Count),
+            items);
         DiagnosticReportExportContext context = new()
         {
             Culture = CultureInfo.CurrentCulture,
             UiCulture = CultureInfo.CurrentUICulture,
-            DocumentTitle = string.IsNullOrWhiteSpace(TargetDocumentTitle)
-                ? HtmlAllDocumentsText
-                : TargetDocumentTitle ?? HtmlAllDocumentsText,
-            ExportedAt = DateTime.Now,
             SeverityHeader = SeverityHeader,
             CodeHeader = CodeHeader,
             MessageHeader = MessageHeader,
@@ -354,7 +385,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             WarningText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Warning.ToString()),
             MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString())
         };
-        exporter.Export(fileName, context, items);
+        exporter.Export(fileName, context, document);
     }
 
     private string CreateExportFileName()

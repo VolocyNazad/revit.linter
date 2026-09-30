@@ -13,11 +13,11 @@ internal sealed class YamlDiagnosticReportExporter : IDiagnosticReportExporter
     public void Export(
         string fileName,
         DiagnosticReportExportContext context,
-        IReadOnlyCollection<DiagnosticReportExportItem> items)
+        DiagnosticReportExportDocument document)
     {
         ISerializer serializer = new SerializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
-        File.WriteAllText(fileName, serializer.Serialize(items), new UTF8Encoding(false));
+        File.WriteAllText(fileName, serializer.Serialize(document), new UTF8Encoding(false));
     }
 }

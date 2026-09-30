@@ -11,7 +11,7 @@ internal sealed class CsvDiagnosticReportExporter : IDiagnosticReportExporter
     public void Export(
         string fileName,
         DiagnosticReportExportContext context,
-        IReadOnlyCollection<DiagnosticReportExportItem> items)
+        DiagnosticReportExportDocument document)
     {
         string listSeparator = context.Culture.TextInfo.ListSeparator;
         char delimiter = listSeparator.Length > 0 ? listSeparator[0] : ',';
@@ -23,9 +23,9 @@ internal sealed class CsvDiagnosticReportExporter : IDiagnosticReportExporter
             context.DocumentHeader,
             context.CreatedHeader);
 
-        foreach (DiagnosticReportExportItem item in items)
+        foreach (DiagnosticReportExportItem item in document.Items)
             AppendRow(content, delimiter,
-                item.Severity,
+                item.SeverityDisplayName,
                 item.Code,
                 item.Message,
                 item.Document,

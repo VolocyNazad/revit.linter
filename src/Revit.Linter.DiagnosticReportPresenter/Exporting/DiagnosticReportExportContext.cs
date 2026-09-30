@@ -6,8 +6,6 @@ internal sealed class DiagnosticReportExportContext
 {
     public required CultureInfo Culture { get; init; }
     public required CultureInfo UiCulture { get; init; }
-    public required string DocumentTitle { get; init; }
-    public required DateTime ExportedAt { get; init; }
     public required string SeverityHeader { get; init; }
     public required string CodeHeader { get; init; }
     public required string MessageHeader { get; init; }

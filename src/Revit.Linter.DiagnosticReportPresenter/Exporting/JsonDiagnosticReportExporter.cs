@@ -12,13 +12,13 @@ internal sealed class JsonDiagnosticReportExporter : IDiagnosticReportExporter
     public void Export(
         string fileName,
         DiagnosticReportExportContext context,
-        IReadOnlyCollection<DiagnosticReportExportItem> items)
+        DiagnosticReportExportDocument document)
     {
         JsonSerializerOptions options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
-        File.WriteAllText(fileName, JsonSerializer.Serialize(items, options), new UTF8Encoding(false));
+        File.WriteAllText(fileName, JsonSerializer.Serialize(document, options), new UTF8Encoding(false));
     }
 }

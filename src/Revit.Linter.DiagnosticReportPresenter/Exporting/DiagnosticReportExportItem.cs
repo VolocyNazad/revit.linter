@@ -2,7 +2,10 @@ namespace Revit.Linter.DiagnosticReportPresenter.Exporting;
 
 internal sealed record DiagnosticReportExportItem(
     string Severity,
+    string SeverityDisplayName,
     string Code,
     string Message,
     string Document,
-    DateTime Created);
+    DateTimeOffset Created,
+    bool IsObsolete,
+    string? ObsoleteDescription);
