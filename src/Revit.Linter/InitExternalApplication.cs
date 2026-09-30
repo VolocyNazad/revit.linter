@@ -280,12 +280,25 @@ internal sealed class InitExternalApplication : ExternalApplication
         {
             ToolTip = Localizer[toolTipResourceKey],
             LongDescription = Localizer[descriptionResourceKey],
-            Image = LoadImage(iconPath),
+            Image = LoadImage(iconPath, 16),
             ToolTipImage = LoadImage(iconPath)
         };
     }
 
     private static BitmapImage LoadImage(string path) => new(new Uri(path));
+
+    private static BitmapImage LoadImage(string path, int pixelSize)
+    {
+        var image = new BitmapImage();
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.DecodePixelWidth = pixelSize;
+        image.DecodePixelHeight = pixelSize;
+        image.UriSource = new Uri(path);
+        image.EndInit();
+        image.Freeze();
+        return image;
+    }
 
     private void InitializeRevitContext()
         => Program.Provider.GetRequiredService<IRevitContextInitializer>().Initialize(Application);
