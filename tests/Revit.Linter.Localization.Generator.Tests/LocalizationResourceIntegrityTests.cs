@@ -85,7 +85,7 @@ public sealed class LocalizationResourceIntegrityTests
         .ToArray();
 
     private static bool IsBuildOutput(string path) => path
-        .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        .Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar], StringSplitOptions.None)
         .Any(segment => segment is "bin" or "obj");
 
     private static string FindRepositoryRoot()
