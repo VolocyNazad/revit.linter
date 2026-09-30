@@ -23,7 +23,7 @@ internal static class ValueStringOperandDefinitions
             new(
                 name: NameDictionary["STRING"],
                 regex: RegexDictionary["STRING"],
-                expressionBuilder: x => Expression.Constant(Unescape(x[1..^1]))),
+                expressionBuilder: x => Expression.Constant(Unescape(x.Substring(1, x.Length - 2)))),
         ];
 
     private static string Unescape(string value) => Regex.Replace(

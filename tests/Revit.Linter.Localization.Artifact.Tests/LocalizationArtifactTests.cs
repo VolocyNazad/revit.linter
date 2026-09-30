@@ -33,8 +33,12 @@ public sealed class LocalizationArtifactTests
         Assert.True(File.Exists(localizationAssemblyPath), $"Localization assembly was not found: {localizationAssemblyPath}");
         Assert.True(File.Exists(russianSatellitePath), $"Russian satellite assembly was not found: {russianSatellitePath}");
 
+        // This artifact test must inspect the assemblies at the exact deployment paths above,
+        // rather than resolve assemblies with the same identities from the test load context.
+#pragma warning disable S3885
         Assembly localizationAssembly = Assembly.LoadFrom(localizationAssemblyPath);
         Assembly russianSatelliteAssembly = Assembly.LoadFrom(russianSatellitePath);
+#pragma warning restore S3885
         NeutralResourcesLanguageAttribute? neutralLanguage =
             localizationAssembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>();
         Assert.NotNull(neutralLanguage);

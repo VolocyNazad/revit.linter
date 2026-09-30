@@ -9,6 +9,7 @@
       Release_2021.1.9;Release_2023.0.0;Release_2025.0.0;
     </Configurations>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PolySharpExcludeGeneratedTypes>System.Index;System.Range</PolySharpExcludeGeneratedTypes>
     <WarningsAsErrors Condition="'$(EnforcePublicApiDocumentation)' == 'true'">$(WarningsAsErrors);CS1591</WarningsAsErrors>
   </PropertyGroup>
 </Project>

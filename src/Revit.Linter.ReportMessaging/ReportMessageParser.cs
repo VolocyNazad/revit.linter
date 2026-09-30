@@ -45,7 +45,7 @@ public static class ReportMessageParser
             int endIndex = text.IndexOf(CloseBrace, startIndex + 1);
             if (endIndex == -1)
             {
-                literal.Append(text[startIndex..]);
+                literal.Append(text.Substring(startIndex));
                 return text.Length;
             }
 
@@ -58,7 +58,7 @@ public static class ReportMessageParser
             }
             else
             {
-                literal.Append(text[startIndex..(endIndex + 1)]);
+                literal.Append(text.Substring(startIndex, endIndex - startIndex + 1));
             }
 
             return endIndex + 1;

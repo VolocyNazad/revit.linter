@@ -100,8 +100,8 @@ public sealed class ReportMessageViewTests
     {
         public event EventHandler? CanExecuteChanged
         {
-            add { }
-            remove { }
+            add { /* The test command has a constant CanExecute result. */ }
+            remove { /* No handlers are retained because the result never changes. */ }
         }
 
         public bool CanExecute(object? parameter) => true;

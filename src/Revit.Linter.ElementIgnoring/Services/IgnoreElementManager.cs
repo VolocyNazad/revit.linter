@@ -54,7 +54,7 @@ internal sealed class IgnoreElementManager : IIgnoreElementDetector, IIgnoreElem
     private static string AppendCode(string line, string code)
     {
         if (string.IsNullOrEmpty(line)) return code;
-        return line[^1] == _separator ? line + code : line + _separator + code;
+        return line[line.Length - 1] == _separator ? line + code : line + _separator + code;
     }
 
     private static Guid GetParameterId(Element element) =>

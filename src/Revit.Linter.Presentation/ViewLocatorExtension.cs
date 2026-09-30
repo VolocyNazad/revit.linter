@@ -60,7 +60,7 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
             throw new InvalidOperationException($"View model type '{viewModelType.FullName}' must be located in a ViewModels namespace.");
 
         string viewNamespace = viewModelNamespace.Replace(".ViewModels", ".Views");
-        string viewName = viewModelType.Name[..^viewModelSuffix.Length] + "View";
+        string viewName = viewModelType.Name.Substring(0, viewModelType.Name.Length - viewModelSuffix.Length) + "View";
         string viewFullName = $"{viewNamespace}.{viewName}";
         return viewModelType.Assembly.GetType(viewFullName)
             ?? throw new InvalidOperationException($"View '{viewFullName}' was not found for '{viewModelType.FullName}'.");

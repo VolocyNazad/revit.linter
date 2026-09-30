@@ -55,6 +55,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Limit parameter element diagnostic composition to its documented dependency-injection entry point.
 - Document the Revit application and command entry points and keep application infrastructure internal.
 - Handle shutdown failures without duplicate exception propagation and document path-based add-in dependency loading.
+- Avoid generating unused `System.Index` and `System.Range` compatibility types so ILRepack can merge .NET Framework builds without duplicate-type warnings.
+- Document intentional path-based assembly loading and no-op command events in artifact and presentation tests.
 - Document the public element-change notification contracts and dependency-injection entry point.
 - Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
 - Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
