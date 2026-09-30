@@ -21,7 +21,7 @@ internal sealed class ElementFilterFactory(
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "User diagnostic formula compilation error.");
+            logger.LogWarning(ex, "Failed to compile user diagnostic formula {Formula}", formula);
             notifier.Notify();
             return ElementFilterUtils.EmptyFilter;
         }

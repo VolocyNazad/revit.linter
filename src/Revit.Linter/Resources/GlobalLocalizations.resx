@@ -144,6 +144,9 @@
   <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
     <value>Diagnostic rules were changed outside the application and reloaded successfully.</value>
   </data>
+  <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
+    <value>The user diagnostic configuration could not be parsed and is being treated as empty. Fix config.yaml and save it to reload the rules.&#xA;&#xA;{0}</value>
+  </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">
     <value>Formula compilation failed. Fix the configuration file and restart Revit.</value>
   </data>

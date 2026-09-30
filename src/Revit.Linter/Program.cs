@@ -17,6 +17,7 @@ using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementChangesMonitor.DI;
 using Revit.Linter.ElementChangesProvider.DI;
 using Revit.Linter.ElementDiagnostics.DI;
+using Revit.Linter.ElementFixing.DI;
 using Revit.Linter.ElementIgnoring.DI;
 using Revit.Linter.ElementVisualization.DI;
 using Revit.Linter.FixReportPresenter.DI;
@@ -78,7 +79,7 @@ internal sealed class Program
                 .AddAndConfigureSerilog()
                 .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
                 .AddRevitContext().AddEvents().AddTransactionMemoryCache()
-                .AddElementAccentor().AddElementVisualization()
+                .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()

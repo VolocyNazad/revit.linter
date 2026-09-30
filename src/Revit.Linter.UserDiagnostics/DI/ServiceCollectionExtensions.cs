@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.UserDiagnostics.Abstractions.Services;
+using Revit.Linter.UserDiagnostics.Services;
 
 namespace Revit.Linter.UserDiagnostics.DI;
 
@@ -18,6 +20,9 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<ElementFilterFactory>()
                 .AddSingleton<ElementFunctionFactory>()
                 .AddSingleton<DocumentFilterFactory>()
+                .AddSingleton<UserDiagnosticConfigurationErrorState>()
+                .AddSingleton<IUserDiagnosticConfigurationErrorSource>(provider =>
+                    provider.GetRequiredService<UserDiagnosticConfigurationErrorState>())
                 .AddSingleton<UserDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
                     provider.GetRequiredService<UserDiagnosticRegistrationProvider>())

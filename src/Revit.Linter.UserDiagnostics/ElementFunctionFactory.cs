@@ -23,7 +23,7 @@ internal sealed class ElementFunctionFactory(
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "User diagnostic formula compilation error.");
+            logger.LogWarning(ex, "Failed to compile user diagnostic formula {Formula}", formula);
             notifier.Notify();
             return elem => true;
         }

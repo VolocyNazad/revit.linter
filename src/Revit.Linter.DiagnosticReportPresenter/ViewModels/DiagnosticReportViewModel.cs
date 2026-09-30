@@ -78,6 +78,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private IElementVisualizationPipeline? _activeVisualizationPipeline;
     private ElementId? _activeVisualizationTargetId;
+    private int _visualizationMutationDepth;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
 
@@ -525,7 +526,20 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     }
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
-        _ = RestoreActiveVisualizationAsync();
+        if (revitEventType == RevitEventType.DocumentChanged && _visualizationMutationDepth > 0)
+        {
+            _logger.LogDebug(
+                "Ignoring {RevitEventType} raised by the active visualization operation",
+                revitEventType);
+        }
+        else
+        {
+            if (_activeVisualizationPipeline is not null)
+                _logger.LogInformation(
+                    "Scheduling active visualization restoration after {RevitEventType}",
+                    revitEventType);
+            _ = RestoreActiveVisualizationAsync();
+        }
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
 
         ShowElementCommand.NotifyCanExecuteChanged();
@@ -739,7 +753,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             [ElementVisualizationSetKeys.Target] = [target.Id],
                             [ElementVisualizationSetKeys.Dependencies] = dependencyIds
                         };
-                        bool applied = pipeline.Apply(new(document, document.ActiveView, elementSets));
+                        bool applied = ExecuteVisualizationMutation(() =>
+                            pipeline.Apply(new(document, document.ActiveView, elementSets)));
                         if (applied)
                         {
                             _activeVisualizationPipeline = pipeline;
@@ -772,10 +787,31 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             _logger.LogInformation(
                 "Restoring active visualization {VisualizationName} for diagnostic {DiagnosticCode}",
                 pipeline.Value, pipeline.Identity.Code);
-        pipeline?.Restore();
+        if (pipeline is not null)
+            ExecuteVisualizationMutation(pipeline.Restore);
         _activeVisualizationPipeline = null;
         _activeVisualizationTargetId = null;
     }
+
+    private T ExecuteVisualizationMutation<T>(Func<T> action)
+    {
+        _visualizationMutationDepth++;
+        try
+        {
+            return action();
+        }
+        finally
+        {
+            _visualizationMutationDepth--;
+        }
+    }
+
+    private void ExecuteVisualizationMutation(Action action) =>
+        ExecuteVisualizationMutation(() =>
+        {
+            action();
+            return true;
+        });
 
     private async Task RestoreActiveVisualizationAsync(CancellationToken cancellationToken = default)
     {
@@ -932,7 +968,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                             string transactionName = i.Value;
                             (bool success, string? error) = await ExecuteTransactionWithError(
-                                doc, transactionName, () => i.Execute(element), cancellationToken);
+                                doc, transactionName, () => ExecuteFix(
+                                    i, CreateFixContext(report.Document, report.TargetDependencies, element), element),
+                                cancellationToken);
 
                             string message = GetLocalizedString(success
                                 ? "fixElementSucceeded_message"
@@ -981,7 +1019,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                                     try
                                     {
-                                        bool result = i.Execute(element);
+                                        bool result = ExecuteFix(
+                                            i, CreateFixContext(doc, reportItem.TargetDependencies, element), element);
                                         if (!result)
                                         {
                                             hasErrors = true;
@@ -1073,6 +1112,29 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
         return [];
     }
+
+    private static ElementFixContext CreateFixContext(
+        Document document,
+        object[]? dependencies,
+        Element target)
+    {
+        ElementId[] dependencyIds = dependencies?
+            .OfType<Element>()
+            .Where(dependency => dependency.IsValidObject && dependency.Document.Equals(document))
+            .Select(dependency => dependency.Id)
+            .ToArray() ?? [];
+        var elementSets = new Dictionary<string, IReadOnlyCollection<ElementId>>
+        {
+            [ElementVisualizationSetKeys.Target] = [target.Id],
+            [ElementVisualizationSetKeys.Dependencies] = dependencyIds
+        };
+        return new(document, elementSets);
+    }
+
+    private static bool ExecuteFix(IElementFix fix, ElementFixContext context, Element target) =>
+        fix is IElementSetFix elementSetFix
+            ? elementSetFix.Execute(context)
+            : fix.Execute(target);
 
     private static async Task<bool> ExecuteTransaction(
         Document document, string transactionName, Func<bool> action, CancellationToken cancellationToken)

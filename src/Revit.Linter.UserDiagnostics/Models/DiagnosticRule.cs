@@ -12,6 +12,7 @@ internal sealed class DiagnosticRule
     public bool IsActive { get; init; } = true;
     public bool IsObsolete { get; init; } = false;
     public string ObsoleteDescription { get; init; } = string.Empty;
+    public ElementFixPipelineDefinition[] Fixes { get; init; } = [];
     public ElementVisualizationPipelineDefinition[] Visualizations { get; init; } =
         [new() { Name = "Show", Steps = [new() { Type = "Show" }] }];
 }

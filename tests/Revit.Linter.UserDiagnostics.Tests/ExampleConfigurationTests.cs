@@ -1,0 +1,36 @@
+using Revit.Linter.ConfigurationPath;
+using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
+using ParameterRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
+using UserRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
+
+namespace Revit.Linter.UserDiagnostics.Tests;
+
+public sealed class ExampleConfigurationTests
+{
+    [Fact]
+    public void All_example_configuration_files_deserialize()
+    {
+        List<UserRule>? userRules = Read<List<UserRule>>("config.yaml");
+        List<CollisionRule>? collisionRules = Read<List<CollisionRule>>("collision.config.yaml");
+        List<ParameterRule>? parameterRules = Read<List<ParameterRule>>("parameter-element.config.yaml");
+
+        Assert.NotNull(userRules);
+        Assert.NotEmpty(userRules);
+        Assert.NotNull(collisionRules);
+        Assert.NotEmpty(collisionRules);
+        Assert.NotNull(parameterRules);
+        Assert.NotEmpty(parameterRules);
+    }
+
+    private static T? Read<T>(string fileName) where T : class =>
+        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(FindRepositoryRoot(),
+            "wiki", "examples", "configuration", fileName));
+
+    private static string FindRepositoryRoot()
+    {
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Revit.Linter.slnx")))
+            directory = directory.Parent;
+        return directory?.FullName ?? throw new DirectoryNotFoundException("Repository root was not found.");
+    }
+}

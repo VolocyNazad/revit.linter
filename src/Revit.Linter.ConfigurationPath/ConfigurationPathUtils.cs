@@ -1,5 +1,6 @@
 ﻿using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Core;
 
 namespace Revit.Linter.ConfigurationPath;
 
@@ -60,5 +61,30 @@ public static class ConfigurationPathUtils
         if (string.IsNullOrEmpty(configContent)) return null;
         T? rules = deserializer.Deserialize<T>(configContent);
         return rules;
+    }
+
+    /// <summary>
+    /// Attempts to read a YAML configuration and converts YAML parsing failures into a failed result.
+    /// </summary>
+    /// <typeparam name="T">The reference type represented by the configuration file.</typeparam>
+    /// <param name="configPath">The configuration file path.</param>
+    /// <param name="configuration">The deserialized configuration, or <see langword="null"/> when the file is empty or invalid.</param>
+    /// <param name="error">The YAML parsing error when reading failed; otherwise <see langword="null"/>.</param>
+    /// <returns><see langword="true"/> when the file was read successfully; otherwise <see langword="false"/>.</returns>
+    public static bool TryGetConfigurations<T>(
+        string configPath, out T? configuration, out Exception? error) where T : class
+    {
+        try
+        {
+            configuration = GetConfigurations<T>(configPath);
+            error = null;
+            return true;
+        }
+        catch (YamlException exception)
+        {
+            configuration = null;
+            error = exception;
+            return false;
+        }
     }
 }

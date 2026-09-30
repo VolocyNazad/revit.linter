@@ -89,6 +89,22 @@ public sealed class ConfigurationPathUtilsTests : IDisposable
         Assert.Equal("Second", result.DisplayName);
     }
 
+    [Fact]
+    public void TryGetConfigurations_returns_error_for_unknown_field()
+    {
+        string path = GetPath("configuration.yaml");
+        Directory.CreateDirectory(_tempDirectory);
+        File.WriteAllText(path, "fieldThatDoesNotExist: value");
+
+        bool loaded = ConfigurationPathUtils.TryGetConfigurations<TestConfiguration>(
+            path, out TestConfiguration? result, out Exception? error);
+
+        Assert.False(loaded);
+        Assert.Null(result);
+        Assert.NotNull(error);
+        Assert.Contains("fieldThatDoesNotExist", error.Message, StringComparison.Ordinal);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_tempDirectory)) Directory.Delete(_tempDirectory, recursive: true);

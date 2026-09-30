@@ -144,6 +144,9 @@
   <data name="diagnosticCatalog_externalChange_message" xml:space="preserve">
     <value>Правила диагностик были изменены вне приложения и успешно перезагружены.</value>
   </data>
+  <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
+    <value>Конфигурацию пользовательских диагностик не удалось разобрать, поэтому она считается пустой. Исправьте config.yaml и сохраните файл, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
+  </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">
     <value>Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit.</value>
   </data>

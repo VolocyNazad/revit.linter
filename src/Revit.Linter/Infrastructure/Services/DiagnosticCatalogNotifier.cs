@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.UserDiagnostics.Abstractions.Services;
 using System.Windows.Threading;
 
 namespace Revit.Linter.Infrastructure.Services;
@@ -14,6 +15,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DiagnosticCatalogNotifier> _logger;
     private readonly IStringLocalizer<GlobalLocalizations> _localizer;
+    private readonly IUserDiagnosticConfigurationErrorSource _configurationErrorSource;
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
     private readonly object _sync = new();
     private string? _lastError;
@@ -23,14 +25,19 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         IDiagnosticCatalog catalog,
         IServiceProvider serviceProvider,
         ILogger<DiagnosticCatalogNotifier> logger,
-        IStringLocalizer<GlobalLocalizations> localizer)
+        IStringLocalizer<GlobalLocalizations> localizer,
+        IUserDiagnosticConfigurationErrorSource configurationErrorSource)
     {
         _catalog = catalog;
         _serviceProvider = serviceProvider;
         _logger = logger;
         _localizer = localizer;
+        _configurationErrorSource = configurationErrorSource;
         _catalog.Changed += Catalog_Changed;
         _catalog.RefreshFailed += Catalog_RefreshFailed;
+        _configurationErrorSource.Changed += ConfigurationErrorSource_Changed;
+
+        ShowCurrentConfigurationError();
     }
 
     public void Dispose()
@@ -43,6 +50,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
 
         _catalog.Changed -= Catalog_Changed;
         _catalog.RefreshFailed -= Catalog_RefreshFailed;
+        _configurationErrorSource.Changed -= ConfigurationErrorSource_Changed;
     }
 
     private void Catalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
@@ -53,7 +61,8 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
             _lastError = null;
         }
 
-        if (args.Origin == DiagnosticCatalogChangeOrigin.ExternalFile)
+        if (args.Origin == DiagnosticCatalogChangeOrigin.ExternalFile &&
+            _configurationErrorSource.CurrentError is null)
             ShowMessage(_localizer["diagnosticCatalog_externalChange_message"]);
     }
 
@@ -67,6 +76,21 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         }
 
         ShowMessage(_localizer["diagnosticCatalog_refreshFailed_message", args.Exception.Message]);
+    }
+
+    private void ConfigurationErrorSource_Changed(object? sender, EventArgs args)
+    {
+        lock (_sync)
+            if (_disposed) return;
+
+        ShowCurrentConfigurationError();
+    }
+
+    private void ShowCurrentConfigurationError()
+    {
+        Exception? error = _configurationErrorSource.CurrentError;
+        if (error is not null)
+            ShowMessage(_localizer["userDiagnosticConfiguration_parseFailed_message", error.Message]);
     }
 
     private void ShowMessage(string content)

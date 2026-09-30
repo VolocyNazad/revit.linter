@@ -1,5 +1,7 @@
 using Revit.Linter.ConfigurationPath;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.UserDiagnostics.Models;
+using Revit.Linter.UserDiagnostics.Services;
 using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.UserDiagnostics;
@@ -8,8 +10,11 @@ internal sealed class UserDiagnosticRegistrationProvider(
     ElementFilterFactory elementFilterFactory,
     ElementFunctionFactory elementFunctionFactory,
     DocumentFilterFactory documentFilterFactory,
+    IElementFixPipelineFactory fixPipelineFactory,
     IElementVisualizationPipelineFactory visualizationPipelineFactory,
-    IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
+    IValueStore<ElementDiagnosticOverridesSettings> overrideStore,
+    UserDiagnosticConfigurationErrorState configurationErrorState,
+    ILogger<UserDiagnosticRegistrationProvider> logger)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
     private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, "config.yaml");
@@ -20,7 +25,19 @@ internal sealed class UserDiagnosticRegistrationProvider(
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
-        List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(_configPath);
+        bool loaded = ConfigurationPathUtils.TryGetConfigurations(
+            _configPath, out List<DiagnosticRule>? rules, out Exception? error);
+        if (!loaded)
+        {
+            if (configurationErrorState.Set(error!))
+                logger.LogError(
+                    error,
+                    "Failed to parse user diagnostic configuration {ConfigurationPath}; treating it as empty",
+                    _configPath);
+            yield break;
+        }
+
+        configurationErrorState.Clear();
         if (rules is null) yield break;
 
         foreach (DiagnosticRule rule in rules)
@@ -35,7 +52,7 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
                     { Identity = identity, Formula = rule.TakeDocument },
                 new ElementDiagnosticIdOverride(identity, overrideStore),
-                [],
+                CreateFixes(rule, (name, steps) => fixPipelineFactory.Create(identity, name, steps)),
                 rule.Visualizations
                     .Select(pipeline => visualizationPipelineFactory.Create(
                         identity, pipeline.Name, pipeline.Steps))
@@ -44,4 +61,10 @@ internal sealed class UserDiagnosticRegistrationProvider(
     }
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
+    internal static T[] CreateFixes<T>(
+        DiagnosticRule rule,
+        Func<string, IReadOnlyList<ElementFixStepDefinition>, T> factory) => rule.Fixes
+            .Select(pipeline => factory(pipeline.Name, pipeline.Steps))
+            .ToArray();
 }
