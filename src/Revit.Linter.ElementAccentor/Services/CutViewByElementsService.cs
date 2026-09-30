@@ -90,7 +90,9 @@ internal sealed class CutViewByElementsService(ILogger<CutViewByElementsService>
             return false;
         }
 
-        _logger.LogInformation("View cut.");
+        _logger.LogInformation(
+            "View {ViewName} cut around {ElementCount} elements with {OffsetMillimeters} mm offset.",
+            view3D.Name, elements.Count, Offset);
 
         return true;
     }

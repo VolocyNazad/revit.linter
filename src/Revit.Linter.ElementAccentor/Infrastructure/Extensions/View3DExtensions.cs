@@ -1,5 +1,3 @@
-using Revit.Linter.ElementAccentor.Infrastructure.Implementations;
-
 namespace Revit.Linter.ElementAccentor.Infrastructure.Extensions;
 
 internal static class View3DExtensions
@@ -9,48 +7,54 @@ internal static class View3DExtensions
         public bool SetSectionBoxBy(
             IEnumerable<Element> elements, double heightOffset = 0, double widthOffset = 0, double lengthOffset = 0)
         {
-            Document doc = view.Document;
+            List<XYZ> points = elements
+                .Select(element => element.get_BoundingBox(view))
+                .Where(boundingBox => boundingBox is not null)
+                .SelectMany(GetModelCorners)
+                .ToList();
 
-            IEnumerable<BoundingBoxXYZ> boundingBoxes = elements
-                .Select(element => element.get_BoundingBox(view)).Where(i => i != null).ToList();
-            IEnumerable<XYZ> splitedPoints = boundingBoxes.SelectMany(i => new[] { i.Min, i.Max }).ToList();
+            if (points.Count == 0) return false;
 
-            if (!splitedPoints.Any()) return false;
+            double halfHeightOffset = UnitUtils.ConvertToInternalUnits(heightOffset, UnitTypeId.Millimeters) / 2;
+            double halfWidthOffset = UnitUtils.ConvertToInternalUnits(widthOffset, UnitTypeId.Millimeters) / 2;
+            double halfLengthOffset = UnitUtils.ConvertToInternalUnits(lengthOffset, UnitTypeId.Millimeters) / 2;
 
-            DirectShape directShape = DirectShape.CreateElement(
-                view.Document,
-                Category.GetCategory(view.Document, BuiltInCategory.OST_GenericModel).Id
-            );
-            directShape.SetShape(splitedPoints.Select(Point.Create).Cast<GeometryObject>().ToList());
-
-            BoundingBoxXYZ boundingBox = new()
+            BoundingBoxXYZ sectionBox = new()
             {
                 Min = new XYZ(
-                    splitedPoints.Min(i => i.X),
-                    splitedPoints.Min(i => i.Y),
-                    splitedPoints.Min(i => i.Z)),
+                    points.Min(point => point.X) - halfLengthOffset,
+                    points.Min(point => point.Y) - halfWidthOffset,
+                    points.Min(point => point.Z) - halfHeightOffset),
                 Max = new XYZ(
-                    splitedPoints.Max(i => i.X),
-                    splitedPoints.Max(i => i.Y),
-                    splitedPoints.Max(i => i.Z))
+                    points.Max(point => point.X) + halfLengthOffset,
+                    points.Max(point => point.Y) + halfWidthOffset,
+                    points.Max(point => point.Z) + halfHeightOffset)
             };
 
-            SizableBoundingBoxXYZ sizableBoundingBox = new SizableBoundingBoxXYZ()
-                .NewAlign()
-                .NewSize(boundingBox.Min, boundingBox.Max);
-
-            FormatOptions formatOptions = doc.GetUnits().GetFormatOptions(SpecTypeId.Length);
-            ForgeTypeId unitTypeId = formatOptions.GetUnitTypeId();
-
-            sizableBoundingBox.Height += UnitUtils.ConvertToInternalUnits(heightOffset, unitTypeId);
-            sizableBoundingBox.Width += UnitUtils.ConvertToInternalUnits(widthOffset, unitTypeId);
-            sizableBoundingBox.Length += UnitUtils.ConvertToInternalUnits(lengthOffset, unitTypeId);
-
-            view.SetSectionBox(sizableBoundingBox);
-
-            doc.Delete(directShape.Id);
+            view.SetSectionBox(sectionBox);
 
             return true;
+        }
+
+        private static IEnumerable<XYZ> GetModelCorners(BoundingBoxXYZ boundingBox)
+        {
+            XYZ min = boundingBox.Min;
+            XYZ max = boundingBox.Max;
+            Transform transform = boundingBox.Transform;
+
+            for (int x = 0; x < 2; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    for (int z = 0; z < 2; z++)
+                    {
+                        yield return transform.OfPoint(new XYZ(
+                            x == 0 ? min.X : max.X,
+                            y == 0 ? min.Y : max.Y,
+                            z == 0 ? min.Z : max.Z));
+                    }
+                }
+            }
         }
     }
 }

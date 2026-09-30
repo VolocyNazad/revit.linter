@@ -48,9 +48,9 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
             _logger.LogInformation("Active view not found.");
             return false;
         }
-        if (!activeView.CanEnableTemporaryViewPropertiesMode())
+        if (!activeView.CanUseTemporaryVisibilityModes())
         {
-            _logger.LogInformation("Can't enable temporary view properties mode for view type {ViewType}.", activeView.ViewType);
+            _logger.LogInformation("Can't use temporary visibility modes for view type {ViewType}.", activeView.ViewType);
             return false;
         }
         TransactionExecutor.Execute(document, "Apply visualization isolation", () =>
