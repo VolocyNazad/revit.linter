@@ -67,8 +67,8 @@ internal sealed class DocumentDiagnostic(
                 messages.Add(GetInvalidPropertyMessage(parameterData, "AllowVaryBetweenGroups"));
 #if BEFORE2024
             var group = int.TryParse(parameterData.Group, out int id)
-                ? (BuiltInParameterGroup)Enum.Parse(typeof(BuiltInParameterGroup), parameterData.Group)
-                : (BuiltInParameterGroup)id;
+                ? (BuiltInParameterGroup)id
+                : (BuiltInParameterGroup)Enum.Parse(typeof(BuiltInParameterGroup), parameterData.Group);
             if (definition.ParameterGroup != group)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "Group"));
 
@@ -113,4 +113,5 @@ internal sealed class DocumentDiagnostic(
             parameterData.Name,
             parameterData.Guid ?? string.Empty,
             propertyName);
+
 }
