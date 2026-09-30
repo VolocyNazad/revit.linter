@@ -69,6 +69,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Support both 32-bit and 64-bit `BuiltInCategory` enum representations and make ignore-feedback tests independent of the Revit UI language.
 - Supply the visualization-pipeline dependency in the built-in diagnostic registration integration test and verify every registration exposes a pipeline.
 - Read UTF-8 repository documents and solution files consistently in the repository validator, including under Windows PowerShell 5.1.
 - Apply visualization pipelines through a transaction group, retain failed restoration sessions for retry, and defer restoration triggered by Revit events to a modifiable API context.

@@ -5,6 +5,7 @@ using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.DI;
+using System.Globalization;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.ElementIgnoring.RevitTests;
@@ -59,8 +60,9 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
         Wall wall = CreateWall();
         using ServiceProvider services = CreateServices();
 
-        IgnoreElementFeedback feedback = services.GetRequiredService<IIgnoreElementProvider>()
-            .Ignore("TEST-001", wall);
+        IgnoreElementFeedback feedback = WithUiCulture(
+            "en-US",
+            () => services.GetRequiredService<IIgnoreElementProvider>().Ignore("TEST-001", wall));
 
         await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Failed);
         await Assert.That(feedback.Message).IsEqualTo("The ignore parameter was not found.");
@@ -72,8 +74,9 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
         Wall wall = CreateWallWithParameter("INTEGER");
         using ServiceProvider services = CreateServices();
 
-        IgnoreElementFeedback feedback = services.GetRequiredService<IIgnoreElementProvider>()
-            .Ignore("TEST-001", wall);
+        IgnoreElementFeedback feedback = WithUiCulture(
+            "en-US",
+            () => services.GetRequiredService<IIgnoreElementProvider>().Ignore("TEST-001", wall));
         bool isIgnored = services.GetRequiredService<IIgnoreElementDetector>()
             .IsElementIgnored("TEST-001", wall);
 
@@ -257,5 +260,19 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
         ServiceCollection services = new();
         services.AddElementIgnoringModule();
         return services.BuildServiceProvider();
+    }
+
+    private static T WithUiCulture<T>(string cultureName, Func<T> action)
+    {
+        CultureInfo previousCulture = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(cultureName);
+            return action();
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = previousCulture;
+        }
     }
 }
