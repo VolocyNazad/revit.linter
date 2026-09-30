@@ -13,6 +13,7 @@ This document records stable architectural rules. Implementation details belong 
 ## Revit integration
 
 - Revit API access stays behind narrow services or command/event boundaries so domain and presentation code can remain testable without a live Revit process.
+- Keep services that use `RevitAPIUI` (`UIApplication`, `UIDocument`, `UIView`, `Selection`) as thin adapters over logic that depends only on `RevitAPI` or plain data whenever that logic is substantial enough to test. Do not let a UI-only call make document operations, selection rules, state calculation or restoration logic unavailable to `Nice3point.TUnit.Revit` tests.
 - Work that modifies a Revit document runs in an explicit transaction. UI-triggered asynchronous work enters the Revit API through the repository's external-event infrastructure.
 - Version differences are isolated in compatibility extensions or adapters. Conditional compilation belongs inside those boundaries rather than at call sites.
 - Code that needs live Revit objects is tested in `*.RevitTests` with `Nice3point.TUnit.Revit`. Headless behavior stays in `*.Tests`.
@@ -35,6 +36,12 @@ This document records stable architectural rules. Implementation details belong 
 - `Revit.Linter.ElementAccentor` owns atomic, reversible Revit view and selection operations.
 - `Revit.Linter.ElementVisualization` composes those operations into diagnostic visualization pipelines.
 - Every visualization session records enough state to restore what it changed. Composite sessions restore steps in reverse order.
+
+## Element fixing
+
+- `Revit.Linter.ElementFixing` owns configuration-driven element fix pipeline composition.
+- Fix pipelines execute ordered destructive steps inside the transaction supplied by the fix presenter.
+- Step implementations remain independent of user-diagnostic configuration parsing and presentation.
 
 ## Localization
 

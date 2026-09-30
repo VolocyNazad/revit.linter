@@ -37,6 +37,8 @@ use it only at module composition boundaries, not as a general service locator.
 operations such as show, select, isolate, crop, per-element overrides, and temporary-filter
 overrides. `Revit.Linter.ElementVisualization` composes those operations into diagnostic
 visualization pipelines and restores their sessions in reverse order.
+`Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
+consumed by the diagnostic report presenter; the initial supported step deletes the target element.
 
 ## Technology stack
 
@@ -65,6 +67,9 @@ visualization pipelines and restores their sessions in reverse order.
 - Localization tests validate resource key/placeholder parity, require every source `.resx` to be
   declared by the localization project, and load every declared resource from the excluded
   localization assembly plus its Russian satellite in each final ILRepack output before MSI creation
+- `VolocyNazad.ResxAnalyzer` runs during regular builds of `Revit.Linter.Localization` and reports
+  missing, extra or duplicate keys, mismatched composite-format placeholders, empty translations,
+  missing culture files, and satellites without a neutral resource (`RESX001`-`RESX007`)
 - Central package management via `Directory.Packages.props`;
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
   via `GlobalPackageReference` for all projects
@@ -95,6 +100,16 @@ The root solution exposes contributor documentation under `docs` and user docume
 
 Production projects generate XML documentation; test projects are exempt from missing-comment diagnostics. Set `EnforcePublicApiDocumentation=true` to promote missing documentation for public APIs (`CS1591`) to an error during the baseline migration. The shared settings live in `Directory.Build.props` and `Directory.Build.targets`.
 
+> **Note:** Document behavior that cannot be inferred from an API signature with a nearby XML `<remarks>` section. This includes fallback values, inferred defaults, state changes, execution-order guarantees, caching, required Revit context, transaction ownership, and swallowed or deliberately ignored failures.
+
+## Localization validation
+
+`Revit.Linter.Localization` is the assembly and build-time validation boundary for localized resources. It explicitly embeds the neutral and `ru` resources owned by presenter and feature projects, so the RESX analyzer is referenced only by this aggregating project. Adding it globally would analyze incomplete per-project subsets and could report missing culture files that are intentionally owned and embedded elsewhere.
+
+The analyzer complements rather than replaces the localization tests. `RESX001`-`RESX007` provide immediate feedback during a normal build, while the tests additionally verify that every source resource is registered in the aggregation project and that the final ILRepack artifacts can load neutral and Russian resources.
+
+> **Note:** `RESX008` is intentionally disabled. Existing resource keys use both `PascalCase` and `snake_case`; enable a naming convention only as a separately planned migration that updates existing keys and their consumers together.
+
 The root `global.json` selects stable .NET SDK 10.0 (minimum `10.0.103`, `rollForward: latestFeature`). CI and publishing install the SDK from this file. Additional SDK installations may provide older test runtimes. See the [SDK selection policy](policies/development.md#net-sdk-selection).
 
 ## Solution items
@@ -114,6 +129,7 @@ The root `.editorconfig` defines the portable formatting baseline. Existing repo
 ## Testing
 
 Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the .RevitTests suffix because they require a running Revit process.
+`Nice3point.TUnit.Revit` supports `RevitAPI` but not `RevitAPIUI`; services should therefore keep meaningful document behavior separate from thin UI adapters so the former remains testable in `*.RevitTests`.
 
 ## Continuous integration
 
