@@ -38,6 +38,13 @@
 		<EmbeddedResource Include="..\Revit.Linter.DocumentDiagnostics\DocumentDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DocumentDiagnostics.DocumentDiagnosticLocalizations.resources" />
 	</ItemGroup>
 	<ItemGroup>
+	  <!-- This project aggregates every localized resource; referencing the analyzer here avoids incomplete per-project resource groups. -->
+	  <PackageReference Include="VolocyNazad.ResxAnalyzer">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
 	</ItemGroup>
 	<ItemGroup>
