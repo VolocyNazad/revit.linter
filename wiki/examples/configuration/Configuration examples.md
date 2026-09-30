@@ -10,9 +10,9 @@ The files next to this page are reference templates stored with the documentatio
 
 Templates are provided for three configurable modules:
 
-- `config.yaml` — user element diagnostics;
-- `collision.config.yaml` — collision diagnostics;
-- `parameter-element.config.yaml` — project parameter diagnostics.
+- [`config.yaml`](config.yaml) — [[User diagnostics|user element diagnostics]];
+- [`collision.config.yaml`](collision.config.yaml) — [[Collision diagnostics|collision diagnostics]];
+- [`parameter-element.config.yaml`](parameter-element.config.yaml) — [[Project parameter diagnostics|project parameter diagnostics]].
 
 ## Working configuration
 

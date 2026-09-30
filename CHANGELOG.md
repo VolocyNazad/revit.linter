@@ -8,14 +8,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Cover project-parameter diagnostics with live Revit tests for valid definitions, missing parameters, and every checked binding property.
+- Add named `elementSets` selection to configured fix steps, with target-only defaults and explicit dependency support.
+- Add YAML-configurable user diagnostic fix pipelines with an initial `Delete` step.
 - Document stable architecture decisions, current product scope, module abstraction layout, WPF composition, public API documentation, warning hygiene and structured logging policy.
 - Add a versioned diagnostic-report export document with Revit/add-in metadata, active filters, result counts, stable severity values, obsolete-result details, and structured target/dependency element IDs.
 - Add class-based element diagnostic visualization pipelines with ordered YAML-configurable steps, semantic element sets, restorable view state, full graphic styles, element/filter application strategies, and a compact Show action in diagnostic reports.
 - Export the currently displayed diagnostic findings as a self-contained HTML report with severity and diagnostic-code summaries.
 - Verify localization key and placeholder parity, source resource registration, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
+- Validate localized `.resx` tables during regular builds with `VolocyNazad.ResxAnalyzer`.
 
 ### Changed
 
+- Document the testability boundary between `RevitAPI` document logic and thin `RevitAPIUI` adapters.
+- Document build-time localization validation and require nearby remarks for non-obvious API behavior.
+- Expand the English and Russian Wiki with report-action semantics, visualization and fix caveats, configuration-failure behavior, application-log locations, and troubleshooting guidance.
+- Record the planned unified per-user installer and short-lived Windows update notifier architecture.
+- Run the only available diagnostic fix by left-clicking its button and show a choice menu when several fixes are available.
+- Keep all three working configuration files synchronized with tested documentation examples and complete their navigation links.
+- Add a safe, narrowly targeted `Delete` fix-pipeline test rule to the example user-diagnostic configuration.
+- Expand the collision configuration example with individual visualization-step samples and composed filter/crop/isolation pipelines.
 - Export the complete versioned report document in JSON and YAML while keeping HTML and CSV rendering on the same shared contract.
 - Generate XML documentation for production projects, exempt test projects, and provide an opt-in strict build that treats undocumented public APIs as errors while the existing API baseline is documented.
 - Document the public diagnostic catalog, identity, verdict, registration, override, and service contracts in the core module.
@@ -69,6 +81,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Use the explicit `ViewLocatorExtension` type name so Visual Studio's XAML language service resolves the shared markup extension.
+- Keep the diagnostic report grid out of WPF edit mode so changing filters can safely refresh its collection view.
+- Include the rejected formula in user-diagnostic compilation warnings.
+- Parse project-parameter groups as `PG_*` names or numeric IDs through Revit 2023 and as full `ForgeTypeId` values in Revit 2024 and newer.
+
+- Keep the safe `FIXTEST001` sample narrow by evaluating its parameter condition in `check`, where parameter access is supported.
+- Notify users about invalid user-diagnostic YAML and load it as an empty configuration instead of retaining stale rules or failing add-in startup.
+- Calculate 3D visualization section boxes in model coordinates, use a stable millimetre offset, and avoid temporary model elements while cropping views.
+- Keep diagnostic visualizations active when their own Revit transactions raise `DocumentChanged`, log the event that requests restoration, and use the correct temporary-visibility capability check for isolation.
 - Support both 32-bit and 64-bit `BuiltInCategory` enum representations and make ignore-feedback tests independent of the Revit UI language.
 - Supply the visualization-pipeline dependency in the built-in diagnostic registration integration test and verify every registration exposes a pipeline.
 - Read UTF-8 repository documents and solution files consistently in the repository validator, including under Windows PowerShell 5.1.

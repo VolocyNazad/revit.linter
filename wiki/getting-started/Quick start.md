@@ -13,10 +13,14 @@ lang: en
 
 Revit normally docks the panels at the bottom of the window. You can move, resize, or float them like other [[Dockable panes|dockable panes]].
 
+> **Note:** The eye action frames or otherwise visualizes the finding in the active Revit view; it does not guarantee keyboard focus. Clicking the same active visualization again restores the previous view state.
+
 ## Next steps
 
 - [[Diagnostic configuration path button|Open the configuration folder]]
 - [[User diagnostics|Add a user diagnostic]]
 - [[Collision diagnostics|Add collision checks]]
+- [[Project parameter diagnostics|Add project parameter checks]]
+- [[Troubleshooting|Troubleshoot a configuration or report action]]
 
 [[Home|← Home]]

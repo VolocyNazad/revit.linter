@@ -128,3 +128,7 @@ visualizations:
 ```
 
 Only one pipeline is active at a time. Starting another pipeline first restores the active one. Closing or clearing the report and changing the active Revit context also restore the visualization.
+
+> **Note:** The eye button is a toggle for the active pipeline and finding. Clicking it again restores the recorded state. `Show` changes the view framing; it does not promise keyboard focus for the report panel or Revit canvas.
+
+> **Note:** A pipeline is skipped when its report document is closed, invalid, or not currently active. If a later step fails, completed steps are restored in reverse order; restoration failures are retained for a later retry and written to the application log.

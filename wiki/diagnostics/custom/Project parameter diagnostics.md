@@ -71,6 +71,15 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 
 ---
 
+**`group` format by Revit version:**
+
+- Revit 2021–2023: a `BuiltInParameterGroup` name such as `PG_TEXT`, or its numeric identifier.
+- Revit 2024 and newer: the complete `ForgeTypeId`, for example `autodesk.parameter.group:text-1.0.0`.
+
+The formats are intentionally version-specific. Store each configuration in the folder for its Revit version.
+
+---
+
 **Notes:**
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`

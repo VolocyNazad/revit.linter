@@ -13,6 +13,7 @@ lang: en
 - [[Installation|Installation]]
 - [[Quick start|Quick start]]
 - [[Diagnostic configuration path convention|Configuration folders]]
+- [[Troubleshooting|Troubleshooting and logs]]
 
 ## Configure diagnostics
 

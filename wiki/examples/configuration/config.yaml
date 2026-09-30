@@ -5,6 +5,11 @@
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Walls')"
   check: "parameter(me, 'Комментарии') == 'Ура!' & parameter(me, 'Марка') == 'Ура!'"
+  fixes:
+    - name: "Delete"
+      steps:
+        - type: "Delete"
+          elementSets: ["Target"]
   visualizations:
     - name: "Show and select"
       steps:
@@ -42,3 +47,15 @@
   takeDocument: "true"
   take: "instance and class('FamilyInstance')"
   check: "property('Mirrored') == true"
+- code: "FIXTEST001"
+  description: "Safe test for the Delete fix pipeline"
+  message: "The test wall named '{elementName}' with identifier '{elementId}' can be deleted."
+  severity: "Message"
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and builtincategory('OST_Walls')"
+  check: "parameter(me, 'Комментарии') != 'FIX_TEST'"
+  fixes:
+    - name: "Delete"
+      steps:
+        - type: "Delete"
+          elementSets: ["Target"]

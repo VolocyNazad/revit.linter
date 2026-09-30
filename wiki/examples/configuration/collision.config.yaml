@@ -8,7 +8,23 @@
   andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "parameter(me, 'Комментарии')"
   visualizations:
-    - name: "Locate collision"
+    - name: "Show collision"
+      steps:
+        - type: "Show"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Select collision"
+      steps:
+        - type: "Select"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Isolate collision"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Cut collision"
+      steps:
+        - type: "Cut"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Override collision elements"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -32,21 +48,7 @@
               color: "#43A047"
               pattern: "SolidFill"
               isVisible: true
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select collision"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Show with filters"
+    - name: "Override collision filters"
       steps:
         - type: "OverrideFilter"
           elementSets: ["Target"]
@@ -71,64 +73,60 @@
               color: "#1E88E5"
               pattern: "SolidFill"
               isVisible: true
+    - name: "Filters, cut and show collision"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            transparency: 10
+            projectionLines:
+              color: "#FF5722"
+              weight: 8
+            surfaceForeground:
+              color: "#FF5722"
+              pattern: "SolidFill"
+              isVisible: true
+        - type: "OverrideFilter"
+          elementSets: ["Dependencies"]
+          style:
+            halftone: true
+            transparency: 45
+            projectionLines:
+              color: "#2196F3"
+              weight: 5
+            surfaceForeground:
+              color: "#2196F3"
+              pattern: "SolidFill"
+              isVisible: true
+        - type: "Cut"
+          elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Test all graphics"
+    - name: "Override, isolate and cut collision"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
           style:
-            halftone: true
-            transparency: 25
-            detailLevel: "Fine"
+            transparency: 5
             projectionLines:
-              color: "#D81B60"
-              weight: 7
-            cutLines:
-              color: "#8E24AA"
-              weight: 9
+              color: "#F44336"
+              weight: 8
             surfaceForeground:
-              color: "#D81B60"
-              pattern: "SolidFill"
-              isVisible: true
-            surfaceBackground:
-              color: "#F8BBD0"
-              pattern: "SolidFill"
-              isVisible: true
-            cutForeground:
-              color: "#8E24AA"
-              pattern: "SolidFill"
-              isVisible: true
-            cutBackground:
-              color: "#E1BEE7"
+              color: "#F44336"
               pattern: "SolidFill"
               isVisible: true
         - type: "OverrideElements"
           elementSets: ["Dependencies"]
           style:
-            transparency: 55
-            detailLevel: "Coarse"
+            transparency: 25
             projectionLines:
-              color: "#00897B"
-              weight: 4
-            cutLines:
-              color: "#3949AB"
+              color: "#4CAF50"
               weight: 6
             surfaceForeground:
-              color: "#00897B"
+              color: "#4CAF50"
               pattern: "SolidFill"
               isVisible: true
-            surfaceBackground:
-              color: "#B2DFDB"
-              pattern: "SolidFill"
-              isVisible: true
-            cutForeground:
-              color: "#3949AB"
-              pattern: "SolidFill"
-              isVisible: true
-            cutBackground:
-              color: "#C5CAE9"
-              pattern: "SolidFill"
-              isVisible: true
-        - type: "Show"
+        - type: "Isolate"
+          elementSets: ["Target", "Dependencies"]
+        - type: "Cut"
           elementSets: ["Target", "Dependencies"]

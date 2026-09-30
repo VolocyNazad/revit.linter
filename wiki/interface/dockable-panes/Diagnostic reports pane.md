@@ -9,3 +9,14 @@ problem elements, run available fixes, and export the currently displayed result
 self-contained HTML report. The HTML report includes a severity summary, counts by diagnostic code, and the
 detailed findings table.
 
+## Row actions
+
+- Click the light-bulb button to run the only available fix. If the finding has several fixes, the same click opens their menu.
+- Click the eye button to run the only available visualization. If several pipelines are available, the same click opens their menu.
+- Click an element link inside the message to locate that element in the active Revit document.
+- Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
+
+> **Note:** A visualization runs only when the report's document is the active Revit document. Clicking the same visualization for the same finding again restores the previous view state instead of applying it twice. Starting another visualization restores the active one first.
+
+> **Note:** Search, document, severity, and status filters affect both the visible rows and exported content. Filtering does not edit report rows or disable text copying.
+

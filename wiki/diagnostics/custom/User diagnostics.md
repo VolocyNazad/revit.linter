@@ -49,6 +49,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 | `takeDocument`        | string           | `string`            | `bool`                           | Document filtering [[syntax/Formula syntax\|formula]]                                                              |
 | `take`                | string           | `string`            | `ElementFilter`                  | [[syntax/Formula Revit\|Element filtering formula]]                                                                |
 | `check`               | string           | `string`            | `bool`                           | [[syntax/Formula syntax\|Element check formula]]; if the result is `true`, the element is considered valid               |
+| `fixes`               | sequence         | `-`                 | `-`                              | Optional [[Fix pipelines]] offered for invalid elements. |
 
 
 ---
@@ -57,3 +58,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`
+
+> **Note:** If `config.yaml` cannot be parsed, its diagnostic list is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log.
+
+> **Note:** If `takeDocument`, `take`, or `check` cannot be compiled, the rule cannot perform that stage. The warning in the application log includes the rejected formula text so the failing expression can be identified.

@@ -59,6 +59,9 @@
     <Project Path="src/Revit.Linter.ElementAccentor/Revit.Linter.ElementAccentor.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.ElementFixing/Revit.Linter.ElementFixing.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ElementVisualization/Revit.Linter.ElementVisualization.csproj">
       <Platform Project="x64" />
     </Project>
@@ -119,6 +122,12 @@
     <Project Path="tests/Revit.Linter.ElementDependencyDefiners.RevitTests/Revit.Linter.ElementDependencyDefiners.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.ElementFixing.RevitTests/Revit.Linter.ElementFixing.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ElementFixing.Tests/Revit.Linter.ElementFixing.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.ElementIgnoring.RevitTests/Revit.Linter.ElementIgnoring.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
@@ -144,6 +153,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.SerilogEnrichers.Tests/Revit.Linter.SerilogEnrichers.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>
@@ -218,6 +230,7 @@
     <File Path="wiki/getting-started/Configuration setup.md" />
     <File Path="wiki/getting-started/Installation.md" />
     <File Path="wiki/getting-started/Quick start.md" />
+    <File Path="wiki/getting-started/Troubleshooting.md" />
   </Folder>
   <Folder Name="/wiki/getting-started/configuration/">
     <File Path="wiki/getting-started/configuration/Diagnostic configuration path convention.md" />
@@ -245,6 +258,7 @@
     <File Path="wiki/reference/diagnostics/Diagnostic parameters.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic severity.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic types by target.md" />
+    <File Path="wiki/reference/diagnostics/Fix pipelines.md" />
     <File Path="wiki/reference/diagnostics/Obsolete diagnostic.md" />
     <File Path="wiki/reference/diagnostics/Visualization pipelines.md" />
   </Folder>
@@ -290,6 +304,7 @@
     <File Path="wiki/ru/Начало работы/Быстрый старт.md" />
     <File Path="wiki/ru/Начало работы/Настройка конфигурации.md" />
     <File Path="wiki/ru/Начало работы/Установка.md" />
+    <File Path="wiki/ru/Начало работы/Устранение неполадок.md" />
   </Folder>
   <Folder Name="/wiki/ru/Начало работы/Конфигурация/">
     <File Path="wiki/ru/Начало работы/Конфигурация/Путь к конфигурации.md" />
@@ -303,6 +318,7 @@
     <File Path="wiki/ru/Справочник/Диагностика/Подстановки сообщений.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Соглашения диагностики.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Типы объектов проверки.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Пайплайны исправлений.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Уровни важности.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Устаревшие проверки.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Пайплайны визуализации.md" />

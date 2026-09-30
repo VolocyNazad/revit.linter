@@ -26,6 +26,7 @@ Revit Linter helps designers and BIM teams find model problems before they affec
 - [[Project parameter diagnostics|Configure project parameter checks]]
 - [[Formula syntax|Write a formula]]
 - [[Diagnostic message placeholders|Format a diagnostic message]]
+- [[Troubleshooting|Inspect logs and troubleshoot a problem]]
 
 ## Reference
 
