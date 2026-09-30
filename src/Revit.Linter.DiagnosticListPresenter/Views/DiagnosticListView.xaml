@@ -49,7 +49,7 @@
         VerticalContentAlignment="Stretch">
         <DockPanel>
             <DockPanel Height="45" DockPanel.Dock="Top">
-                <ContentControl Content="{composition:ViewLocator {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
+                <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"

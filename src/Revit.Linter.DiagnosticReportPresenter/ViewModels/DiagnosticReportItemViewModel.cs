@@ -27,6 +27,7 @@ internal sealed partial class DiagnosticReportItemViewModel
     public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
     public required string ShowElementToolTipFormat { get; init; }
 
+    public bool HasFixes => Fixes?.Any() == true;
     public bool HasVisualizationPipelines => VisualizationPipelines.Count > 0;
 
     private ReportMessage? _message;

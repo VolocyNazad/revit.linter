@@ -27,6 +27,25 @@ public sealed partial class DiagnosticReportView
     /// </summary>
     public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
 
+    private void FixButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: DiagnosticReportItemViewModel item } button)
+            return;
+
+        FixViewModel[] fixes = item.Fixes?.ToArray() ?? [];
+        if (fixes.Length == 1)
+        {
+            fixes[0].FixCommand.Execute(null);
+            return;
+        }
+
+        if (fixes.Length > 1 && button.ContextMenu is not null)
+        {
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.IsOpen = true;
+        }
+    }
+
     private void VisualizationButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: DiagnosticReportItemViewModel item } button)

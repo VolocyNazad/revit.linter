@@ -40,7 +40,7 @@
         VerticalContentAlignment="Stretch">
         <DockPanel>
             <DockPanel Height="45" DockPanel.Dock="Top">
-                <ContentControl Content="{composition:ViewLocator {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
+                <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
                 <ComboBox
                     MinWidth="150"
                     Margin="5"

@@ -40,7 +40,7 @@
         VerticalContentAlignment="Stretch">
         <DockPanel>
             <DockPanel Height="45" DockPanel.Dock="Top">
-                <ContentControl Content="{composition:ViewLocator {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
+                <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"
@@ -144,6 +144,7 @@
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
+                IsReadOnly="True"
                 ItemsSource="{Binding CollectionViewSource.View}">
                 <DataGrid.RowStyle>
                     <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="DataGridRow">
@@ -170,23 +171,29 @@
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <DataTemplate.Resources>
-                                    <Style x:Key="HasFixesPackIconStyle" TargetType="{x:Type materialDesign:PackIcon}">
-                                        <Setter Property="Foreground" Value="#FFB74D" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Fixes}" Value="{x:Null}">
-                                                <Setter Property="Foreground" Value="Transparent" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataTemplate.Resources>
-                                <materialDesign:PackIcon
-                                    Width="12"
-                                    Height="12"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="Idea"
-                                    Style="{StaticResource HasFixesPackIconStyle}" />
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Click="FixButton_OnClick"
+                                    Content="{materialDesign:PackIcon Kind=Idea,
+                                                                      Size=20}"
+                                    Foreground="#FFB74D"
+                                    IsEnabled="{Binding HasFixes}"
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                    <Button.ContextMenu>
+                                        <ContextMenu
+                                            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                            ItemsSource="{Binding Fixes}">
+                                            <ContextMenu.ItemContainerStyle>
+                                                <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                                    <Setter Property="Header" Value="{Binding Title}" />
+                                                    <Setter Property="Command" Value="{Binding FixCommand}" />
+                                                    <Setter Property="Icon" Value="{Binding Icon}" />
+                                                </Style>
+                                            </ContextMenu.ItemContainerStyle>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
