@@ -204,6 +204,14 @@ public sealed class DependencyDefinerTests : RevitApiTest
     }
 
     [Test]
+    public async Task Category_returns_its_defined_built_in_category()
+    {
+        BuiltInCategory category = ElementDependencyExtensions.GetBuiltInCategory(_firstWall!.Category);
+
+        await Assert.That(category).IsEqualTo(BuiltInCategory.OST_Walls);
+    }
+
+    [Test]
     public async Task Every_parameterless_definer_accepts_an_unrelated_element()
     {
         IList<Type> types = ElementsDependencyDefinerExtensions

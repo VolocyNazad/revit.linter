@@ -69,6 +69,22 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
     }
 
     [Test]
+    public async Task Missing_parameter_feedback_is_localized_and_ui_culture_is_restored()
+    {
+        Wall wall = CreateWall();
+        using ServiceProvider services = CreateServices();
+        CultureInfo originalCulture = CultureInfo.CurrentUICulture;
+
+        IgnoreElementFeedback feedback = WithUiCulture(
+            "ru-RU",
+            () => services.GetRequiredService<IIgnoreElementProvider>().Ignore("TEST-001", wall));
+
+        await Assert.That(feedback.Result).IsEqualTo(IgnoreElementResult.Failed);
+        await Assert.That(feedback.Message).IsEqualTo("Параметр игнорирования не найден.");
+        await Assert.That(CultureInfo.CurrentUICulture).IsEqualTo(originalCulture);
+    }
+
+    [Test]
     public async Task Ignore_fails_for_non_string_parameter()
     {
         Wall wall = CreateWallWithParameter("INTEGER");

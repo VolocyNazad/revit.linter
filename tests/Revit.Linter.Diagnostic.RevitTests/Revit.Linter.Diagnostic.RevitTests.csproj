@@ -9,8 +9,12 @@
     <PackageReference Include="Nice3point.TUnit.Revit" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
