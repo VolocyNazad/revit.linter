@@ -171,4 +171,11 @@
 проверки</value></data>
   <data name="showHideDiagnostics_toolTip" xml:space="preserve"><value>Показать или скрыть список проверок</value></data>
   <data name="showHideDiagnostics_longDescription" xml:space="preserve"><value>Показывает или скрывает панель с доступными проверками.</value></data>
+  <data name="support_buttonText" xml:space="preserve"><value>Поддержка</value></data>
+  <data name="support_toolTip" xml:space="preserve"><value>Получить поддержку</value></data>
+  <data name="support_longDescription" xml:space="preserve"><value>Открывает трекер Revit Linter, где можно сообщить о проблеме или попросить помощи.</value></data>
+  <data name="sponsor_buttonText" xml:space="preserve"><value>Спонсорство</value></data>
+  <data name="sponsor_toolTip" xml:space="preserve"><value>Поддержать автора</value></data>
+  <data name="sponsor_longDescription" xml:space="preserve"><value>Открывает страницу автора на GitHub Sponsors.</value></data>
+  <data name="externalPage_openFailed_message" xml:space="preserve"><value>Не удалось открыть страницу в браузере по умолчанию.&#xA;&#xA;{0}</value></data>
 </root>

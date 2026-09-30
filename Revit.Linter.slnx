@@ -251,6 +251,8 @@
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostic report button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostics button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide fix reports button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Sponsor button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Support button.md" />
   </Folder>
   <Folder Name="/wiki/reference/diagnostics/">
     <File Path="wiki/reference/diagnostics/Diagnostic conventions.md" />
@@ -290,10 +292,12 @@
     <File Path="wiki/ru/Интерфейс/Кнопки ленты.md" />
   </Folder>
   <Folder Name="/wiki/ru/Интерфейс/Кнопки/">
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка поддержки.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов исправлений.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка папки конфигурации.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка спонсорства.md" />
   </Folder>
   <Folder Name="/wiki/ru/Интерфейс/Панели/">
     <File Path="wiki/ru/Интерфейс/Панели/Панель диагностики.md" />

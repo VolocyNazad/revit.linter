@@ -78,6 +78,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         AddShowAllPanesCommand(panel);
         AddOpenConfigurationFolderCommand(panel);
+        AddCommunityCommands(panel);
 
         var elementChangesMonitor = Program.Provider.GetRequiredService<IElementChangesMonitor>();
         elementChangesMonitor.Run();
@@ -247,6 +248,41 @@ internal sealed class InitExternalApplication : ExternalApplication
         };
 
         panel.AddItem(buttonData);
+    }
+
+    private static void AddCommunityCommands(RibbonPanel panel)
+    {
+        var supportButton = CreateExternalPageButton(
+            "OpenSupportButton",
+            "support_buttonText",
+            "support_toolTip",
+            "support_longDescription",
+            typeof(OpenSupportCommand));
+        var sponsorButton = CreateExternalPageButton(
+            "OpenSponsorButton",
+            "sponsor_buttonText",
+            "sponsor_toolTip",
+            "sponsor_longDescription",
+            typeof(OpenSponsorCommand));
+
+        panel.AddStackedItems(supportButton, sponsorButton);
+    }
+
+    private static PushButtonData CreateExternalPageButton(
+        string name,
+        string textResourceKey,
+        string toolTipResourceKey,
+        string descriptionResourceKey,
+        Type commandType)
+    {
+        string iconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
+        return new PushButtonData(name, Localizer[textResourceKey], AssemblyPath, commandType.FullName)
+        {
+            ToolTip = Localizer[toolTipResourceKey],
+            LongDescription = Localizer[descriptionResourceKey],
+            Image = LoadImage(iconPath),
+            ToolTipImage = LoadImage(iconPath)
+        };
     }
 
     private static BitmapImage LoadImage(string path) => new(new Uri(path));

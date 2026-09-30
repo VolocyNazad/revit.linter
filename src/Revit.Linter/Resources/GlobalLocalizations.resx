@@ -171,4 +171,11 @@ fixes</value></data>
 diagnostics</value></data>
   <data name="showHideDiagnostics_toolTip" xml:space="preserve"><value>Show or hide the diagnostic list</value></data>
   <data name="showHideDiagnostics_longDescription" xml:space="preserve"><value>Shows or hides the panel containing available diagnostics.</value></data>
+  <data name="support_buttonText" xml:space="preserve"><value>Support</value></data>
+  <data name="support_toolTip" xml:space="preserve"><value>Get support</value></data>
+  <data name="support_longDescription" xml:space="preserve"><value>Opens the Revit Linter issue tracker to report a problem or request help.</value></data>
+  <data name="sponsor_buttonText" xml:space="preserve"><value>Sponsor</value></data>
+  <data name="sponsor_toolTip" xml:space="preserve"><value>Sponsor the author</value></data>
+  <data name="sponsor_longDescription" xml:space="preserve"><value>Opens the author's GitHub Sponsors page.</value></data>
+  <data name="externalPage_openFailed_message" xml:space="preserve"><value>The page could not be opened in the default browser.&#xA;&#xA;{0}</value></data>
 </root>

@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Add ribbon commands for opening Revit Linter support and GitHub Sponsors pages.
 - Cover project-parameter diagnostics with live Revit tests for valid definitions, missing parameters, and every checked binding property.
 - Add named `elementSets` selection to configured fix steps, with target-only defaults and explicit dependency support.
 - Add YAML-configurable user diagnostic fix pipelines with an initial `Delete` step.
