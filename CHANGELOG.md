@@ -9,7 +9,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Document stable architecture decisions, current product scope, module abstraction layout, WPF composition, public API documentation, warning hygiene and structured logging policy.
-- Add a versioned diagnostic-report export document with Revit/add-in metadata, active filters, result counts, stable severity values, and obsolete-result details.
+- Add a versioned diagnostic-report export document with Revit/add-in metadata, active filters, result counts, stable severity values, obsolete-result details, and structured target/dependency element IDs.
 - Add class-based element diagnostic visualization pipelines with ordered YAML-configurable steps, semantic element sets, restorable view state, full graphic styles, element/filter application strategies, and a compact Show action in diagnostic reports.
 - Export the currently displayed diagnostic findings as a self-contained HTML report with severity and diagnostic-code summaries.
 - Verify localization key and placeholder parity, source resource registration, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.

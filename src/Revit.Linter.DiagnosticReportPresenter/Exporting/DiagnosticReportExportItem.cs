@@ -8,4 +8,6 @@ internal sealed record DiagnosticReportExportItem(
     string Document,
     DateTimeOffset Created,
     bool IsObsolete,
-    string? ObsoleteDescription);
+    string? ObsoleteDescription,
+    string? TargetElementId,
+    IReadOnlyCollection<string> DependencyElementIds);

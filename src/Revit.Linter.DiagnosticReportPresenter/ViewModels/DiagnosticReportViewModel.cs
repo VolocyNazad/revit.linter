@@ -326,7 +326,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 item.DocumentTitle,
                 new DateTimeOffset(item.Created),
                 item.IsObsolete,
-                string.IsNullOrWhiteSpace(item.ObsoleteDescription) ? null : item.ObsoleteDescription))
+                string.IsNullOrWhiteSpace(item.ObsoleteDescription) ? null : item.ObsoleteDescription,
+                item.TargetElementId?.ToString(),
+                item.TargetDependencyElementIds
+                    .Select(elementId => elementId.ToString())
+                    .ToArray()))
             .ToList();
 
         int exporterIndex = dialog.FilterIndex - 1;
