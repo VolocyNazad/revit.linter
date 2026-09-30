@@ -66,6 +66,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Supply the visualization-pipeline dependency in the built-in diagnostic registration integration test and verify every registration exposes a pipeline.
 - Read UTF-8 repository documents and solution files consistently in the repository validator, including under Windows PowerShell 5.1.
 - Apply visualization pipelines through a transaction group, retain failed restoration sessions for retry, and defer restoration triggered by Revit events to a modifiable API context.
 - Restore the application project's theme-service import and remove empty global-using files.

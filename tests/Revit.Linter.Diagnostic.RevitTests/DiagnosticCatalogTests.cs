@@ -373,6 +373,7 @@ public sealed partial class DiagnosticServiceTests
         collection.AddSingleton<IRevitTransactionMemoryCache, TestTransactionMemoryCache>();
         collection.AddSingleton<IValueStore<ElementDiagnosticOverridesSettings>>(
             new ValueStoreStub<ElementDiagnosticOverridesSettings>(new()));
+        collection.AddSingleton<IElementVisualizationPipelineFactory, TestElementVisualizationPipelineFactory>();
         collection.AddElementDiagnostics();
         collection.AddDiagnosticModule();
         await using ServiceProvider services = collection.BuildServiceProvider();
@@ -387,6 +388,26 @@ public sealed partial class DiagnosticServiceTests
             registration.Identity.Code == registration.Filter.Identity.Code &&
             registration.Identity.Code == registration.DocumentFilter.Identity.Code)).IsTrue();
         await Assert.That(snapshot.ElementDiagnostics.SelectMany(registration => registration.Fixes).Any()).IsTrue();
+        await Assert.That(snapshot.ElementDiagnostics.All(registration =>
+            registration.VisualizationPipelines.Count > 0)).IsTrue();
     }
 
+    private sealed class TestElementVisualizationPipelineFactory : IElementVisualizationPipelineFactory
+    {
+        public IElementVisualizationPipeline Create(
+            ElementDiagnosticId identity,
+            string name,
+            IReadOnlyList<ElementVisualizationStepDefinition> steps) => new TestElementVisualizationPipeline(identity, name);
+    }
+
+    private sealed class TestElementVisualizationPipeline(ElementDiagnosticId identity, string value)
+        : IElementVisualizationPipeline
+    {
+        public ElementDiagnosticId Identity { get; } = identity;
+        public string Value { get; } = value;
+        public bool IsRestored { get; private set; }
+        public bool Apply(ElementVisualizationContext context) => true;
+        public void Restore() => IsRestored = true;
+        public void Dispose() => Restore();
+    }
 }
