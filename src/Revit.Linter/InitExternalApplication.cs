@@ -67,7 +67,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         RegisterFixReportDockablePane();
         RegisterDiagnosticListDockablePane();
 
-        string tabName = "Volocy";
+        string tabName = Localizer["ribbonTab_name"];
         try
         {
             Application.CreateRibbonTab(tabName);

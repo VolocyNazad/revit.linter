@@ -45,6 +45,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Localize the Revit ribbon tab name as `Diagnostics` or `Диагностика` instead of the vendor name.
 - Preselect only installed Revit versions in the MSI feature tree while retaining manual per-version overrides.
 - Replace and migrate separate Revit-version installers with one per-user MSI containing all supported builds and the shared sign-in updater.
 - Document the testability boundary between `RevitAPI` document logic and thin `RevitAPIUI` adapters.

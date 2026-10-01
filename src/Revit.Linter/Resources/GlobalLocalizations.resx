@@ -151,6 +151,7 @@
     <value>Formula compilation failed. Fix the configuration file and restart Revit.</value>
   </data>
   <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="ribbonTab_name" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Open configuration
 folder</value></data>
   <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Open the linter configuration folder</value></data>

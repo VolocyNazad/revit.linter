@@ -151,6 +151,7 @@
     <value>Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit.</value>
   </data>
   <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Проверки</value></data>
+  <data name="ribbonTab_name" xml:space="preserve"><value>Диагностика</value></data>
   <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Открыть папку
 конфигурации</value></data>
   <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Открыть папку конфигурации линтера</value></data>
