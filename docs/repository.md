@@ -147,6 +147,8 @@ Production projects generate XML documentation; test projects are exempt from mi
 
 The analyzer complements rather than replaces the localization tests. `RESX001`-`RESX007` provide immediate feedback during a normal build, while the tests additionally verify that every source resource is registered in the aggregation project and that the final ILRepack artifacts can load neutral and Russian resources.
 
+> **Note:** The post-publish artifact test is run through its xUnit v3 executable with `dotnet run`. `dotnet test` through Microsoft.Testing.Platform currently reports zero discovered tests for this executable even though the in-process runner discovers and executes it.
+
 > **Note:** `RESX008` is intentionally disabled. Existing resource keys use both `PascalCase` and `snake_case`; enable a naming convention only as a separately planned migration that updates existing keys and their consumers together.
 
 The root `global.json` selects stable .NET SDK 10.0 (minimum `10.0.103`, `rollForward: latestFeature`). CI and publishing install the SDK from this file. Additional SDK installations may provide older test runtimes. See the [SDK selection policy](policies/development.md#net-sdk-selection).

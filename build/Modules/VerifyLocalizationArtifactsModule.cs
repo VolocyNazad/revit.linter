@@ -23,10 +23,13 @@ public sealed class VerifyLocalizationArtifactsModule : Module
                     {
                         Arguments =
                         [
-                            "test",
-                            BuildPaths.LocalizationArtifactTestsProject,
+                            "run",
+                            "--project", BuildPaths.LocalizationArtifactTestsProject,
                             "--configuration", configuration,
-                            "--nologo"
+                            "--no-launch-profile",
+                            "--",
+                            "-noLogo",
+                            "-reporter", "default"
                         ]
                     },
                     cancellationToken: cancellationToken));

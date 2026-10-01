@@ -62,6 +62,8 @@ Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warn
 
 Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in global.json. CI invokes each headless test project explicitly and treats a run with no discovered tests as a failure. Tests that require a running Revit process use the .RevitTests suffix and are excluded from hosted headless test runs.
 
+The post-publish localization artifact project is an intentional exception: the build pipeline invokes its xUnit v3 executable through `dotnet run` after producing each ILRepack output. Microsoft.Testing.Platform does not discover this executable's test through `dotnet test`, while the in-process xUnit runner does. Do not replace this command with `dotnet test` unless discovery is verified for every supported target framework and configuration.
+
 ## Roslyn compatibility
 
 Distributed analyzers and source generators target Microsoft.CodeAnalysis 4.14, matching Visual Studio 2022 version 17.14. Keep Roslyn references private implementation dependencies and verify analyzer or generator tests before changing this compatibility baseline.
