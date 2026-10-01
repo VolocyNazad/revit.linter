@@ -6,128 +6,37 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Fixed
-
-- Detect installed Revit versions from their populated Autodesk component-registration values when selecting default MSI features.
-- Run manual update checks without a console window, accept prerelease build metadata for the installed version, and notify the user when the installation is current or the check fails.
-- Resolve the manually launched updater from the same `VolocyNazad` per-user installation directory used by the MSI.
-- Ignore the root build-artifact output directory so local packaging does not dirty the Git worktree.
-- Convert prerelease GitVersion values to the numeric `major.minor.patch` required by Windows Installer while retaining full semantic versions in application assemblies.
-- Run post-publish localization artifact checks through the xUnit v3 executable so Microsoft.Testing.Platform cannot incorrectly fail the build with zero discovered tests.
-- Repair malformed Wiki table links, point formula references at their complete pages, reject unmatched brackets or invalid explicit Wiki paths during publication, and support absolute staging paths.
-- Wrap long informational and confirmation dialog messages within a stable width and provide vertical scrolling instead of clipping oversized content.
-- Harden updater HTTP transport with bounded GitHub API responses, a pinned API version, explicit connection and operation timeouts, and validated HTTPS download redirects.
-- Log why a GitHub release installer asset was rejected instead of silently falling back to the release page.
-- Propagate caller-requested updater cancellation while continuing to report HTTP timeouts as failed checks.
-- Map updater projects to the solution's `x64` platform so Visual Studio resolves every versioned build configuration correctly.
+## [1.8.0] - 2026-10-01
 
 ### Added
 
-- Add the Revit Linter product icon to the updater executable and Windows Installed Apps registration.
-- Download the exact MSI asset after an explicit notification action, verify its size and GitHub-provided SHA-256 digest, and reveal it in Explorer without launching the installer.
-- Resolve read-only machine and user updater policies for checks, notifications, interval, and release API endpoint ahead of user settings and built-in defaults.
-- Show a Windows app notification for new releases with download, release-notes, later, and skip actions, validated activation arguments, and a silent fallback when notifications are unavailable.
-- Coordinate updater processes through named per-user synchronization objects so concurrent manual checks reuse or activate the running updater.
-- Detect installed Revit versions in the unified MSI, preselect their optional features, and let users adjust the component selection.
-- Build the updater as a versioned self-contained `win-x64` application before installer creation.
-- Add the Revit-independent updater foundation with stable GitHub release discovery, persisted per-user state, 24-hour scheduling, manual checks, skip behavior, and headless tests.
-- Add a compact Revit ribbon command that delegates manual update checks to the standalone updater.
-- Add ribbon commands for opening Revit Linter support and GitHub Sponsors pages.
-- Cover project-parameter diagnostics with live Revit tests for valid definitions, missing parameters, and every checked binding property.
-- Add named `elementSets` selection to configured fix steps, with target-only defaults and explicit dependency support.
-- Add YAML-configurable user diagnostic fix pipelines with an initial `Delete` step.
-- Document stable architecture decisions, current product scope, module abstraction layout, WPF composition, public API documentation, warning hygiene and structured logging policy.
-- Add a versioned diagnostic-report export document with Revit/add-in metadata, active filters, result counts, stable severity values, obsolete-result details, and structured target/dependency element IDs.
-- Add class-based element diagnostic visualization pipelines with ordered YAML-configurable steps, semantic element sets, restorable view state, full graphic styles, element/filter application strategies, and a compact Show action in diagnostic reports.
-- Export the currently displayed diagnostic findings as a self-contained HTML report with severity and diagnostic-code summaries.
-- Verify localization key and placeholder parity, source resource registration, satellite assemblies, and culture fallback in final ILRepack outputs before creating installers.
-- Validate localized `.resx` tables during regular builds with `VolocyNazad.ResxAnalyzer`.
+- Check for new stable releases with a standalone updater that runs at Windows sign-in (by default at most once every 24 hours) and on demand from the new **Check for updates** ribbon command. New releases are announced with a Windows notification offering **Download**, **Release notes**, **Later** and **Skip**. **Download** fetches the exact release MSI, verifies its size and SHA-256 digest, and reveals it in Explorer without starting the installer.
+- Let administrators control update checks, notifications, the check interval and the release API endpoint through machine or user policies under `Software\Policies\Volocy\Revit.Linter\Updater`.
+- Add configurable visualization pipelines for element diagnostics: ordered YAML steps, named element sets and full graphic styles, applied from a compact **Show** action in the diagnostic report and restored afterwards.
+- Add YAML-configurable fix pipelines for user diagnostics, starting with a `Delete` step and named `elementSets` that select the target and, explicitly, its dependencies.
+- Export the displayed diagnostic findings as a self-contained HTML report with severity and diagnostic-code summaries.
+- Add ribbon commands that open the Revit Linter support page and GitHub Sponsors.
 
 ### Changed
 
-- Move the updater, its core library and tests into the standalone `updater/` folder with its own MSBuild settings, central package versions and `Revit.Linter.Updater.slnx`, outside the root solution. Updater projects now use `Microsoft.NET.Sdk` with plain `Debug`/`Release` configurations; CI builds and tests them in a separate job, and the release build publishes the updater in `Release`.
-- Localize the Revit ribbon tab name as `Diagnostics` or `Диагностика` instead of the vendor name.
-- Preselect only installed Revit versions in the MSI feature tree while retaining manual per-version overrides.
-- Replace and migrate separate Revit-version installers with one per-user MSI containing all supported builds and the shared sign-in updater.
-- Document the testability boundary between `RevitAPI` document logic and thin `RevitAPIUI` adapters.
-- Document build-time localization validation and require nearby remarks for non-obvious API behavior.
-- Expand the English and Russian Wiki with report-action semantics, visualization and fix caveats, configuration-failure behavior, application-log locations, and troubleshooting guidance.
-- Record the planned unified per-user installer and short-lived Windows update notifier architecture.
-- Run the only available diagnostic fix by left-clicking its button and show a choice menu when several fixes are available.
-- Keep all three working configuration files synchronized with tested documentation examples and complete their navigation links.
-- Add a safe, narrowly targeted `Delete` fix-pipeline test rule to the example user-diagnostic configuration.
-- Expand the collision configuration example with individual visualization-step samples and composed filter/crop/isolation pipelines.
-- Export the complete versioned report document in JSON and YAML while keeping HTML and CSV rendering on the same shared contract.
-- Generate XML documentation for production projects, exempt test projects, and provide an opt-in strict build that treats undocumented public APIs as errors while the existing API baseline is documented.
-- Document the public diagnostic catalog, identity, verdict, registration, override, and service contracts in the core module.
-- Document the public diagnostic-report contracts and dependency-injection entry point.
-- Document the public fix-report contracts and dependency-injection entry point.
-- Document the public element-ignore contracts and dependency-injection entry point.
-- Document the public element-change monitor lifecycle contract and dependency-injection entry point.
-- Document the base element-dependency definer extension-point contract.
-- Document the public element-dependency composition and filtering definers.
-- Document the public element type, family, and instance dependency definers.
-- Document the public group membership and nested-component dependency definers.
-- Document the public host, insert, and MEP insulation dependency definers.
-- Document the public room, space, scope-box, connection, and identity dependency definers.
-- Document discovery of built-in element dependency definer types.
-- Document the shared localization lookup API and keep its assembly marker internal.
-- Document the diagnostic execution, registration, and duplicate-code error contracts.
-- Document the informational and confirmation dialog contracts, WPF views, and dependency-injection entry point.
-- Document the diagnostic report presenter interaction contract.
-- Document the public localization source-generator entry point.
-- Document the public WPF theme-management contract and dependency-injection entry point.
-- Document the project-parameter management contract and keep its collection helper internal.
-- Document the version-specific configuration path, YAML loading, and file-change notification APIs.
-- Document generated localization properties, opened-document selector models, the Revit event-aware view-model base, and its dependency-injection entry point.
-- Keep localized resource enumeration warning-free while preserving specific-culture precedence.
-- Document the diagnostic-run settings, WPF presentation models, Revit event-aware base, and dependency-injection entry point.
-- Document the diagnostic-list WPF composition API and keep its initialization base internal.
-- Document the dependency-injection-backed WPF view-locator markup extension.
-- Remove the obsolete diagnostic-progress TODO that produced an analyzer warning without representing an active contract.
-- Document the fix-report WPF composition API and keep its initialization base internal.
-- Document the reusable WPF behavior that forwards nested report scrolling to its parent.
-- Document the shared report-message parsing, link, text-part, and WPF rendering contracts.
-- Document the element and document diagnostic composition entry points.
-- Document the diagnostic-report WPF composition API, keep its initialization base internal, and remove an unused debug converter.
-- Remove obsolete diagnostic-report presenter warnings without changing filtering, fixing, or transaction behavior.
-- Use the existing category-ID compatibility helper in curve diagnostics across Revit 2021–2027.
-- Limit the formula-language public API to documented grammar profile factories.
-- Limit collision diagnostic composition to its documented dependency-injection entry point.
-- Limit user-defined diagnostic composition to its documented dependency-injection entry point.
-- Limit parameter element diagnostic composition to its documented dependency-injection entry point.
-- Document the Revit application and command entry points and keep application infrastructure internal.
-- Handle shutdown failures without duplicate exception propagation and document path-based add-in dependency loading.
-- Avoid generating unused `System.Index` and `System.Range` compatibility types so ILRepack can merge .NET Framework builds without duplicate-type warnings.
-- Document intentional path-based assembly loading and no-op command events in artifact and presentation tests.
-- Use an explicit path-separator overload in localization integrity tests to keep analyzer output unambiguous.
-- Document the public element-change notification contracts and dependency-injection entry point.
-- Reduce the element accent module's public surface to its contracts and documented dependency-injection entry point.
-- Separate atomic element accent operations from visualization pipeline orchestration, graphics overrides, and rollback state.
-- Document the planned branching diagnostic report history and file-based storage design.
-- Document the planned class-based diagnostic visualizations, internal reusable pipelines, safe highlighting session, custom-rule registration, and compact Show action.
-- Declare English as the neutral resource language, use a parent-culture `ru` satellite for all Russian regional cultures, and resolve global, view-model, and feature strings through the same localization reader.
+- Replace the separate per-Revit-version installers with one per-user MSI for Revit 2021, 2023 and 2025. It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, preselects the Revit versions installed on the computer while letting the user change the selection, refuses to install, modify or remove the add-in while Revit is running, and removes older per-version installations on first install.
+- Write JSON and YAML report exports as a versioned document with Revit and add-in metadata, active filters, result counts, stable severity values, obsolete-result details and structured target and dependency element IDs; CSV and HTML exports use the same data.
+- Run a diagnostic fix by left-clicking its button in the report; when several fixes are available, the button opens a menu to choose one.
+- Complete the English and Russian localization of built-in diagnostics, report filters, document filters, fixes, transactions and parameter diagnostic details, and use Russian for every Russian regional culture.
+- Show the Revit ribbon tab as **Diagnostics** / **Диагностика** instead of the vendor name.
+- Store add-in logs under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\` instead of a single unbounded `logs.txt` next to the add-in. Logs roll daily and at 20 MB, keep the newest 14 files, no longer record the machine name, and are flushed when Revit closes.
+- Expand the English and Russian Wiki with report actions, visualizations, fixes, configuration errors, log locations and troubleshooting, and update the example configurations to match.
 
 ### Fixed
 
-- Stop the updater before installer file changes and refuse installation, modification or removal while Revit is running.
-- Remove Revit manifests only during a real uninstall, not during installer repair or upgrade.
-- Use the explicit `ViewLocatorExtension` type name so Visual Studio's XAML language service resolves the shared markup extension.
-- Keep the diagnostic report grid out of WPF edit mode so changing filters can safely refresh its collection view.
-- Include the rejected formula in user-diagnostic compilation warnings.
-- Parse project-parameter groups as `PG_*` names or numeric IDs through Revit 2023 and as full `ForgeTypeId` values in Revit 2024 and newer.
-
-- Keep the safe `FIXTEST001` sample narrow by evaluating its parameter condition in `check`, where parameter access is supported.
-- Notify users about invalid user-diagnostic YAML and load it as an empty configuration instead of retaining stale rules or failing add-in startup.
-- Calculate 3D visualization section boxes in model coordinates, use a stable millimetre offset, and avoid temporary model elements while cropping views.
-- Keep diagnostic visualizations active when their own Revit transactions raise `DocumentChanged`, log the event that requests restoration, and use the correct temporary-visibility capability check for isolation.
-- Support both 32-bit and 64-bit `BuiltInCategory` enum representations and make ignore-feedback tests independent of the Revit UI language.
-- Supply the visualization-pipeline dependency in the built-in diagnostic registration integration test and verify every registration exposes a pipeline.
-- Read UTF-8 repository documents and solution files consistently in the repository validator, including under Windows PowerShell 5.1.
-- Apply visualization pipelines through a transaction group, retain failed restoration sessions for retry, and defer restoration triggered by Revit events to a modifiable API context.
-- Restore the application project's theme-service import and remove empty global-using files.
-- Store add-in logs under `%LOCALAPPDATA%` without the machine-name property, bound them to the newest 14 daily or 20 MB files, keep Console/Debug sinks development-only, record startup and shutdown lifecycle events, capture fatal lifecycle failures, and dispose the logging host during Revit shutdown so buffered events are flushed.
-- Localize built-in diagnostics, report filters, selected severity and target labels, document filters, fixes, transactions, ignore-parameter feedback, and parameter diagnostic details in English and Russian.
+- Repairing or modifying the installation no longer removes the Revit add-in manifest.
+- Invalid user-diagnostic YAML no longer breaks diagnostics loading: the user is notified and the file is treated as empty.
+- Check project-parameter groups correctly in Revit 2023 and earlier, where numeric IDs and `PG_*` names were parsed the wrong way round.
+- Find duct and pipe insulation, duct lining and scope-box dependencies in Revit 2023 and earlier instead of failing on the category check.
+- Changing report filters no longer fails after a report row has entered edit mode.
+- Cropping a 3D view to elements no longer creates temporary model elements, calculates the section box in model coordinates with a fixed margin in millimetres, and isolation checks the correct view capability.
+- Wrap long messages in informational and confirmation dialogs and scroll them instead of clipping.
+- Fix broken formula-reference links in the Wiki.
 
 ## [1.7.0] - 2026-09-23
 
