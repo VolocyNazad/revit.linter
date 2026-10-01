@@ -13,13 +13,16 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
 {
     private readonly AppNotificationManager? _manager;
     private readonly UpdateNotificationActivationHandler _activationHandler;
+    private readonly InstallerDownloadService _installerDownloader;
     private readonly ILogger<WindowsUpdateNotificationService> _logger;
 
     public WindowsUpdateNotificationService(
         UpdateNotificationActivationHandler activationHandler,
+        InstallerDownloadService installerDownloader,
         ILogger<WindowsUpdateNotificationService> logger)
     {
         _activationHandler = activationHandler;
+        _installerDownloader = installerDownloader;
         _logger = logger;
 
         if (IsElevated())
@@ -73,12 +76,12 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
 
             string version = release.Version.ToString();
             var notification = new AppNotificationBuilder()
-                .AddArgument("action", "download")
+                .AddArgument("action", "release")
                 .AddArgument("version", version)
                 .AddArgument("url", release.ReleasePage.AbsoluteUri)
                 .AddText($"Revit Linter {version} is available")
                 .AddText("Download the update or review the release notes.")
-                .AddButton(CreateButton("Download", "download", version, release.ReleasePage))
+                .AddButton(CreateDownloadButton(release))
                 .AddButton(CreateButton("What's new", "release", version, release.ReleasePage))
                 .AddButton(CreateButton("Later", "later", version, release.ReleasePage))
                 .AddButton(CreateButton("Skip this version", "skip", version, release.ReleasePage))
@@ -121,6 +124,18 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
             .AddArgument("version", version)
             .AddArgument("url", releasePage.AbsoluteUri);
 
+    private static AppNotificationButton CreateDownloadButton(ReleaseInfo release)
+    {
+        if (release.Installer is not { } installer)
+            return CreateButton("Download", "release", release.Version.ToString(), release.ReleasePage);
+
+        return CreateButton("Download", "download", release.Version.ToString(), release.ReleasePage)
+            .AddArgument("name", installer.Name)
+            .AddArgument("downloadUrl", installer.DownloadUri.AbsoluteUri)
+            .AddArgument("size", installer.Size.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            .AddArgument("digest", $"sha256:{installer.Sha256}");
+    }
+
     private void OnNotificationInvoked(
         AppNotificationManager sender,
         AppNotificationActivatedEventArgs arguments)
@@ -143,9 +158,43 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
             return;
         }
 
+        if (activation.Action == UpdateNotificationAction.Download)
+        {
+            await DownloadInstallerAsync(activation);
+            return;
+        }
+
         Uri? releasePage = await _activationHandler.HandleAsync(activation);
         if (releasePage is not null)
             Process.Start(new ProcessStartInfo(releasePage.AbsoluteUri) { UseShellExecute = true });
+    }
+
+    private async Task DownloadInstallerAsync(UpdateNotificationActivation activation)
+    {
+        try
+        {
+            string downloadDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Volocy", "Revit.Linter", "updater", "downloads");
+            string installerPath = await _installerDownloader.DownloadAsync(
+                activation.Installer!,
+                downloadDirectory);
+            string explorerPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                "explorer.exe");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = explorerPath,
+                Arguments = $"/select,\"{installerPath}\"",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception) when (
+            exception is HttpRequestException or IOException or UnauthorizedAccessException or TaskCanceledException)
+        {
+            _logger.LogError(exception, "Failed to download or verify installer");
+            Process.Start(new ProcessStartInfo(activation.ReleasePage!.AbsoluteUri) { UseShellExecute = true });
+        }
     }
 
     private static bool IsElevated()

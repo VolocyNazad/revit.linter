@@ -30,8 +30,11 @@ public sealed class UpdateNotificationActivationHandler
         UpdateNotificationActivation activation,
         CancellationToken cancellationToken = default)
     {
-        if (activation.Action is UpdateNotificationAction.Download or UpdateNotificationAction.ReleaseNotes)
+        if (activation.Action == UpdateNotificationAction.ReleaseNotes)
             return activation.ReleasePage;
+
+        if (activation.Action == UpdateNotificationAction.Download)
+            return null;
 
         try
         {

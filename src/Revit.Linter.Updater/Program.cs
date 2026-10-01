@@ -58,6 +58,7 @@ try
         }
     });
     using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+    using var downloadHttpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
     var stateStore = new JsonUpdaterStateStore();
     UpdaterState userState;
     try
@@ -76,8 +77,12 @@ try
     var activationHandler = new UpdateNotificationActivationHandler(
         stateStore,
         loggerFactory.CreateLogger<UpdateNotificationActivationHandler>());
+    var installerDownloader = new InstallerDownloadService(
+        downloadHttpClient,
+        loggerFactory.CreateLogger<InstallerDownloadService>());
     using var notificationService = new WindowsUpdateNotificationService(
         activationHandler,
+        installerDownloader,
         loggerFactory.CreateLogger<WindowsUpdateNotificationService>());
     var coordinator = new UpdateCoordinator(
         new GitHubReleaseClient(

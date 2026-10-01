@@ -68,6 +68,38 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
             throw new JsonException("GitHub release response contains invalid tag_name or html_url.");
         }
 
-        return new ReleaseInfo(version, releasePage);
+        ReleaseInstaller? installer = TryReadInstaller(root, version);
+        return new ReleaseInfo(version, releasePage, installer);
+    }
+
+    private static ReleaseInstaller? TryReadInstaller(JsonElement root, StableVersion version)
+    {
+        if (!root.TryGetProperty("assets", out JsonElement assets) || assets.ValueKind != JsonValueKind.Array)
+            return null;
+
+        string expectedName = $"RevitLinter-{version}.msi";
+        foreach (JsonElement asset in assets.EnumerateArray())
+        {
+            string? name = asset.TryGetProperty("name", out JsonElement nameElement)
+                ? nameElement.GetString()
+                : null;
+            if (!string.Equals(name, expectedName, StringComparison.Ordinal))
+                continue;
+
+            string? downloadUrl = asset.TryGetProperty("browser_download_url", out JsonElement urlElement)
+                ? urlElement.GetString()
+                : null;
+            string? digest = asset.TryGetProperty("digest", out JsonElement digestElement)
+                ? digestElement.GetString()
+                : null;
+            long size = asset.TryGetProperty("size", out JsonElement sizeElement) && sizeElement.TryGetInt64(out long value)
+                ? value
+                : 0;
+            return ReleaseInstaller.TryCreate(version, name, downloadUrl, size, digest, out ReleaseInstaller? installer)
+                ? installer
+                : null;
+        }
+
+        return null;
     }
 }

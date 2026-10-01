@@ -9,9 +9,16 @@ lang: en
 The **Updates** button starts the standalone Revit Linter updater in manual mode. Manual checks ignore the 24-hour automatic-check interval and report both an up-to-date result and a failure.
 
 When a newer release is available, Windows shows a local notification with **Download**, **What's new**,
-**Later**, and **Skip this version** actions. The first two actions open the matching GitHub release;
-the updater never downloads or installs it without an explicit user action. Notifications are skipped
-when Windows does not support them, they are disabled, or the updater is running elevated.
+**Later**, and **Skip this version** actions. **Download** fetches the exact MSI from the matching GitHub
+release, verifies its expected size and SHA-256 digest, and shows the verified file in Explorer. It does
+not start the installer; installation remains an explicit user action. **What's new** opens the release
+page. Notifications are skipped when Windows does not support them, they are disabled, or the updater is
+running elevated.
+
+> [!note]
+> The current download check proves that the file matches the asset published by GitHub. Automatic
+> installation is intentionally unavailable until the MSI can also be verified by an expected-publisher
+> Authenticode signature. Failed or mismatched downloads are deleted and recorded in the updater log.
 
 **Later** allows the same release to be offered after the next scheduled check. **Skip this version**
 suppresses that release until a newer stable version is published.

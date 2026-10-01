@@ -24,6 +24,61 @@ public sealed class GitHubReleaseClientTests
     }
 
     [Fact]
+    public async Task GetLatestAsync_ValidInstallerAsset_ReturnsValidatedInstaller()
+    {
+        const string body = """
+            {
+              "tag_name": "v2.3.4",
+              "html_url": "https://github.com/VolocyNazad/revit.linter/releases/tag/v2.3.4",
+              "draft": false,
+              "prerelease": false,
+              "assets": [{
+                "name": "RevitLinter-2.3.4.msi",
+                "browser_download_url": "https://github.com/VolocyNazad/revit.linter/releases/download/v2.3.4/RevitLinter-2.3.4.msi",
+                "size": 4096,
+                "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }]
+            }
+            """;
+        var client = CreateClient(new StubHandler(HttpStatusCode.OK, body));
+
+        ReleaseInfo? release = await client.GetLatestAsync(TestContext.Current.CancellationToken);
+
+        ReleaseInstaller installer = Assert.IsType<ReleaseInstaller>(release?.Installer);
+        Assert.Equal("RevitLinter-2.3.4.msi", installer.Name);
+        Assert.Equal(4096, installer.Size);
+    }
+
+    [Theory]
+    [InlineData("RevitLinter-2.3.4-x64.msi", "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
+    [InlineData("RevitLinter-2.3.4.msi", "sha256:invalid")]
+    public async Task GetLatestAsync_UntrustedInstallerAsset_DoesNotExposeInstaller(
+        string name,
+        string digest)
+    {
+        string body = $$"""
+            {
+              "tag_name": "v2.3.4",
+              "html_url": "https://github.com/VolocyNazad/revit.linter/releases/tag/v2.3.4",
+              "draft": false,
+              "prerelease": false,
+              "assets": [{
+                "name": "{{name}}",
+                "browser_download_url": "https://github.com/VolocyNazad/revit.linter/releases/download/v2.3.4/{{name}}",
+                "size": 4096,
+                "digest": "{{digest}}"
+              }]
+            }
+            """;
+        var client = CreateClient(new StubHandler(HttpStatusCode.OK, body));
+
+        ReleaseInfo? release = await client.GetLatestAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(release);
+        Assert.Null(release.Installer);
+    }
+
+    [Fact]
     public async Task GetLatestAsync_NotFound_ReturnsNull()
     {
         var client = CreateClient(new StubHandler(HttpStatusCode.NotFound, "{}"));

@@ -53,6 +53,13 @@ self-contained unpackaged application before MSI creation. The publish directory
 build-module result; installer generation must consume that result instead of relying on
 configuration-specific paths under `bin`.
 
+The updater accepts a release installer only when its GitHub asset name and HTTPS URL exactly match the
+stable release version. An explicit notification action downloads that asset through a uniquely named
+partial file, verifies its declared size and GitHub-provided SHA-256 digest, and moves it to
+`%LOCALAPPDATA%\Volocy\Revit.Linter\updater\downloads\` only after both checks pass. A mismatch deletes
+the partial file. The updater opens Explorer with the verified MSI selected but does not start Windows
+Installer; Authenticode publisher verification is required before automatic launch can be added.
+
 Release packaging produces one per-user MSI containing every supported Revit build and the shared
 updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creates version-specific
 manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current

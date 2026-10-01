@@ -12,7 +12,6 @@ public sealed class UpdateNotificationActivationHandlerTests
         "https://github.com/VolocyNazad/revit.linter/releases/tag/v2.0.0");
 
     [Theory]
-    [InlineData(UpdateNotificationAction.Download)]
     [InlineData(UpdateNotificationAction.ReleaseNotes)]
     public async Task HandleAsync_NavigationAction_ReturnsTrustedPage(UpdateNotificationAction action)
     {
@@ -23,6 +22,18 @@ public sealed class UpdateNotificationActivationHandlerTests
             TestContext.Current.CancellationToken);
 
         Assert.Equal(ReleasePage, result);
+    }
+
+    [Fact]
+    public async Task HandleAsync_Download_ReturnsNullBecauseAdapterDownloadsInstaller()
+    {
+        var handler = CreateHandler(new FakeStateStore());
+
+        Uri? result = await handler.HandleAsync(
+            ParseAction(UpdateNotificationAction.Download),
+            TestContext.Current.CancellationToken);
+
+        Assert.Null(result);
     }
 
     [Fact]
@@ -86,6 +97,13 @@ public sealed class UpdateNotificationActivationHandlerTests
         string arguments = $"action={name}&version={Version}";
         if (action is UpdateNotificationAction.Download or UpdateNotificationAction.ReleaseNotes)
             arguments += "&url=" + Uri.EscapeDataString(ReleasePage.AbsoluteUri);
+        if (action == UpdateNotificationAction.Download)
+        {
+            arguments += "&name=RevitLinter-2.0.0.msi";
+            arguments += "&downloadUrl=" + Uri.EscapeDataString(
+                "https://github.com/VolocyNazad/revit.linter/releases/download/v2.0.0/RevitLinter-2.0.0.msi");
+            arguments += "&size=1024&digest=sha256%3A" + new string('a', 64);
+        }
 
         Assert.True(UpdateNotificationActivation.TryParse(arguments, out var activation));
         return Assert.IsType<UpdateNotificationActivation>(activation);

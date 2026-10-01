@@ -20,6 +20,11 @@ Setup must replace add-in files while Revit is closed. If any Revit process is r
 without changing the files and asks you to close Revit before running it again. Upgrades preserve the
 previous component selection where Windows Installer can migrate it.
 
+When an update notification's **Download** action is used, the updater stores the MSI under
+`%LOCALAPPDATA%\Volocy\Revit.Linter\updater\downloads\` only after its size and GitHub-provided SHA-256
+digest match the release metadata. Explorer opens with that file selected, but setup is not started
+automatically. Close Revit and run the verified MSI explicitly.
+
 ## Administrator update policies
 
 Revit Linter reads optional policy from `Software\Policies\Volocy\Revit.Linter\Updater` under both

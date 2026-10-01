@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Web;
 
 namespace Revit.Linter.Updater.Core.Models;
@@ -11,11 +12,13 @@ public sealed class UpdateNotificationActivation
     private UpdateNotificationActivation(
         UpdateNotificationAction action,
         StableVersion version,
-        Uri? releasePage)
+        Uri? releasePage,
+        ReleaseInstaller? installer)
     {
         Action = action;
         Version = version;
         ReleasePage = releasePage;
+        Installer = installer;
     }
 
     /// <summary>Gets the validated action selected by the user.</summary>
@@ -27,6 +30,10 @@ public sealed class UpdateNotificationActivation
     /// <summary>Gets the trusted official release page for a navigation action.</summary>
     /// <remarks>This is <see langword="null"/> for actions that do not navigate externally.</remarks>
     public Uri? ReleasePage { get; }
+
+    /// <summary>Gets the validated installer metadata for a download action.</summary>
+    /// <remarks>This is <see langword="null"/> for actions other than download.</remarks>
+    public ReleaseInstaller? Installer { get; }
 
     /// <summary>Parses and validates the arguments supplied by notification activation.</summary>
     /// <remarks>
@@ -57,7 +64,21 @@ public sealed class UpdateNotificationActivation
             return false;
         }
 
-        activation = new UpdateNotificationActivation(action, version, releasePage);
+        ReleaseInstaller? installer = null;
+        if (action == UpdateNotificationAction.Download &&
+            (!long.TryParse(values["size"], NumberStyles.None, CultureInfo.InvariantCulture, out long size) ||
+             !ReleaseInstaller.TryCreate(
+                 version,
+                 values["name"],
+                 values["downloadUrl"],
+                 size,
+                 values["digest"],
+                 out installer)))
+        {
+            return false;
+        }
+
+        activation = new UpdateNotificationActivation(action, version, releasePage, installer);
         return true;
     }
 
