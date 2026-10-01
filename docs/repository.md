@@ -64,7 +64,7 @@ through GitHub-owned hosts. Release metadata requests pin the GitHub API version
 than one megabyte. Connection timeouts are independent from the overall download-operation timeout.
 
 Release packaging produces one per-user MSI containing every supported Revit build and the shared
-updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creates version-specific
+updater. It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific
 manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current
 user's `Run` key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with
 the stable product version.

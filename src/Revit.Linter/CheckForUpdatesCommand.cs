@@ -19,6 +19,7 @@ namespace Revit.Linter;
 [Transaction(TransactionMode.Manual)]
 public sealed class CheckForUpdatesCommand : ExternalCommand
 {
+    private const string Vendor = "VolocyNazad";
     private const string UpdaterExecutableName = "Revit.Linter.Updater.exe";
 
     /// <inheritdoc />
@@ -50,7 +51,7 @@ public sealed class CheckForUpdatesCommand : ExternalCommand
     {
         string installedPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Programs", "Volocy", "Revit.Linter", UpdaterExecutableName);
+            "Programs", Vendor, "Revit.Linter", UpdaterExecutableName);
         if (File.Exists(installedPath))
             return installedPath;
 
