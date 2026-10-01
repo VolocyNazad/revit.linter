@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.Updater.Core.Models;
 using Revit.Linter.Updater.Core.Services;
@@ -50,11 +51,12 @@ public sealed class GitHubReleaseClientTests
     }
 
     [Theory]
-    [InlineData("RevitLinter-2.3.4-x64.msi", "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
-    [InlineData("RevitLinter-2.3.4.msi", "sha256:invalid")]
-    public async Task GetLatestAsync_UntrustedInstallerAsset_DoesNotExposeInstaller(
+    [InlineData("RevitLinter-2.3.4-x64.msi", "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "does not contain expected installer asset")]
+    [InlineData("RevitLinter-2.3.4.msi", "sha256:invalid", "missing or invalid SHA-256 digest")]
+    public async Task GetLatestAsync_UntrustedInstallerAsset_LogsReasonAndDoesNotExposeInstaller(
         string name,
-        string digest)
+        string digest,
+        string expectedLog)
     {
         string body = $$"""
             {
@@ -70,12 +72,14 @@ public sealed class GitHubReleaseClientTests
               }]
             }
             """;
-        var client = CreateClient(new StubHandler(HttpStatusCode.OK, body));
+        var logger = new RecordingLogger();
+        var client = CreateClient(new StubHandler(HttpStatusCode.OK, body), logger: logger);
 
         ReleaseInfo? release = await client.GetLatestAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(release);
         Assert.Null(release.Installer);
+        Assert.Contains(logger.Messages, message => message.Contains(expectedLog, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -158,11 +162,38 @@ public sealed class GitHubReleaseClientTests
 
     private static GitHubReleaseClient CreateClient(
         HttpMessageHandler handler,
-        Uri? endpoint = null) =>
+        Uri? endpoint = null,
+        ILogger<GitHubReleaseClient>? logger = null) =>
         new(
             new HttpClient(handler),
             endpoint ?? UpdaterConfiguration.DefaultReleaseApiUri,
-            NullLogger<GitHubReleaseClient>.Instance);
+            logger ?? NullLogger<GitHubReleaseClient>.Instance);
+
+    private sealed class RecordingLogger : ILogger<GitHubReleaseClient>
+    {
+        public List<string> Messages { get; } = [];
+
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter) =>
+            Messages.Add(formatter(state, exception));
+
+        private sealed class NullScope : IDisposable
+        {
+            public static NullScope Instance { get; } = new();
+
+            public void Dispose()
+            {
+            }
+        }
+    }
 
     private sealed class StubHandler(HttpStatusCode statusCode, string content) : HttpMessageHandler
     {

@@ -44,14 +44,37 @@ public sealed class ReleaseInstaller
         long size,
         string? digest,
         [NotNullWhen(true)] out ReleaseInstaller? installer)
+        => TryCreate(version, name, downloadUrl, size, digest, out installer, out _);
+
+    internal static bool TryCreate(
+        StableVersion version,
+        string? name,
+        string? downloadUrl,
+        long size,
+        string? digest,
+        [NotNullWhen(true)] out ReleaseInstaller? installer,
+        out string? failureReason)
     {
         installer = null;
+        failureReason = null;
         string expectedName = $"RevitLinter-{version}.msi";
         string expectedPath = $"/VolocyNazad/revit.linter/releases/download/v{version}/{expectedName}";
-        if (!string.Equals(name, expectedName, StringComparison.Ordinal) ||
-            size is <= 0 or > MaximumInstallerSize ||
-            !TryParseSha256(digest, out string? sha256) ||
-            !Uri.TryCreate(downloadUrl, UriKind.Absolute, out Uri? downloadUri) ||
+        if (!string.Equals(name, expectedName, StringComparison.Ordinal))
+        {
+            failureReason = "unexpected asset name";
+            return false;
+        }
+        if (size is <= 0 or > MaximumInstallerSize)
+        {
+            failureReason = "invalid asset size";
+            return false;
+        }
+        if (!TryParseSha256(digest, out string? sha256))
+        {
+            failureReason = "missing or invalid SHA-256 digest";
+            return false;
+        }
+        if (!Uri.TryCreate(downloadUrl, UriKind.Absolute, out Uri? downloadUri) ||
             downloadUri.Scheme != Uri.UriSchemeHttps ||
             !downloadUri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
             !downloadUri.IsDefaultPort ||
@@ -60,6 +83,7 @@ public sealed class ReleaseInstaller
             !string.IsNullOrEmpty(downloadUri.Fragment) ||
             !downloadUri.AbsolutePath.Equals(expectedPath, StringComparison.Ordinal))
         {
+            failureReason = "untrusted asset download URL";
             return false;
         }
 

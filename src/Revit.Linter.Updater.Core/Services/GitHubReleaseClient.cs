@@ -72,10 +72,15 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
         return new ReleaseInfo(version, releasePage, installer);
     }
 
-    private static ReleaseInstaller? TryReadInstaller(JsonElement root, StableVersion version)
+    private ReleaseInstaller? TryReadInstaller(JsonElement root, StableVersion version)
     {
         if (!root.TryGetProperty("assets", out JsonElement assets) || assets.ValueKind != JsonValueKind.Array)
+        {
+            _logger.LogWarning(
+                "GitHub release {ReleaseVersion} does not contain an assets array",
+                version);
             return null;
+        }
 
         string expectedName = $"RevitLinter-{version}.msi";
         foreach (JsonElement asset in assets.EnumerateArray())
@@ -95,11 +100,30 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
             long size = asset.TryGetProperty("size", out JsonElement sizeElement) && sizeElement.TryGetInt64(out long value)
                 ? value
                 : 0;
-            return ReleaseInstaller.TryCreate(version, name, downloadUrl, size, digest, out ReleaseInstaller? installer)
-                ? installer
-                : null;
+            if (ReleaseInstaller.TryCreate(
+                    version,
+                    name,
+                    downloadUrl,
+                    size,
+                    digest,
+                    out ReleaseInstaller? installer,
+                    out string? failureReason))
+            {
+                return installer;
+            }
+
+            _logger.LogWarning(
+                "Ignored installer asset {InstallerName} for release {ReleaseVersion}: {FailureReason}",
+                expectedName,
+                version,
+                failureReason);
+            return null;
         }
 
+        _logger.LogWarning(
+            "GitHub release {ReleaseVersion} does not contain expected installer asset {InstallerName}",
+            version,
+            expectedName);
         return null;
     }
 }
