@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Wrap long informational and confirmation dialog messages within a stable width and provide vertical scrolling instead of clipping oversized content.
 - Harden updater HTTP transport with bounded GitHub API responses, a pinned API version, explicit connection and operation timeouts, and validated HTTPS download redirects.
 - Log why a GitHub release installer asset was rejected instead of silently falling back to the release page.
 - Propagate caller-requested updater cancellation while continuing to report HTTP timeouts as failed checks.
