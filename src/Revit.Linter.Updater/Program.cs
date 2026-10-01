@@ -4,12 +4,16 @@ using Revit.Linter.Updater.Core.Models;
 using Revit.Linter.Updater.Core.Services;
 using Serilog;
 
-const string instanceGateName = "Local\\Volocy.Revit.Linter.Updater";
+const string instanceGateName = "Volocy.Revit.Linter.Updater";
 bool manual = args.Contains("--check-now", StringComparer.OrdinalIgnoreCase);
 
-using var instanceGate = new Semaphore(1, 1, instanceGateName);
-if (!instanceGate.WaitOne(TimeSpan.Zero, false))
+using var instanceGate = new UpdaterInstanceGate(instanceGateName);
+if (!instanceGate.TryAcquire())
+{
+    if (manual)
+        instanceGate.RequestManualCheck();
     return 0;
+}
 
 try
 {
@@ -29,10 +33,16 @@ try
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
     if (!StableVersion.TryParse(productVersion, out StableVersion currentVersion))
     {
+        Log.Warning("Cannot determine installed version from {ProductVersion}", productVersion);
         if (manual)
             await Console.Error.WriteLineAsync($"Cannot determine installed version from '{productVersion}'.");
         return 2;
     }
+
+    Log.Information(
+        "Updater {ProductVersion} started in {CheckMode} mode",
+        currentVersion,
+        manual ? "manual" : "automatic");
 
     using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
     {
@@ -57,6 +67,15 @@ try
         currentVersion,
         manual ? UpdateCheckMode.Manual : UpdateCheckMode.Automatic);
 
+    bool manualCheckRequested = instanceGate.ConsumeManualCheckRequest();
+    if (!manual && manualCheckRequested &&
+        result.Status is UpdateCheckStatus.Disabled or UpdateCheckStatus.NotDue)
+    {
+        Log.Information("Running a manual check requested by another updater invocation");
+        result = await coordinator.CheckAsync(currentVersion, UpdateCheckMode.Manual);
+        manual = true;
+    }
+
     if (manual)
     {
         string message = result.Status switch
@@ -75,6 +94,6 @@ try
 }
 finally
 {
+    Log.Information("Updater stopped");
     await Log.CloseAndFlushAsync();
-    instanceGate.Release();
 }

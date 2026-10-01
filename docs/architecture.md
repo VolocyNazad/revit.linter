@@ -69,3 +69,6 @@ This document records stable architectural rules. Implementation details belong 
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no
   Revit API dependency; the add-in may launch it but must not perform release HTTP requests or create
   Windows notifications itself.
+- Only one updater process performs work in a Windows user session. Concurrent manual launches signal
+  the active process through named synchronization objects; pending requests are coalesced and reuse an
+  already-running release check.

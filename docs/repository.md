@@ -40,9 +40,9 @@ visualization pipelines and restores their sessions in reverse order.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
 consumed by the diagnostic report presenter; the initial supported step deletes the target element.
 `Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
-check scheduling, and per-user state persistence. `Revit.Linter.Updater` is the short-lived executable
-entry point; it must remain free of Revit API dependencies so the installer and sign-in startup can
-run it outside Revit.
+check scheduling, per-user state persistence, and single-instance coordination.
+`Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
+dependencies so the installer and sign-in startup can run it outside Revit.
 
 The release pipeline publishes the updater for `win-x64` as a self-contained application before MSI
 creation. The publish directory is an explicit build-module result; installer generation must consume

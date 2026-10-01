@@ -13,6 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Coordinate updater processes through named per-user synchronization objects so concurrent manual checks reuse or activate the running updater.
 - Detect installed Revit versions in the unified MSI, preselect their optional features, and let users adjust the component selection.
 - Build the updater as a versioned self-contained `win-x64` application before installer creation.
 - Add the Revit-independent updater foundation with stable GitHub release discovery, persisted per-user state, 24-hour scheduling, manual checks, skip behavior, and headless tests.

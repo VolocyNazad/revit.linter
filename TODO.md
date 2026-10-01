@@ -11,7 +11,7 @@
 - [x] Implement the updater as a separate executable with no Revit API dependency. The Revit add-in must not perform release HTTP requests or create Windows notifications itself.
 - [x] Prefer a short-lived updater over a permanently running worker: start it for the current user at sign-in, check persisted state, perform any due work, and exit. Do not add a tray icon.
 - [x] Register updater startup per user under `HKCU`; a manual **Check for updates** action in Revit launches the same executable with `--check-now`.
-- [ ] Guarantee a single updater instance with a named semaphore and make concurrent `--check-now` requests activate or reuse the existing check instead of starting duplicate work.
+- [x] Guarantee a single updater instance with a named semaphore and make concurrent `--check-now` requests activate or reuse the existing check instead of starting duplicate work.
 - [x] Query the public GitHub `releases/latest` endpoint with an explicit `User-Agent`, a short HTTP timeout, and no embedded access token. Use only stable, non-draft releases initially.
 - [x] Read the installed product version from installer/build metadata, compare stable `MAJOR.MINOR.PATCH` values, and tolerate an optional leading `v` and assembly build metadata.
 - [x] Persist `AutomaticChecksEnabled`, `LastCheckedAt`, `LastNotifiedVersion`, and `SkippedVersion` under `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`.
@@ -25,7 +25,7 @@
 - [ ] Keep administrative policy separate from user state. Read machine policy, then user policy, then user settings, then built-in defaults; do not write ordinary defaults under a `Policies` registry key.
 - [ ] Consider policies for disabling checks or notifications, fixing the release channel/API URL, controlling the check interval, and allowing automatic download or installation.
 - [x] On uninstall, remove all installed plugin components, manifests and updater startup registration. Preserve logs and user settings.
-- [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling, Revit-running refusal, notification decisions, manual/background error behavior, asset validation, and updater shutdown with headless tests.
+- [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling (covered), Revit-running refusal, notification decisions, manual/background error behavior, asset validation, and updater shutdown with headless tests.
 
 ## Branching diagnostic report history
 
