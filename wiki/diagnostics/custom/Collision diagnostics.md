@@ -90,10 +90,10 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                                                              |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                                                   |
 | `obsoleteDescription` | string          | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional)                                    |
-| `takeDocument`        | string          | `string`            | `bool`                           | Document filtering [[syntax/Formula syntax\|formula]]                                                                                                 |
-| `take`                | string          | `string`            | `ElementFilter`                  | [[syntax/Formula Revit\|Formula]] selecting the first group of elements to check for collisions                                                                   |
-| `andTake`             | string          | `string`            | `ElementFilter`                  | [[syntax/Formula Revit\|Formula]] selecting the second group of elements against which intersections are checked                                                      |
-| `groupBy`             | string          | `string`            | `object`                         | Element [[syntax/Formula Revit\|grouping formula]]. Collision detection runs within groups                                                         |
+| `takeDocument`        | string          | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                                                                 |
+| `take`                | string          | `string`            | `ElementFilter`                  | [[Formula Revit\|Formula selecting the first element group]] for collision checks                                                                   |
+| `andTake`             | string          | `string`            | `ElementFilter`                  | [[Formula Revit\|Formula selecting the second element group]] against which intersections are checked                                                      |
+| `groupBy`             | string          | `string`            | `object`                         | [[Formula Revit\|Element grouping formula]]. Collision detection runs within groups                                                         |
 
 ---
 

@@ -46,9 +46,9 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
 | `obsoleteDescription` | string           | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
-| `takeDocument`        | string           | `string`            | `bool`                           | Document filtering [[syntax/Formula syntax\|formula]]                                                              |
-| `take`                | string           | `string`            | `ElementFilter`                  | [[syntax/Formula Revit\|Element filtering formula]]                                                                |
-| `check`               | string           | `string`            | `bool`                           | [[syntax/Formula syntax\|Element check formula]]; if the result is `true`, the element is considered valid               |
+| `takeDocument`        | string           | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                              |
+| `take`                | string           | `string`            | `ElementFilter`                  | [[Formula Revit\|Element filtering formula]]                                                                |
+| `check`               | string           | `string`            | `bool`                           | [[Formula syntax\|Element check formula]]; if the result is `true`, the element is considered valid               |
 | `fixes`               | sequence         | `-`                 | `-`                              | Optional [[Fix pipelines]] offered for invalid elements. |
 
 

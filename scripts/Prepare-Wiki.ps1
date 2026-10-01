@@ -5,7 +5,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $sourceRoot = (Resolve-Path -LiteralPath $Source).Path
-$destinationRoot = [IO.Path]::GetFullPath((Join-Path (Get-Location).Path $Destination))
+$destinationRoot = if ([IO.Path]::IsPathFullyQualified($Destination)) {
+    [IO.Path]::GetFullPath($Destination)
+} else {
+    [IO.Path]::GetFullPath((Join-Path (Get-Location).Path $Destination))
+}
 
 if (Test-Path -LiteralPath $destinationRoot) {
     throw "Wiki publication directory already exists: $destinationRoot"
@@ -24,6 +28,22 @@ foreach ($file in $markdownFiles) {
 $wikiLinkPattern = '\[\[([^\]|]+?)(?:\\?\|([^\]]+))?\]\]'
 foreach ($file in $markdownFiles) {
     $content = Get-Content -LiteralPath $file.FullName -Raw
+    $contentWithoutLinks = [regex]::Replace($content, $wikiLinkPattern, '')
+    if ($contentWithoutLinks.Contains('[[') -or $contentWithoutLinks.Contains(']]')) {
+        $relativeFile = [IO.Path]::GetRelativePath($sourceRoot, $file.FullName)
+        throw "Malformed Wiki link syntax in '$relativeFile'"
+    }
+
+    foreach ($line in $content -split '\r?\n') {
+        if (-not $line.TrimStart().StartsWith('|')) { continue }
+        foreach ($match in [regex]::Matches($line, $wikiLinkPattern)) {
+            if ($match.Value -match '(?<!\\)\|') {
+                $relativeFile = [IO.Path]::GetRelativePath($sourceRoot, $file.FullName)
+                throw "Unescaped Wiki link alias in Markdown table '$relativeFile': $($match.Value)"
+            }
+        }
+    }
+
     foreach ($match in [regex]::Matches($content, $wikiLinkPattern)) {
         $target = $match.Groups[1].Value
         $pageTarget = ($target -split '#', 2)[0]
@@ -31,6 +51,13 @@ foreach ($file in $markdownFiles) {
         if (-not $pages.ContainsKey($pageName)) {
             $relativeFile = [IO.Path]::GetRelativePath($sourceRoot, $file.FullName)
             throw "Broken Wiki link in '$relativeFile': $target"
+        }
+        if ($pageTarget -match '[/\\]') {
+            $targetPath = Join-Path $sourceRoot ($pageTarget.Replace('/', [IO.Path]::DirectorySeparatorChar) + '.md')
+            if (-not (Test-Path -LiteralPath $targetPath -PathType Leaf)) {
+                $relativeFile = [IO.Path]::GetRelativePath($sourceRoot, $file.FullName)
+                throw "Broken Wiki link path in '$relativeFile': $target"
+            }
         }
     }
 }

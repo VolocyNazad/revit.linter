@@ -53,7 +53,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
 | `obsoleteDescription` | string           | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
-| `take`                | string           | `string`            | `bool`                           | Document filtering [[syntax/Formula syntax\|formula]]                                                              |
+| `take`                | string           | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                              |
 | `parameters`          | list           | `array`             | `-`                              | The list of project parameters to check                                                                                |
 
 ---
