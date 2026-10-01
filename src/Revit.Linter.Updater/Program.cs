@@ -30,15 +30,20 @@ try
             retainedFileCountLimit: 14)
         .CreateLogger();
 
-    string? productVersion = Assembly.GetExecutingAssembly()
+    Assembly assembly = Assembly.GetExecutingAssembly();
+    string? productVersion = assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-    if (!StableVersion.TryParse(productVersion, out StableVersion currentVersion))
+    Version? assemblyVersion = assembly.GetName().Version;
+    if (assemblyVersion is null || assemblyVersion.Build < 0)
     {
         Log.Warning("Cannot determine installed version from {ProductVersion}", productVersion);
-        if (manual)
-            await Console.Error.WriteLineAsync($"Cannot determine installed version from '{productVersion}'.");
         return 2;
     }
+
+    var currentVersion = new StableVersion(
+        assemblyVersion.Major,
+        assemblyVersion.Minor,
+        assemblyVersion.Build);
 
     Log.Information(
         "Updater {ProductVersion} started in {CheckMode} mode",
@@ -47,15 +52,7 @@ try
 
     using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
     {
-        builder.AddSerilog(dispose: true);
-        if (manual)
-        {
-            builder.AddSimpleConsole(options =>
-            {
-                options.SingleLine = true;
-                options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
-            });
-        }
+        builder.AddSerilog(dispose: false);
     });
     using var releaseHandler = new SocketsHttpHandler
     {
@@ -122,21 +119,10 @@ try
         manual = true;
     }
 
-    await notificationCoordinator.NotifyIfNeededAsync(result);
+    bool notificationShown = await notificationCoordinator.NotifyIfNeededAsync(result);
 
-    if (manual)
-    {
-        string message = result.Status switch
-        {
-            UpdateCheckStatus.UpdateAvailable =>
-                $"Revit Linter {result.Release!.Version} is available: {result.Release.ReleasePage}",
-            UpdateCheckStatus.UpToDate => $"Revit Linter {currentVersion} is up to date.",
-            UpdateCheckStatus.Skipped => $"Revit Linter {result.Release!.Version} is available but skipped.",
-            UpdateCheckStatus.Failed => $"Update check failed: {result.Error}",
-            _ => $"Update check finished with status {result.Status}."
-        };
-        await Console.Out.WriteLineAsync(message);
-    }
+    if (manual && !notificationShown)
+        await notificationService.TryShowManualResultAsync(result);
 
     return result.Status == UpdateCheckStatus.Failed ? 1 : 0;
 }

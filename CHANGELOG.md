@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Run manual update checks without a console window, accept prerelease build metadata for the installed version, and notify the user when the installation is current or the check fails.
 - Resolve the manually launched updater from the same `VolocyNazad` per-user installation directory used by the MSI.
 - Ignore the root build-artifact output directory so local packaging does not dirty the Git worktree.
 - Convert prerelease GitVersion values to the numeric `major.minor.patch` required by Windows Installer while retaining full semantic versions in application assemblies.

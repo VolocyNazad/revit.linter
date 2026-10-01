@@ -44,6 +44,14 @@ check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
 dependencies so the installer and sign-in startup can run it outside Revit.
 
+Manual update checks run without a console window and always attempt to show a Windows notification
+with the result. The updater derives comparison data from the numeric assembly version while retaining
+the full GitVersion semantic version in logs and assembly metadata.
+
+> **Note:** Windows App SDK activation registration can fail in a self-contained unpackaged process
+> when its runtime resource DLL is unavailable. Notification display remains supported in that case,
+> but action buttons are omitted because their callbacks cannot be delivered safely.
+
 Updater policy is read from `Software\Policies\Volocy\Revit.Linter\Updater` in `HKLM` and then `HKCU`.
 Machine values take precedence over current-user policy, user JSON settings, and built-in defaults. The
 registry adapter is read-only; neither the updater nor the per-user installer provisions policy values.

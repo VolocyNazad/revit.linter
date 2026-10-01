@@ -15,6 +15,7 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
     private readonly UpdateNotificationActivationHandler _activationHandler;
     private readonly InstallerDownloadService _installerDownloader;
     private readonly ILogger<WindowsUpdateNotificationService> _logger;
+    private readonly bool _activationRegistered;
 
     public WindowsUpdateNotificationService(
         UpdateNotificationActivationHandler activationHandler,
@@ -40,16 +41,19 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
             }
 
             AppNotificationManager manager = AppNotificationManager.Default;
+            _manager = manager;
             manager.NotificationInvoked += OnNotificationInvoked;
             try
             {
                 manager.Register();
-                _manager = manager;
+                _activationRegistered = true;
             }
-            catch
+            catch (Exception exception)
             {
                 manager.NotificationInvoked -= OnNotificationInvoked;
-                throw;
+                _logger.LogWarning(
+                    exception,
+                    "Windows app notification activation registration failed; notifications remain display-only");
             }
         }
         catch (Exception exception)
@@ -75,17 +79,25 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
             }
 
             string version = release.Version.ToString();
-            var notification = new AppNotificationBuilder()
+            var builder = new AppNotificationBuilder()
                 .AddArgument("action", "release")
                 .AddArgument("version", version)
                 .AddArgument("url", release.ReleasePage.AbsoluteUri)
                 .AddText($"Revit Linter {version} is available")
-                .AddText("Download the update or review the release notes.")
-                .AddButton(CreateDownloadButton(release))
-                .AddButton(CreateButton("What's new", "release", version, release.ReleasePage))
-                .AddButton(CreateButton("Later", "later", version, release.ReleasePage))
-                .AddButton(CreateButton("Skip this version", "skip", version, release.ReleasePage))
-                .BuildNotification();
+                .AddText(_activationRegistered
+                    ? "Download the update or review the release notes."
+                    : $"Open the release page to update: {release.ReleasePage}");
+
+            if (_activationRegistered)
+            {
+                builder
+                    .AddButton(CreateDownloadButton(release))
+                    .AddButton(CreateButton("What's new", "release", version, release.ReleasePage))
+                    .AddButton(CreateButton("Later", "later", version, release.ReleasePage))
+                    .AddButton(CreateButton("Skip this version", "skip", version, release.ReleasePage));
+            }
+
+            AppNotification notification = builder.BuildNotification();
 
             _manager.Show(notification);
             _logger.LogInformation("Displayed update notification for version {AvailableVersion}", version);
@@ -98,9 +110,40 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
         }
     }
 
+    public Task<bool> TryShowManualResultAsync(
+        UpdateCheckResult result,
+        CancellationToken cancellationToken = default)
+    {
+        if (result.Status is UpdateCheckStatus.UpdateAvailable or UpdateCheckStatus.Skipped &&
+            result.Release is not null)
+        {
+            return TryShowAsync(result.Release, cancellationToken);
+        }
+
+        string title;
+        string message;
+        switch (result.Status)
+        {
+            case UpdateCheckStatus.UpToDate:
+                title = "Revit Linter is up to date";
+                message = $"Version {result.CurrentVersion} is installed.";
+                break;
+            case UpdateCheckStatus.Failed:
+                title = "Update check failed";
+                message = result.Error ?? "The latest release could not be retrieved.";
+                break;
+            default:
+                title = "Update check finished";
+                message = $"Status: {result.Status}.";
+                break;
+        }
+
+        return TryShowMessageAsync(title, message, cancellationToken);
+    }
+
     public void Dispose()
     {
-        if (_manager is null)
+        if (_manager is null || !_activationRegistered)
             return;
 
         try
@@ -123,6 +166,40 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
             .AddArgument("action", action)
             .AddArgument("version", version)
             .AddArgument("url", releasePage.AbsoluteUri);
+
+    private Task<bool> TryShowMessageAsync(
+        string title,
+        string message,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (_manager is null)
+            return Task.FromResult(false);
+
+        try
+        {
+            if (_manager.Setting != AppNotificationSetting.Enabled)
+            {
+                _logger.LogWarning(
+                    "Windows app notifications are disabled with setting {NotificationSetting}",
+                    _manager.Setting);
+                return Task.FromResult(false);
+            }
+
+            var notification = new AppNotificationBuilder()
+                .AddText(title)
+                .AddText(message)
+                .BuildNotification();
+            _manager.Show(notification);
+            _logger.LogInformation("Displayed manual update-check result {NotificationTitle}", title);
+            return Task.FromResult(true);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogWarning(exception, "Failed to display manual update-check result");
+            return Task.FromResult(false);
+        }
+    }
 
     private static AppNotificationButton CreateDownloadButton(ReleaseInfo release)
     {

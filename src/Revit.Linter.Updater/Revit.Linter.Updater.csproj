@@ -1,6 +1,6 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AssemblyName>Revit.Linter.Updater</AssemblyName>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <WindowsPackageType>None</WindowsPackageType>
