@@ -40,7 +40,7 @@ public sealed class CreateInstallersModule(IOptions<BuildOptions> options) : Mod
 
         var arguments = new List<string>
         {
-            versioning.Version,
+            versioning.ProductVersion,
             updaterDirectory,
             outputDirectory
         };
@@ -50,7 +50,7 @@ public sealed class CreateInstallersModule(IOptions<BuildOptions> options) : Mod
             new GenericCommandLineToolOptions(installer) { Arguments = arguments },
             cancellationToken: cancellationToken);
 
-        string msiPath = Path.Combine(outputDirectory, $"RevitLinter-{versioning.Version}.msi");
+        string msiPath = Path.Combine(outputDirectory, $"RevitLinter-{versioning.ProductVersion}.msi");
         File.Exists(msiPath).ShouldBeTrue($"MSI was not created: {msiPath}");
     }
 }

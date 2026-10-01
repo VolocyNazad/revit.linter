@@ -19,11 +19,11 @@ public sealed class PublishGithubModule(
         CancellationToken cancellationToken)
     {
         var versioning = (await context.GetModule<ResolveVersioningModule>()).ValueOrDefault!;
-        Version.TryParse(versioning.Version, out _)
+        string.Equals(versioning.Version, versioning.ProductVersion, StringComparison.Ordinal)
             .ShouldBeTrue($"GitHub releases require a stable version, but GitVersion produced '{versioning.Version}'");
 
         string outputDirectory = Path.GetFullPath(buildOptions.Value.OutputDirectory, BuildPaths.Root);
-        string installer = Path.Combine(outputDirectory, $"RevitLinter-{versioning.Version}.msi");
+        string installer = Path.Combine(outputDirectory, $"RevitLinter-{versioning.ProductVersion}.msi");
         File.Exists(installer).ShouldBeTrue($"MSI installer was not found: {installer}");
 
         var arguments = new List<string>

@@ -32,6 +32,11 @@ git switch --detach v1.4.0
 dotnet run --project build/Revit.Linter.Build.csproj -c Release -- pack
 ```
 
+> **Note:** Local prerelease builds keep the full GitVersion semantic version in
+> add-in and updater assemblies, but MSI requires a numeric `major.minor.patch`
+> product version. For example, build version `1.8.1-1` produces
+> `RevitLinter-1.8.1.msi`. GitHub publication still requires an exact stable tag.
+
 GitHub releases are created manually by the `Publish release` workflow. Tag the
 current commit (for example, `v1.4.0`), push the commit and tag, and run the
 workflow for that branch. GitVersion resolves the version from the tag; the
