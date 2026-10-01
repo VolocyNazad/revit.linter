@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Build the updater as a versioned self-contained `win-x64` application before installer creation.
 - Add the Revit-independent updater foundation with stable GitHub release discovery, persisted per-user state, 24-hour scheduling, manual checks, skip behavior, and headless tests.
 - Add a compact Revit ribbon command that delegates manual update checks to the standalone updater.
 - Add ribbon commands for opening Revit Linter support and GitHub Sponsors pages.

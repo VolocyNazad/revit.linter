@@ -12,6 +12,7 @@ namespace Revit.Linter.Build.Modules;
 
 [DependsOn<VerifyLocalizationArtifactsModule>]
 [DependsOn<ResolveVersioningModule>]
+[DependsOn<PublishUpdaterModule>]
 public sealed class CreateInstallersModule(IOptions<BuildOptions> options) : Module
 {
     protected override async Task ExecuteModuleAsync(IModuleContext context, CancellationToken cancellationToken)

@@ -44,6 +44,10 @@ check scheduling, and per-user state persistence. `Revit.Linter.Updater` is the 
 entry point; it must remain free of Revit API dependencies so the installer and sign-in startup can
 run it outside Revit.
 
+The release pipeline publishes the updater for `win-x64` as a self-contained application before MSI
+creation. The publish directory is an explicit build-module result; installer generation must consume
+that result instead of relying on configuration-specific paths under `bin`.
+
 ## Technology stack
 
 - `VolocyNazad.Revit.Sdk` (a custom MSBuild SDK, source in a separate
