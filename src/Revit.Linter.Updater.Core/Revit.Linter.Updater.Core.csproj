@@ -1,0 +1,5 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>

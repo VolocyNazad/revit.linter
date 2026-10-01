@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Add the Revit-independent updater foundation with stable GitHub release discovery, persisted per-user state, 24-hour scheduling, manual checks, skip behavior, and headless tests.
 - Add ribbon commands for opening Revit Linter support and GitHub Sponsors pages.
 - Cover project-parameter diagnostics with live Revit tests for valid definitions, missing parameters, and every checked binding property.
 - Add named `elementSets` selection to configured fix steps, with target-only defaults and explicit dependency support.

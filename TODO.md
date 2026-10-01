@@ -8,14 +8,14 @@
 - [ ] Package every selected Revit build and one shared updater in the same MSI so installing or removing one Revit-version component cannot orphan or remove infrastructure required by another.
 - [ ] Keep one stable MSI `UpgradeCode`; upgrade the updater and all selected plugin components in one transaction and preserve the user's component selection where possible.
 - [ ] Stop the updater before replacing it. Refuse plugin replacement while any affected Revit process is running, and provide a clear retry path after Revit is closed.
-- [ ] Implement the updater as a separate executable with no Revit API dependency. The Revit add-in must not perform release HTTP requests or create Windows notifications itself.
+- [x] Implement the updater as a separate executable with no Revit API dependency. The Revit add-in must not perform release HTTP requests or create Windows notifications itself.
 - [ ] Prefer a short-lived updater over a permanently running worker: start it for the current user at sign-in, check persisted state, perform any due work, show a notification when needed, and exit. Do not add a tray icon.
 - [ ] Register updater startup per user under `HKCU`; a manual **Check for updates** action in Revit launches the same executable with `--check-now`.
 - [ ] Guarantee a single updater instance with a named semaphore and make concurrent `--check-now` requests activate or reuse the existing check instead of starting duplicate work.
-- [ ] Query the public GitHub `releases/latest` endpoint with an explicit `User-Agent`, a short HTTP timeout, and no embedded access token. Use only stable, non-draft releases initially.
-- [ ] Read the installed product version from installer/build metadata, compare stable `MAJOR.MINOR.PATCH` values, and tolerate an optional leading `v` and assembly build metadata.
-- [ ] Persist `AutomaticChecksEnabled`, `LastCheckedAt`, `LastNotifiedVersion`, and `SkippedVersion` under `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`.
-- [ ] Check automatically no more than once per 24 hours. Manual checks bypass the interval, report both the up-to-date and failure states, and never change the automatic-check timestamp after an unsuccessful request.
+- [x] Query the public GitHub `releases/latest` endpoint with an explicit `User-Agent`, a short HTTP timeout, and no embedded access token. Use only stable, non-draft releases initially.
+- [x] Read the installed product version from installer/build metadata, compare stable `MAJOR.MINOR.PATCH` values, and tolerate an optional leading `v` and assembly build metadata.
+- [x] Persist `AutomaticChecksEnabled`, `LastCheckedAt`, `LastNotifiedVersion`, and `SkippedVersion` under `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`.
+- [x] Check automatically no more than once per 24 hours. Manual checks bypass the interval, report both the up-to-date and failure states, and never change the automatic-check timestamp after an unsuccessful request.
 - [ ] Keep automatic network failures silent to the user and log them once. A background failure must not affect Revit startup or normal add-in operation.
 - [ ] Show a local Windows app notification only for a newer, non-skipped version. Provide **Download**, **What's new**, **Later**, and **Skip this version** actions without stealing focus from Revit.
 - [ ] Publish the updater self-contained with the Windows App SDK notification support it needs, initialize the Windows App Runtime explicitly, and degrade to logging/manual checks when notifications are unavailable or the process is elevated.

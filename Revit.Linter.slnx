@@ -84,6 +84,10 @@
       <Platform Project="x64" />
     </Project>
   </Folder>
+  <Folder Name="/updater/">
+    <Project Path="src/Revit.Linter.Updater.Core/Revit.Linter.Updater.Core.csproj" />
+    <Project Path="src/Revit.Linter.Updater/Revit.Linter.Updater.csproj" />
+  </Folder>
   <Folder Name="/solutionItems/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -158,6 +162,7 @@
     <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.Updater.Core.Tests/Revit.Linter.Updater.Core.Tests.csproj" />
   </Folder>
   <Folder Name="/ui/">
     <Project Path="src/Revit.Linter.Behaviors/Revit.Linter.Behaviors.csproj">

@@ -39,6 +39,10 @@ overrides. `Revit.Linter.ElementVisualization` composes those operations into di
 visualization pipelines and restores their sessions in reverse order.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
 consumed by the diagnostic report presenter; the initial supported step deletes the target element.
+`Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
+check scheduling, and per-user state persistence. `Revit.Linter.Updater` is the short-lived executable
+entry point; it must remain free of Revit API dependencies so the installer and sign-in startup can
+run it outside Revit.
 
 ## Technology stack
 
