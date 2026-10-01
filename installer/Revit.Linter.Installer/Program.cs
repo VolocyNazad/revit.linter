@@ -1,106 +1,169 @@
 using Revit.Linter.Installer;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 using WixSharp;
-using WixSharp.CommonTasks;
-using WixSharp.Controls;
 
 const string AddInName = "Revit.Linter";
 const string Vendor = "VolocyNazad";
+const string UpgradeCode = "ed6109bc-3ea6-4fe3-a1ab-e31a7db46ac1";
+string[] legacyUpgradeCodes =
+[
+    "3e2b063d-e79e-4dd0-bdfc-1023eedecda3",
+    "121fe212-97d5-4d4c-acfa-74b46abda0e4",
+    "487c9122-7d4c-46d5-846f-45f5d45b6cb3",
+    "31c75b42-b188-48ae-8efc-44f52db48e52",
+    "df23ae86-4887-4bed-8cd3-fe1a4208480b",
+    "fb1e02f6-398a-4192-a384-c73bba90edc9",
+    "a44e9577-2101-4f23-9f97-fffe493c7b13"
+];
 
-if (args.Length != 4 || !int.TryParse(args[0], out int revitVersion))
+if (args.Length < 4)
 {
     Console.Error.WriteLine(
-        "Usage: Revit.Linter.Installer <revit-version> <product-version> <source-directory> <output-directory>");
+        "Usage: Revit.Linter.Installer <product-version> <updater-directory> <output-directory> <revit-version=source-directory> [...]");
     return 1;
 }
 
-if (!Version.TryParse(args[1], out Version? version))
+if (!Version.TryParse(args[0], out Version? version))
 {
-    Console.Error.WriteLine($"Invalid product version: '{args[1]}'. Expected format: major.minor.patch.");
+    Console.Error.WriteLine($"Invalid product version: '{args[0]}'. Expected format: major.minor.patch.");
     return 1;
 }
 
-string sourceDirectory = Path.GetFullPath(args[2]);
-string outputDirectory = Path.GetFullPath(args[3]);
-
-if (!Directory.Exists(sourceDirectory))
+string updaterDirectory = Path.GetFullPath(args[1]);
+string outputDirectory = Path.GetFullPath(args[2]);
+if (!Directory.Exists(updaterDirectory) ||
+    !System.IO.File.Exists(Path.Combine(updaterDirectory, "Revit.Linter.Updater.exe")))
 {
-    Console.Error.WriteLine($"Source directory does not exist: '{sourceDirectory}'.");
+    Console.Error.WriteLine($"Published updater directory is invalid: '{updaterDirectory}'.");
+    return 1;
+}
+
+var targets = new List<RevitTarget>();
+foreach (string value in args.Skip(3))
+{
+    int separator = value.IndexOf('=');
+    if (separator <= 0 ||
+        !int.TryParse(value[..separator], out int revitVersion) ||
+        !Directory.Exists(value[(separator + 1)..]))
+    {
+        Console.Error.WriteLine($"Invalid Revit target: '{value}'. Expected revit-version=source-directory.");
+        return 1;
+    }
+
+    targets.Add(new RevitTarget(revitVersion, Path.GetFullPath(value[(separator + 1)..])));
+}
+
+if (targets.Select(target => target.Version).Distinct().Count() != targets.Count)
+{
+    Console.Error.WriteLine("Each Revit version must be specified exactly once.");
     return 1;
 }
 
 Directory.CreateDirectory(outputDirectory);
+string revitVersions = string.Join(';', targets.OrderBy(target => target.Version).Select(target => target.Version));
 
-Dictionary<int, string> guidMap = new()
+var installEntities = new List<WixEntity>
 {
-    {2021, "3e2b063d-e79e-4dd0-bdfc-1023eedecda3"},
-    {2022, "121fe212-97d5-4d4c-acfa-74b46abda0e4"},
-    {2023, "487c9122-7d4c-46d5-846f-45f5d45b6cb3"},
-    {2024, "31c75b42-b188-48ae-8efc-44f52db48e52"},
-    {2025, "df23ae86-4887-4bed-8cd3-fe1a4208480b"},
-    {2026, "fb1e02f6-398a-4192-a384-c73bba90edc9"},
-    {2027, "a44e9577-2101-4f23-9f97-fffe493c7b13"},
+    new Files(Path.Combine(updaterDirectory, "*.*")),
+    new Dir(
+        "Addins",
+        targets
+            .OrderBy(target => target.Version)
+            .Select(target => new Dir(
+                target.Version.ToString(),
+                new Dir(
+                    "sources",
+                    new Files(Path.Combine(target.SourceDirectory, "*.*")))))
+            .Cast<WixEntity>()
+            .ToArray())
 };
-
-if (!guidMap.TryGetValue(revitVersion, out string? upgradeCode))
-{
-    Console.Error.WriteLine($"Upgrade code is not configured for Revit {revitVersion}.");
-    return 1;
-}
-
-string productGuid = GenerateProductGuid(AddInName, revitVersion, version);
 
 Project project = new()
 {
     MajorUpgrade = MajorUpgrade.Default,
-    UpgradeCode = new Guid(upgradeCode),
-    GUID = new Guid(productGuid),
+    UpgradeCode = new Guid(UpgradeCode),
+    GUID = GenerateProductGuid(AddInName, version),
     Version = version,
     Name = AddInName,
     OutDir = outputDirectory,
-    OutFileName = $"RevitLinter-{version}-rvt{revitVersion}",
+    OutFileName = $"RevitLinter-{version}",
     ControlPanelInfo =
     {
         Name = AddInName,
         Manufacturer = Vendor,
-        Comments = "Revit linter installer.",
+        Comments = "Revit Linter per-user installer.",
         HelpLink = "https://github.com/VolocyNazad/revit.linter",
     },
     Platform = WixSharp.Platform.x64,
-    UI = WUI.WixUI_InstallDir,
+    UI = WUI.WixUI_Minimal,
     Scope = InstallScope.perUser,
     Dirs =
     [
-        new InstallDir($@"%AppDataFolder%\{AddInName}\{revitVersion}",
-            new Dir("sources", new Files(Path.Combine(sourceDirectory, "*.*"))))
+        new InstallDir(
+            $@"%LocalAppDataFolder%\Programs\{Vendor}\{AddInName}",
+            installEntities.ToArray())
     ],
     Properties =
     [
-        new Property("REVIT_VERSION", revitVersion.ToString())
+        new Property("REVIT_VERSIONS", revitVersions)
+    ],
+    RegValues =
+    [
+        new RegValue(
+            RegistryHive.CurrentUser,
+            @"Software\Microsoft\Windows\CurrentVersion\Run",
+            AddInName,
+            "\"[INSTALLDIR]Revit.Linter.Updater.exe\"")
     ],
     Actions =
     [
-        new ManagedAction(CustomActions.CreateManifest,
-            Return.ignore,
+        new ManagedAction(
+            CustomActions.CreateManifests,
+            Return.check,
             When.After,
             Step.InstallFinalize,
             Condition.NOT_Installed),
-        new ManagedAction(CustomActions.RemoveManifest,
+        new ManagedAction(
+            CustomActions.RemoveManifests,
             Return.check,
             When.Before,
-            Step.LaunchConditions,
-            Condition.Installed),
+            Step.RemoveFiles,
+            Condition.BeingUninstalledAndNotBeingUpgraded),
     ],
 };
 
-project.RemoveDialogsBetween(NativeDialogs.WelcomeDlg, NativeDialogs.InstallDirDlg);
+project.WixSourceGenerated += document => AddLegacyUpgradeRows(document, legacyUpgradeCodes, version);
 project.BuildMsi();
 return 0;
 
-static string GenerateProductGuid(string productName, int revitVersion, Version version)
+static Guid GenerateProductGuid(string productName, Version version)
 {
-    string input = $"{productName}-{revitVersion}-{version.Major}.{version.Minor}.{version.Build}";
+    string input = $"{productName}-{version.Major}.{version.Minor}.{version.Build}";
     byte[] hash = MD5.HashData(Encoding.UTF8.GetBytes(input));
-    return new Guid(hash).ToString();
+    return new Guid(hash);
 }
+
+static void AddLegacyUpgradeRows(XDocument document, string[] upgradeCodes, Version currentVersion)
+{
+    XElement package = document.Descendants().Single(element => element.Name.LocalName == "Package");
+    XNamespace wix = package.Name.Namespace;
+    string maximumVersion = $"{currentVersion.Major}.{currentVersion.Minor}.{currentVersion.Build}";
+
+    for (int index = 0; index < upgradeCodes.Length; index++)
+    {
+        package.Add(new XElement(
+            wix + "Upgrade",
+            new XAttribute("Id", upgradeCodes[index]),
+            new XElement(
+                wix + "UpgradeVersion",
+                new XAttribute("Minimum", "0.0.0"),
+                new XAttribute("IncludeMinimum", "yes"),
+                new XAttribute("Maximum", maximumVersion),
+                new XAttribute("IncludeMaximum", "yes"),
+                new XAttribute("Property", $"LEGACY_REVIT_LINTER_{index}"))));
+    }
+}
+
+internal sealed record RevitTarget(int Version, string SourceDirectory);

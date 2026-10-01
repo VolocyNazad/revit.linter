@@ -23,10 +23,8 @@ public sealed class PublishGithubModule(
             .ShouldBeTrue($"GitHub releases require a stable version, but GitVersion produced '{versioning.Version}'");
 
         string outputDirectory = Path.GetFullPath(buildOptions.Value.OutputDirectory, BuildPaths.Root);
-        string[] installers = Directory.GetFiles(
-            outputDirectory,
-            $"RevitLinter-{versioning.Version}-rvt*.msi");
-        installers.ShouldNotBeEmpty("No MSI installers were found to publish");
+        string installer = Path.Combine(outputDirectory, $"RevitLinter-{versioning.Version}.msi");
+        File.Exists(installer).ShouldBeTrue($"MSI installer was not found: {installer}");
 
         var arguments = new List<string>
         {
@@ -39,7 +37,7 @@ public sealed class PublishGithubModule(
         if (publishOptions.Value.Draft)
             arguments.Add("--draft");
 
-        arguments.AddRange(installers);
+        arguments.Add(installer);
         await context.Shell.Command.ExecuteCommandLineTool(
             new GenericCommandLineToolOptions("gh") { Arguments = arguments },
             new CommandExecutionOptions { WorkingDirectory = BuildPaths.Root },

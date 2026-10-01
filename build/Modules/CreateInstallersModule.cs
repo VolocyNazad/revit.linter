@@ -32,27 +32,25 @@ public sealed class CreateInstallersModule(IOptions<BuildOptions> options) : Mod
         Directory.CreateDirectory(outputDirectory);
 
         var targets = (await context.GetModule<CompileProjectModule>()).ValueOrDefault!;
-
         foreach (var target in targets)
-        {
             Directory.Exists(target.Directory).ShouldBeTrue($"Build output was not found: {target.Directory}");
 
-            await context.Shell.Command.ExecuteCommandLineTool(
-                new GenericCommandLineToolOptions(installer)
-                {
-                    Arguments =
-                    [
-                        target.RevitVersion.ToString(),
-                        versioning.Version,
-                        target.Directory,
-                        outputDirectory
-                    ]
-                }, cancellationToken: cancellationToken);
+        string updaterDirectory = (await context.GetModule<PublishUpdaterModule>()).ValueOrDefault!;
+        Directory.Exists(updaterDirectory).ShouldBeTrue($"Updater output was not found: {updaterDirectory}");
 
-            string msiPath = Path.Combine(
-                outputDirectory,
-                $"RevitLinter-{versioning.Version}-rvt{target.RevitVersion}.msi");
-            File.Exists(msiPath).ShouldBeTrue($"MSI was not created: {msiPath}");
-        }
+        var arguments = new List<string>
+        {
+            versioning.Version,
+            updaterDirectory,
+            outputDirectory
+        };
+        arguments.AddRange(targets.Select(target => $"{target.RevitVersion}={target.Directory}"));
+
+        await context.Shell.Command.ExecuteCommandLineTool(
+            new GenericCommandLineToolOptions(installer) { Arguments = arguments },
+            cancellationToken: cancellationToken);
+
+        string msiPath = Path.Combine(outputDirectory, $"RevitLinter-{versioning.Version}.msi");
+        File.Exists(msiPath).ShouldBeTrue($"MSI was not created: {msiPath}");
     }
 }

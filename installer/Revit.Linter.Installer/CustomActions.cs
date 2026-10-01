@@ -9,57 +9,75 @@ public static class CustomActions
 
 
     [CustomAction]
-    public static ActionResult CreateManifest(Session session)
-    {
-        try {
-            string revitVersion = GetRevitVersion(session);
-            string filePath = GetManifestPath(revitVersion);
-            ExternalApplicationDefinition definition = new()
-            {
-                Name = AddInName,
-                FullClassName = $"{AddInName}.InitExternalApplication",
-                Assembly = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\{AddInName}\{revitVersion}\sources\{AddInName}.dll",
-                VendorId = Vendor,
-                VendorDescription = Vendor,
-            };
-            MultiAddInManifestGenerator.CreateManifests(filePath, definition);
-            return ActionResult.Success;
-        } catch (Exception ex) {
-            session.Log($"Failed to create manifest: {ex.Message}");
-            return ActionResult.Failure;
-        }
-    }
-
-    [CustomAction]
-    public static ActionResult RemoveManifest(Session session)
+    public static ActionResult CreateManifests(Session session)
     {
         try
         {
-            string filePath = GetManifestPath(GetRevitVersion(session));
-            if (File.Exists(filePath))
+            foreach (string revitVersion in GetRevitVersions(session))
             {
-                File.Delete(filePath);
-                session.Log($"Manifest removed successfully from: {filePath}");
+                string filePath = GetManifestPath(revitVersion);
+                string installDirectory = session["INSTALLDIR"];
+                if (string.IsNullOrWhiteSpace(installDirectory))
+                    throw new InvalidOperationException("MSI property INSTALLDIR is not set.");
+
+                ExternalApplicationDefinition definition = new()
+                {
+                    Name = AddInName,
+                    FullClassName = $"{AddInName}.InitExternalApplication",
+                    Assembly = Path.Combine(
+                        installDirectory,
+                        "Addins", revitVersion, "sources", $"{AddInName}.dll"),
+                    VendorId = Vendor,
+                    VendorDescription = Vendor,
+                };
+                MultiAddInManifestGenerator.CreateManifests(filePath, definition);
+                session.Log($"Manifest created successfully at: {filePath}");
             }
-            else
-                session.Log($"Manifest not found at: {filePath}");
 
             return ActionResult.Success;
         }
         catch (Exception ex)
         {
-            session.Log($"Failed to remove manifest: {ex.Message}");
+            session.Log($"Failed to create manifests: {ex}");
             return ActionResult.Failure;
         }
     }
 
-    private static string GetRevitVersion(Session session)
+    [CustomAction]
+    public static ActionResult RemoveManifests(Session session)
     {
-        string revitVersion = session["REVIT_VERSION"];
-        if (string.IsNullOrWhiteSpace(revitVersion))
-            throw new InvalidOperationException("MSI property REVIT_VERSION is not set.");
+        try
+        {
+            foreach (string revitVersion in GetRevitVersions(session))
+            {
+                string filePath = GetManifestPath(revitVersion);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    session.Log($"Manifest removed successfully from: {filePath}");
+                }
+                else
+                {
+                    session.Log($"Manifest not found at: {filePath}");
+                }
+            }
 
-        return revitVersion;
+            return ActionResult.Success;
+        }
+        catch (Exception ex)
+        {
+            session.Log($"Failed to remove manifests: {ex}");
+            return ActionResult.Failure;
+        }
+    }
+
+    private static string[] GetRevitVersions(Session session)
+    {
+        string value = session["REVIT_VERSIONS"];
+        if (string.IsNullOrWhiteSpace(value))
+            throw new InvalidOperationException("MSI property REVIT_VERSIONS is not set.");
+
+        return value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     private static string GetManifestPath(string revitVersion)

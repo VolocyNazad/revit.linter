@@ -29,6 +29,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Replace and migrate separate Revit-version installers with one per-user MSI containing all supported builds and the shared sign-in updater.
 - Document the testability boundary between `RevitAPI` document logic and thin `RevitAPIUI` adapters.
 - Document build-time localization validation and require nearby remarks for non-obvious API behavior.
 - Expand the English and Russian Wiki with report-action semantics, visualization and fix caveats, configuration-failure behavior, application-log locations, and troubleshooting guidance.
@@ -90,6 +91,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Remove Revit manifests only during a real uninstall, not during installer repair or upgrade.
 - Use the explicit `ViewLocatorExtension` type name so Visual Studio's XAML language service resolves the shared markup extension.
 - Keep the diagnostic report grid out of WPF edit mode so changing filters can safely refresh its collection view.
 - Include the rejected formula in user-diagnostic compilation warnings.

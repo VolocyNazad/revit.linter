@@ -48,6 +48,16 @@ The release pipeline publishes the updater for `win-x64` as a self-contained app
 creation. The publish directory is an explicit build-module result; installer generation must consume
 that result instead of relying on configuration-specific paths under `bin`.
 
+Release packaging produces one per-user MSI containing every supported Revit build and the shared
+updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creates version-specific
+manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current
+user's `Run` key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with
+the stable product version.
+The minimal installer UI keeps the per-user installation directory fixed. Manifest assembly paths still
+use the effective MSI `INSTALLDIR`, keeping silent and administrative invocations internally consistent.
+The first unified installation also detects and removes older per-Revit-version products by their
+legacy upgrade codes, preventing duplicate Programs and Features entries during migration.
+
 ## Technology stack
 
 - `VolocyNazad.Revit.Sdk` (a custom MSBuild SDK, source in a separate

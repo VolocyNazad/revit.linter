@@ -60,6 +60,8 @@ This document records stable architectural rules. Implementation details belong 
 - The root solution builds the add-in and tests. `installer/`, `build/` and `sandbox/` remain separate solutions with their own responsibilities.
 - ILRepack output and localization satellites are validated before MSI creation.
 - Stable releases originate from exactly one `vMAJOR.MINOR.PATCH` tag and are published through the repository release pipeline.
+- One per-user MSI owns every supported Revit build, the shared updater, version-specific manifests,
+  and updater startup registration. A stable `UpgradeCode` keeps upgrades within that single product line.
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no
   Revit API dependency; the add-in may launch it but must not perform release HTTP requests or create
   Windows notifications itself.

@@ -12,7 +12,7 @@ This document is the concise contract for the product's current scope. Detailed 
 - Export the displayed findings as a self-contained HTML report.
 - Configure paths, diagnostic rules, formulas, filters and visualization behavior.
 - Provide English and Russian UI resources, theme-aware WPF presentation and structured diagnostic logs.
-- Build and package supported Revit 2021, 2023 and 2025 variants as an MSI release.
+- Package the supported Revit 2021, 2023 and 2025 variants and the shared updater as one per-user MSI release.
 
 ## Compatibility contract
 
