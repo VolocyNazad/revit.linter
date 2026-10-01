@@ -66,32 +66,24 @@ internal sealed class DocumentDiagnostic(
             if (definition.VariesAcrossGroups != parameterData.AllowVaryBetweenGroups)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "AllowVaryBetweenGroups"));
 #if BEFORE2024
-            var group = int.TryParse(parameterData.Group, out int id)
-                ? (BuiltInParameterGroup)id
-                : (BuiltInParameterGroup)Enum.Parse(typeof(BuiltInParameterGroup), parameterData.Group);
+            BuiltInParameterGroup group = ParameterIdentifierParser.ParseGroup(parameterData.Group);
             if (definition.ParameterGroup != group)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "Group"));
 
             IEnumerable<BuiltInCategory> catgories = parameterData.Categories
-                .Select(i => {
-                    if (int.TryParse(i, out int id)) return (BuiltInCategory)id;
-                    return (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), i);
-                }).ToList();
+                .Select(ParameterIdentifierParser.ParseCategory).ToList();
             if (!binging.Categories
                     .Cast<Category>()
                     .Select(i => i.Id.ToBuiltInCategory())
                     .SetEquals(catgories))
                 messages.Add(GetInvalidPropertyMessage(parameterData, "Categories"));
 #else
-            var group = new ForgeTypeId(parameterData.Group);
+            ForgeTypeId group = ParameterIdentifierParser.ParseGroupTypeId(parameterData.Group);
             if (definition.GetGroupTypeId() != group)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "Group"));
 
             IEnumerable<BuiltInCategory> catgories = parameterData.Categories
-                .Select(i => {
-                    if (long.TryParse(i, out long id)) return (BuiltInCategory)id;
-                    return Enum.Parse<BuiltInCategory>(i);
-                }).ToList();
+                .Select(ParameterIdentifierParser.ParseCategory).ToList();
             if (!binging.Categories
                 .Cast<Category>()
                 .Select(i => (BuiltInCategory)i.Id.Value)
