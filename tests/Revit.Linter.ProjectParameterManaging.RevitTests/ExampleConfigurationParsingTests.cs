@@ -1,5 +1,6 @@
 using Autodesk.Revit.DB;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using TUnit.Core;
@@ -13,7 +14,7 @@ public sealed class ExampleConfigurationParsingTests
     {
         int count = 0;
 #if BEFORE2024
-        foreach (BuiltInParameterGroup value in Enum.GetValues<BuiltInParameterGroup>())
+        foreach (BuiltInParameterGroup value in Enum.GetValues(typeof(BuiltInParameterGroup)).Cast<BuiltInParameterGroup>())
         {
             BuiltInParameterGroup parsed = ParameterIdentifierParser.ParseGroup(value.ToString());
             await Assert.That(parsed).IsEqualTo(value);
@@ -40,7 +41,7 @@ public sealed class ExampleConfigurationParsingTests
     public async Task Every_supported_category_value_round_trips_from_configuration_text()
     {
         int count = 0;
-        foreach (BuiltInCategory value in Enum.GetValues<BuiltInCategory>())
+        foreach (BuiltInCategory value in Enum.GetValues(typeof(BuiltInCategory)).Cast<BuiltInCategory>())
         {
             BuiltInCategory parsed = ParameterIdentifierParser.ParseCategory(value.ToString());
             await Assert.That(parsed).IsEqualTo(value);
@@ -53,9 +54,9 @@ public sealed class ExampleConfigurationParsingTests
     public async Task Every_supported_view_detail_level_round_trips_from_configuration_text()
     {
         int count = 0;
-        foreach (ViewDetailLevel value in Enum.GetValues<ViewDetailLevel>())
+        foreach (ViewDetailLevel value in Enum.GetValues(typeof(ViewDetailLevel)).Cast<ViewDetailLevel>())
         {
-            ViewDetailLevel parsed = Enum.Parse<ViewDetailLevel>(value.ToString());
+            ViewDetailLevel parsed = (ViewDetailLevel)Enum.Parse(typeof(ViewDetailLevel), value.ToString());
             await Assert.That(parsed).IsEqualTo(value);
             count++;
         }
@@ -71,7 +72,7 @@ public sealed class ExampleConfigurationParsingTests
         await Assert.That(rules).IsNotNull();
         foreach (DiagnosticRule rule in rules!)
         {
-            if (!Enum.IsDefined(rule.Severity))
+            if (!Enum.IsDefined(typeof(DiagnosticSeverity), rule.Severity))
                 throw new InvalidOperationException(
                     $"Unknown severity '{rule.Severity}' in rule '{rule.Code}'.");
 
