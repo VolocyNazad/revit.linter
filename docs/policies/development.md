@@ -29,7 +29,7 @@ Abstractions live in a top-level `Abstractions/` folder inside their owning proj
 
 Avoid application state and business logic in WPF code-behind. Prefer bindings, commands, converters, behaviors and `DynamicResource`. Code-behind is reserved for view mechanics with no practical declarative equivalent. Reusable mechanics belong in `Microsoft.Xaml.Behaviors.Wpf` behaviors; mechanics intimate to one view may remain local. Do not repeat a XAML-declared base type in code-behind.
 
-XML documentation is mandatory for public APIs in production projects; test projects are exempt. Documentation must explain the observable contract rather than restating the identifier. Use `<remarks>` for behavior that is not evident from the signature, including implicit fallback, inferred defaults, side effects, ordering, caching, thread or Revit-context requirements, transaction ownership, and intentionally ignored failures. Keep the note next to the affected API or configuration; do not rely on a distant architecture document as the only explanation. If a type is public only accidentally and has no external or cross-project consumer, reduce its visibility instead of documenting it as an API. Run a strict audit with `dotnet build Revit.Linter.slnx --configuration <configuration> -p:EnforcePublicApiDocumentation=true`; it promotes `CS1591` to an error. Keep the switch opt-in until the existing public API baseline is documented, then make strict enforcement the default.
+XML documentation is mandatory for public APIs in production projects; test projects are exempt. Documentation must explain the observable contract rather than restating the identifier. Use `<remarks>` for behavior that is not evident from the signature, including implicit fallback, inferred defaults, side effects, ordering, caching, thread or Revit-context requirements, transaction ownership, and intentionally ignored failures. Keep the note next to the affected API or configuration; do not rely on a distant architecture document as the only explanation. If a type is public only accidentally and has no external or cross-project consumer, reduce its visibility instead of documenting it as an API. Run a strict audit with `dotnet build Revit.Linter.slnx --configuration <configuration> -p:EnforcePublicApiDocumentation=true` and, for the updater, `dotnet build updater/Revit.Linter.Updater.slnx --configuration Release -p:EnforcePublicApiDocumentation=true`; it promotes `CS1591` to an error. Keep the switch opt-in until the existing public API baseline is documented, then make strict enforcement the default.
 
 Do not invent abbreviations in identifiers, file names or documentation. Use complete words such as `ViewModel` and `Configuration`; established terms such as `API`, `WPF`, `XML`, `Guid`, `Id` and `Uri` remain valid.
 
@@ -57,6 +57,10 @@ Keep the root `.editorconfig` in the solution and apply its repository-wide enco
 ## Warnings
 
 Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why.
+
+## Updater build unit
+
+Everything under `updater/` builds independently of the root solution. Add updater package versions to `updater/Directory.Packages.props` and shared updater MSBuild settings to `updater/Directory.Build.props`; the root files do not apply there. Keep updater projects on `Microsoft.NET.Sdk` with `Debug`/`Release` configurations and out of `Revit.Linter.slnx`.
 
 ## Test execution
 

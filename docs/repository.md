@@ -157,7 +157,7 @@ Local Obsidian settings under `wiki/.obsidian/` are ignored. Keep shared content
 
 The root solution exposes contributor documentation under `docs` and user documentation under `wiki`, preserving their subfolder structure. When adding documentation files, also add them as solution items; solution folders do not automatically include new files.
 
-Production projects generate XML documentation; test projects are exempt from missing-comment diagnostics. Set `EnforcePublicApiDocumentation=true` to promote missing documentation for public APIs (`CS1591`) to an error during the baseline migration. The shared settings live in `Directory.Build.props` and `Directory.Build.targets`.
+Production projects generate XML documentation; test projects are exempt from missing-comment diagnostics. Set `EnforcePublicApiDocumentation=true` to promote missing documentation for public APIs (`CS1591`) to an error during the baseline migration. The shared settings live in `Directory.Build.props` and `Directory.Build.targets`; `updater/Directory.Build.props` repeats the documentation settings for the updater build unit.
 
 > **Note:** Document behavior that cannot be inferred from an API signature with a nearby XML `<remarks>` section. This includes fallback values, inferred defaults, state changes, execution-order guarantees, caching, required Revit context, transaction ownership, and swallowed or deliberately ignored failures.
 
