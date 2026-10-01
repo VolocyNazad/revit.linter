@@ -45,7 +45,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Move the updater, its core library and tests into the standalone `updater/` folder with its own central package versions and `Revit.Linter.Updater.slnx`; the root solution, release build and MSI packaging reference the new paths.
+- Move the updater, its core library and tests into the standalone `updater/` folder with its own MSBuild settings, central package versions and `Revit.Linter.Updater.slnx`, outside the root solution. Updater projects now use `Microsoft.NET.Sdk` with plain `Debug`/`Release` configurations; CI builds and tests them in a separate job, and the release build publishes the updater in `Release`.
 - Localize the Revit ribbon tab name as `Diagnostics` or `Диагностика` instead of the vendor name.
 - Preselect only installed Revit versions in the MSI feature tree while retaining manual per-version overrides.
 - Replace and migrate separate Revit-version installers with one per-user MSI containing all supported builds and the shared sign-in updater.

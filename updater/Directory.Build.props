@@ -1,0 +1,22 @@
+<Project>
+  <!--
+    Shared MSBuild settings for the standalone updater. MSBuild uses the nearest Directory.Build.props,
+    so this file intentionally replaces the repository-root one: the updater runs outside Revit and uses
+    plain Debug/Release configurations instead of Revit-versioned ones.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>true</ImplicitUsings>
+    <LangVersion>14.0</LangVersion>
+    <Platforms>x64;Any CPU</Platforms>
+    <Configurations>Debug;Release</Configurations>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PolySharpExcludeGeneratedTypes>System.Index;System.Range</PolySharpExcludeGeneratedTypes>
+    <WarningsAsErrors Condition="'$(EnforcePublicApiDocumentation)' == 'true'">$(WarningsAsErrors);CS1591</WarningsAsErrors>
+  </PropertyGroup>
+  <!-- Keep release publish output free of symbol files, matching the previous Revit SDK release settings. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+</Project>

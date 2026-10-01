@@ -15,7 +15,7 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `docs/` - contributor documentation and repository policies
 - `installer/` -msi installer
 - `updater/` - the standalone updater (`src/`, `tests/`) with its own
-  `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; its projects are also part of the root solution
+  `Directory.Build.props`, `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; it is not part of the root solution
 - `build/` - solution building, compilation, package
 - `output/` - artifacts after building
 - `benchmark/` - benchmarking
@@ -44,7 +44,10 @@ consumed by the diagnostic report presenter; the initial supported step deletes 
 The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`
 replaces the root central package versions for everything under `updater/` (MSBuild uses the nearest file and it
 does not import the root one), so updater dependencies can be versioned independently of the Revit add-in.
-Shared MSBuild settings, configurations and `VolocyNazad.Revit.Sdk` still come from the root `Directory.Build.props`.
+`updater/Directory.Build.props` likewise replaces the root one: the updater projects use `Microsoft.NET.Sdk` instead of
+`VolocyNazad.Revit.Sdk`, target `net8.0-windows` explicitly and have plain `Debug`/`Release` configurations because
+the updater runs outside Revit. Nothing in the root solution references the updater projects; the add-in only starts
+`Revit.Linter.Updater.exe` by path, and the release build publishes the updater project directly.
 `Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
 check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
@@ -191,7 +194,7 @@ Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests under `tests/` and `updater/tests/` as headless tests. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 ## Versioning and release tags
 

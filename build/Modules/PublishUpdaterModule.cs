@@ -28,7 +28,7 @@ public sealed class PublishUpdaterModule(IOptions<BuildOptions> options) : Modul
                 [
                     "publish",
                     BuildPaths.UpdaterProject,
-                    "--configuration", "Release_2025.0.0",
+                    "--configuration", "Release",
                     "--runtime", "win-x64",
                     "--self-contained", "true",
                     "--output", publishDirectory,
