@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Ignore the root build-artifact output directory so local packaging does not dirty the Git worktree.
 - Convert prerelease GitVersion values to the numeric `major.minor.patch` required by Windows Installer while retaining full semantic versions in application assemblies.
 - Run post-publish localization artifact checks through the xUnit v3 executable so Microsoft.Testing.Platform cannot incorrectly fail the build with zero discovered tests.
 - Repair malformed Wiki table links, point formula references at their complete pages, reject unmatched brackets or invalid explicit Wiki paths during publication, and support absolute staging paths.
