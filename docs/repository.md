@@ -44,6 +44,10 @@ check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
 dependencies so the installer and sign-in startup can run it outside Revit.
 
+Updater policy is read from `Software\Policies\Volocy\Revit.Linter\Updater` in `HKLM` and then `HKCU`.
+Machine values take precedence over current-user policy, user JSON settings, and built-in defaults. The
+registry adapter is read-only; neither the updater nor the per-user installer provisions policy values.
+
 The release pipeline publishes the updater and Windows App SDK notification runtime for `win-x64` as a
 self-contained unpackaged application before MSI creation. The publish directory is an explicit
 build-module result; installer generation must consume that result instead of relying on

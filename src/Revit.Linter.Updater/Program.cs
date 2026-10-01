@@ -59,6 +59,20 @@ try
     });
     using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
     var stateStore = new JsonUpdaterStateStore();
+    UpdaterState userState;
+    try
+    {
+        userState = await stateStore.LoadAsync();
+    }
+    catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+    {
+        // UpdateCoordinator owns reporting the same state failure; configuration falls back silently here.
+        _ = exception;
+        userState = new UpdaterState();
+    }
+    var policySource = new WindowsRegistryUpdaterPolicySource(
+        loggerFactory.CreateLogger<WindowsRegistryUpdaterPolicySource>());
+    UpdaterConfiguration configuration = new UpdaterConfigurationResolver(policySource).Resolve(userState);
     var activationHandler = new UpdateNotificationActivationHandler(
         stateStore,
         loggerFactory.CreateLogger<UpdateNotificationActivationHandler>());
@@ -66,13 +80,18 @@ try
         activationHandler,
         loggerFactory.CreateLogger<WindowsUpdateNotificationService>());
     var coordinator = new UpdateCoordinator(
-        new GitHubReleaseClient(httpClient, loggerFactory.CreateLogger<GitHubReleaseClient>()),
+        new GitHubReleaseClient(
+            httpClient,
+            configuration.ReleaseApiUri,
+            loggerFactory.CreateLogger<GitHubReleaseClient>()),
         stateStore,
+        configuration,
         TimeProvider.System,
         loggerFactory.CreateLogger<UpdateCoordinator>());
     var notificationCoordinator = new UpdateNotificationCoordinator(
         notificationService,
         stateStore,
+        configuration,
         loggerFactory.CreateLogger<UpdateNotificationCoordinator>());
 
     UpdateCheckResult result = await coordinator.CheckAsync(

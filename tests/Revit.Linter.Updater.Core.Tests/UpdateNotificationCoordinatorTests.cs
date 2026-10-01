@@ -84,13 +84,43 @@ public sealed class UpdateNotificationCoordinatorTests
         Assert.False(shown);
     }
 
+    [Fact]
+    public async Task NotifyIfNeededAsync_NotificationsDisabled_DoesNotLoadStateOrShow()
+    {
+        var notifications = new FakeNotificationService(true);
+        var stateStore = new FakeStateStore();
+        var coordinator = CreateCoordinator(
+            notifications,
+            stateStore,
+            DefaultConfiguration() with { NotificationsEnabled = false });
+
+        bool shown = await coordinator.NotifyIfNeededAsync(
+            AvailableResult(), TestContext.Current.CancellationToken);
+
+        Assert.False(shown);
+        Assert.Equal(0, notifications.CallCount);
+        Assert.Equal(0, stateStore.LoadCount);
+    }
+
     private static UpdateCheckResult AvailableResult() =>
         new(UpdateCheckStatus.UpdateAvailable, CurrentVersion, Release);
 
     private static UpdateNotificationCoordinator CreateCoordinator(
         IUpdateNotificationService notificationService,
-        IUpdaterStateStore stateStore) =>
-        new(notificationService, stateStore, NullLogger<UpdateNotificationCoordinator>.Instance);
+        IUpdaterStateStore stateStore,
+        UpdaterConfiguration? configuration = null) =>
+        new(
+            notificationService,
+            stateStore,
+            configuration ?? DefaultConfiguration(),
+            NullLogger<UpdateNotificationCoordinator>.Instance);
+
+    private static UpdaterConfiguration DefaultConfiguration() => new(
+        ChecksEnabled: true,
+        AutomaticChecksEnabled: true,
+        NotificationsEnabled: true,
+        UpdaterConfiguration.DefaultAutomaticCheckInterval,
+        UpdaterConfiguration.DefaultReleaseApiUri);
 
     private sealed class FakeNotificationService : IUpdateNotificationService
     {
@@ -116,8 +146,13 @@ public sealed class UpdateNotificationCoordinatorTests
     {
         public UpdaterState State { get; } = new();
 
-        public Task<UpdaterState> LoadAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(State);
+        public int LoadCount { get; private set; }
+
+        public Task<UpdaterState> LoadAsync(CancellationToken cancellationToken = default)
+        {
+            LoadCount++;
+            return Task.FromResult(State);
+        }
 
         public Task SaveAsync(UpdaterState state, CancellationToken cancellationToken = default) =>
             Task.CompletedTask;

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
+using Revit.Linter.Updater.Core.Models;
 using Revit.Linter.Updater.Core.Services;
 
 namespace Revit.Linter.Updater.Core.Tests;
@@ -30,6 +31,28 @@ public sealed class GitHubReleaseClientTests
         var release = await client.GetLatestAsync(TestContext.Current.CancellationToken);
 
         Assert.Null(release);
+    }
+
+    [Fact]
+    public async Task GetLatestAsync_UsesConfiguredEndpoint()
+    {
+        var handler = new StubHandler(HttpStatusCode.NotFound, "{}");
+        var endpoint = new Uri("https://updates.example.test/releases/latest");
+        var client = CreateClient(handler, endpoint);
+
+        await client.GetLatestAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(endpoint, handler.RequestUri);
+    }
+
+    [Theory]
+    [InlineData("relative/path")]
+    [InlineData("http://updates.example.test/releases/latest")]
+    public void Constructor_NonHttpsAbsoluteEndpoint_Throws(string endpoint)
+    {
+        Assert.Throws<ArgumentException>(() => CreateClient(
+            new StubHandler(HttpStatusCode.OK, "{}"),
+            new Uri(endpoint, UriKind.RelativeOrAbsolute)));
     }
 
     [Theory]
@@ -78,13 +101,19 @@ public sealed class GitHubReleaseClientTests
             () => client.GetLatestAsync(TestContext.Current.CancellationToken));
     }
 
-    private static GitHubReleaseClient CreateClient(HttpMessageHandler handler) =>
-        new(new HttpClient(handler), NullLogger<GitHubReleaseClient>.Instance);
+    private static GitHubReleaseClient CreateClient(
+        HttpMessageHandler handler,
+        Uri? endpoint = null) =>
+        new(
+            new HttpClient(handler),
+            endpoint ?? UpdaterConfiguration.DefaultReleaseApiUri,
+            NullLogger<GitHubReleaseClient>.Instance);
 
     private sealed class StubHandler(HttpStatusCode statusCode, string content) : HttpMessageHandler
     {
         public string UserAgent { get; private set; } = string.Empty;
         public string Accept { get; private set; } = string.Empty;
+        public Uri? RequestUri { get; private set; }
 
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
@@ -92,6 +121,7 @@ public sealed class GitHubReleaseClientTests
         {
             UserAgent = request.Headers.UserAgent.ToString();
             Accept = request.Headers.Accept.ToString();
+            RequestUri = request.RequestUri;
             return Task.FromResult(new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(content, Encoding.UTF8, "application/json")

@@ -22,8 +22,8 @@
 - [x] Avoid a custom URI protocol because unpackaged Windows App SDK activation registers the executable directly; validate every activation argument before opening the release page.
 - [x] In the first delivery phase, open the matching GitHub release and require an explicit user action. Do not download or install updates automatically.
 - [ ] In a later phase, allow the updater to download the unified installer, verify HTTPS origin, expected asset name, size, digest and code signature, and launch it only after all affected Revit processes have closed.
-- [ ] Keep administrative policy separate from user state. Read machine policy, then user policy, then user settings, then built-in defaults; do not write ordinary defaults under a `Policies` registry key.
-- [ ] Consider policies for disabling checks or notifications, fixing the release channel/API URL, controlling the check interval, and allowing automatic download or installation.
+- [x] Keep administrative policy separate from user state. Read machine policy, then user policy, then user settings, then built-in defaults; do not write ordinary defaults under a `Policies` registry key.
+- [x] Support policies for disabling checks or notifications, fixing the release API URL, and controlling the check interval. Add download or installation policies only with those later capabilities.
 - [x] On uninstall, remove all installed plugin components, manifests and updater startup registration. Preserve logs and user settings.
 - [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling (covered), Revit-running refusal, notification decisions and activation validation (covered), manual/background error behavior, asset validation, and updater shutdown with headless tests.
 

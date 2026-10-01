@@ -8,23 +8,26 @@ namespace Revit.Linter.Updater.Core.Services;
 /// <summary>Applies updater settings, scheduling, version comparison, and skip behavior.</summary>
 public sealed class UpdateCoordinator
 {
-    /// <summary>The minimum interval between successful automatic checks.</summary>
-    public static readonly TimeSpan AutomaticCheckInterval = TimeSpan.FromHours(24);
+    /// <summary>The built-in interval between successful automatic checks.</summary>
+    public static readonly TimeSpan AutomaticCheckInterval = UpdaterConfiguration.DefaultAutomaticCheckInterval;
 
     private readonly IGitHubReleaseClient _releaseClient;
     private readonly IUpdaterStateStore _stateStore;
     private readonly TimeProvider _timeProvider;
     private readonly ILogger<UpdateCoordinator> _logger;
+    private readonly UpdaterConfiguration _configuration;
 
     /// <summary>Creates an update-check coordinator.</summary>
     public UpdateCoordinator(
         IGitHubReleaseClient releaseClient,
         IUpdaterStateStore stateStore,
+        UpdaterConfiguration configuration,
         TimeProvider timeProvider,
         ILogger<UpdateCoordinator> logger)
     {
         _releaseClient = releaseClient;
         _stateStore = stateStore;
+        _configuration = configuration;
         _timeProvider = timeProvider;
         _logger = logger;
     }
@@ -36,6 +39,9 @@ public sealed class UpdateCoordinator
         UpdateCheckMode mode,
         CancellationToken cancellationToken = default)
     {
+        if (!_configuration.ChecksEnabled)
+            return new UpdateCheckResult(UpdateCheckStatus.Disabled, currentVersion);
+
         UpdaterState state;
         try
         {
@@ -49,10 +55,10 @@ public sealed class UpdateCoordinator
 
         if (mode == UpdateCheckMode.Automatic)
         {
-            if (!state.AutomaticChecksEnabled)
+            if (!_configuration.AutomaticChecksEnabled)
                 return new UpdateCheckResult(UpdateCheckStatus.Disabled, currentVersion);
             if (state.LastCheckedAt is { } lastChecked &&
-                _timeProvider.GetUtcNow() - lastChecked < AutomaticCheckInterval)
+                _timeProvider.GetUtcNow() - lastChecked < _configuration.AutomaticCheckInterval)
             {
                 return new UpdateCheckResult(UpdateCheckStatus.NotDue, currentVersion);
             }

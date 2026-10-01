@@ -20,6 +20,22 @@ Setup must replace add-in files while Revit is closed. If any Revit process is r
 without changing the files and asks you to close Revit before running it again. Upgrades preserve the
 previous component selection where Windows Installer can migrate it.
 
+## Administrator update policies
+
+Revit Linter reads optional policy from `Software\Policies\Volocy\Revit.Linter\Updater` under both
+`HKEY_LOCAL_MACHINE` and `HKEY_CURRENT_USER`. Machine policy has the highest priority,
+followed by user policy, user settings, and built-in defaults. The installer does not create these values.
+
+| Value | Registry type | Meaning |
+|---|---|---|
+| `ChecksEnabled` | `DWORD` (`0` or `1`) | Disables or allows all automatic and manual release checks. |
+| `NotificationsEnabled` | `DWORD` (`0` or `1`) | Disables or allows Windows update notifications without disabling checks. |
+| `CheckIntervalHours` | `DWORD` (`1`–`720`) | Sets the successful automatic-check interval; the default is 24 hours. |
+| `ReleaseApiUrl` | `REG_SZ` | Replaces the latest-release API endpoint; only an absolute HTTPS URL is accepted. |
+
+Invalid values are ignored and logged. Policies are read-only to Revit Linter and are never stored in
+the per-user updater state.
+
 ## Troubleshooting
 
 - If the **Volocy** tab is missing, close every Revit process and run the installer again.

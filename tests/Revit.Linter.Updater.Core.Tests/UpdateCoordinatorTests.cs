@@ -29,7 +29,10 @@ public sealed class UpdateCoordinatorTests
     {
         var releases = new FakeReleaseClient(NewRelease());
         var state = new FakeStateStore(new UpdaterState { AutomaticChecksEnabled = false });
-        var coordinator = CreateCoordinator(releases, state);
+        var coordinator = CreateCoordinator(
+            releases,
+            state,
+            DefaultConfiguration() with { AutomaticChecksEnabled = false });
 
         UpdateCheckResult result = await coordinator.CheckAsync(
             CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
@@ -75,10 +78,62 @@ public sealed class UpdateCoordinatorTests
     {
         var releases = new FakeReleaseClient(NewRelease());
         var state = new FakeStateStore(new UpdaterState { AutomaticChecksEnabled = false });
-        var coordinator = CreateCoordinator(releases, state);
+        var coordinator = CreateCoordinator(
+            releases,
+            state,
+            DefaultConfiguration() with { AutomaticChecksEnabled = false });
 
         UpdateCheckResult result = await coordinator.CheckAsync(
             CurrentVersion, UpdateCheckMode.Manual, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
+        Assert.Equal(1, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_AdministrativePolicyDisablesManualCheck()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var coordinator = CreateCoordinator(
+            releases,
+            new FakeStateStore(new UpdaterState()),
+            DefaultConfiguration() with { ChecksEnabled = false });
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Manual, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Disabled, result.Status);
+        Assert.Equal(0, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_AdministrativePolicyDisabled_DoesNotLoadInvalidUserState()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var coordinator = CreateCoordinator(
+            releases,
+            new FakeStateStore(new IOException("invalid user state")),
+            DefaultConfiguration() with { ChecksEnabled = false });
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Disabled, result.Status);
+        Assert.Equal(0, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_PolicyIntervalControlsAutomaticSchedule()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState { LastCheckedAt = Now.AddHours(-2) });
+        var coordinator = CreateCoordinator(
+            releases,
+            state,
+            DefaultConfiguration() with { AutomaticCheckInterval = TimeSpan.FromHours(1) });
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
 
         Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
         Assert.Equal(1, releases.CallCount);
@@ -214,8 +269,21 @@ public sealed class UpdateCoordinatorTests
 
     private static UpdateCoordinator CreateCoordinator(
         IGitHubReleaseClient releaseClient,
-        IUpdaterStateStore stateStore) =>
-        new(releaseClient, stateStore, new FixedTimeProvider(Now), NullLogger<UpdateCoordinator>.Instance);
+        IUpdaterStateStore stateStore,
+        UpdaterConfiguration? configuration = null) =>
+        new(
+            releaseClient,
+            stateStore,
+            configuration ?? DefaultConfiguration(),
+            new FixedTimeProvider(Now),
+            NullLogger<UpdateCoordinator>.Instance);
+
+    private static UpdaterConfiguration DefaultConfiguration() => new(
+        ChecksEnabled: true,
+        AutomaticChecksEnabled: true,
+        NotificationsEnabled: true,
+        UpdaterConfiguration.DefaultAutomaticCheckInterval,
+        UpdaterConfiguration.DefaultReleaseApiUri);
 
     private static ReleaseInfo NewRelease() =>
         new(new StableVersion(2, 0, 0), new Uri("https://example.com/releases/v2.0.0"));

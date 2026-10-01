@@ -6,6 +6,9 @@ public sealed class UpdaterState
     /// <summary>Gets or sets whether scheduled checks are enabled.</summary>
     public bool AutomaticChecksEnabled { get; set; } = true;
 
+    /// <summary>Gets or sets whether local Windows notifications are enabled.</summary>
+    public bool NotificationsEnabled { get; set; } = true;
+
     /// <summary>Gets or sets the UTC time of the last successful release check.</summary>
     public DateTimeOffset? LastCheckedAt { get; set; }
 

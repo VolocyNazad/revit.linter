@@ -75,3 +75,6 @@ This document records stable architectural rules. Implementation details belong 
 - Release notifications use the self-contained Windows App SDK from the updater process. Notification
   activation is handled directly by the unpackaged executable, without a custom URI protocol. Only
   validated HTTPS release links for the official GitHub repository may be opened.
+- Effective updater configuration is resolved in descending precedence from machine policy, current-user
+  policy, user settings, and built-in defaults. Policy storage is read-only to the application and installer;
+  normal defaults and user preferences must never be written below a Windows `Policies` key.

@@ -11,15 +11,18 @@ public sealed class UpdateNotificationCoordinator
     private readonly IUpdateNotificationService _notificationService;
     private readonly IUpdaterStateStore _stateStore;
     private readonly ILogger<UpdateNotificationCoordinator> _logger;
+    private readonly UpdaterConfiguration _configuration;
 
     /// <summary>Creates a coordinator for notification decisions and persisted state.</summary>
     public UpdateNotificationCoordinator(
         IUpdateNotificationService notificationService,
         IUpdaterStateStore stateStore,
+        UpdaterConfiguration configuration,
         ILogger<UpdateNotificationCoordinator> logger)
     {
         _notificationService = notificationService;
         _stateStore = stateStore;
+        _configuration = configuration;
         _logger = logger;
     }
 
@@ -32,7 +35,9 @@ public sealed class UpdateNotificationCoordinator
         UpdateCheckResult result,
         CancellationToken cancellationToken = default)
     {
-        if (result.Status != UpdateCheckStatus.UpdateAvailable || result.Release is null)
+        if (!_configuration.NotificationsEnabled ||
+            result.Status != UpdateCheckStatus.UpdateAvailable ||
+            result.Release is null)
             return false;
 
         try

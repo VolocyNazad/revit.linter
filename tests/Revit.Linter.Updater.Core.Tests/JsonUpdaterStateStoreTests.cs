@@ -19,6 +19,7 @@ public sealed class JsonUpdaterStateStoreTests : IDisposable
         UpdaterState state = await store.LoadAsync(TestContext.Current.CancellationToken);
 
         Assert.True(state.AutomaticChecksEnabled);
+        Assert.True(state.NotificationsEnabled);
         Assert.Null(state.LastCheckedAt);
         Assert.Null(state.LastNotifiedVersion);
         Assert.Null(state.SkippedVersion);
@@ -30,6 +31,7 @@ public sealed class JsonUpdaterStateStoreTests : IDisposable
         var expected = new UpdaterState
         {
             AutomaticChecksEnabled = false,
+            NotificationsEnabled = false,
             LastCheckedAt = new DateTimeOffset(2026, 10, 1, 7, 0, 0, TimeSpan.Zero),
             LastNotifiedVersion = "2.1.0",
             SkippedVersion = "2.0.0"
@@ -40,6 +42,7 @@ public sealed class JsonUpdaterStateStoreTests : IDisposable
         UpdaterState actual = await store.LoadAsync(TestContext.Current.CancellationToken);
 
         Assert.False(actual.AutomaticChecksEnabled);
+        Assert.False(actual.NotificationsEnabled);
         Assert.Equal(expected.LastCheckedAt, actual.LastCheckedAt);
         Assert.Equal(expected.LastNotifiedVersion, actual.LastNotifiedVersion);
         Assert.Equal(expected.SkippedVersion, actual.SkippedVersion);

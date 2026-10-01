@@ -10,22 +10,28 @@ namespace Revit.Linter.Updater.Core.Services;
 /// <summary>Reads the latest stable release from the public GitHub releases API.</summary>
 public sealed class GitHubReleaseClient : IGitHubReleaseClient
 {
-    private static readonly Uri LatestReleaseUri = new(
-        "https://api.github.com/repos/VolocyNazad/revit.linter/releases/latest");
     private readonly HttpClient _httpClient;
+    private readonly Uri _latestReleaseUri;
     private readonly ILogger<GitHubReleaseClient> _logger;
 
-    /// <summary>Creates a GitHub release client.</summary>
-    public GitHubReleaseClient(HttpClient httpClient, ILogger<GitHubReleaseClient> logger)
+    /// <summary>Creates a GitHub release client for an absolute HTTPS endpoint.</summary>
+    public GitHubReleaseClient(
+        HttpClient httpClient,
+        Uri latestReleaseUri,
+        ILogger<GitHubReleaseClient> logger)
     {
+        if (!latestReleaseUri.IsAbsoluteUri || latestReleaseUri.Scheme != Uri.UriSchemeHttps)
+            throw new ArgumentException("Release API endpoint must be an absolute HTTPS URI.", nameof(latestReleaseUri));
+
         _httpClient = httpClient;
+        _latestReleaseUri = latestReleaseUri;
         _logger = logger;
     }
 
     /// <inheritdoc />
     public async Task<ReleaseInfo?> GetLatestAsync(CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, LatestReleaseUri);
+        using var request = new HttpRequestMessage(HttpMethod.Get, _latestReleaseUri);
         request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
 
