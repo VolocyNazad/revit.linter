@@ -252,6 +252,12 @@ internal sealed class InitExternalApplication : ExternalApplication
 
     private static void AddCommunityCommands(RibbonPanel panel)
     {
+        var updateButton = CreateCompactCommandButton(
+            "CheckForUpdatesButton",
+            "checkForUpdates_buttonText",
+            "checkForUpdates_toolTip",
+            "checkForUpdates_longDescription",
+            typeof(CheckForUpdatesCommand));
         var supportButton = CreateExternalPageButton(
             "OpenSupportButton",
             "support_buttonText",
@@ -265,10 +271,19 @@ internal sealed class InitExternalApplication : ExternalApplication
             "sponsor_longDescription",
             typeof(OpenSponsorCommand));
 
-        panel.AddStackedItems(supportButton, sponsorButton);
+        panel.AddStackedItems(updateButton, supportButton, sponsorButton);
     }
 
     private static PushButtonData CreateExternalPageButton(
+        string name,
+        string textResourceKey,
+        string toolTipResourceKey,
+        string descriptionResourceKey,
+        Type commandType)
+        => CreateCompactCommandButton(
+            name, textResourceKey, toolTipResourceKey, descriptionResourceKey, commandType);
+
+    private static PushButtonData CreateCompactCommandButton(
         string name,
         string textResourceKey,
         string toolTipResourceKey,

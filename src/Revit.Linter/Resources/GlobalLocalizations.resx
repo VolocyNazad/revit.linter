@@ -178,4 +178,8 @@ diagnostics</value></data>
   <data name="sponsor_toolTip" xml:space="preserve"><value>Sponsor the author</value></data>
   <data name="sponsor_longDescription" xml:space="preserve"><value>Opens the author's GitHub Sponsors page.</value></data>
   <data name="externalPage_openFailed_message" xml:space="preserve"><value>The page could not be opened in the default browser.&#xA;&#xA;{0}</value></data>
+  <data name="checkForUpdates_buttonText" xml:space="preserve"><value>Updates</value></data>
+  <data name="checkForUpdates_toolTip" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="checkForUpdates_longDescription" xml:space="preserve"><value>Starts the standalone updater and checks GitHub for a newer stable Revit Linter release.</value></data>
+  <data name="updater_startFailed_message" xml:space="preserve"><value>The Revit Linter updater could not be started. Repair or reinstall the application and try again.&#xA;&#xA;{0}</value></data>
 </root>

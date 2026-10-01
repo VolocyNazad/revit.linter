@@ -252,6 +252,7 @@
     <File Path="wiki/interface/dockable-panes/Fix reports pane.md" />
   </Folder>
   <Folder Name="/wiki/interface/ribbon-buttons/">
+    <File Path="wiki/interface/ribbon-buttons/Check for updates button.md" />
     <File Path="wiki/interface/ribbon-buttons/Diagnostic configuration path button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostic report button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostics button.md" />
@@ -302,6 +303,7 @@
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов исправлений.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка папки конфигурации.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка проверки обновлений.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка спонсорства.md" />
   </Folder>
   <Folder Name="/wiki/ru/Интерфейс/Панели/">
