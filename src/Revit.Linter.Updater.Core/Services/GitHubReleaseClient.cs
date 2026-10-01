@@ -8,8 +8,13 @@ using Revit.Linter.Updater.Core.Models;
 namespace Revit.Linter.Updater.Core.Services;
 
 /// <summary>Reads the latest stable release from the public GitHub releases API.</summary>
+/// <remarks>
+/// Requests a pinned GitHub API version and rejects response bodies larger than one megabyte.
+/// Redirect behavior is owned by the injected HTTP transport.
+/// </remarks>
 public sealed class GitHubReleaseClient : IGitHubReleaseClient
 {
+    private const int MaximumResponseSize = 1024 * 1024;
     private readonly HttpClient _httpClient;
     private readonly Uri _latestReleaseUri;
     private readonly ILogger<GitHubReleaseClient> _logger;
@@ -34,8 +39,12 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
         using var request = new HttpRequestMessage(HttpMethod.Get, _latestReleaseUri);
         request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
 
-        using HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        using HttpResponseMessage response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken);
         if (response.StatusCode == HttpStatusCode.NotFound)
             return null;
 
@@ -46,8 +55,7 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
                 $"GitHub returned HTTP {(int)response.StatusCode}.", null, response.StatusCode);
         }
 
-        await using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using JsonDocument document = await JsonDocument.ParseAsync(content, cancellationToken: cancellationToken);
+        using JsonDocument document = await ReadDocumentAsync(response.Content, cancellationToken);
         JsonElement root = document.RootElement;
 
         string? tag = root.TryGetProperty("tag_name", out JsonElement tagElement)
@@ -70,6 +78,30 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
 
         ReleaseInstaller? installer = TryReadInstaller(root, version);
         return new ReleaseInfo(version, releasePage, installer);
+    }
+
+    private static async Task<JsonDocument> ReadDocumentAsync(
+        HttpContent content,
+        CancellationToken cancellationToken)
+    {
+        if (content.Headers.ContentLength is > MaximumResponseSize)
+            throw new InvalidDataException("GitHub release response exceeds the allowed size.");
+
+        await using Stream input = await content.ReadAsStreamAsync(cancellationToken);
+        using var buffer = new MemoryStream();
+        byte[] chunk = new byte[81920];
+        int totalBytes = 0;
+        int bytesRead;
+        while ((bytesRead = await input.ReadAsync(chunk, cancellationToken)) > 0)
+        {
+            totalBytes += bytesRead;
+            if (totalBytes > MaximumResponseSize)
+                throw new InvalidDataException("GitHub release response exceeds the allowed size.");
+            await buffer.WriteAsync(chunk.AsMemory(0, bytesRead), cancellationToken);
+        }
+
+        buffer.Position = 0;
+        return await JsonDocument.ParseAsync(buffer, cancellationToken: cancellationToken);
     }
 
     private ReleaseInstaller? TryReadInstaller(JsonElement root, StableVersion version)

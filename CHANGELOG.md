@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Harden updater HTTP transport with bounded GitHub API responses, a pinned API version, explicit connection and operation timeouts, and validated HTTPS download redirects.
 - Log why a GitHub release installer asset was rejected instead of silently falling back to the release page.
 - Propagate caller-requested updater cancellation while continuing to report HTTP timeouts as failed checks.
 - Map updater projects to the solution's `x64` platform so Visual Studio resolves every versioned build configuration correctly.

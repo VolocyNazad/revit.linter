@@ -59,6 +59,9 @@ partial file, verifies its declared size and GitHub-provided SHA-256 digest, and
 `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\downloads\` only after both checks pass. A mismatch deletes
 the partial file. The updater opens Explorer with the verified MSI selected but does not start Windows
 Installer; Authenticode publisher verification is required before automatic launch can be added.
+The download transport disables automatic redirects and follows at most five validated HTTPS redirects
+through GitHub-owned hosts. Release metadata requests pin the GitHub API version and reject bodies larger
+than one megabyte. Connection timeouts are independent from the overall download-operation timeout.
 
 Release packaging produces one per-user MSI containing every supported Revit build and the shared
 updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creates version-specific

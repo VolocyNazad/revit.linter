@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ namespace Revit.Linter.Updater.Core.Services;
 /// <summary>Downloads and verifies a unified MSI release asset without launching it.</summary>
 public sealed class InstallerDownloadService
 {
+    private const int MaximumRedirects = 5;
     private readonly HttpClient _httpClient;
     private readonly ILogger<InstallerDownloadService> _logger;
 
@@ -23,7 +25,8 @@ public sealed class InstallerDownloadService
     /// <summary>Downloads an installer to the supplied directory after size and SHA-256 verification.</summary>
     /// <remarks>
     /// Data is written to a uniquely named partial file and moved to its final name only after every
-    /// check succeeds. Partial or mismatched files are deleted. This method never launches the MSI.
+    /// check succeeds. Partial or mismatched files are deleted. Up to five HTTPS redirects are followed
+    /// only through GitHub or GitHub-owned content hosts. This method never launches the MSI.
     /// </remarks>
     public async Task<string> DownloadAsync(
         ReleaseInstaller installer,
@@ -36,11 +39,8 @@ public sealed class InstallerDownloadService
 
         try
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, installer.DownloadUri);
-            request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
-            using HttpResponseMessage response = await _httpClient.SendAsync(
-                request,
-                HttpCompletionOption.ResponseHeadersRead,
+            using HttpResponseMessage response = await SendWithValidatedRedirectsAsync(
+                installer.DownloadUri,
                 cancellationToken);
             response.EnsureSuccessStatusCode();
 
@@ -110,4 +110,56 @@ public sealed class InstallerDownloadService
             throw;
         }
     }
+
+    private async Task<HttpResponseMessage> SendWithValidatedRedirectsAsync(
+        Uri initialUri,
+        CancellationToken cancellationToken)
+    {
+        Uri requestUri = initialUri;
+        int redirectCount = 0;
+        while (true)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
+            HttpResponseMessage response = await _httpClient.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
+
+            if (!IsRedirect(response.StatusCode))
+                return response;
+
+            if (redirectCount >= MaximumRedirects)
+            {
+                response.Dispose();
+                throw new HttpRequestException("Installer download exceeded the redirect limit.");
+            }
+
+            Uri? location = response.Headers.Location;
+            Uri? redirectUri = null;
+            if (location is not null)
+                redirectUri = location.IsAbsoluteUri ? location : new Uri(requestUri, location);
+            response.Dispose();
+            if (!IsTrustedRedirect(redirectUri))
+                throw new HttpRequestException("Installer download was redirected to an untrusted URI.");
+
+            requestUri = redirectUri!;
+            redirectCount++;
+        }
+    }
+
+    private static bool IsRedirect(HttpStatusCode statusCode) =>
+        statusCode is HttpStatusCode.Moved or
+            HttpStatusCode.Redirect or
+            HttpStatusCode.RedirectMethod or
+            HttpStatusCode.TemporaryRedirect or
+            HttpStatusCode.PermanentRedirect;
+
+    private static bool IsTrustedRedirect(Uri? uri) =>
+        uri is { IsAbsoluteUri: true } &&
+        uri.Scheme == Uri.UriSchemeHttps &&
+        uri.IsDefaultPort &&
+        string.IsNullOrEmpty(uri.UserInfo) &&
+        (uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
+         uri.Host.EndsWith(".githubusercontent.com", StringComparison.OrdinalIgnoreCase));
 }

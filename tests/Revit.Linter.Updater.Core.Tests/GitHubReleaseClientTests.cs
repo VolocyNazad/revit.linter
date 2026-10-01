@@ -22,6 +22,7 @@ public sealed class GitHubReleaseClientTests
         Assert.Equal("2.3.4", release.Version.ToString());
         Assert.Contains("Revit.Linter.Updater", handler.UserAgent);
         Assert.Contains("application/vnd.github+json", handler.Accept);
+        Assert.Equal("2022-11-28", handler.ApiVersion);
     }
 
     [Fact]
@@ -160,6 +161,16 @@ public sealed class GitHubReleaseClientTests
             () => client.GetLatestAsync(TestContext.Current.CancellationToken));
     }
 
+    [Fact]
+    public async Task GetLatestAsync_OversizedResponse_ThrowsInvalidDataException()
+    {
+        string body = new(' ', 1024 * 1024 + 1);
+        var client = CreateClient(new StubHandler(HttpStatusCode.OK, body));
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => client.GetLatestAsync(TestContext.Current.CancellationToken));
+    }
+
     private static GitHubReleaseClient CreateClient(
         HttpMessageHandler handler,
         Uri? endpoint = null,
@@ -199,6 +210,7 @@ public sealed class GitHubReleaseClientTests
     {
         public string UserAgent { get; private set; } = string.Empty;
         public string Accept { get; private set; } = string.Empty;
+        public string? ApiVersion { get; private set; }
         public Uri? RequestUri { get; private set; }
 
         protected override Task<HttpResponseMessage> SendAsync(
@@ -207,6 +219,7 @@ public sealed class GitHubReleaseClientTests
         {
             UserAgent = request.Headers.UserAgent.ToString();
             Accept = request.Headers.Accept.ToString();
+            ApiVersion = request.Headers.GetValues("X-GitHub-Api-Version").Single();
             RequestUri = request.RequestUri;
             return Task.FromResult(new HttpResponseMessage(statusCode)
             {

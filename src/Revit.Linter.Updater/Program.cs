@@ -57,8 +57,18 @@ try
             });
         }
     });
-    using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
-    using var downloadHttpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
+    using var releaseHandler = new SocketsHttpHandler
+    {
+        AllowAutoRedirect = false,
+        ConnectTimeout = TimeSpan.FromSeconds(10)
+    };
+    using var downloadHandler = new SocketsHttpHandler
+    {
+        AllowAutoRedirect = false,
+        ConnectTimeout = TimeSpan.FromSeconds(15)
+    };
+    using var httpClient = new HttpClient(releaseHandler) { Timeout = TimeSpan.FromSeconds(10) };
+    using var downloadHttpClient = new HttpClient(downloadHandler) { Timeout = Timeout.InfiniteTimeSpan };
     var stateStore = new JsonUpdaterStateStore();
     UpdaterState userState;
     try

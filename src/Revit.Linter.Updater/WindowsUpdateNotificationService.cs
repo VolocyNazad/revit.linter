@@ -171,6 +171,7 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
 
     private async Task DownloadInstallerAsync(UpdateNotificationActivation activation)
     {
+        using var operationTimeout = new CancellationTokenSource(TimeSpan.FromMinutes(30));
         try
         {
             string downloadDirectory = Path.Combine(
@@ -178,7 +179,8 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
                 "Volocy", "Revit.Linter", "updater", "downloads");
             string installerPath = await _installerDownloader.DownloadAsync(
                 activation.Installer!,
-                downloadDirectory);
+                downloadDirectory,
+                operationTimeout.Token);
             string explorerPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Windows),
                 "explorer.exe");

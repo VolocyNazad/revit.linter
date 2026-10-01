@@ -53,6 +53,42 @@ public sealed class InstallerDownloadServiceTests : IDisposable
         Assert.Empty(Directory.GetFiles(_directory));
     }
 
+    [Fact]
+    public async Task DownloadAsync_TrustedHttpsRedirect_DownloadsInstaller()
+    {
+        byte[] content = "redirected content"u8.ToArray();
+        ReleaseInstaller installer = CreateInstaller(content);
+        var handler = new RedirectHandler(
+            new Uri("https://release-assets.githubusercontent.com/example/installer.msi"),
+            content);
+        var service = new InstallerDownloadService(
+            new HttpClient(handler),
+            NullLogger<InstallerDownloadService>.Instance);
+
+        string path = await service.DownloadAsync(
+            installer, _directory, TestContext.Current.CancellationToken);
+
+        Assert.Equal(content, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
+        Assert.Equal(2, handler.RequestUris.Count);
+    }
+
+    [Fact]
+    public async Task DownloadAsync_UntrustedRedirect_RejectsAndLeavesNoFiles()
+    {
+        byte[] content = "redirected content"u8.ToArray();
+        ReleaseInstaller installer = CreateInstaller(content);
+        var handler = new RedirectHandler(new Uri("https://example.com/installer.msi"), content);
+        var service = new InstallerDownloadService(
+            new HttpClient(handler),
+            NullLogger<InstallerDownloadService>.Instance);
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => service.DownloadAsync(
+            installer, _directory, TestContext.Current.CancellationToken));
+
+        Assert.Empty(Directory.GetFiles(_directory));
+        Assert.Single(handler.RequestUris);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_directory))
@@ -87,5 +123,28 @@ public sealed class InstallerDownloadServiceTests : IDisposable
             {
                 Content = new ByteArrayContent(content)
             });
+    }
+
+    private sealed class RedirectHandler(Uri redirectUri, byte[] content) : HttpMessageHandler
+    {
+        public List<Uri> RequestUris { get; } = [];
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            RequestUris.Add(Assert.IsType<Uri>(request.RequestUri));
+            if (RequestUris.Count == 1)
+            {
+                var redirect = new HttpResponseMessage(HttpStatusCode.Redirect);
+                redirect.Headers.Location = redirectUri;
+                return Task.FromResult(redirect);
+            }
+
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(content)
+            });
+        }
     }
 }
