@@ -8,14 +8,14 @@ internal static class ParameterIdentifierParser
     public static BuiltInParameterGroup ParseGroup(string value) =>
         int.TryParse(value, out int id)
             ? (BuiltInParameterGroup)id
-            : Enum.Parse<BuiltInParameterGroup>(value);
+            : (BuiltInParameterGroup)Enum.Parse(typeof(BuiltInParameterGroup), value);
 #endif
 
     public static BuiltInCategory ParseCategory(string value) =>
 #if BEFORE2024
         int.TryParse(value, out int id)
             ? (BuiltInCategory)id
-            : Enum.Parse<BuiltInCategory>(value);
+            : (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), value);
 #else
         long.TryParse(value, out long id)
             ? (BuiltInCategory)id
