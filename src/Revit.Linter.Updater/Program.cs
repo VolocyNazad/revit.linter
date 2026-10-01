@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Updater;
 using Revit.Linter.Updater.Core.Models;
 using Revit.Linter.Updater.Core.Services;
 using Serilog;
@@ -57,11 +58,22 @@ try
         }
     });
     using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+    var stateStore = new JsonUpdaterStateStore();
+    var activationHandler = new UpdateNotificationActivationHandler(
+        stateStore,
+        loggerFactory.CreateLogger<UpdateNotificationActivationHandler>());
+    using var notificationService = new WindowsUpdateNotificationService(
+        activationHandler,
+        loggerFactory.CreateLogger<WindowsUpdateNotificationService>());
     var coordinator = new UpdateCoordinator(
         new GitHubReleaseClient(httpClient, loggerFactory.CreateLogger<GitHubReleaseClient>()),
-        new JsonUpdaterStateStore(),
+        stateStore,
         TimeProvider.System,
         loggerFactory.CreateLogger<UpdateCoordinator>());
+    var notificationCoordinator = new UpdateNotificationCoordinator(
+        notificationService,
+        stateStore,
+        loggerFactory.CreateLogger<UpdateNotificationCoordinator>());
 
     UpdateCheckResult result = await coordinator.CheckAsync(
         currentVersion,
@@ -75,6 +87,8 @@ try
         result = await coordinator.CheckAsync(currentVersion, UpdateCheckMode.Manual);
         manual = true;
     }
+
+    await notificationCoordinator.NotifyIfNeededAsync(result);
 
     if (manual)
     {

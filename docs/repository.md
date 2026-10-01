@@ -44,9 +44,10 @@ check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
 dependencies so the installer and sign-in startup can run it outside Revit.
 
-The release pipeline publishes the updater for `win-x64` as a self-contained application before MSI
-creation. The publish directory is an explicit build-module result; installer generation must consume
-that result instead of relying on configuration-specific paths under `bin`.
+The release pipeline publishes the updater and Windows App SDK notification runtime for `win-x64` as a
+self-contained unpackaged application before MSI creation. The publish directory is an explicit
+build-module result; installer generation must consume that result instead of relying on
+configuration-specific paths under `bin`.
 
 Release packaging produces one per-user MSI containing every supported Revit build and the shared
 updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creates version-specific

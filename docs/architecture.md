@@ -72,3 +72,6 @@ This document records stable architectural rules. Implementation details belong 
 - Only one updater process performs work in a Windows user session. Concurrent manual launches signal
   the active process through named synchronization objects; pending requests are coalesced and reuse an
   already-running release check.
+- Release notifications use the self-contained Windows App SDK from the updater process. Notification
+  activation is handled directly by the unpackaged executable, without a custom URI protocol. Only
+  validated HTTPS release links for the official GitHub repository may be opened.

@@ -17,15 +17,15 @@
 - [x] Persist `AutomaticChecksEnabled`, `LastCheckedAt`, `LastNotifiedVersion`, and `SkippedVersion` under `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`.
 - [x] Check automatically no more than once per 24 hours. Manual checks bypass the interval, report both the up-to-date and failure states, and never change the automatic-check timestamp after an unsuccessful request.
 - [x] Keep automatic network failures silent to the user and log them once. A background failure must not affect Revit startup or normal add-in operation.
-- [ ] Show a local Windows app notification only for a newer, non-skipped version. Provide **Download**, **What's new**, **Later**, and **Skip this version** actions without stealing focus from Revit.
-- [ ] Publish the updater self-contained with the Windows App SDK notification support it needs, initialize the Windows App Runtime explicitly, and degrade to logging/manual checks when notifications are unavailable or the process is elevated.
-- [ ] Register a per-user custom URI protocol only if notification activation needs it; validate every argument before opening the installer or release page.
-- [ ] In the first delivery phase, open the matching GitHub release or unified installer and require an explicit user action. Do not download or install updates automatically.
+- [x] Show a local Windows app notification only for a newer, non-skipped version. Provide **Download**, **What's new**, **Later**, and **Skip this version** actions without stealing focus from Revit.
+- [x] Publish the updater self-contained with the Windows App SDK notification support it needs, initialize the Windows App Runtime through its self-contained unpackaged auto-initializers, and degrade to logging/manual checks when notifications are unavailable or the process is elevated.
+- [x] Avoid a custom URI protocol because unpackaged Windows App SDK activation registers the executable directly; validate every activation argument before opening the release page.
+- [x] In the first delivery phase, open the matching GitHub release and require an explicit user action. Do not download or install updates automatically.
 - [ ] In a later phase, allow the updater to download the unified installer, verify HTTPS origin, expected asset name, size, digest and code signature, and launch it only after all affected Revit processes have closed.
 - [ ] Keep administrative policy separate from user state. Read machine policy, then user policy, then user settings, then built-in defaults; do not write ordinary defaults under a `Policies` registry key.
 - [ ] Consider policies for disabling checks or notifications, fixing the release channel/API URL, controlling the check interval, and allowing automatic download or installation.
 - [x] On uninstall, remove all installed plugin components, manifests and updater startup registration. Preserve logs and user settings.
-- [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling (covered), Revit-running refusal, notification decisions, manual/background error behavior, asset validation, and updater shutdown with headless tests.
+- [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling (covered), Revit-running refusal, notification decisions and activation validation (covered), manual/background error behavior, asset validation, and updater shutdown with headless tests.
 
 ## Branching diagnostic report history
 
