@@ -71,7 +71,9 @@ public sealed class UpdateCoordinator
 
             return new UpdateCheckResult(UpdateCheckStatus.UpdateAvailable, currentVersion, release);
         }
-        catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or JsonException or IOException or UnauthorizedAccessException)
+        catch (Exception exception) when (
+            exception is HttpRequestException or JsonException or IOException or UnauthorizedAccessException ||
+            exception is TaskCanceledException && !cancellationToken.IsCancellationRequested)
         {
             _logger.LogError(exception, "Update check failed");
             return new UpdateCheckResult(UpdateCheckStatus.Failed, currentVersion, Error: exception.Message);

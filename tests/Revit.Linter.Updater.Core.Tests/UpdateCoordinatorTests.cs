@@ -25,10 +25,56 @@ public sealed class UpdateCoordinatorTests
     }
 
     [Fact]
+    public async Task CheckAsync_AutomaticChecksDisabled_DoesNotCallGitHub()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState { AutomaticChecksEnabled = false });
+        var coordinator = CreateCoordinator(releases, state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Disabled, result.Status);
+        Assert.Equal(0, releases.CallCount);
+        Assert.Equal(0, state.SaveCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_AutomaticCheckAtInterval_IsDue()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState
+        {
+            LastCheckedAt = Now - UpdateCoordinator.AutomaticCheckInterval
+        });
+        var coordinator = CreateCoordinator(releases, state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
+        Assert.Equal(1, releases.CallCount);
+    }
+
+    [Fact]
     public async Task CheckAsync_ManualCheckBypassesInterval()
     {
         var releases = new FakeReleaseClient(NewRelease());
         var state = new FakeStateStore(new UpdaterState { LastCheckedAt = Now.AddHours(-1) });
+        var coordinator = CreateCoordinator(releases, state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Manual, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
+        Assert.Equal(1, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_ManualCheckBypassesDisabledSetting()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState { AutomaticChecksEnabled = false });
         var coordinator = CreateCoordinator(releases, state);
 
         UpdateCheckResult result = await coordinator.CheckAsync(
@@ -48,6 +94,36 @@ public sealed class UpdateCoordinatorTests
             CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
 
         Assert.Equal(UpdateCheckStatus.Skipped, result.Status);
+    }
+
+    [Theory]
+    [InlineData("1.2.3")]
+    [InlineData("1.1.9")]
+    public async Task CheckAsync_CurrentOrOlderRelease_ReturnsUpToDate(string releaseVersion)
+    {
+        StableVersion.TryParse(releaseVersion, out StableVersion version);
+        var release = new ReleaseInfo(version, new Uri("https://example.com/release"));
+        var coordinator = CreateCoordinator(
+            new FakeReleaseClient(release),
+            new FakeStateStore(new UpdaterState()));
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpToDate, result.Status);
+        Assert.Same(release, result.Release);
+    }
+
+    [Fact]
+    public async Task CheckAsync_InvalidSkippedVersion_DoesNotHideUpdate()
+    {
+        var state = new FakeStateStore(new UpdaterState { SkippedVersion = "preview" });
+        var coordinator = CreateCoordinator(new FakeReleaseClient(NewRelease()), state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
     }
 
     [Fact]
@@ -77,6 +153,63 @@ public sealed class UpdateCoordinatorTests
         Assert.Equal(UpdateCheckStatus.UpToDate, result.Status);
         Assert.Equal(Now, state.State.LastCheckedAt);
         Assert.Equal(1, state.SaveCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_StateLoadFailure_ReturnsFailedWithoutCallingGitHub()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new IOException("state unavailable"));
+        var coordinator = CreateCoordinator(releases, state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Failed, result.Status);
+        Assert.Contains("state unavailable", result.Error);
+        Assert.Equal(0, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_StateSaveFailure_ReturnsFailed()
+    {
+        var state = new FakeStateStore(new UpdaterState())
+        {
+            SaveException = new IOException("disk full")
+        };
+        var coordinator = CreateCoordinator(new FakeReleaseClient(NewRelease()), state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Failed, result.Status);
+        Assert.Contains("disk full", result.Error);
+    }
+
+    [Fact]
+    public async Task CheckAsync_HttpTimeout_ReturnsFailed()
+    {
+        var coordinator = CreateCoordinator(
+            new FakeReleaseClient(new TaskCanceledException("timeout")),
+            new FakeStateStore(new UpdaterState()));
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Automatic, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Failed, result.Status);
+    }
+
+    [Fact]
+    public async Task CheckAsync_CallerCancellation_PropagatesCancellation()
+    {
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+        var coordinator = CreateCoordinator(
+            new FakeReleaseClient(new TaskCanceledException("cancelled")),
+            new FakeStateStore(new UpdaterState()));
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => coordinator.CheckAsync(CurrentVersion, UpdateCheckMode.Automatic, cancellation.Token));
     }
 
     private static UpdateCoordinator CreateCoordinator(
@@ -110,16 +243,32 @@ public sealed class UpdateCoordinatorTests
         }
     }
 
-    private sealed class FakeStateStore(UpdaterState state) : IUpdaterStateStore
+    private sealed class FakeStateStore : IUpdaterStateStore
     {
-        public UpdaterState State { get; private set; } = state;
+        private readonly Exception? _loadException;
+
+        public FakeStateStore(UpdaterState state) => State = state;
+
+        public FakeStateStore(Exception loadException)
+        {
+            _loadException = loadException;
+            State = new UpdaterState();
+        }
+
+        public UpdaterState State { get; private set; }
         public int SaveCount { get; private set; }
+        public Exception? SaveException { get; init; }
 
         public Task<UpdaterState> LoadAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(State);
+            _loadException is null
+                ? Task.FromResult(State)
+                : Task.FromException<UpdaterState>(_loadException);
 
         public Task SaveAsync(UpdaterState state, CancellationToken cancellationToken = default)
         {
+            if (SaveException is not null)
+                return Task.FromException(SaveException);
+
             State = state;
             SaveCount++;
             return Task.CompletedTask;

@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Propagate caller-requested updater cancellation while continuing to report HTTP timeouts as failed checks.
 - Map updater projects to the solution's `x64` platform so Visual Studio resolves every versioned build configuration correctly.
 
 ### Added
