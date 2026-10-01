@@ -13,6 +13,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Detect installed Revit versions in the unified MSI, preselect their optional features, and let users adjust the component selection.
 - Build the updater as a versioned self-contained `win-x64` application before installer creation.
 - Add the Revit-independent updater foundation with stable GitHub release discovery, persisted per-user state, 24-hour scheduling, manual checks, skip behavior, and headless tests.
 - Add a compact Revit ribbon command that delegates manual update checks to the standalone updater.
@@ -91,6 +92,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Stop the updater before installer file changes and refuse installation, modification or removal while Revit is running.
 - Remove Revit manifests only during a real uninstall, not during installer repair or upgrade.
 - Use the explicit `ViewLocatorExtension` type name so Visual Studio's XAML language service resolves the shared markup extension.
 - Keep the diagnostic report grid out of WPF edit mode so changing filters can safely refresh its collection view.

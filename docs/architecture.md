@@ -62,6 +62,10 @@ This document records stable architectural rules. Implementation details belong 
 - Stable releases originate from exactly one `vMAJOR.MINOR.PATCH` tag and are published through the repository release pipeline.
 - One per-user MSI owns every supported Revit build, the shared updater, version-specific manifests,
   and updater startup registration. A stable `UpgradeCode` keeps upgrades within that single product line.
+- The updater is an immutable required MSI feature. Revit-version payloads are optional features,
+  preselected from installed Revit registry keys and synchronized with their per-user manifests.
+- Installer file changes require all Revit processes to be closed; the short-lived updater is stopped
+  before replacement begins.
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no
   Revit API dependency; the add-in may launch it but must not perform release HTTP requests or create
   Windows notifications itself.

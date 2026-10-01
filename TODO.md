@@ -4,10 +4,10 @@
 
 - [x] Replace the separate user-facing Revit-version installers with one per-user Revit Linter MSI, migrate legacy per-version products, and leave one Programs and Features entry.
 - [x] Install application files under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\` and version-specific `.addin` manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\` without requiring elevation.
-- [ ] Detect installed supported Revit versions, preselect them, and let the user change the selected components before installation.
-- [x] Package every currently supported Revit build and one shared updater in the same MSI so installation and removal cannot orphan shared infrastructure.
-- [x] Keep one stable MSI `UpgradeCode` and upgrade the updater and all plugin components in one transaction.
-- [ ] Stop the updater before replacing it. Refuse plugin replacement while any affected Revit process is running, and provide a clear retry path after Revit is closed.
+- [x] Detect installed supported Revit versions, preselect them, and let the user change the selected components before installation.
+- [x] Package every selectable Revit build and one shared updater in the same MSI so installation and removal cannot orphan shared infrastructure.
+- [x] Keep one stable MSI `UpgradeCode`, upgrade the updater and selected plugin components in one transaction, and migrate feature selection on unified upgrades.
+- [x] Stop the updater before replacing it. Refuse plugin replacement while any Revit process is running, and provide a clear retry path after Revit is closed.
 - [x] Implement the updater as a separate executable with no Revit API dependency. The Revit add-in must not perform release HTTP requests or create Windows notifications itself.
 - [x] Prefer a short-lived updater over a permanently running worker: start it for the current user at sign-in, check persisted state, perform any due work, and exit. Do not add a tray icon.
 - [x] Register updater startup per user under `HKCU`; a manual **Check for updates** action in Revit launches the same executable with `--check-now`.

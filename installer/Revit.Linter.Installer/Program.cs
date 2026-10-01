@@ -63,19 +63,41 @@ if (targets.Select(target => target.Version).Distinct().Count() != targets.Count
 
 Directory.CreateDirectory(outputDirectory);
 string revitVersions = string.Join(';', targets.OrderBy(target => target.Version).Select(target => target.Version));
+var coreFeature = new Feature(
+    "Core",
+    "Shared updater and application infrastructure.",
+    isEnabled: true,
+    allowChange: false)
+{
+    Id = new Id("Core")
+};
+Dictionary<int, Feature> revitFeatures = targets.ToDictionary(
+    target => target.Version,
+    target => new Feature(
+        $"Revit {target.Version}",
+        $"Revit Linter add-in for Autodesk Revit {target.Version}.",
+        isEnabled: false,
+        allowChange: true)
+    {
+        Id = new Id($"Revit{target.Version}"),
+        Condition = new FeatureCondition($"REVIT_{target.Version}_DETECTED", 1)
+    });
 
 var installEntities = new List<WixEntity>
 {
-    new Files(Path.Combine(updaterDirectory, "*.*")),
+    new Files(coreFeature, Path.Combine(updaterDirectory, "*.*")),
     new Dir(
+        coreFeature,
         "Addins",
         targets
             .OrderBy(target => target.Version)
             .Select(target => new Dir(
+                revitFeatures[target.Version],
                 target.Version.ToString(),
                 new Dir(
+                    revitFeatures[target.Version],
                     "sources",
-                    new Files(Path.Combine(target.SourceDirectory, "*.*")))))
+                    new Files(revitFeatures[target.Version], Path.Combine(target.SourceDirectory, "*.*")))))
             .Cast<WixEntity>()
             .ToArray())
 };
@@ -97,7 +119,7 @@ Project project = new()
         HelpLink = "https://github.com/VolocyNazad/revit.linter",
     },
     Platform = WixSharp.Platform.x64,
-    UI = WUI.WixUI_Minimal,
+    UI = WUI.WixUI_FeatureTree,
     Scope = InstallScope.perUser,
     Dirs =
     [
@@ -107,11 +129,20 @@ Project project = new()
     ],
     Properties =
     [
-        new Property("REVIT_VERSIONS", revitVersions)
+        new Property("REVIT_VERSIONS", revitVersions),
+        .. targets.Select(target => new Property(
+            $"REVIT_{target.Version}_DETECTED",
+            new RegistrySearch(
+                new Id($"Revit{target.Version}Registry"),
+                RegistryHive.LocalMachine,
+                $@"SOFTWARE\Autodesk\Revit\{target.Version}",
+                null!,
+                RegistrySearchType.raw)))
     ],
     RegValues =
     [
         new RegValue(
+            coreFeature,
             RegistryHive.CurrentUser,
             @"Software\Microsoft\Windows\CurrentVersion\Run",
             AddInName,
@@ -120,17 +151,23 @@ Project project = new()
     Actions =
     [
         new ManagedAction(
-            CustomActions.CreateManifests,
+            CustomActions.PrepareForFileChanges,
             Return.check,
-            When.After,
-            Step.InstallFinalize,
-            Condition.NOT_Installed),
+            When.Before,
+            Step.InstallInitialize,
+            Condition.Always),
         new ManagedAction(
             CustomActions.RemoveManifests,
             Return.check,
             When.Before,
             Step.RemoveFiles,
             Condition.BeingUninstalledAndNotBeingUpgraded),
+        new ManagedAction(
+            CustomActions.SynchronizeManifests,
+            Return.check,
+            When.After,
+            Step.InstallFinalize,
+            Condition.NOT_BeingRemoved),
     ],
 };
 

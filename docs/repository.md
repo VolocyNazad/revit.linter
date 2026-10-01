@@ -53,10 +53,16 @@ updater. It installs under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\`, creat
 manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current
 user's `Run` key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with
 the stable product version.
-The minimal installer UI keeps the per-user installation directory fixed. Manifest assembly paths still
+The feature-tree installer UI keeps the per-user installation directory fixed. Manifest assembly paths still
 use the effective MSI `INSTALLDIR`, keeping silent and administrative invocations internally consistent.
 The first unified installation also detects and removes older per-Revit-version products by their
 legacy upgrade codes, preventing duplicate Programs and Features entries during migration.
+
+The MSI exposes one required `Core` feature and one optional feature per supported Revit year. Registry
+key searches under `HKLM\SOFTWARE\Autodesk\Revit\<year>` preselect installed versions; the feature-tree
+UI lets the user override that selection. Manifest synchronization follows the requested feature states
+on install, repair and modify. Before any file change, setup stops the short-lived updater and refuses to
+continue while a Revit process is running.
 
 ## Technology stack
 
