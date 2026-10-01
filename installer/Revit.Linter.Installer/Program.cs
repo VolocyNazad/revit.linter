@@ -7,6 +7,7 @@ using WixSharp;
 const string AddInName = "Revit.Linter";
 const string Vendor = "VolocyNazad";
 const string UpgradeCode = "ed6109bc-3ea6-4fe3-a1ab-e31a7db46ac1";
+string productIcon = Path.Combine(AppContext.BaseDirectory, "Resources", "Icon.ico");
 string[] legacyUpgradeCodes =
 [
     "3e2b063d-e79e-4dd0-bdfc-1023eedecda3",
@@ -117,6 +118,7 @@ Project project = new()
         Manufacturer = Vendor,
         Comments = "Revit Linter per-user installer.",
         HelpLink = "https://github.com/VolocyNazad/revit.linter",
+        ProductIcon = productIcon,
     },
     Platform = WixSharp.Platform.x64,
     UI = WUI.WixUI_FeatureTree,

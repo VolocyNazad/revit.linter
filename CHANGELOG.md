@@ -23,6 +23,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Add the Revit Linter product icon to the updater executable and Windows Installed Apps registration.
 - Download the exact MSI asset after an explicit notification action, verify its size and GitHub-provided SHA-256 digest, and reveal it in Explorer without launching the installer.
 - Resolve read-only machine and user updater policies for checks, notifications, interval, and release API endpoint ahead of user settings and built-in defaults.
 - Show a Windows app notification for new releases with download, release-notes, later, and skip actions, validated activation arguments, and a silent fallback when notifications are unavailable.

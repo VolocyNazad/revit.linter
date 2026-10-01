@@ -23,4 +23,10 @@
 		<PackageReference Include="WixToolset.UI.wixext" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="..\..\src\Revit.Linter.Updater\Resources\Icon.ico" Link="Resources\Icon.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>

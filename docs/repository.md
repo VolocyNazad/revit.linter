@@ -43,6 +43,8 @@ consumed by the diagnostic report presenter; the initial supported step deletes 
 check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
 dependencies so the installer and sign-in startup can run it outside Revit.
+Its product icon is embedded in the executable and reused by the MSI registration shown in Windows
+Installed Apps.
 
 Manual update checks run without a console window and always attempt to show a Windows notification
 with the result. The updater derives comparison data from the numeric assembly version while retaining
