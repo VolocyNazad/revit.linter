@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Detect installed Revit versions from their populated Autodesk component-registration values when selecting default MSI features.
 - Run manual update checks without a console window, accept prerelease build metadata for the installed version, and notify the user when the installation is current or the check fails.
 - Resolve the manually launched updater from the same `VolocyNazad` per-user installation directory used by the MSI.
 - Ignore the root build-artifact output directory so local packaging does not dirty the Git worktree.
@@ -43,7 +44,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Select every supported Revit version for installation by default while retaining per-version opt-out in the MSI feature tree.
+- Preselect only installed Revit versions in the MSI feature tree while retaining manual per-version overrides.
 - Replace and migrate separate Revit-version installers with one per-user MSI containing all supported builds and the shared sign-in updater.
 - Document the testability boundary between `RevitAPI` document logic and thin `RevitAPIUI` adapters.
 - Document build-time localization validation and require nearby remarks for non-obvious API behavior.

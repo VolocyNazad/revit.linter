@@ -81,9 +81,10 @@ use the effective MSI `INSTALLDIR`, keeping silent and administrative invocation
 The first unified installation also detects and removes older per-Revit-version products by their
 legacy upgrade codes, preventing duplicate Programs and Features entries during migration.
 
-The MSI exposes one required `Core` feature and one optional feature per supported Revit year. Every
-supported Revit version is selected by default; the feature-tree UI lets the user exclude versions that
-are not needed. Manifest synchronization follows the requested feature states
+The MSI exposes one required `Core` feature and one optional feature per supported Revit year. A
+`ProductName` lookup under `HKLM\SOFTWARE\Autodesk\Revit\Autodesk Revit <year>\Components` selects
+installed versions by default; the feature-tree UI lets the user override that selection. Manifest
+synchronization follows the requested feature states
 on install, repair and modify. Before any file change, setup stops the short-lived updater and refuses to
 continue while a Revit process is running.
 

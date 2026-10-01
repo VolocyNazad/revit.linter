@@ -76,10 +76,11 @@ Dictionary<int, Feature> revitFeatures = targets.ToDictionary(
     target => new Feature(
         $"Revit {target.Version}",
         $"Revit Linter add-in for Autodesk Revit {target.Version}.",
-        isEnabled: true,
+        isEnabled: false,
         allowChange: true)
     {
-        Id = new Id($"Revit{target.Version}")
+        Id = new Id($"Revit{target.Version}"),
+        Condition = new FeatureCondition($"REVIT_{target.Version}_DETECTED", 1)
     });
 
 var installEntities = new List<WixEntity>
@@ -126,7 +127,18 @@ Project project = new()
             $@"%LocalAppDataFolder%\Programs\{Vendor}\{AddInName}",
             installEntities.ToArray())
     ],
-    Properties = [new Property("REVIT_VERSIONS", revitVersions)],
+    Properties =
+    [
+        new Property("REVIT_VERSIONS", revitVersions),
+        .. targets.Select(target => new Property(
+            $"REVIT_{target.Version}_DETECTED",
+            new RegistrySearch(
+                new Id($"Revit{target.Version}Registry"),
+                RegistryHive.LocalMachine,
+                $@"SOFTWARE\Autodesk\Revit\Autodesk Revit {target.Version}\Components",
+                "ProductName",
+                RegistrySearchType.raw)))
+    ],
     RegValues =
     [
         new RegValue(
