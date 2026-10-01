@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\..\src\Revit.Linter.Updater\Resources\Icon.ico" Link="Resources\Icon.ico">
+		<Content Include="..\..\updater\src\Revit.Linter.Updater\Resources\Icon.ico" Link="Resources\Icon.ico">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>

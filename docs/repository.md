@@ -14,6 +14,8 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `tests/` - tests
 - `docs/` - contributor documentation and repository policies
 - `installer/` -msi installer
+- `updater/` - the standalone updater (`src/`, `tests/`) with its own
+  `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; its projects are also part of the root solution
 - `build/` - solution building, compilation, package
 - `output/` - artifacts after building
 - `benchmark/` - benchmarking
@@ -39,6 +41,10 @@ overrides. `Revit.Linter.ElementVisualization` composes those operations into di
 visualization pipelines and restores their sessions in reverse order.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
 consumed by the diagnostic report presenter; the initial supported step deletes the target element.
+The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`
+replaces the root central package versions for everything under `updater/` (MSBuild uses the nearest file and it
+does not import the root one), so updater dependencies can be versioned independently of the Revit add-in.
+Shared MSBuild settings, configurations and `VolocyNazad.Revit.Sdk` still come from the root `Directory.Build.props`.
 `Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
 check scheduling, per-user state persistence, and single-instance coordination.
 `Revit.Linter.Updater` is the short-lived executable entry point; it must remain free of Revit API
@@ -120,7 +126,7 @@ continue while a Revit process is running.
 - `VolocyNazad.ResxAnalyzer` runs during regular builds of `Revit.Linter.Localization` and reports
   missing, extra or duplicate keys, mismatched composite-format placeholders, empty translations,
   missing culture files, and satellites without a neutral resource (`RESX001`-`RESX007`)
-- Central package management via `Directory.Packages.props`;
+- Central package management via `Directory.Packages.props` (`installer/`, `build/` and `updater/` have their own);
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
   via `GlobalPackageReference` for all projects
 
@@ -185,7 +191,7 @@ Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests as headless tests. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests under `tests/` and `updater/tests/` as headless tests. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 ## Versioning and release tags
 

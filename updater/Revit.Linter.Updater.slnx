@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug_2021.1.9" />
+    <BuildType Name="Debug_2023.0.0" />
+    <BuildType Name="Debug_2025.0.0" />
+    <BuildType Name="Release_2021.1.9" />
+    <BuildType Name="Release_2023.0.0" />
+    <BuildType Name="Release_2025.0.0" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/solutionItems/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Revit.Linter.Updater.Core/Revit.Linter.Updater.Core.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.Updater/Revit.Linter.Updater.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Revit.Linter.Updater.Core.Tests/Revit.Linter.Updater.Core.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+</Solution>

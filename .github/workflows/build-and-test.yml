@@ -39,7 +39,7 @@ jobs:
       - name: Run headless tests
         shell: pwsh
         run: |
-          $testProjects = @(Get-ChildItem tests -Recurse -Filter *.csproj |
+          $testProjects = @(Get-ChildItem tests, updater/tests -Recurse -Filter *.csproj |
             Where-Object { $_.Name.EndsWith('.Tests.csproj', [StringComparison]::Ordinal) })
 
           if ($testProjects.Count -eq 0) {
