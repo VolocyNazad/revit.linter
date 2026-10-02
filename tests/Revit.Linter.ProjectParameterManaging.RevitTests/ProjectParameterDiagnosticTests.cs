@@ -93,6 +93,36 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         await Assert.That(details).Contains(missingByName.Name);
     }
 
+    [Test]
+    public async Task Shared_parameter_without_category_binding_is_reported()
+    {
+        AddParameter();
+        RemoveBinding();
+        DocumentDiagnostic diagnostic = CreateDiagnostic(CreateExpectedParameter());
+
+        // The parameter element must outlive its binding; otherwise this would exercise the
+        // "parameter not found" path instead of the unbound one.
+        await Assert.That(SharedParameterElement.Lookup(_document!, ParameterId)).IsNotNull();
+
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!).Single();
+        string details = (string)feedback.AdditionalMessageArguments!["details"];
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(details).Contains(ParameterName);
+        await Assert.That(details).Contains(ParameterId.ToString());
+    }
+
+    private void RemoveBinding()
+    {
+        SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
+        using Transaction transaction = new(_document!, "Remove test project parameter binding");
+        transaction.Start();
+        bool removed = _document!.ParameterBindings.Remove(parameter.GetDefinition());
+        transaction.Commit();
+        if (!removed)
+            throw new InvalidOperationException("Test project parameter binding could not be removed.");
+    }
+
     private void AddParameter()
     {
         using ServiceProvider services = CreateServices();

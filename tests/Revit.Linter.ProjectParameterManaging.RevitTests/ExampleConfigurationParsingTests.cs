@@ -51,6 +51,78 @@ public sealed class ExampleConfigurationParsingTests
     }
 
     [Test]
+    public async Task Every_supported_category_name_and_number_is_known()
+    {
+        int count = 0;
+        foreach (BuiltInCategory value in Enum.GetValues(typeof(BuiltInCategory)).Cast<BuiltInCategory>())
+        {
+            await Assert.That(ParameterIdentifierParser.IsKnownCategory(value.ToString())).IsTrue();
+            await Assert.That(ParameterIdentifierParser.IsKnownCategory(GetNumericIdentifier(value))).IsTrue();
+            count++;
+        }
+        await Assert.That(count).IsGreaterThan(0);
+    }
+
+    [Test]
+    [Arguments("OST_DuctAcessory")]
+    [Arguments("")]
+    [Arguments("OST_Walls, OST_Doors")]
+    [Arguments("999999999")]
+    public async Task Unknown_category_identifier_is_rejected(string value)
+    {
+        await Assert.That(ParameterIdentifierParser.IsKnownCategory(value)).IsFalse();
+    }
+
+    [Test]
+    public async Task Every_supported_parameter_group_value_is_known()
+    {
+        int count = 0;
+#if BEFORE2024
+        foreach (BuiltInParameterGroup value in Enum.GetValues(typeof(BuiltInParameterGroup)).Cast<BuiltInParameterGroup>())
+        {
+            await Assert.That(ParameterIdentifierParser.IsKnownGroup(value.ToString())).IsTrue();
+            await Assert.That(ParameterIdentifierParser.IsKnownGroup(((int)value).ToString())).IsTrue();
+            count++;
+        }
+#else
+        foreach (System.Reflection.PropertyInfo property in typeof(GroupTypeId)
+                     .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                     .Where(property => property.PropertyType == typeof(ForgeTypeId)))
+        {
+            ForgeTypeId? value = (ForgeTypeId?)property.GetValue(null);
+            if (value is not null)
+            {
+                await Assert.That(ParameterIdentifierParser.IsKnownGroup(value.TypeId)).IsTrue();
+                count++;
+            }
+        }
+#endif
+        await Assert.That(count).IsGreaterThan(0);
+    }
+
+    [Test]
+#if BEFORE2024
+    [Arguments("PG_UNKNOWN")]
+    [Arguments("")]
+    [Arguments("PG_DATA, PG_TEXT")]
+    [Arguments("autodesk.parameter.group:data-1.0.0")]
+#else
+    [Arguments("PG_DATA")]
+    [Arguments("-5000123")]
+#endif
+    public async Task Parameter_group_identifier_of_another_revit_version_or_unknown_is_rejected(string value)
+    {
+        await Assert.That(ParameterIdentifierParser.IsKnownGroup(value)).IsFalse();
+    }
+
+    private static string GetNumericIdentifier(BuiltInCategory category) =>
+#if BEFORE2024
+        ((int)category).ToString();
+#else
+        ((long)category).ToString();
+#endif
+
+    [Test]
     public async Task Every_supported_view_detail_level_round_trips_from_configuration_text()
     {
         int count = 0;
