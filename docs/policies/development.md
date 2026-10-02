@@ -35,6 +35,10 @@ Do not invent abbreviations in identifiers, file names or documentation. Use com
 
 Use `global using` only when most files in that project need the namespace. Keep specialized namespaces local, and do not repeat namespaces already supplied by `ImplicitUsings`. Apply this rule to new and touched code; clean up existing files only when doing so stays within the task scope.
 
+## Release changelog
+
+Before creating a release tag `vMAJOR.MINOR.PATCH`, move the content of `## [Unreleased]` in `CHANGELOG.md` into a new `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section directly below it and leave `## [Unreleased]` empty. Commit that change and create the tag on that commit, so the changelog at the tagged commit names the released version and carries no unreleased entries. While moving the entries, review them against the previous release: keep changes a user of that release can observe, merge related entries, and drop fixes for behavior that was never released. This is a required step of the release procedure, not an automated gate: the release pipeline does not verify it.
+
 ## .NET SDK selection
 
 Use the repository-root `global.json` for local builds and CI: SDK `10.0.103` or a later stable SDK in the `10.0` major/minor line (`rollForward: latestFeature`, `allowPrerelease: false`). Do not roll forward to another major/minor line without updating this policy and `global.json` together. GitHub Actions setup steps must read `global-json-file: global.json` after checkout. Additional SDKs may be installed to supply runtimes for older test targets; they do not replace the SDK selected by `global.json`. This policy does not change project target frameworks.
