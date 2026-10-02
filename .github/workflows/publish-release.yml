@@ -43,6 +43,35 @@ jobs:
             throw "The selected commit must have exactly one stable tag such as 'v1.4.0'."
           }
 
+      - name: Verify release changelog
+        shell: pwsh
+        run: |
+          $tag = @(git tag --points-at HEAD | Where-Object { $_ -match '^v\d+\.\d+\.\d+$' })[0]
+          $version = $tag.Substring(1)
+          $lines = @(Get-Content -LiteralPath CHANGELOG.md -Encoding utf8)
+
+          $start = -1
+          for ($i = 0; $i -lt $lines.Count; $i++) {
+            if ($lines[$i] -match '^## \[Unreleased\]') { $start = $i; break }
+          }
+          if ($start -lt 0) {
+            throw "CHANGELOG.md has no '## [Unreleased]' section."
+          }
+
+          $pending = @()
+          for ($i = $start + 1; $i -lt $lines.Count -and $lines[$i] -notmatch '^## '; $i++) {
+            if ($lines[$i].Trim() -and $lines[$i] -notmatch '^###\s') { $pending += $lines[$i] }
+          }
+          if ($pending.Count -gt 0) {
+            throw "CHANGELOG.md still has $($pending.Count) unreleased line(s). Move them into the '## [$version]' section before publishing."
+          }
+
+          $heading = "## [$version]"
+          $released = @($lines | Where-Object { $_.StartsWith($heading, [StringComparison]::Ordinal) })
+          if ($released.Count -ne 1) {
+            throw "CHANGELOG.md must contain exactly one '$heading - YYYY-MM-DD' section for the release tag $tag."
+          }
+
       - name: Build and publish release
         shell: pwsh
         env:
