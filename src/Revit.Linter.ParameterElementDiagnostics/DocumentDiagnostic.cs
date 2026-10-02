@@ -55,7 +55,14 @@ internal sealed class DocumentDiagnostic(
 
             BindingMap bindingMap = targetDocument.ParameterBindings;
             InternalDefinition definition = target.GetDefinition();
-            var binging = (ElementBinding)bindingMap.get_Item(definition);
+            // A parameter can exist in the document (for example, through a loaded family)
+            // without being bound to categories as a project parameter; the map then returns null.
+            if (bindingMap.get_Item(definition) is not ElementBinding binging)
+            {
+                messages.Add(ParameterElementDiagnosticLocalizations.GetString(
+                    "parameterNotBound_message", parameterData.Name, parameterData.Guid ?? string.Empty));
+                continue;
+            }
 
             if (definition.Name != parameterData.Name)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "Name"));

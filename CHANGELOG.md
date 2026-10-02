@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
+
 ## [1.8.0] - 2026-10-01
 
 ### Added

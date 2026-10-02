@@ -6,4 +6,5 @@
   <data name="parameterNotFound_message" xml:space="preserve"><value>Параметр «{0}» не найден.</value></data>
   <data name="sharedParameterNotFound_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» не найден.</value></data>
   <data name="parameterPropertyInvalid_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» содержит недопустимое значение свойства «{2}».</value></data>
+  <data name="parameterNotBound_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» есть в документе, но не привязан к категориям как параметр проекта.</value></data>
 </root>
