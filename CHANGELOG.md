@@ -24,7 +24,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Run a diagnostic fix by left-clicking its button in the report; when several fixes are available, the button opens a menu to choose one.
 - Complete the English and Russian localization of built-in diagnostics, report filters, document filters, fixes, transactions and parameter diagnostic details, and use Russian for every Russian regional culture.
 - Show the Revit ribbon tab as **Diagnostics** / **Диагностика** instead of the vendor name.
-- Store add-in logs under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\` instead of a single unbounded `logs.txt` next to the add-in. Logs roll daily and at 20 MB, keep the newest 14 files, no longer record the machine name, and are flushed when Revit closes.
+- Store add-in logs under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\` instead of a single unbounded `logs.txt` next to the add-in. Logs roll daily and at 20 MB, keep the newest 14 files, no longer record the machine name, include add-in startup, shutdown and fatal startup failures, and are flushed when Revit closes.
 - Expand the English and Russian Wiki with report actions, visualizations, fixes, configuration errors, log locations and troubleshooting, and update the example configurations to match.
 
 ### Fixed
@@ -32,9 +32,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Repairing or modifying the installation no longer removes the Revit add-in manifest.
 - Invalid user-diagnostic YAML no longer breaks diagnostics loading: the user is notified and the file is treated as empty.
 - Check project-parameter groups correctly in Revit 2023 and earlier, where numeric IDs and `PG_*` names were parsed the wrong way round.
-- Find duct and pipe insulation, duct lining and scope-box dependencies in Revit 2023 and earlier instead of failing on the category check.
+- Resolve the insulation, lining and scope-box dependency operands in formulas in Revit 2023 and earlier instead of failing on the category check.
 - Changing report filters no longer fails after a report row has entered edit mode.
-- Cropping a 3D view to elements no longer creates temporary model elements, calculates the section box in model coordinates with a fixed margin in millimetres, and isolation checks the correct view capability.
 - Wrap long messages in informational and confirmation dialogs and scroll them instead of clipping.
 - Fix broken formula-reference links in the Wiki.
 
