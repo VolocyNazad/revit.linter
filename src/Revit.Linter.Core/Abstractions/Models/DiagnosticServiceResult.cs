@@ -5,6 +5,6 @@ public enum DiagnosticServiceResult
 {
     /// <summary>The operation completed and published its reports.</summary>
     Success,
-    /// <summary>The operation did not complete successfully.</summary>
+    /// <summary>The operation or at least one of its diagnostics failed; published reports may be incomplete.</summary>
     Failed
 }

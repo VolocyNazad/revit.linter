@@ -23,8 +23,9 @@ internal sealed class DiagnosticService(
             using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
             DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
             Element[] elements = elementIds.Select(document.GetElement).ToArray();
-            RunDocumentDiagnostics(snapshot, document);
-            RunElementDiagnostics(snapshot, document, elements, view);
+            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(snapshot, document);
+            bool elementDiagnosticsCompleted = RunElementDiagnostics(snapshot, document, elements, view);
+            return documentDiagnosticsCompleted && elementDiagnosticsCompleted;
         });
 
     public DiagnosticServiceResult Execute(Document document, View? view = null)
@@ -32,17 +33,17 @@ internal sealed class DiagnosticService(
         {
             using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
             DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
-            RunDocumentDiagnostics(snapshot, document);
-            RunElementDiagnostics(snapshot, document, CollectElements(document, view), view);
+            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(snapshot, document);
+            bool elementDiagnosticsCompleted = RunElementDiagnostics(
+                snapshot, document, CollectElements(document, view), view);
+            return documentDiagnosticsCompleted && elementDiagnosticsCompleted;
         });
 
-    private DiagnosticServiceResult ExecuteSafely(Action execute)
+    private DiagnosticServiceResult ExecuteSafely(Func<bool> execute)
     {
         try
         {
-            execute();
-
-            return DiagnosticServiceResult.Success;
+            return execute() ? DiagnosticServiceResult.Success : DiagnosticServiceResult.Failed;
         }
         catch (Exception ex)
         {
@@ -51,31 +52,47 @@ internal sealed class DiagnosticService(
         }
     }
 
-    private void RunDocumentDiagnostics(DiagnosticCatalogSnapshot snapshot, Document document)
+    private bool RunDocumentDiagnostics(DiagnosticCatalogSnapshot snapshot, Document document)
     {
+        bool completed = true;
         foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
         {
-            if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) continue;
-
-            (DiagnosticFeedback[] feedbacks, double duration) = Measure(
-                () => registration.Diagnostic.Execute(document).ToArray());
-
-            foreach (DiagnosticFeedback feedback in feedbacks)
+            try
             {
-                if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
-
-                DocumentDiagnosticId identity = registration.Identity;
-                diagnosticReportSender.Send(new DiagnosticReport(
-                    identity.Code,
-                    registration.Override.Severity,
-                    document,
-                    new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
-                        feedback, ("duration", duration), ("documentTitle", document.Title))),
-                    document,
-                    feedback.AdditionalTargetDependencies,
-                    identity.IsObsolete,
-                    identity.ObsoleteDescription));
+                RunDocumentDiagnostic(registration, document);
             }
+            catch (Exception exception)
+            {
+                ReportFailure(document, registration.Identity.Code, exception);
+                completed = false;
+            }
+        }
+
+        return completed;
+    }
+
+    private void RunDocumentDiagnostic(DocumentDiagnosticRegistration registration, Document document)
+    {
+        if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) return;
+
+        (DiagnosticFeedback[] feedbacks, double duration) = Measure(
+            () => registration.Diagnostic.Execute(document).ToArray());
+
+        foreach (DiagnosticFeedback feedback in feedbacks)
+        {
+            if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+
+            DocumentDiagnosticId identity = registration.Identity;
+            diagnosticReportSender.Send(new DiagnosticReport(
+                identity.Code,
+                registration.Override.Severity,
+                document,
+                new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
+                    feedback, ("duration", duration), ("documentTitle", document.Title))),
+                document,
+                feedback.AdditionalTargetDependencies,
+                identity.IsObsolete,
+                identity.ObsoleteDescription));
         }
     }
 
@@ -84,38 +101,70 @@ internal sealed class DiagnosticService(
             ? new FilteredElementCollector(document).WherePasses(_elementFilter).ToElements()
             : new FilteredElementCollector(document, view.Id).WherePasses(_elementFilter).ToElements();
 
-    private void RunElementDiagnostics(
+    private bool RunElementDiagnostics(
         DiagnosticCatalogSnapshot snapshot, Document document, IEnumerable<Element> elements, View? view)
     {
+        bool completed = true;
         foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
         {
-            if (!registration.Override.IsActive || !registration.DocumentFilter.IsRelevantFor(document)) continue;
-
-            foreach (Element element in elements)
+            try
             {
-                if (ignoreElementDetector.IsElementIgnored(registration.Identity.Code, element) ||
-                    !registration.Filter.IsRelevantFor(document, element)) continue;
-
-                (DiagnosticFeedback feedback, double duration) = Measure(
-                    () => registration.Diagnostic.Execute(document, view, element));
-                if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
-
-                ElementDiagnosticId identity = registration.Identity;
-                diagnosticReportSender.Send(new DiagnosticReport(
-                    identity.Code,
-                    registration.Override.Severity,
-                    document,
-                    new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
-                        feedback,
-                        ("duration", duration),
-                        ("elementId", element.Id),
-                        ("elementName", element.Name))),
-                    element,
-                    feedback.AdditionalTargetDependencies ?? [],
-                    identity.IsObsolete,
-                    identity.ObsoleteDescription));
+                RunElementDiagnostic(registration, document, elements, view);
+            }
+            catch (Exception exception)
+            {
+                ReportFailure(document, registration.Identity.Code, exception);
+                completed = false;
             }
         }
+
+        return completed;
+    }
+
+    // The first failure stops the remaining elements of the same diagnostic: a faulty rule would otherwise
+    // repeat the same error for every element.
+    private void RunElementDiagnostic(
+        ElementDiagnosticRegistration registration, Document document, IEnumerable<Element> elements, View? view)
+    {
+        if (!registration.Override.IsActive || !registration.DocumentFilter.IsRelevantFor(document)) return;
+
+        foreach (Element element in elements)
+        {
+            if (ignoreElementDetector.IsElementIgnored(registration.Identity.Code, element) ||
+                !registration.Filter.IsRelevantFor(document, element)) continue;
+
+            (DiagnosticFeedback feedback, double duration) = Measure(
+                () => registration.Diagnostic.Execute(document, view, element));
+            if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+
+            ElementDiagnosticId identity = registration.Identity;
+            diagnosticReportSender.Send(new DiagnosticReport(
+                identity.Code,
+                registration.Override.Severity,
+                document,
+                new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
+                    feedback,
+                    ("duration", duration),
+                    ("elementId", element.Id),
+                    ("elementName", element.Name))),
+                element,
+                feedback.AdditionalTargetDependencies ?? [],
+                identity.IsObsolete,
+                identity.ObsoleteDescription));
+        }
+    }
+
+    private void ReportFailure(Document document, string diagnosticCode, Exception exception)
+    {
+        logger.LogError(exception, "Diagnostic {DiagnosticCode} failed", diagnosticCode);
+        diagnosticReportSender.Send(new DiagnosticReport(
+            diagnosticCode,
+            DiagnosticSeverity.Error,
+            document,
+            new DiagnosticReportMessage(
+                DiagnosticLocalizations.GetString("diagnosticFailed_message"),
+                ("error", exception.Message)),
+            document));
     }
 
     private static (T Result, double Duration) Measure<T>(Func<T> execute)

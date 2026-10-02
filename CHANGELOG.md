@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- A diagnostic that fails no longer stops the others: the failure appears in the report as an error under the diagnostic's code, and the remaining diagnostics still produce their results.
+
 ### Fixed
 
 - Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.

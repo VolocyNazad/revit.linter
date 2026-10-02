@@ -36,6 +36,8 @@
 		<EmbeddedResource Include="..\Revit.Linter.ParameterElementDiagnostics\ParameterElementDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ParameterElementDiagnostics.ParameterElementDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DocumentDiagnostics\DocumentDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.DocumentDiagnostics.DocumentDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DocumentDiagnostics\DocumentDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DocumentDiagnostics.DocumentDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.Diagnostic\DiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.Diagnostic.DiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.Diagnostic\DiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.Diagnostic.DiagnosticLocalizations.resources" />
 	</ItemGroup>
 	<ItemGroup>
 	  <!-- This project aggregates every localized resource; referencing the analyzer here avoids incomplete per-project resource groups. -->

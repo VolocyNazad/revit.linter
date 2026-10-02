@@ -52,6 +52,8 @@ This document records stable architectural rules. Implementation details belong 
 ## Logging and failures
 
 - Serilog is configured in the application composition root; modules use the Microsoft logging abstractions.
+- A diagnostic that throws is isolated by the diagnostic service: the failure is logged, published as an error
+  report under the diagnostic's code, and the remaining diagnostics still run.
 - A failure is logged once at the layer that understands its meaning. Higher layers may translate it into user-visible feedback without logging it again.
 - Logs contain useful model, document, diagnostic and operation context, but must not contain secrets or unnecessarily large element payloads.
 

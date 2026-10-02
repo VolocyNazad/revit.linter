@@ -3,6 +3,12 @@
 /// <summary>
 /// Executes registered diagnostics and publishes reports for invalid results.
 /// </summary>
+/// <remarks>
+/// A diagnostic that throws does not stop the others. Its failure is logged once and published as an
+/// <see cref="DiagnosticSeverity.Error"/> report under the diagnostic's code with the document as target;
+/// an element diagnostic stops at its first failure. The operation then returns
+/// <see cref="DiagnosticServiceResult.Failed"/> although the reports of the remaining diagnostics are complete.
+/// </remarks>
 public interface IDiagnosticService
 {
     /// <summary>
