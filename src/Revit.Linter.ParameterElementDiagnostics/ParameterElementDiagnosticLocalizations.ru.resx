@@ -7,4 +7,11 @@
   <data name="sharedParameterNotFound_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» не найден.</value></data>
   <data name="parameterPropertyInvalid_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» содержит недопустимое значение свойства «{2}».</value></data>
   <data name="parameterNotBound_message" xml:space="preserve"><value>Параметр «{0}» с идентификатором «{1}» есть в документе, но не привязан к категориям как параметр проекта.</value></data>
+  <data name="configurationRuleSkipped_message" xml:space="preserve"><value>Правило «{0}» пропущено:</value></data>
+  <data name="configurationRuleWithoutCodeSkipped_message" xml:space="preserve"><value>Правило без кода пропущено:</value></data>
+  <data name="configurationParameterError_message" xml:space="preserve"><value>параметр «{0}»: {1}</value></data>
+  <data name="configurationMissingValue_message" xml:space="preserve"><value>поле «{0}» отсутствует или пустое.</value></data>
+  <data name="configurationInvalidGuid_message" xml:space="preserve"><value>«{0}» не является корректным GUID.</value></data>
+  <data name="configurationUnknownGroup_message" xml:space="preserve"><value>группа «{0}» недопустима для этой версии Revit.</value></data>
+  <data name="configurationUnknownCategory_message" xml:space="preserve"><value>категория «{0}» неизвестна.</value></data>
 </root>

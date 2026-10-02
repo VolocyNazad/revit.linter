@@ -29,6 +29,10 @@ This document records stable architectural rules. Implementation details belong 
 
 - Diagnostic projects discover or calculate findings. Presenters render and interact with them; providers transport or retain report state. These roles remain separate.
 - `Revit.Linter.ReportMessaging` owns the shared message-template contract and typed message view. Feature modules supply data and element-link adapters rather than duplicating parsing or rendering.
+- Configuration is validated when it is loaded, not when a diagnostic runs. A module skips an invalid rule,
+  keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;
+  the application shows them once per distinct description. Validation logic stays free of Revit API types
+  so it is covered by headless tests; Revit-version knowledge is passed in from the compatibility boundary.
 - Diagnostic codes and serialized configuration contracts are stable user-facing identifiers. Change them only with an explicit migration or compatibility decision.
 
 ## Element highlighting

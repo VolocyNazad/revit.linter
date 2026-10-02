@@ -1,5 +1,8 @@
-﻿using Revit.Linter.ConfigurationPath;
+﻿using Microsoft.Extensions.Logging;
+using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
+using Revit.Linter.ParameterElementDiagnostics.Services;
 using Toolkit.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
@@ -8,11 +11,13 @@ namespace Revit.Linter.ParameterElementDiagnostics;
 internal sealed class ParameterElementDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
     IRevitTransactionMemoryCache transactionMemoryCache,
-    IValueStore<DocumentDiagnosticOverridesSettings> overrideStore)
+    IValueStore<DocumentDiagnosticOverridesSettings> overrideStore,
+    ParameterConfigurationErrorState configurationErrorState,
+    ILogger<ParameterElementDiagnosticRegistrationProvider> logger)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
-    private static readonly string _configPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "parameter-element.config.yaml");
+    private const string ConfigFileName = "parameter-element.config.yaml";
+    private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, ConfigFileName);
     private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
 
     public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
@@ -21,9 +26,24 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
     {
         List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(_configPath);
-        if (rules is null) yield break;
+        List<DiagnosticRule> validRules = [];
+        List<ParameterConfigurationError> errors = [];
+        foreach (DiagnosticRule? rule in rules ?? [])
+        {
+            // An empty list item deserializes to null; there is nothing to register or to describe.
+            if (rule is null) continue;
 
-        foreach (DiagnosticRule rule in rules)
+            IReadOnlyList<ParameterConfigurationError> ruleErrors = ParameterRuleValidator.Validate(
+                rule, ParameterIdentifierParser.IsKnownCategory, ParameterIdentifierParser.IsKnownGroup);
+            if (ruleErrors.Count == 0)
+                validRules.Add(rule);
+            else
+                errors.AddRange(ruleErrors);
+        }
+
+        ReportSkippedRules(errors);
+
+        foreach (DiagnosticRule rule in validRules)
         {
             DocumentDiagnosticId identity = new(
                 rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive,
@@ -38,4 +58,20 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     }
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics() => [];
+
+    private void ReportSkippedRules(List<ParameterConfigurationError> errors)
+    {
+        string? description = errors.Count == 0
+            ? null
+            : ParameterConfigurationErrorFormatter.Format(ConfigFileName, errors);
+
+        // The state reports a change only once per distinct description, which keeps the log and the
+        // notification from repeating on every catalog refresh.
+        if (configurationErrorState.Set(description) && description is not null)
+            logger.LogWarning(
+                "Skipped {RuleCount} invalid rule(s) in parameter diagnostic configuration {ConfigurationPath}: {Errors}",
+                errors.Select(error => error.RuleCode).Distinct().Count(),
+                _configPath,
+                description);
+    }
 }

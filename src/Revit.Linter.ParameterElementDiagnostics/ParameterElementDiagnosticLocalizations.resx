@@ -7,4 +7,11 @@
   <data name="sharedParameterNotFound_message" xml:space="preserve"><value>Parameter '{0}' with ID '{1}' was not found.</value></data>
   <data name="parameterPropertyInvalid_message" xml:space="preserve"><value>Parameter '{0}' with ID '{1}' has an invalid '{2}' value.</value></data>
   <data name="parameterNotBound_message" xml:space="preserve"><value>Parameter '{0}' with ID '{1}' exists in the document but is not bound to categories as a project parameter.</value></data>
+  <data name="configurationRuleSkipped_message" xml:space="preserve"><value>Rule '{0}' was skipped:</value></data>
+  <data name="configurationRuleWithoutCodeSkipped_message" xml:space="preserve"><value>A rule without a code was skipped:</value></data>
+  <data name="configurationParameterError_message" xml:space="preserve"><value>parameter '{0}': {1}</value></data>
+  <data name="configurationMissingValue_message" xml:space="preserve"><value>'{0}' is missing or empty.</value></data>
+  <data name="configurationInvalidGuid_message" xml:space="preserve"><value>'{0}' is not a valid GUID.</value></data>
+  <data name="configurationUnknownGroup_message" xml:space="preserve"><value>group '{0}' is not valid for this Revit version.</value></data>
+  <data name="configurationUnknownCategory_message" xml:space="preserve"><value>category '{0}' is unknown.</value></data>
 </root>

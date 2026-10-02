@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.ParameterElementDiagnostics.Services;
 
 namespace Revit.Linter.ParameterElementDiagnostics.DI;
 
@@ -16,6 +17,9 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddParameterElementDiagnostics()
         {
             services.AddSingleton<DocumentFilterFactory>()
+                .AddSingleton<ParameterConfigurationErrorState>()
+                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
+                    provider.GetRequiredService<ParameterConfigurationErrorState>())
                 .AddSingleton<ParameterElementDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
                     provider.GetRequiredService<ParameterElementDiagnosticRegistrationProvider>())

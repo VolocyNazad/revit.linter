@@ -78,6 +78,8 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 
 The formats are intentionally version-specific. Store each configuration in the folder for its Revit version.
 
+**Validation on load:** each rule is checked when the file is loaded. A rule with an unknown category, a `group` that is not valid for the running Revit version, an invalid `guid`, or a missing `code`, `take`, `parameters`, `name` or `categories` is skipped, and a message names the rule, the parameter and the rejected value. The other rules stay in use. Fix the file and save it to reload the rules.
+
 ---
 
 **Notes:**

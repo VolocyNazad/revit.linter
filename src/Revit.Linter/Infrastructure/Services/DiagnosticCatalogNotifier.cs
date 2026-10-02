@@ -16,6 +16,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
     private readonly ILogger<DiagnosticCatalogNotifier> _logger;
     private readonly IStringLocalizer<GlobalLocalizations> _localizer;
     private readonly IUserDiagnosticConfigurationErrorSource _configurationErrorSource;
+    private readonly IDiagnosticConfigurationErrorSource[] _skippedRuleSources;
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
     private readonly object _sync = new();
     private string? _lastError;
@@ -26,8 +27,10 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         IServiceProvider serviceProvider,
         ILogger<DiagnosticCatalogNotifier> logger,
         IStringLocalizer<GlobalLocalizations> localizer,
-        IUserDiagnosticConfigurationErrorSource configurationErrorSource)
+        IUserDiagnosticConfigurationErrorSource configurationErrorSource,
+        IEnumerable<IDiagnosticConfigurationErrorSource> skippedRuleSources)
     {
+        _skippedRuleSources = skippedRuleSources.ToArray();
         _catalog = catalog;
         _serviceProvider = serviceProvider;
         _logger = logger;
@@ -36,8 +39,12 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         _catalog.Changed += Catalog_Changed;
         _catalog.RefreshFailed += Catalog_RefreshFailed;
         _configurationErrorSource.Changed += ConfigurationErrorSource_Changed;
+        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
+            source.Changed += SkippedRuleSource_Changed;
 
         ShowCurrentConfigurationError();
+        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
+            ShowSkippedRules(source);
     }
 
     public void Dispose()
@@ -51,6 +58,8 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         _catalog.Changed -= Catalog_Changed;
         _catalog.RefreshFailed -= Catalog_RefreshFailed;
         _configurationErrorSource.Changed -= ConfigurationErrorSource_Changed;
+        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
+            source.Changed -= SkippedRuleSource_Changed;
     }
 
     private void Catalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
@@ -62,7 +71,8 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         }
 
         if (args.Origin == DiagnosticCatalogChangeOrigin.ExternalFile &&
-            _configurationErrorSource.CurrentError is null)
+            _configurationErrorSource.CurrentError is null &&
+            Array.TrueForAll(_skippedRuleSources, source => source.CurrentError is null))
             ShowMessage(_localizer["diagnosticCatalog_externalChange_message"]);
     }
 
@@ -91,6 +101,22 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         Exception? error = _configurationErrorSource.CurrentError;
         if (error is not null)
             ShowMessage(_localizer["userDiagnosticConfiguration_parseFailed_message", error.Message]);
+    }
+
+    private void SkippedRuleSource_Changed(object? sender, EventArgs args)
+    {
+        lock (_sync)
+            if (_disposed) return;
+
+        if (sender is IDiagnosticConfigurationErrorSource source)
+            ShowSkippedRules(source);
+    }
+
+    private void ShowSkippedRules(IDiagnosticConfigurationErrorSource source)
+    {
+        string? error = source.CurrentError;
+        if (error is not null)
+            ShowMessage(_localizer["diagnosticConfiguration_rulesSkipped_message", error]);
     }
 
     private void ShowMessage(string content)
