@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\src\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
+    <ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />

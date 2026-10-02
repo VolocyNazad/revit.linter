@@ -1,4 +1,5 @@
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.Testing;
 using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
 using ParameterRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
 using UserRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
@@ -23,14 +24,6 @@ public sealed class ExampleConfigurationTests
     }
 
     private static T? Read<T>(string fileName) where T : class =>
-        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(FindRepositoryRoot(),
+        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(RepositoryRoot.Find(),
             "wiki", "examples", "configuration", fileName));
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Revit.Linter.slnx")))
-            directory = directory.Parent;
-        return directory?.FullName ?? throw new DirectoryNotFoundException("Repository root was not found.");
-    }
 }

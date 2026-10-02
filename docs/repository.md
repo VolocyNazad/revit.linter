@@ -192,6 +192,8 @@ The root `.editorconfig` defines the portable formatting baseline. Existing repo
 Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the .RevitTests suffix because they require a running Revit process.
 `Nice3point.TUnit.Revit` supports `RevitAPI` but not `RevitAPIUI`; services should therefore keep meaningful document behavior separate from thin UI adapters so the former remains testable in `*.RevitTests`.
 
+`tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the in-memory transaction cache, repository-root lookup). It is a library, not a test project: it has no test framework reference and its name does not end in `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in `Revit.Linter.Diagnostic.RevitTests`.
+
 ## Continuous integration
 
 The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.

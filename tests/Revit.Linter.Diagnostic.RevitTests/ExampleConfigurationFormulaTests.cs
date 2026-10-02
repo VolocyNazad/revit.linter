@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.Testing;
 using CollisionDocumentFilterFactory = Revit.Linter.CollisionDiagnostics.DocumentFilterFactory;
 using CollisionElementFilterFactory = Revit.Linter.CollisionDiagnostics.ElementFilterFactory;
 using CollisionElementFunctionFactory = Revit.Linter.CollisionDiagnostics.ElementFunctionFactory;
@@ -56,16 +57,8 @@ public sealed class ExampleConfigurationFormulaTests
     }
 
     private static T? Read<T>(string fileName) where T : class =>
-        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(FindRepositoryRoot(),
+        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(RepositoryRoot.Find(),
             "wiki", "examples", "configuration", fileName));
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Revit.Linter.slnx")))
-            directory = directory.Parent;
-        return directory?.FullName ?? throw new DirectoryNotFoundException("Repository root was not found.");
-    }
 
     private sealed class CountingFormulaCompilationNotifier : IFormulaCompilationNotifier
     {

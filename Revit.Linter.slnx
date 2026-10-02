@@ -155,6 +155,9 @@
     <Project Path="tests/Revit.Linter.SerilogEnrichers.Tests/Revit.Linter.SerilogEnrichers.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.Testing/Revit.Linter.Testing.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">
       <Platform Project="x64" />
     </Project>

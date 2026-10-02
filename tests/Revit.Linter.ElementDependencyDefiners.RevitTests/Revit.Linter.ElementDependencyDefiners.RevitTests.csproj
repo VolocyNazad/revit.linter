@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.ElementDependencyDefiners\Revit.Linter.ElementDependencyDefiners.csproj" />
+    <ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

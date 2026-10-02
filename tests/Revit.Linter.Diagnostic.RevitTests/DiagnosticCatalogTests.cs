@@ -5,38 +5,25 @@ using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.ElementDiagnostics.DI;
+using Revit.Linter.Testing;
 using Toolkit.ValueStore.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
-public sealed partial class DiagnosticServiceTests
+public sealed class DiagnosticCatalogTests : DiagnosticTestBase
 {
     [Test]
     public async Task Catalog_aggregates_registrations_and_fixes_from_providers()
     {
-        ElementDiagnosticId elementId = new(
-            "ELM-CATALOG", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        DocumentDiagnosticId documentId = new(
-            "DOC-CATALOG", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        ElementDiagnosticId elementId = CreateElementId("ELM-CATALOG");
+        DocumentDiagnosticId documentId = CreateDocumentId("DOC-CATALOG");
         ElementFix elementFix = new(elementId);
         DocumentFix documentFix = new(documentId);
-        ElementDiagnosticRegistration elementRegistration = new(
-            elementId,
-            new ElementDiagnostic(elementId, DiagnosticFeedback.Valid),
-            new ElementFilter(elementId, true),
-            new ElementDocumentFilter(elementId, true),
-            CreateOverride(elementId, DiagnosticSeverity.Warning, true),
-            [elementFix],
-            []);
-        DocumentDiagnosticRegistration documentRegistration = new(
-            documentId,
-            new DocumentDiagnostic(documentId, DiagnosticFeedback.Valid),
-            new DocumentFilter(documentId, true),
-            CreateOverride(documentId, DiagnosticSeverity.Warning, true),
-            [documentFix]);
+        ElementDiagnosticRegistration elementRegistration = CreateElementRegistration(
+            elementId, fixes: [elementFix]);
+        DocumentDiagnosticRegistration documentRegistration = CreateDocumentRegistration(
+            documentId, fixes: [documentFix]);
 
         using ServiceProvider services = CreateServices(configure: collection =>
         {
@@ -66,23 +53,11 @@ public sealed partial class DiagnosticServiceTests
     [Test]
     public async Task Disposing_catalog_disposes_owned_components()
     {
-        ElementDiagnosticId id = new(
-            "ELM-DISPOSE", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        ElementDiagnosticId id = CreateElementId("ELM-DISPOSE");
         TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(id);
-        ElementDiagnosticIdOverride diagnosticOverride = new(id, store);
-        ElementDiagnosticRegistration registration = new(
-            id,
-            new ElementDiagnostic(id, DiagnosticFeedback.Valid),
-            new ElementFilter(id, true),
-            new ElementDocumentFilter(id, true),
-            diagnosticOverride,
-            [fix],
-            []);
-        ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
+        ServiceProvider services = CreateServices(elementDiagnostics:
+            [CreateElementRegistration(id, diagnosticOverride: new(id, store), fixes: [fix])]);
         _ = services.GetRequiredService<IDiagnosticCatalog>();
 
         await services.DisposeAsync();
@@ -94,22 +69,11 @@ public sealed partial class DiagnosticServiceTests
     [Test]
     public async Task Active_lease_defers_snapshot_disposal()
     {
-        ElementDiagnosticId id = new(
-            "ELM-LEASE", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        ElementDiagnosticId id = CreateElementId("ELM-LEASE");
         TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(id);
-        ElementDiagnosticRegistration registration = new(
-            id,
-            new ElementDiagnostic(id, DiagnosticFeedback.Valid),
-            new ElementFilter(id, true),
-            new ElementDocumentFilter(id, true),
-            new ElementDiagnosticIdOverride(id, store),
-            [fix],
-            []);
-        ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
+        ServiceProvider services = CreateServices(elementDiagnostics:
+            [CreateElementRegistration(id, diagnosticOverride: new(id, store), fixes: [fix])]);
         IDiagnosticCatalogSnapshotLease lease = services
             .GetRequiredService<IDiagnosticCatalog>()
             .AcquireSnapshot();
@@ -310,23 +274,13 @@ public sealed partial class DiagnosticServiceTests
     [Test]
     public async Task Catalog_rejects_registration_with_mismatched_component_code()
     {
-        ElementDiagnosticId registrationId = new(
-            "ELM-REGISTRATION", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticId diagnosticId = new(
-            "ELM-DIAGNOSTIC", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticRegistration registration = new(
-            registrationId,
-            new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid),
-            new ElementFilter(registrationId, true),
-            new ElementDocumentFilter(registrationId, true),
-            CreateOverride(registrationId, DiagnosticSeverity.Warning, true),
-            [],
-            []);
-        using ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
+        ElementDiagnosticId registrationId = CreateElementId("ELM-REGISTRATION");
+        ElementDiagnosticId diagnosticId = CreateElementId("ELM-DIAGNOSTIC");
+        using ServiceProvider services = CreateServices(elementDiagnostics:
+        [
+            CreateElementRegistration(
+                registrationId, new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid))
+        ]);
 
         Exception? exception = CaptureException(
             () => services.GetRequiredService<IDiagnosticCatalog>());
@@ -339,25 +293,18 @@ public sealed partial class DiagnosticServiceTests
     [Test]
     public async Task Snapshot_factory_disposes_components_when_validation_fails()
     {
-        ElementDiagnosticId registrationId = new(
-            "ELM-INVALID", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticId diagnosticId = new(
-            "ELM-OTHER", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        ElementDiagnosticId registrationId = CreateElementId("ELM-INVALID");
+        ElementDiagnosticId diagnosticId = CreateElementId("ELM-OTHER");
         TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(registrationId);
-        ElementDiagnosticRegistration registration = new(
-            registrationId,
-            new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid),
-            new ElementFilter(registrationId, true),
-            new ElementDocumentFilter(registrationId, true),
-            new ElementDiagnosticIdOverride(registrationId, store),
-            [fix],
-            []);
-        using ServiceProvider services = CreateServices(configure: collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(
-                new TestRegistrationProvider(elementDiagnostics: [registration])));
+        using ServiceProvider services = CreateServices(elementDiagnostics:
+        [
+            CreateElementRegistration(
+                registrationId,
+                new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid),
+                diagnosticOverride: new(registrationId, store),
+                fixes: [fix])
+        ]);
 
         _ = CaptureException(() => services.GetRequiredService<IDiagnosticCatalog>());
 
@@ -409,5 +356,78 @@ public sealed partial class DiagnosticServiceTests
         public bool Apply(ElementVisualizationContext context) => true;
         public void Restore() => IsRestored = true;
         public void Dispose() => Restore();
+    }
+
+    private sealed class RefreshingRegistrationProvider : IDiagnosticRegistrationProvider
+    {
+        private int _generation;
+
+        public bool ThrowOnCreate { get; set; }
+        public List<ElementFix> Fixes { get; } = [];
+
+        public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
+        public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
+        {
+            if (ThrowOnCreate) throw new InvalidOperationException("Snapshot creation failed.");
+
+            int generation = ++_generation;
+            ElementDiagnosticId id = CreateElementId($"ELM-REFRESH-{generation}");
+            ElementFix fix = new(id);
+            Fixes.Add(fix);
+            return [CreateElementRegistration(id, fixes: [fix])];
+        }
+    }
+
+    private sealed class ThrowingRegistrationProvider : IDiagnosticRegistrationProvider
+    {
+        private readonly ElementDiagnosticId _id = CreateElementId("ELM-PARTIAL");
+
+        public ElementFix Fix { get; }
+
+        public ThrowingRegistrationProvider()
+        {
+            Fix = new ElementFix(_id);
+        }
+
+        public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
+        {
+            yield return CreateElementRegistration(_id, fixes: [Fix]);
+            throw new InvalidOperationException("Provider failed.");
+        }
+
+        public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+    }
+
+    private sealed class TestCatalogChangeSource : IDiagnosticCatalogChangeSource
+    {
+        private Action? _listener;
+        public int ListenerCount => _listener?.GetInvocationList().Length ?? 0;
+        public IDisposable OnChange(Action listener)
+        {
+            _listener += listener;
+            return new DisposableCallback(() => _listener -= listener);
+        }
+
+        public void Notify() => _listener?.Invoke();
+
+        private sealed class DisposableCallback(Action dispose) : IDisposable
+        {
+            public void Dispose() => dispose();
+        }
+    }
+
+    private sealed class TrackingValueStore<T>(T value) : IValueStore<T> where T : class
+    {
+        public T CurrentValue { get; } = value;
+        public bool SubscriptionDisposed { get; private set; }
+        public IDisposable OnChange(Action<T> listener) => new DisposableCallback(
+            () => SubscriptionDisposed = true);
+        public void Update(Action<T> change) => change(CurrentValue);
+
+        private sealed class DisposableCallback(Action dispose) : IDisposable
+        {
+            public void Dispose() => dispose();
+        }
     }
 }

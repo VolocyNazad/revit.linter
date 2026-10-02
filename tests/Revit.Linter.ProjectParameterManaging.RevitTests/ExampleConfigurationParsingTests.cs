@@ -3,6 +3,7 @@ using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
+using Revit.Linter.Testing;
 using TUnit.Core;
 
 namespace Revit.Linter.ProjectParameterManaging.RevitTests;
@@ -57,7 +58,7 @@ public sealed class ExampleConfigurationParsingTests
         foreach (BuiltInCategory value in Enum.GetValues(typeof(BuiltInCategory)).Cast<BuiltInCategory>())
         {
             await Assert.That(ParameterIdentifierParser.IsKnownCategory(value.ToString())).IsTrue();
-            await Assert.That(ParameterIdentifierParser.IsKnownCategory(GetNumericIdentifier(value))).IsTrue();
+            await Assert.That(ParameterIdentifierParser.IsKnownCategory(CategoryIdentifiers.ToNumeric(value))).IsTrue();
             count++;
         }
         await Assert.That(count).IsGreaterThan(0);
@@ -115,13 +116,6 @@ public sealed class ExampleConfigurationParsingTests
         await Assert.That(ParameterIdentifierParser.IsKnownGroup(value)).IsFalse();
     }
 
-    private static string GetNumericIdentifier(BuiltInCategory category) =>
-#if BEFORE2024
-        ((int)category).ToString();
-#else
-        ((long)category).ToString();
-#endif
-
     [Test]
     public async Task Every_supported_view_detail_level_round_trips_from_configuration_text()
     {
@@ -139,7 +133,7 @@ public sealed class ExampleConfigurationParsingTests
     public async Task Parameter_identifiers_in_example_configuration_are_convertible()
     {
         List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(
-            Path.Combine(FindRepositoryRoot(), "wiki", "examples", "configuration", "parameter-element.config.yaml"));
+            Path.Combine(RepositoryRoot.Find(), "wiki", "examples", "configuration", "parameter-element.config.yaml"));
 
         await Assert.That(rules).IsNotNull();
         foreach (DiagnosticRule rule in rules!)
@@ -172,12 +166,4 @@ public sealed class ExampleConfigurationParsingTests
 #else
         ParameterIdentifierParser.ParseGroupTypeId(value);
 #endif
-
-    private static string FindRepositoryRoot()
-    {
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Revit.Linter.slnx")))
-            directory = directory.Parent;
-        return directory?.FullName ?? throw new DirectoryNotFoundException("Repository root was not found.");
-    }
 }

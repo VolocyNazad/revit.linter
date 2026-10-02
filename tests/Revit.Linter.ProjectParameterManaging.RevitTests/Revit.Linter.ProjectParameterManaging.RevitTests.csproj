@@ -12,6 +12,7 @@
     <ProjectReference Include="..\..\src\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+    <ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
     <PackageReference Include="VolocyNazad.Revit.Sugar" />
   </ItemGroup>
   <ItemGroup>

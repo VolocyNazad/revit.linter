@@ -7,7 +7,7 @@ using Revit.Linter.ParameterElementDiagnostics;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ProjectParameterManaging.DI;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.ProjectParameterManaging.RevitTests;
@@ -42,7 +42,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
     {
         AddParameter();
         ParameterElementData expected = CreateExpectedParameter(
-            categories: [GetCategoryIdentifier(BuiltInCategory.OST_Walls)],
+            categories: [CategoryIdentifiers.ToNumeric(BuiltInCategory.OST_Walls)],
             group: GetDataGroupIdentifier());
         DocumentDiagnostic diagnostic = CreateDiagnostic(expected);
 
@@ -141,7 +141,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
             throw new InvalidOperationException("Test project parameter could not be added.");
     }
 
-    private static DocumentDiagnostic CreateDiagnostic(params ParameterElementData[] parameters) => new(new TestCache())
+    private static DocumentDiagnostic CreateDiagnostic(params ParameterElementData[] parameters) => new(new TestTransactionMemoryCache())
     {
         Identity = new DocumentDiagnosticId(
             "TEST", "Test", "Test", DiagnosticSeverity.Message, true, false, string.Empty),
@@ -164,13 +164,6 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         AllowVaryBetweenGroups = allowVaryBetweenGroups
     };
 
-    private static string GetCategoryIdentifier(BuiltInCategory category) =>
-#if BEFORE2024
-        ((int)category).ToString();
-#else
-        ((long)category).ToString();
-#endif
-
     private static string GetDataGroupIdentifier() =>
 #if BEFORE2024
         BuiltInParameterGroup.PG_DATA.ToString();
@@ -190,19 +183,5 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         ServiceCollection services = new();
         services.AddProjectParameterManagingModule();
         return services.BuildServiceProvider();
-    }
-
-    private sealed class TestCache : IRevitTransactionMemoryCache
-    {
-        private readonly Dictionary<object, object?> _items = [];
-
-        public TItem? GetOrCreate<TItem>(object key, Func<TItem> factory)
-        {
-            if (_items.TryGetValue(key, out object? value))
-                return (TItem?)value;
-            TItem item = factory();
-            _items[key] = item;
-            return item;
-        }
     }
 }

@@ -3,7 +3,7 @@ using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ElementDependencyDefiners.Abstractions;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.ElementDependencyDefiners.RevitTests;
@@ -256,20 +256,5 @@ public sealed class DependencyDefinerTests : RevitApiTest
         public IElementsDependencyDefiner? Inversed => null;
         public IEnumerable<Element> All(Element element) => elements;
         public Element? FirstOrDefault(Element element) => elements.FirstOrDefault();
-    }
-
-    private sealed class TestTransactionMemoryCache : IRevitTransactionMemoryCache
-    {
-        private readonly Dictionary<object, object?> _items = [];
-
-        public TItem? GetOrCreate<TItem>(object key, Func<TItem> factory)
-        {
-            if (_items.TryGetValue(key, out object? value))
-                return (TItem?)value;
-
-            TItem item = factory();
-            _items[key] = item;
-            return item;
-        }
     }
 }

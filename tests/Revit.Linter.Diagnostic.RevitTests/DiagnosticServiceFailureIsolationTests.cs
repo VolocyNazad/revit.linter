@@ -7,29 +7,21 @@ using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
-public sealed partial class DiagnosticServiceTests
+public sealed class DiagnosticServiceFailureIsolationTests : DiagnosticTestBase
 {
     [Test]
     public async Task Failing_document_diagnostic_is_reported_and_does_not_stop_the_others()
     {
-        DocumentDiagnosticId failingId = new(
-            "DOC-FAIL", "Description", "Message", DiagnosticSeverity.Message,
-            true, false, "");
-        DocumentDiagnosticId workingId = new(
-            "DOC-OK", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        DocumentDiagnosticId failingId = CreateDocumentId("DOC-FAIL");
+        DocumentDiagnosticId workingId = CreateDocumentId("DOC-OK");
         DocumentDiagnostic working = new(workingId, new DiagnosticFeedback(DiagnosticVerdict.NotValid));
         ReportSender sender = new();
-        using ServiceProvider services = CreateServices(sender, collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(new TestRegistrationProvider(
-                documentDiagnostics:
-                [
-                    new(failingId, new ThrowingDocumentDiagnostic(failingId, "Boom"),
-                        new DocumentFilter(failingId, true),
-                        CreateOverride(failingId, DiagnosticSeverity.Message, true), []),
-                    new(workingId, working, new DocumentFilter(workingId, true),
-                        CreateOverride(workingId, DiagnosticSeverity.Warning, true), [])
-                ])));
+        using ServiceProvider services = CreateServices(sender, documentDiagnostics:
+        [
+            CreateDocumentRegistration(
+                failingId, new ThrowingDocumentDiagnostic(failingId, "Boom"), severity: DiagnosticSeverity.Message),
+            CreateDocumentRegistration(workingId, working)
+        ]);
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
 
@@ -49,28 +41,18 @@ public sealed partial class DiagnosticServiceTests
     [Test]
     public async Task Failing_element_diagnostic_stops_at_first_failure_and_does_not_stop_the_others()
     {
-        Element first = CreateLevelAt(0);
-        Element second = CreateLevelAt(10);
-        ElementDiagnosticId failingId = new(
-            "ELM-FAIL", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
-        ElementDiagnosticId workingId = new(
-            "ELM-OK", "Description", "Message", DiagnosticSeverity.Warning,
-            true, false, "");
+        Element first = CreateLevel();
+        Element second = CreateLevel(elevation: 10);
+        ElementDiagnosticId failingId = CreateElementId("ELM-FAIL");
+        ElementDiagnosticId workingId = CreateElementId("ELM-OK");
         ThrowingElementDiagnostic failing = new(failingId, "Boom");
         ElementDiagnostic working = new(workingId, new DiagnosticFeedback(DiagnosticVerdict.NotValid));
         ReportSender sender = new();
-        using ServiceProvider services = CreateServices(sender, collection =>
-            collection.AddSingleton<IDiagnosticRegistrationProvider>(new TestRegistrationProvider(
-                elementDiagnostics:
-                [
-                    new(failingId, failing, new ElementFilter(failingId, true),
-                        new ElementDocumentFilter(failingId, true),
-                        CreateOverride(failingId, DiagnosticSeverity.Warning, true), [], []),
-                    new(workingId, working, new ElementFilter(workingId, true),
-                        new ElementDocumentFilter(workingId, true),
-                        CreateOverride(workingId, DiagnosticSeverity.Warning, true), [], [])
-                ])));
+        using ServiceProvider services = CreateServices(sender, elementDiagnostics:
+        [
+            CreateElementRegistration(failingId, failing),
+            CreateElementRegistration(workingId, working)
+        ]);
 
         DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
             .Execute(_document!, [first.Id, second.Id]);
@@ -84,15 +66,6 @@ public sealed partial class DiagnosticServiceTests
         await Assert.That(failure.Target).IsEqualTo(_document);
         await Assert.That(GetArgument(failure, "error")).IsEqualTo("Boom");
         await Assert.That(sender.Reports.Count(report => report.Code == "ELM-OK")).IsEqualTo(2);
-    }
-
-    private Element CreateLevelAt(double elevation)
-    {
-        using Transaction transaction = new(_document!, "Create level");
-        transaction.Start();
-        Level level = Level.Create(_document!, elevation);
-        transaction.Commit();
-        return level;
     }
 
     private sealed class ThrowingDocumentDiagnostic(DocumentDiagnosticId identity, string message)
