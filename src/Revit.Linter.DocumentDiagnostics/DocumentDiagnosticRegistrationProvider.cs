@@ -26,7 +26,10 @@ internal sealed class DocumentDiagnosticRegistrationProvider(
                 filters.Single(filter => string.Equals(
                     filter.Identity.Code, identity.Code, StringComparison.Ordinal)),
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
-                []);
+                [])
+            {
+                Documentation = new("Built-in document diagnostics", "Встроенные проверки документа"),
+            };
         }
     }
 

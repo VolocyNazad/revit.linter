@@ -53,7 +53,10 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 new DocumentDiagnostic(documentQueries) { Identity = identity, Parameters = rule.Parameters },
                 new DocumentDiagnosticFilter(documentFilterFactory) { Identity = identity, Formula = rule.Take },
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
-                []);
+                [])
+            {
+                Documentation = new("Project parameter diagnostics", "Проверки параметров проекта"),
+            };
         }
     }
 

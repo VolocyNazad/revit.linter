@@ -14,6 +14,20 @@ public sealed class DiagnosticCatalogSnapshot
         DocumentDiagnostics = Array.AsReadOnly(documentDiagnostics.ToArray());
     }
 
+    /// <summary>
+    /// Finds the documentation page of the diagnostic registered under the specified code.
+    /// </summary>
+    /// <param name="code">The diagnostic code, compared ordinally.</param>
+    /// <returns>
+    /// The page of the first matching element diagnostic, then of the first matching document diagnostic;
+    /// <see langword="null"/> when the code is not registered or its module provides no page.
+    /// </returns>
+    public DocumentationPage? FindDocumentation(string code) =>
+        ElementDiagnostics.FirstOrDefault(registration =>
+            string.Equals(registration.Identity.Code, code, StringComparison.Ordinal))?.Documentation
+        ?? DocumentDiagnostics.FirstOrDefault(registration =>
+            string.Equals(registration.Identity.Code, code, StringComparison.Ordinal))?.Documentation;
+
     /// <summary>Gets the element diagnostic registrations.</summary>
     public IReadOnlyList<ElementDiagnosticRegistration> ElementDiagnostics { get; }
     /// <summary>Gets the document diagnostic registrations.</summary>

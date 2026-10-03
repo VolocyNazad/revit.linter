@@ -17,4 +17,11 @@ public sealed record ElementDiagnosticRegistration(
     IElementDiagnosticDocumentFilter DocumentFilter,
     ElementDiagnosticIdOverride Override,
     IReadOnlyList<IElementFix> Fixes,
-    IReadOnlyList<IElementVisualizationPipeline> VisualizationPipelines);
+    IReadOnlyList<IElementVisualizationPipeline> VisualizationPipelines)
+{
+    /// <summary>
+    /// Gets the documentation page that describes the diagnostic, or <see langword="null"/> when the
+    /// registering module does not provide one.
+    /// </summary>
+    public DocumentationPage? Documentation { get; init; }
+}

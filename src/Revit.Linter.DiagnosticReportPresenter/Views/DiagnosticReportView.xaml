@@ -225,6 +225,20 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Command="{Binding OpenDocumentationCommand}"
+                                    Content="{materialDesign:PackIcon Kind=HelpCircleOutline,
+                                                                      Size=20}"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    ToolTip="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

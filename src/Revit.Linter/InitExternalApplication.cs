@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DiagnosticReportPresenter.Views;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
@@ -262,6 +263,7 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         };
 
+        SetHelpPage(buttonData, new DocumentationPage("Diagnostic configuration path button", "Кнопка папки конфигурации"));
         panel.AddItem(buttonData);
     }
 
@@ -279,6 +281,7 @@ internal sealed class InitExternalApplication : ExternalApplication
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
         };
 
+        SetHelpPage(buttonData, new DocumentationPage("Dockable panes", "Закрепляемые панели"));
         panel.AddItem(buttonData);
     }
 
@@ -297,6 +300,7 @@ internal sealed class InitExternalApplication : ExternalApplication
             ToolTipImage = LoadImage(iconPath)
         };
 
+        SetHelpPage(buttonData, new DocumentationPage("Getting started button", "Кнопка начала работы"));
         panel.AddItem(buttonData);
     }
 
@@ -307,19 +311,22 @@ internal sealed class InitExternalApplication : ExternalApplication
             "checkForUpdates_buttonText",
             "checkForUpdates_toolTip",
             "checkForUpdates_longDescription",
-            typeof(CheckForUpdatesCommand));
+            typeof(CheckForUpdatesCommand),
+            new DocumentationPage("Check for updates button", "Кнопка проверки обновлений"));
         var supportButton = CreateExternalPageButton(
             "OpenSupportButton",
             "support_buttonText",
             "support_toolTip",
             "support_longDescription",
-            typeof(OpenSupportCommand));
+            typeof(OpenSupportCommand),
+            new DocumentationPage("Support button", "Кнопка поддержки"));
         var sponsorButton = CreateExternalPageButton(
             "OpenSponsorButton",
             "sponsor_buttonText",
             "sponsor_toolTip",
             "sponsor_longDescription",
-            typeof(OpenSponsorCommand));
+            typeof(OpenSponsorCommand),
+            new DocumentationPage("Sponsor button", "Кнопка спонсорства"));
 
         panel.AddStackedItems(updateButton, supportButton, sponsorButton);
     }
@@ -329,26 +336,36 @@ internal sealed class InitExternalApplication : ExternalApplication
         string textResourceKey,
         string toolTipResourceKey,
         string descriptionResourceKey,
-        Type commandType)
+        Type commandType,
+        DocumentationPage helpPage)
         => CreateCompactCommandButton(
-            name, textResourceKey, toolTipResourceKey, descriptionResourceKey, commandType);
+            name, textResourceKey, toolTipResourceKey, descriptionResourceKey, commandType, helpPage);
 
     private static PushButtonData CreateCompactCommandButton(
         string name,
         string textResourceKey,
         string toolTipResourceKey,
         string descriptionResourceKey,
-        Type commandType)
+        Type commandType,
+        DocumentationPage helpPage)
     {
         string iconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
-        return new PushButtonData(name, Localizer[textResourceKey], AssemblyPath, commandType.FullName)
+        PushButtonData buttonData = new(name, Localizer[textResourceKey], AssemblyPath, commandType.FullName)
         {
             ToolTip = Localizer[toolTipResourceKey],
             LongDescription = Localizer[descriptionResourceKey],
             Image = LoadImage(iconPath, 16),
             ToolTipImage = LoadImage(iconPath)
         };
+        SetHelpPage(buttonData, helpPage);
+        return buttonData;
     }
+
+    /// <summary>
+    /// Makes F1 over the ribbon button open its documentation page in the language of the current UI culture.
+    /// </summary>
+    private static void SetHelpPage(RibbonItemData buttonData, DocumentationPage page) =>
+        buttonData.SetContextualHelp(new ContextualHelp(ContextualHelpType.Url, page.GetUrl()));
 
     private static BitmapImage LoadImage(string path) => new(new Uri(path));
 

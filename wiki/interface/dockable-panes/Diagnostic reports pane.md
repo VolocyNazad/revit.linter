@@ -13,6 +13,7 @@ detailed findings table.
 
 - Click the light-bulb button to run the only available fix. If the finding has several fixes, the same click opens their menu.
 - Click the eye button to run the only available visualization. If several pipelines are available, the same click opens their menu.
+- Click the question-mark button to open the documentation of the finding's diagnostic in the default browser: the page of built-in element or document diagnostics, or the page of the module whose configuration file defines the rule.
 - Click an element link inside the message to locate that element in the active Revit document.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 

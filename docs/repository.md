@@ -39,6 +39,9 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+`DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
+address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
+it for F1 help, and the report row opens it; a renamed Wiki page must be renamed in the code that refers to it.
 `Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
 (`welcomeSettings.yml` in the settings value store) and the example configuration installer. The
 installed examples are the files under `wiki/examples/configuration/` (English) and its `ru/`

@@ -43,7 +43,10 @@ internal sealed class ElementDiagnosticRegistrationProvider(
                 new ElementDiagnosticIdOverride(identity, overrideStore),
                 fixes.Where(fix => string.Equals(
                     fix.Identity.Code, identity.Code, StringComparison.Ordinal)).ToArray(),
-                diagnosticVisualizationPipelines);
+                diagnosticVisualizationPipelines)
+            {
+                Documentation = new("Built-in element diagnostics", "Встроенные проверки элементов"),
+            };
         }
     }
 

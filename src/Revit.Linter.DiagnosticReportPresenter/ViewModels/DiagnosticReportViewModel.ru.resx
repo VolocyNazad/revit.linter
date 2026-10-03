@@ -27,4 +27,8 @@
   <data name="ignoreElements_transaction" xml:space="preserve"><value>Игнорирование проверки для элементов</value></data>
   <data name="transactionStartFailed_message" xml:space="preserve"><value>Не удалось начать транзакцию.</value></data>
   <data name="operationFailed_message" xml:space="preserve"><value>Операция вернула отрицательный результат: элемент не может быть изменён. Возможно, он используется как тип по умолчанию, в спецификации, шаблоне вида или другом семействе.</value></data>
+  <data name="openDocumentation_text" xml:space="preserve"><value>Документация по проверке</value></data>
+  <data name="openDocumentationFailed_message" xml:space="preserve"><value>Не удалось открыть страницу документации.
+
+{0}</value></data>
 </root>

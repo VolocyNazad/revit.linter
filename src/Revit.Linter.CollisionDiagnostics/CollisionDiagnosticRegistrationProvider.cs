@@ -50,7 +50,10 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 rule.Visualizations
                     .Select(pipeline => visualizationPipelineFactory.Create(
                         identity, pipeline.Name, pipeline.Steps))
-                    .ToArray());
+                    .ToArray())
+            {
+                Documentation = new("Collision diagnostics", "Проверки коллизий"),
+            };
         }
     }
 

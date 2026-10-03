@@ -27,4 +27,8 @@
   <data name="ignoreElements_transaction" xml:space="preserve"><value>Ignore diagnostic for elements</value></data>
   <data name="transactionStartFailed_message" xml:space="preserve"><value>Failed to start the transaction.</value></data>
   <data name="operationFailed_message" xml:space="preserve"><value>The operation returned a negative result: the element cannot be modified. It may be used as a default type, in a schedule, in a view template, or in another family.</value></data>
+  <data name="openDocumentation_text" xml:space="preserve"><value>Rule documentation</value></data>
+  <data name="openDocumentationFailed_message" xml:space="preserve"><value>Failed to open the documentation page.
+
+{0}</value></data>
 </root>

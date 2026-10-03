@@ -15,4 +15,6 @@ The **Diagnostics** ribbon tab contains commands for showing Revit Linter panels
 - [[Support button|Support button]]
 - [[Sponsor button|Sponsor button]]
 
+Press **F1** while the pointer is over a button to open its documentation page in the default browser.
+
 [[User interface|← User interface]]

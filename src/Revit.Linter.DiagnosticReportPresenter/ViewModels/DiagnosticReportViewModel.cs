@@ -718,6 +718,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 .ToArray() ?? [],
             FixesFactory = () => CreateFixes(report),
             VisualizationPipelinesFactory = () => CreateVisualizationPipelines(report),
+            OpenDocumentationDelegate = () => OpenDocumentation(report.Code),
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
             DocumentTitle = documentTitle,
@@ -910,6 +911,33 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         catch (Exception)
         {
             // The pipeline logs the failure and retains sessions that still need restoration.
+        }
+    }
+
+    private static readonly DocumentationPage DiagnosticsOverviewPage = new("Diagnostics overview", "Обзор диагностики");
+
+    /// <summary>
+    /// Opens the documentation page of the module that registered the diagnostic in the default browser.
+    /// </summary>
+    /// <remarks>
+    /// The page is resolved when the user asks for it, not when the row is created. A code that is no longer
+    /// in the catalog, for example after its rule was removed from a configuration file, opens the
+    /// diagnostics overview instead.
+    /// </remarks>
+    private void OpenDocumentation(string code)
+    {
+        DocumentationPage page = _catalogLease?.Snapshot.FindDocumentation(code) ?? DiagnosticsOverviewPage;
+        string url = page.GetUrl();
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(
+                exception, "Failed to open the documentation page {Url} for diagnostic {Code}", url, code);
+            _ = _dialog.Show(new DialogRequest(
+                GetLocalizedString("openDocumentationFailed_message", exception.Message)));
         }
     }
 

@@ -56,7 +56,10 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 rule.Visualizations
                     .Select(pipeline => visualizationPipelineFactory.Create(
                         identity, pipeline.Name, pipeline.Steps))
-                    .ToArray());
+                    .ToArray())
+            {
+                Documentation = new("User diagnostics", "Пользовательские проверки"),
+            };
         }
     }
 

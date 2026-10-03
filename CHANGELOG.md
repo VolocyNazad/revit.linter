@@ -9,12 +9,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Show a three-step welcome window the first time Revit starts with the add-in: what the add-in does and changes in a document, an offer to load example configurations for the selected disciplines (MEP systems, architecture, structure), and links to the quick start, the documentation and support. The new **Getting started** ribbon command opens it again. Loading examples never overwrites a configuration file that already contains rules: such an example is written to the `examples` subfolder.
+- Open the documentation from the interface: **F1** over a ribbon button opens its Wiki page, and the new question-mark button in a diagnostic report row opens the page that describes the finding's diagnostic. Pages open in English or Russian following the Revit language.
 
 ### Changed
 
 - Replace the Wiki configuration examples with rules that are usable as shipped: nine collision rules (three per discipline), six element checks, and project parameter rules built from the ADSK shared parameter file. The examples are available with English and Russian message texts and reference parameters by `BuiltInParameter` name.
 - Correct the ribbon tab name in the README and the Wiki: the commands are on the **Diagnostics** tab.
-
 - Speed up diagnostic runs: built-in, parameter and collision diagnostics, the diagnostic service and the dependency functions used in formulas now share one cached result for the same document query (all elements, elements of a class, element types, element geometry) instead of collecting it separately.
 - **Breaking:** a collision finding now lists every element the target intersects instead of the first one found. The message variables `{intersection.elementName}` and `{intersection.elementId}` are replaced by the comma-separated lists `{intersection.elementNames}` and `{intersection.elementIds}`, with the new `{intersection.count}` giving their number; update the `message` of existing rules in `collision.config.yaml`. The `Dependencies` element set of visualizations contains all intersecting elements.
 - Speed up runs with many active diagnostics: the ignore list is consulted only for the elements a rule applies to, the ignore parameter of an element is read once per run instead of once per diagnostic, it is not read at all in a document that has no ignore parameters, and the ignore information of the document is resolved once per run.

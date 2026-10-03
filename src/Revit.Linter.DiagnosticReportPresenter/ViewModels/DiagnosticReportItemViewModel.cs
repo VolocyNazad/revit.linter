@@ -23,6 +23,7 @@ internal sealed partial class DiagnosticReportItemViewModel
     public required Action<ElementId> AccentElementDelegate { get; init; }
     public required Func<IEnumerable<FixViewModel>?> FixesFactory { get; init; }
     public required Func<IReadOnlyList<VisualizationPipelineViewModel>> VisualizationPipelinesFactory { get; init; }
+    public required Action OpenDocumentationDelegate { get; init; }
 
     // Fixes and visualizations are built on first use rather than with the row. A report can hold tens
     // of thousands of rows, each fix owns an icon control and several delegates, and only the rows the
@@ -69,6 +70,9 @@ internal sealed partial class DiagnosticReportItemViewModel
         if (parameter is not ElementId elementId) return;
         AccentElementDelegate(elementId);
     }
+
+    [RelayCommand]
+    private void OpenDocumentation() => OpenDocumentationDelegate();
 
     [RelayCommand(CanExecute = nameof(HasVisualizationPipelines))]
     private async Task ShowVisualization(CancellationToken cancellationToken)
