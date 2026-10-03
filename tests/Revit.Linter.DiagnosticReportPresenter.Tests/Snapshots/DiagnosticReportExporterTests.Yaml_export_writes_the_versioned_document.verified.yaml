@@ -1,0 +1,133 @@
+schemaVersion: 1.0
+metadata:
+  exportedAt:
+    dateTime: 2026-10-01T10:00:00.0000000
+    utcDateTime: 2026-10-01T05:00:00.0000000Z
+    localDateTime: 2026-10-01T10:00:00.0000000+05:00
+    date: 2026-10-01T00:00:00.0000000
+    day: 1
+    dayOfWeek: Thursday
+    dayOfYear: 274
+    hour: 10
+    millisecond: 0
+    microsecond: 0
+    nanosecond: 0
+    minute: 0
+    month: 10
+    offset: 05:00:00
+    totalOffsetMinutes: 300
+    second: 0
+    ticks: 639264456000000000
+    utcTicks: 639264276000000000
+    timeOfDay: 10:00:00
+    year: 2026
+  revitVersion: 2025
+  revitBuild: 25.0.2.419
+  addInVersion: 1.8.0
+  documentTitle: Project A
+  scope: Document
+  filters:
+    searchText: 
+    severities:
+    - Error
+    - Warning
+    states:
+    - Active
+  totalItemCount: 5
+  exportedItemCount: 3
+items:
+- severity: Error
+  severityDisplayName: Error
+  code: ELM002
+  message: >-
+    Wall "W-1", level 1
+
+    second line
+  document: Project A
+  created:
+    dateTime: 2026-10-01T09:30:00.0000000
+    utcDateTime: 2026-10-01T04:30:00.0000000Z
+    localDateTime: 2026-10-01T09:30:00.0000000+05:00
+    date: 2026-10-01T00:00:00.0000000
+    day: 1
+    dayOfWeek: Thursday
+    dayOfYear: 274
+    hour: 9
+    millisecond: 0
+    microsecond: 0
+    nanosecond: 0
+    minute: 30
+    month: 10
+    offset: 05:00:00
+    totalOffsetMinutes: 300
+    second: 0
+    ticks: 639264438000000000
+    utcTicks: 639264258000000000
+    timeOfDay: 09:30:00
+    year: 2026
+  isObsolete: false
+  obsoleteDescription: 
+  targetElementId: 101
+  dependencyElementIds:
+  - 201
+  - 202
+- severity: Warning
+  severityDisplayName: Warning
+  code: ELM001
+  message: Plain message; with semicolon
+  document: Project A
+  created:
+    dateTime: 2026-10-01T09:31:05.0000000
+    utcDateTime: 2026-10-01T04:31:05.0000000Z
+    localDateTime: 2026-10-01T09:31:05.0000000+05:00
+    date: 2026-10-01T00:00:00.0000000
+    day: 1
+    dayOfWeek: Thursday
+    dayOfYear: 274
+    hour: 9
+    millisecond: 0
+    microsecond: 0
+    nanosecond: 0
+    minute: 31
+    month: 10
+    offset: 05:00:00
+    totalOffsetMinutes: 300
+    second: 5
+    ticks: 639264438650000000
+    utcTicks: 639264258650000000
+    timeOfDay: 09:31:05
+    year: 2026
+  isObsolete: true
+  obsoleteDescription: Use ELM002
+  targetElementId: 
+  dependencyElementIds: &o0 []
+- severity: Warning
+  severityDisplayName: Warning
+  code: ELM001
+  message: Another
+  document: Project A
+  created:
+    dateTime: 2026-10-01T09:32:00.0000000
+    utcDateTime: 2026-10-01T04:32:00.0000000Z
+    localDateTime: 2026-10-01T09:32:00.0000000+05:00
+    date: 2026-10-01T00:00:00.0000000
+    day: 1
+    dayOfWeek: Thursday
+    dayOfYear: 274
+    hour: 9
+    millisecond: 0
+    microsecond: 0
+    nanosecond: 0
+    minute: 32
+    month: 10
+    offset: 05:00:00
+    totalOffsetMinutes: 300
+    second: 0
+    ticks: 639264439200000000
+    utcTicks: 639264259200000000
+    timeOfDay: 09:32:00
+    year: 2026
+  isObsolete: false
+  obsoleteDescription: 
+  targetElementId: 102
+  dependencyElementIds: *o0
