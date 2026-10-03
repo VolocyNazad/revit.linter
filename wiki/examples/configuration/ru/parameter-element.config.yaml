@@ -1,14 +1,14 @@
-# Project parameter diagnostics. Copy this file to the configuration folder as parameter-element.config.yaml.
-# The parameters come from the ADSK shared parameter file; names and GUIDs are taken from it unchanged.
-# Binding type, categories and group are an example of a company standard: adjust them to your template.
-# The group uses the Revit 2024+ format. For Revit 2021-2023 write "PG_DATA" instead
-# (the welcome wizard converts it automatically).
-# The "section" comment lines mark the discipline blocks used by the welcome wizard; keep them in pairs.
+# Проверки параметров проекта. Скопируйте файл в папку конфигурации под именем parameter-element.config.yaml.
+# Параметры взяты из файла общих параметров ADSK; имена и GUID перенесены из него без изменений.
+# Тип привязки, категории и группа — пример стандарта компании: приведите их к своему шаблону.
+# Группа записана в формате Revit 2024+. Для Revit 2021–2023 укажите "PG_DATA"
+# (мастер приветствия заменяет её автоматически).
+# Строки-комментарии "section" отмечают блоки разделов для мастера приветствия; сохраняйте их парами.
 
-# >>> section: mep — MEP systems
+# >>> section: mep — Инженерные системы (ИОС)
 - code: "PRMTR101"
-  description: "ADSK parameters of MEP system families (ducts, pipes, cable trays)"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
+  description: "Параметры ADSK системных семейств ИОС (воздуховоды, трубы, лотки)"
+  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -68,10 +68,10 @@
       allowVaryBetweenGroups: true
 # <<< section: mep
 
-# >>> section: architecture — Architecture
+# >>> section: architecture — Архитектура (АР)
 - code: "PRMTR201"
-  description: "ADSK apartment parameters of rooms"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
+  description: "Параметры квартирографии ADSK у помещений"
+  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -101,10 +101,10 @@
       allowVaryBetweenGroups: false
 # <<< section: architecture
 
-# >>> section: structure — Structure
+# >>> section: structure — Конструкции (КР)
 - code: "PRMTR301"
-  description: "ADSK structural mark of columns, framing and foundations"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
+  description: "Марка конструкции ADSK у колонн, каркаса и фундаментов"
+  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

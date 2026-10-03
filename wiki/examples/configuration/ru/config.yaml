@@ -1,16 +1,16 @@
-# User element diagnostics. Copy this file to the configuration folder as config.yaml.
-# An element is valid when "check" returns true; every other selected element becomes a finding.
-# Parameters are referenced by BuiltInParameter name, so the rules work in any Revit language.
+# Пользовательские проверки элементов. Скопируйте файл в папку конфигурации под именем config.yaml.
+# Элемент считается корректным, когда "check" возвращает true; остальные отобранные элементы попадают в отчёт.
+# Параметры заданы именами BuiltInParameter, поэтому правила работают в Revit на любом языке.
 
 - code: "CSTM001"
-  description: "Generic model instances"
-  message: "'{elementName}' ({elementId}) is a generic model. Move it to a proper category or add it to the ignore list."
+  description: "Экземпляры обобщённых моделей"
+  message: "'{elementName}' ({elementId}) — обобщённая модель. Перенесите элемент в подходящую категорию или добавьте в список игнорирования."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_GenericModel')"
   check: "isnull(property('Id'))"
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]
@@ -18,14 +18,14 @@
           elementSets: ["Target"]
 
 - code: "CSTM101"
-  description: "Ducts and pipes without a system"
-  message: "'{elementName}' ({elementId}) is not assigned to a system."
+  description: "Воздуховоды и трубы без системы"
+  message: "'{elementName}' ({elementId}) не входит ни в одну систему."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_PipeCurves'))"
   check: "!isnullorempty(parameter(me, 'RBS_SYSTEM_NAME_PARAM'))"
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]
@@ -33,14 +33,14 @@
           elementSets: ["Target"]
 
 - code: "CSTM201"
-  description: "Doors and windows without a mark"
-  message: "'{elementName}' ({elementId}) has an empty mark."
+  description: "Двери и окна без марки"
+  message: "У элемента '{elementName}' ({elementId}) не заполнена марка."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Doors') or builtincategory('OST_Windows'))"
   check: "!isnullorempty(parameter(me, 'ALL_MODEL_MARK'))"
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]
@@ -48,14 +48,14 @@
           elementSets: ["Target"]
 
 - code: "CSTM202"
-  description: "Mirrored doors"
-  message: "Door '{elementName}' ({elementId}) is mirrored: its handing differs from the family."
+  description: "Зеркально отражённые двери"
+  message: "Дверь '{elementName}' ({elementId}) отражена зеркально: открывание не совпадает с семейством."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Doors')"
   check: "!property('Mirrored')"
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]
@@ -63,14 +63,14 @@
           elementSets: ["Target"]
 
 - code: "CSTM203"
-  description: "Rooms without a meaningful name"
-  message: "Room '{elementName}' ({elementId}) has an empty or default name."
+  description: "Помещения без осмысленного имени"
+  message: "У помещения '{elementName}' ({elementId}) пустое имя или имя по умолчанию."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "room"
   check: "!isnullorempty(parameter(me, 'ROOM_NAME')) & parameter(me, 'ROOM_NAME') != 'Room' & parameter(me, 'ROOM_NAME') != 'Помещение'"
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]
@@ -78,19 +78,19 @@
           elementSets: ["Target"]
 
 - code: "CSTM204"
-  description: "Unplaced rooms"
-  message: "Room '{elementName}' ({elementId}) is not placed in the model."
+  description: "Неразмещённые помещения"
+  message: "Помещение '{elementName}' ({elementId}) не размещено в модели."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "room"
   check: "!isnull(property('Location'))"
   fixes:
-    - name: "Delete unplaced room"
+    - name: "Удалить неразмещённое помещение"
       steps:
         - type: "Delete"
           elementSets: ["Target"]
   visualizations:
-    - name: "Show and select"
+    - name: "Показать и выбрать"
       steps:
         - type: "Show"
           elementSets: ["Target"]

@@ -1,21 +1,21 @@
-# Collision diagnostics. Copy this file to the configuration folder as collision.config.yaml.
-# Elements are compared only inside one document: linked models do not take part.
-# Rules select elements by category, so run a block in the model of its discipline
-# or narrow it with takeDocument, for example: "contains(property('Title'), '_MEP')".
-# groupBy is a constant here, so every selected element is compared with every other one.
-# The "section" comment lines mark the discipline blocks used by the welcome wizard; keep them in pairs.
+# Проверки коллизий. Скопируйте файл в папку конфигурации под именем collision.config.yaml.
+# Элементы сравниваются только внутри одного документа: связанные модели не участвуют.
+# Правила отбирают элементы по категории, поэтому запускайте блок в модели своего раздела
+# или сузьте его через takeDocument, например: "contains(property('Title'), '_ОВ')".
+# groupBy здесь константа, поэтому каждый отобранный элемент сравнивается с каждым.
+# Строки-комментарии "section" отмечают блоки разделов для мастера приветствия; сохраняйте их парами.
 
-# >>> section: mep — MEP systems
+# >>> section: mep — Инженерные системы (ИОС)
 - code: "CLSN101"
-  description: "Ducts against pipes"
-  message: "Duct '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Воздуховоды с трубами"
+  message: "Воздуховод '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
   andTake: "instance and (builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -31,22 +31,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN102"
-  description: "Cable trays and conduits against ducts and pipes"
-  message: "Cable tray or conduit '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Кабельные лотки и короба с воздуховодами и трубами"
+  message: "Лоток или короб '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -62,22 +62,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN103"
-  description: "Equipment and terminals against ducts, pipes and cable trays"
-  message: "Equipment '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Оборудование и воздухораспределители с воздуховодами, трубами и лотками"
+  message: "Оборудование '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_MechanicalEquipment') or builtincategory('OST_DuctTerminal') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_ElectricalEquipment'))"
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory') or builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -93,7 +93,7 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
@@ -101,17 +101,17 @@
           elementSets: ["Target", "Dependencies"]
 # <<< section: mep
 
-# >>> section: architecture — Architecture
+# >>> section: architecture — Архитектура (АР)
 - code: "CLSN201"
-  description: "Overlapping walls"
-  message: "Wall '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Наложение стен"
+  message: "Стена '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Walls'))"
   andTake: "instance and (builtincategory('OST_Walls'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -127,22 +127,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN202"
-  description: "Furniture and fixtures against walls and columns"
-  message: "Furniture or fixture '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Мебель и сантехника со стенами и колоннами"
+  message: "Мебель или прибор '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_Casework') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SpecialityEquipment'))"
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Columns'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -158,22 +158,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN203"
-  description: "Stairs and railings against walls and floors"
-  message: "Stair or railing '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Лестницы и ограждения со стенами и перекрытиями"
+  message: "Лестница или ограждение '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing'))"
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Floors'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -189,7 +189,7 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
@@ -197,17 +197,17 @@
           elementSets: ["Target", "Dependencies"]
 # <<< section: architecture
 
-# >>> section: structure — Structure
+# >>> section: structure — Конструкции (КР)
 - code: "CLSN301"
-  description: "Structural columns against structural framing"
-  message: "Structural column '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Несущие колонны с балками и связями"
+  message: "Несущая колонна '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralColumns'))"
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -223,22 +223,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN302"
-  description: "Structural framing against structural framing"
-  message: "Framing element '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Элементы каркаса между собой"
+  message: "Элемент каркаса '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFraming'))"
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -254,22 +254,22 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
 - code: "CLSN303"
-  description: "Foundations against foundations and structural columns"
-  message: "Foundation '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  description: "Фундаменты с фундаментами и несущими колоннами"
+  message: "Фундамент '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFoundation'))"
   andTake: "instance and (builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralColumns'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Locate collision"
+    - name: "Найти коллизию"
       steps:
         - type: "OverrideElements"
           elementSets: ["Target"]
@@ -285,7 +285,7 @@
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
-    - name: "Isolate collision"
+    - name: "Изолировать коллизию"
       steps:
         - type: "Isolate"
           elementSets: ["Target", "Dependencies"]

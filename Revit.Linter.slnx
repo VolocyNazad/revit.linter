@@ -238,6 +238,11 @@
     <File Path="wiki/examples/configuration/Configuration examples.md" />
     <File Path="wiki/examples/configuration/parameter-element.config.yaml" />
   </Folder>
+  <Folder Name="/wiki/examples/configuration/ru/">
+    <File Path="wiki/examples/configuration/ru/collision.config.yaml" />
+    <File Path="wiki/examples/configuration/ru/config.yaml" />
+    <File Path="wiki/examples/configuration/ru/parameter-element.config.yaml" />
+  </Folder>
   <Folder Name="/wiki/getting-started/">
     <File Path="wiki/getting-started/Configuration setup.md" />
     <File Path="wiki/getting-started/Installation.md" />
