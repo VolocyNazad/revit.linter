@@ -18,4 +18,13 @@
   <data name="description_header" xml:space="preserve"><value>Описание</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
+  <data name="isActive_description" xml:space="preserve"><value>Включает или отключает проверку для вас. Ваш выбор переопределяет значение из правила и сохраняется в настройках, поэтому действует для всех документов.</value></data>
+  <data name="severity_description" xml:space="preserve"><value>Задаёт, насколько серьёзными вы считаете замечания проверки. Ваш выбор переопределяет уровень из правила и сохраняется в настройках.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и описанию без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="checkAll_description" xml:space="preserve"><value>Включает все проверки, в том числе скрытые поиском и фильтрами.</value></data>
+  <data name="uncheckAll_description" xml:space="preserve"><value>Отключает все проверки, в том числе скрытые поиском и фильтрами.</value></data>
+  <data name="checkVisible_description" xml:space="preserve"><value>Включает только проверки, которые сейчас показаны в списке — после поиска и фильтров.</value></data>
+  <data name="uncheckVisible_description" xml:space="preserve"><value>Отключает только проверки, которые сейчас показаны в списке — после поиска и фильтров.</value></data>
+  <data name="invertAll_description" xml:space="preserve"><value>Переключает каждую проверку в противоположное состояние, в том числе скрытые поиском и фильтрами.</value></data>
+  <data name="invertVisible_description" xml:space="preserve"><value>Переключает в противоположное состояние только проверки, которые сейчас показаны в списке.</value></data>
 </root>

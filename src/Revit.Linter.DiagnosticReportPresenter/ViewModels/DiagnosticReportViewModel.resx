@@ -34,4 +34,6 @@
   <data name="showVisualization_description" xml:space="preserve"><value>Shows the finding in the active view. If several visualizations are available, opens their menu. Click again to restore the view.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>More filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Not available yet. Use the search box and the filter chips next to it.</value></data>
+  <data name="document_description" xml:space="preserve"><value>Shows only the findings of the selected open document.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case. The list is updated when you leave the field. The search also limits what is exported.</value></data>
 </root>

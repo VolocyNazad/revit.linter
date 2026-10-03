@@ -51,6 +51,8 @@
                 <ComboBox
                     MinWidth="150"
                     Margin="5"
+                    behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
                     materialDesign:HintAssist.Hint="{Binding DocumentText}"
                     materialDesign:HintAssist.IsFloating="True"
                     DisplayMemberPath="DisplayName"
@@ -126,6 +128,8 @@
                     Width="200"
                     Margin="5"
                     d:Text="Search text"
+                    behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
                     materialDesign:HintAssist.Hint="{Binding SearchText}"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"

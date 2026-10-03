@@ -34,4 +34,6 @@
   <data name="showVisualization_description" xml:space="preserve"><value>Показывает замечание на активном виде. Если визуализаций несколько, открывает меню выбора. Повторный щелчок возвращает вид.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
+  <data name="document_description" xml:space="preserve"><value>Показывает замечания только выбранного открытого документа.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра. Список обновляется, когда вы покидаете поле. Поиск ограничивает и экспорт.</value></data>
 </root>

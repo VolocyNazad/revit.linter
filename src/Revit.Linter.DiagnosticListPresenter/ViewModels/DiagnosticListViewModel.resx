@@ -18,4 +18,13 @@
   <data name="description_header" xml:space="preserve"><value>Description</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>More filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Not available yet. Use the search box and the filter chips next to it.</value></data>
+  <data name="isActive_description" xml:space="preserve"><value>Turns the diagnostic on or off for you. Your choice overrides the value set by the rule and is saved in your settings, so it applies to every document.</value></data>
+  <data name="severity_description" xml:space="preserve"><value>Sets how serious you consider the findings of the diagnostic. Your choice overrides the level set by the rule and is saved in your settings.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the description, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="checkAll_description" xml:space="preserve"><value>Turns on every diagnostic, including the ones hidden by the search and the filters.</value></data>
+  <data name="uncheckAll_description" xml:space="preserve"><value>Turns off every diagnostic, including the ones hidden by the search and the filters.</value></data>
+  <data name="checkVisible_description" xml:space="preserve"><value>Turns on only the diagnostics shown in the list now, after the search and the filters.</value></data>
+  <data name="uncheckVisible_description" xml:space="preserve"><value>Turns off only the diagnostics shown in the list now, after the search and the filters.</value></data>
+  <data name="invertAll_description" xml:space="preserve"><value>Switches every diagnostic to the opposite state, including the ones hidden by the search and the filters.</value></data>
+  <data name="invertVisible_description" xml:space="preserve"><value>Switches only the diagnostics shown in the list now to the opposite state.</value></data>
 </root>

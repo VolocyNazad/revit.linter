@@ -9,4 +9,6 @@
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
+  <data name="document_description" xml:space="preserve"><value>Показывает результаты исправлений только выбранного открытого документа.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
 </root>

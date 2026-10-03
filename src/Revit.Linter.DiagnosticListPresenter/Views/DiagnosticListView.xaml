@@ -82,6 +82,8 @@
                     Width="200"
                     Margin="5"
                     HorizontalAlignment="Stretch"
+                    behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
                     materialDesign:HintAssist.Hint="{Binding SearchText}"
                     materialDesign:TextFieldAssist.HasLeadingIcon="True"
                     materialDesign:TextFieldAssist.LeadingIcon="Search"
@@ -111,29 +113,54 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding CheckAllDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding CheckAllText, Mode=OneWay}"
                             Command="{Binding CheckAllCommand}"
                             Header="{Binding CheckAllText}"
                             Icon="{materialDesign:PackIcon Kind=CheckboxMultipleOutline}" />
                         <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding UncheckAllDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding UncheckAllText, Mode=OneWay}"
                             Command="{Binding UncheckAllCommand}"
                             Header="{Binding UncheckAllText}"
                             Icon="{materialDesign:PackIcon Kind=CheckboxMultipleBlankOutline}" />
                         <Separator />
-                        <MenuItem Command="{Binding CheckVisibleCommand}" Header="{Binding CheckVisibleText}" />
-                        <MenuItem Command="{Binding UncheckVisibleCommand}" Header="{Binding UncheckVisibleText}" />
+                        <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding CheckVisibleDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding CheckVisibleText, Mode=OneWay}"
+                            Command="{Binding CheckVisibleCommand}"
+                            Header="{Binding CheckVisibleText}" />
+                        <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding UncheckVisibleDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding UncheckVisibleText, Mode=OneWay}"
+                            Command="{Binding UncheckVisibleCommand}"
+                            Header="{Binding UncheckVisibleText}" />
                         <Separator />
                         <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding InvertAllDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding InvertAllText, Mode=OneWay}"
                             Command="{Binding InvertAllCommand}"
                             Header="{Binding InvertAllText}"
                             Icon="{materialDesign:PackIcon Kind=SwapHorizontal}" />
-                        <MenuItem Command="{Binding InvertVisibleCommand}" Header="{Binding InvertVisibleText}" />
+                        <MenuItem
+                            behaviors:HelpToolTip.Description="{Binding InvertVisibleDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding InvertVisibleText, Mode=OneWay}"
+                            Command="{Binding InvertVisibleCommand}"
+                            Header="{Binding InvertVisibleText}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
                         Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}"
-                        SortMemberPath="IsActive" />
+                        SortMemberPath="IsActive">
+                        <DataGridCheckBoxColumn.HeaderStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}, Mode=OneWay}" />
+                                <Setter Property="behaviors:HelpToolTip.Description" Value="{Binding DataContext.IsActiveDescription, Source={StaticResource proxy}, Mode=OneWay}" />
+                            </Style>
+                        </DataGridCheckBoxColumn.HeaderStyle>
+                    </DataGridCheckBoxColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -158,6 +185,12 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}, Mode=OneWay}" />
+                                <Setter Property="behaviors:HelpToolTip.Description" Value="{Binding DataContext.SeverityDescription, Source={StaticResource proxy}, Mode=OneWay}" />
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox
