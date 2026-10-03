@@ -14,6 +14,10 @@ public interface IDiagnosticReportPresenter
     /// Removes displayed diagnostic reports associated with the specified document.
     /// </summary>
     /// <param name="documentTitle">The title of the document whose reports are removed.</param>
+    /// <remarks>
+    /// Clearing also restores an active visualization. That needs a Revit API context; outside one the
+    /// reports are still removed and the visualization is restored on the next Idling event.
+    /// </remarks>
     void Clear(string documentTitle);
 
     /// <summary>

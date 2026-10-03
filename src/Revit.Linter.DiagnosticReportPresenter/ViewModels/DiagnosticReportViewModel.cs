@@ -39,7 +39,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 {
     public void Clear()
     {
-        RestoreActiveVisualization();
+        RestoreActiveVisualizationOrSchedule();
         Collection.Clear();
         ClearFilters();
     }
@@ -47,7 +47,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     public void Clear(string documentTitle)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        RestoreActiveVisualization();
+        RestoreActiveVisualizationOrSchedule();
         List<DiagnosticReportItemViewModel> remaining =
             Collection.Where(i => i.DocumentTitle != documentTitle).ToList();
         int removedCount = Collection.Count - remaining.Count;
@@ -880,6 +880,24 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             action();
             return true;
         });
+
+    // Restoring a visualization starts a transaction, which Revit allows only in an API context, while the
+    // report can be cleared from a WPF handler or a configuration-change notification. A failed restore
+    // must not abort the clearing, so it is retried on the next Idling event; the pipeline keeps the
+    // sessions it could not restore and has already logged the failure.
+    private void RestoreActiveVisualizationOrSchedule()
+    {
+        if (_activeVisualizationPipeline is null) return;
+
+        try
+        {
+            RestoreActiveVisualization();
+        }
+        catch (Exception)
+        {
+            _ = RestoreActiveVisualizationAsync();
+        }
+    }
 
     private async Task RestoreActiveVisualizationAsync(CancellationToken cancellationToken = default)
     {

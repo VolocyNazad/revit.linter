@@ -90,13 +90,26 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         Document? targetDocument = _revitContext.ActiveDocument;
         if (targetDocument is null) return;
 
-        View? targetView = OnActiveViewMode ? targetDocument.ActiveView : null;
+        bool onActiveView = OnActiveViewMode;
+        DiagnosticServiceResult diagnosticResult = DiagnosticServiceResult.Success;
 
-        _diagnosticReportPresenter.Clear(targetDocument.Title);
+        // The command is raised by WPF, outside the Revit API context. Clearing the report restores an
+        // active visualization, which needs a transaction, and Revit refuses to start one there. The whole
+        // run therefore goes through the Idling scheduler: the visualization is restored first, so a run
+        // limited to the active view sees the view as the user left it, and the diagnostics read the
+        // model in a valid API context.
+        await _idlingScheduler.RunAsync(_ =>
+        {
+            if (!targetDocument.IsValidObject) return;
 
-        DiagnosticServiceResult diagnosticResult = _diagnosticService.Execute(targetDocument, targetView);
+            View? targetView = onActiveView ? targetDocument.ActiveView : null;
 
-        _diagnosticReportPresenter.Refresh();
+            _diagnosticReportPresenter.Clear(targetDocument.Title);
+
+            diagnosticResult = _diagnosticService.Execute(targetDocument, targetView);
+
+            _diagnosticReportPresenter.Refresh();
+        }, cancellationToken);
 
         DiagnosticTime = GetLocalizedString("diagnosticDuration_text", stopwatch.Elapsed.TotalSeconds);
         stopwatch.Stop();
