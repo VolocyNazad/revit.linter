@@ -33,7 +33,18 @@ internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) :
             if (!document.IsValidObject || previousCorners is not { Count: 2 }) return;
             using UIView? currentView = new UIDocument(document).GetOpenUIViews()
                 .FirstOrDefault(candidate => candidate.ViewId == view.Id);
-            currentView?.ZoomAndCenterRectangle(previousCorners[0], previousCorners[1]);
+            try
+            {
+                currentView?.ZoomAndCenterRectangle(previousCorners[0], previousCorners[1]);
+            }
+            catch (Autodesk.Revit.Exceptions.ArgumentException)
+            {
+                // Returning to the previous zoom is a convenience, not part of the model state. Revit
+                // rejects the saved corners when they no longer span a rectangle in the view, for example
+                // when they were read from a view that had just been opened or the view was rotated
+                // since. The view then keeps its current zoom and the rest of the visualization is
+                // still restored.
+            }
         });
     }
 }
