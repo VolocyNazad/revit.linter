@@ -27,6 +27,17 @@
 - [x] On uninstall, remove all installed plugin components, manifests and updater startup registration. Preserve logs and user settings.
 - [ ] Cover release parsing, version comparison, interval and skip behavior, single-instance handling (covered), Revit-running refusal, notification decisions and activation validation (covered), manual/background error behavior, asset metadata and downloaded-content validation (covered), and updater shutdown with headless tests.
 
+## First-run welcome wizard and meaningful configuration examples
+
+- [ ] Show a modal three-step welcome wizard on the first Idling event after the add-in starts: **Welcome** (what the add-in does, the ribbon tab name read from the ribbon resource, the project parameters it adds, the configuration and log folders), **Examples**, and **Done** (optionally open the panes; links to the quick start, the documentation and support).
+- [ ] Keep the wizard state in the user settings store: the completed wizard version (per user) and the Revit years for which the examples step was already offered. Closing the window in any way counts as shown; a ribbon command reopens the full wizard.
+- [ ] Give every step one light-hearted caption (English and Russian written separately, not translated word for word). Error messages and navigation buttons stay plain.
+- [ ] Let the user pick disciplines (MEP, architecture, structure) on the **Examples** step and install the matching blocks into the configuration folder for the running Revit version. Never overwrite a non-empty user file: place the example in an `examples` subfolder instead.
+- [ ] Rewrite the Wiki configuration examples so that they are usable as shipped: nine collision rules (three per discipline), six user diagnostics, and project parameter rules built from the ADSK shared parameter file. Provide English and Russian message texts and reference parameters in formulas by `BuiltInParameter` name.
+- [ ] Build the installed examples from the same Wiki files (embedded as resources) and convert the Revit 2024+ parameter `group` identifiers to `BuiltInParameterGroup` names for Revit 2021-2023.
+- [ ] Replace the outdated **Volocy** ribbon tab name in `README.md` and the Wiki with the actual tab name (**Diagnostics** / **Диагностика**).
+- [ ] Cover example assembly by discipline, parameter group conversion, non-overwriting installation, the embedded example resources and the wizard state rules with headless tests in `Revit.Linter.WelcomePresenter.Tests`.
+
 ## Branching diagnostic report history
 
 - [ ] Persist published full-document diagnostic runs as immutable report snapshots.
