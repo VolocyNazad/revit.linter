@@ -54,31 +54,29 @@ public abstract class ElementVisualizationPipelineBase(
             context.Document, $"Apply visualization: {Value}");
         try
         {
-            for (int index = 0; index < Steps.Count; index++)
+            ElementId? activeViewIdBefore = context.Document.ActiveView?.Id;
+            ApplySteps(context, appliedSessions);
+
+            // A step that shows the elements makes Revit open another view when they are not visible in
+            // the current one, for example when the visualization is started from a sheet. The steps
+            // above were then applied to the view the user has just left. They are undone and applied
+            // again to the view the user is looking at now.
+            View? activeViewAfter = context.Document.ActiveView;
+            if (activeViewAfter is not null
+                && !Equals(activeViewAfter.Id, activeViewIdBefore)
+                && !Equals(activeViewAfter.Id, context.View.Id))
             {
-                ElementVisualizationStep step = Steps[index];
-                ElementId[] elementIds = ResolveElementIds(context, step.ElementSetKeys);
                 logger.LogInformation(
-                    "Applying visualization step {StepNumber}/{StepCount}: {StepType}. " +
-                    "Element sets: {ElementSetKeys}; elements: {ElementCount}",
-                    index + 1, Steps.Count, step.GetType().Name,
-                    step.ElementSetKeys.Count == 0 ? "<all>" : string.Join(", ", step.ElementSetKeys),
-                    elementIds.Length);
-                IElementAccentSession session = step switch
-                {
-                    AccentElementsStep accent => ResolveService(accent.Type)
-                        .Apply(context.Document, context.View, elementIds),
-                    OverrideElementsStep graphics => overrideElementGraphicsService
-                        .Apply(context.Document, context.View, elementIds, graphics.Style),
-                    OverrideFilterStep filter => overrideFilterGraphicsService
-                        .Apply(context.Document, context.View, elementIds, filter.Style),
-                    _ => throw new InvalidOperationException(
-                        $"Unsupported visualization step '{step.GetType().Name}'.")
-                };
-                appliedSessions.Add(session);
-                logger.LogInformation(
-                    "Visualization step {StepNumber}/{StepCount} completed: {StepType}",
-                    index + 1, Steps.Count, step.GetType().Name);
+                    "Showing the elements moved the user from view {PreviousViewName} to view {ViewName}; " +
+                    "applying visualization pipeline {VisualizationName} there",
+                    context.View.Name, activeViewAfter.Name, Value);
+                Exception? undoError = RestoreSessions(appliedSessions);
+                appliedSessions.Clear();
+                if (undoError is not null)
+                    throw new InvalidOperationException(
+                        "Failed to undo the visualization applied to the previous view.", undoError);
+
+                ApplySteps(context with { View = activeViewAfter }, appliedSessions);
             }
 
             Assimilate(transactionGroup);
@@ -101,6 +99,36 @@ public abstract class ElementVisualizationPipelineBase(
             throw new InvalidOperationException(
                 $"Visualization pipeline '{Value}' failed for diagnostic '{Identity.Code}'.",
                 cleanupError is null ? exception : new AggregateException(exception, cleanupError));
+        }
+    }
+
+    private void ApplySteps(ElementVisualizationContext context, List<IElementAccentSession> appliedSessions)
+    {
+        for (int index = 0; index < Steps.Count; index++)
+        {
+            ElementVisualizationStep step = Steps[index];
+            ElementId[] elementIds = ResolveElementIds(context, step.ElementSetKeys);
+            logger.LogInformation(
+                "Applying visualization step {StepNumber}/{StepCount}: {StepType}. " +
+                "Element sets: {ElementSetKeys}; elements: {ElementCount}",
+                index + 1, Steps.Count, step.GetType().Name,
+                step.ElementSetKeys.Count == 0 ? "<all>" : string.Join(", ", step.ElementSetKeys),
+                elementIds.Length);
+            IElementAccentSession session = step switch
+            {
+                AccentElementsStep accent => ResolveService(accent.Type)
+                    .Apply(context.Document, context.View, elementIds),
+                OverrideElementsStep graphics => overrideElementGraphicsService
+                    .Apply(context.Document, context.View, elementIds, graphics.Style),
+                OverrideFilterStep filter => overrideFilterGraphicsService
+                    .Apply(context.Document, context.View, elementIds, filter.Style),
+                _ => throw new InvalidOperationException(
+                    $"Unsupported visualization step '{step.GetType().Name}'.")
+            };
+            appliedSessions.Add(session);
+            logger.LogInformation(
+                "Visualization step {StepNumber}/{StepCount} completed: {StepType}",
+                index + 1, Steps.Count, step.GetType().Name);
         }
     }
 

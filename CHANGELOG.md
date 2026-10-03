@@ -22,6 +22,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- A visualization started from a view that does not show the elements, such as a sheet, is now applied to the view Revit opens to show them instead of the view the user has left.
 - Running diagnostics while a visualization is active no longer fails with "Failed to restore the previous visualization state": the run now executes in a Revit API context and restores the visualization before it starts.
 - Collision rules with different `andTake` formulas no longer check each other's elements; rules with the same formulas share the collected elements.
 - Cached diagnostic data is no longer mixed between open documents with the same title or the same element IDs, or between a run on the active view and a run on the whole document.
