@@ -23,3 +23,5 @@ Revit Linter reads the working YAML files that the user creates or edits in the 
 The easiest way to open this folder is the [[Diagnostic configuration path button|configuration folder button]] on the **Volocy** ribbon tab.
 
 To use a template, copy it to the working configuration folder, keep its required filename, and replace the sample conditions, GUIDs, parameter names, and categories with values from your project. Rules with `isActive: false` are not run by default.
+
+The project parameter template uses the `group` format of Revit 2024 and newer. For Revit 2021–2023 replace it with a `BuiltInParameterGroup` name such as `PG_TEXT`; a rule whose `group` does not fit the running Revit version is skipped when the file is loaded. See [[Project parameter diagnostics]].
