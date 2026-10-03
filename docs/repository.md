@@ -39,6 +39,14 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+`Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
+(`welcomeSettings.yml` in the settings value store) and the example configuration installer. The
+installed examples are the files under `wiki/examples/configuration/` (English) and its `ru/`
+subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
+ribbon tab name, the log folder and the pane and link actions through `IWelcomeHost`. Its headless rules
+(example composition, installation without overwriting, first-run state) are covered by
+`Revit.Linter.WelcomePresenter.Tests`; the window itself is not. Debug builds show the whole wizard on every
+Revit start; release builds show only the steps the user has not seen.
 `Revit.Linter.ElementAccentor` contains atomic, reversible element interaction and graphics
 operations such as show, select, isolate, crop, per-element overrides, and temporary-filter
 overrides. `Revit.Linter.ElementVisualization` composes those operations into diagnostic
@@ -150,7 +158,7 @@ continue while a Revit process is running.
 - `wiki/diagnostics/` contains diagnostic modules and their configuration.
 - `wiki/reference/` contains diagnostic and formula reference material.
 - `wiki/interface/` contains the UI, panes, and ribbon-button documentation.
-- `wiki/examples/` contains configuration files users can copy and edit.
+- `wiki/examples/` contains configuration files users can copy and edit; the welcome wizard installs the same files. Keep the discipline `section` comment markers in pairs, and keep the English files and their `ru/` counterparts in step.
 - `wiki/assets/` contains static images shared by Obsidian and GitHub Wiki.
 - English pages live in the task-oriented folders directly under `wiki/`; Russian pages mirror that structure under `wiki/ru/`.
 - `wiki/Home.md` is the language selector. Every localized page links to its counterpart and declares `lang: en` or `lang: ru` in YAML front matter.

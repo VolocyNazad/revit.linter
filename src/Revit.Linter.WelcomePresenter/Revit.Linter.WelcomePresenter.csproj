@@ -1,0 +1,58 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.WelcomePresenter.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MaterialDesignThemes" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="VolocyNazad.Revit.Context" />
+		<PackageReference Include="VolocyNazad.ValueStore" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\Welcome*ViewModel*.resx" />
+		<None Include="ViewModels\WelcomeViewModel.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomeViewModel.ru.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomeViewModel.resx" />
+		<None Include="ViewModels\WelcomeIntroStepViewModel.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomeIntroStepViewModel.ru.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomeIntroStepViewModel.resx" />
+		<None Include="ViewModels\WelcomeExamplesStepViewModel.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomeExamplesStepViewModel.ru.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomeExamplesStepViewModel.resx" />
+		<None Include="ViewModels\WelcomeFinishStepViewModel.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomeFinishStepViewModel.ru.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomeFinishStepViewModel.resx" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The installed examples are the Wiki example files themselves, so the documentation and the product cannot drift apart. -->
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.config.yaml" Link="Examples\en\config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.collision.config.yaml" Link="Examples\en\collision.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.parameter-element.config.yaml" Link="Examples\en\parameter-element.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.config.yaml" Link="Examples\ru\config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.collision.config.yaml" Link="Examples\ru\collision.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.parameter-element.config.yaml" Link="Examples\ru\parameter-element.config.yaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+</Project>

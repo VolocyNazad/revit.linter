@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Show a three-step welcome window the first time Revit starts with the add-in: what the add-in does and changes in a document, an offer to load example configurations for the selected disciplines (MEP systems, architecture, structure), and links to the quick start, the documentation and support. The new **Getting started** ribbon command opens it again. Loading examples never overwrites a configuration file that already contains rules: such an example is written to the `examples` subfolder.
+
 ### Changed
 
 - Replace the Wiki configuration examples with rules that are usable as shipped: nine collision rules (three per discipline), six element checks, and project parameter rules built from the ADSK shared parameter file. The examples are available with English and Russian message texts and reference parameters by `BuiltInParameter` name.

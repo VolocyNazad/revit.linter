@@ -199,6 +199,9 @@
     <Project Path="src/Revit.Linter.RunDiagnosticPresenter/Revit.Linter.RunDiagnosticPresenter.csproj" Id="ce7df23e-c72d-4cba-991a-5e98768f34f8">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.WelcomePresenter/Revit.Linter.WelcomePresenter.csproj">
+      <Platform Project="x64" />
+    </Project>
   </Folder>
   <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">
     <Platform Project="x64" />
@@ -266,6 +269,7 @@
   <Folder Name="/wiki/interface/ribbon-buttons/">
     <File Path="wiki/interface/ribbon-buttons/Check for updates button.md" />
     <File Path="wiki/interface/ribbon-buttons/Diagnostic configuration path button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Getting started button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostic report button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostics button.md" />
     <File Path="wiki/interface/ribbon-buttons/Show or hide fix reports button.md" />
@@ -310,6 +314,7 @@
     <File Path="wiki/ru/Интерфейс/Кнопки ленты.md" />
   </Folder>
   <Folder Name="/wiki/ru/Интерфейс/Кнопки/">
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка начала работы.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка поддержки.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов диагностики.md" />

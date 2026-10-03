@@ -22,6 +22,14 @@
 		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\DialogViewModel.ru.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.DialogViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\ConfirmationDialogViewModel.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.ConfirmationDialogViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\ConfirmationDialogViewModel.ru.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.ConfirmationDialogViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeIntroStepViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeIntroStepViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeIntroStepViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeIntroStepViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeExamplesStepViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeExamplesStepViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeExamplesStepViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeExamplesStepViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeFinishStepViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeFinishStepViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeFinishStepViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeFinishStepViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.ru.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />

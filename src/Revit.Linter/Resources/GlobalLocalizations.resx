@@ -186,4 +186,11 @@ diagnostics</value></data>
   <data name="checkForUpdates_toolTip" xml:space="preserve"><value>Check for updates</value></data>
   <data name="checkForUpdates_longDescription" xml:space="preserve"><value>Starts the standalone updater and checks GitHub for a newer stable Revit Linter release.</value></data>
   <data name="updater_startFailed_message" xml:space="preserve"><value>The Revit Linter updater could not be started. Repair or reinstall the application and try again.&#xA;&#xA;{0}</value></data>
+  <data name="showWelcome_buttonText" xml:space="preserve"><value>Getting
+started</value></data>
+  <data name="showWelcome_toolTip" xml:space="preserve"><value>Open the welcome wizard</value></data>
+  <data name="showWelcome_longDescription" xml:space="preserve"><value>Shows the introduction again and offers to load the example configurations.</value></data>
+  <data name="welcome_showFailed_message" xml:space="preserve"><value>Failed to show the welcome window.
+
+{0}</value></data>
 </root>

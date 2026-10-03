@@ -17,6 +17,7 @@ using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
+using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
@@ -80,6 +81,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         AddShowAllPanesCommand(panel);
         AddOpenConfigurationFolderCommand(panel);
         AddCommunityCommands(panel);
+        AddShowWelcomeCommand(panel);
 
         var elementChangesMonitor = Program.Provider.GetRequiredService<IElementChangesMonitor>();
         elementChangesMonitor.Run();
@@ -94,7 +96,36 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
             .LogInformation("Revit.Linter started (Revit {Version})", Application.ControlledApplication.VersionNumber);
+
+        ScheduleWelcomeWizard();
     }
+
+    /// <summary>
+    /// Queues the first-run welcome wizard for the first Idling event, when the Revit main window exists.
+    /// </summary>
+    /// <remarks>
+    /// A failure is logged and never affects add-in startup; the ribbon command remains available.
+    /// Debug builds show every step on each start so the wizard can be worked on without resetting the
+    /// stored state; release builds show only the steps the user has not seen.
+    /// </remarks>
+    private static void ScheduleWelcomeWizard() =>
+        _ = Program.Provider.GetRequiredService<RevitIdlingScheduler>().RunAsync(_ =>
+        {
+            try
+            {
+                var wizard = Program.Provider.GetRequiredService<IWelcomeWizard>();
+#if DEBUG
+                wizard.Show();
+#else
+                wizard.ShowIfNeeded();
+#endif
+            }
+            catch (Exception exception)
+            {
+                Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
+                    .LogError(exception, "Failed to show the welcome wizard on startup");
+            }
+        });
 
     public override void OnShutdown()
     {
@@ -246,6 +277,24 @@ internal sealed class InitExternalApplication : ExternalApplication
             LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
             ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
+        };
+
+        panel.AddItem(buttonData);
+    }
+
+    private static void AddShowWelcomeCommand(RibbonPanel panel)
+    {
+        string iconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
+        PushButtonData buttonData = new(
+            "ShowWelcomeButton",
+            Localizer["showWelcome_buttonText"],
+            AssemblyPath, typeof(ShowWelcomeCommand).FullName)
+        {
+            ToolTip = Localizer["showWelcome_toolTip"],
+            LongDescription = Localizer["showWelcome_longDescription"],
+            LargeImage = LoadImage(iconPath),
+            Image = LoadImage(iconPath),
+            ToolTipImage = LoadImage(iconPath)
         };
 
         panel.AddItem(buttonData);

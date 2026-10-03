@@ -32,6 +32,8 @@ using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
+using Revit.Linter.WelcomePresenter.Abstractions;
+using Revit.Linter.WelcomePresenter.DI;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
 using System.Reflection;
@@ -89,6 +91,8 @@ internal sealed class Program
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule().AddElementChangesProviderModule()
                 .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
+                .AddWelcomePresenterModule()
+                .AddSingleton<IWelcomeHost, WelcomeHost>()
                 .AddSingleton<DiagnosticCatalogNotifier>()
                 .AddSingleton<ValueStoreNotifier>()
                 .AddSingleton<RevitIdlingScheduler>()

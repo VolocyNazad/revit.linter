@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Examples</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Nearly there. Just pick what you'd like to experiment on.</value></data>
+  <data name="intro_text" xml:space="preserve"><value>Load example configurations to try everything hands-on. Pick the disciplines you work with.</value></data>
+  <data name="mep_text" xml:space="preserve"><value>MEP systems</value></data>
+  <data name="architecture_text" xml:space="preserve"><value>Architecture</value></data>
+  <data name="structure_text" xml:space="preserve"><value>Structure</value></data>
+  <data name="contents_text" xml:space="preserve"><value>Every discipline adds three collision rules and a project parameter rule based on the ADSK shared parameters. Six element checks are installed in any case.</value></data>
+  <data name="target_format" xml:space="preserve"><value>The files are written to {0}. Your own non-empty files are never overwritten: such an example goes to the "examples" subfolder instead.</value></data>
+  <data name="installButton_text" xml:space="preserve"><value>Load examples</value></data>
+  <data name="installed_text" xml:space="preserve"><value>Done. Now you have something to break.</value></data>
+  <data name="installedAside_format" xml:space="preserve"><value>These files already contained your rules, so their examples are in the "examples" subfolder: {0}.</value></data>
+  <data name="failed_format" xml:space="preserve"><value>The examples could not be written: {0}</value></data>
+</root>

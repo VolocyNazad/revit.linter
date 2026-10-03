@@ -186,4 +186,11 @@
   <data name="checkForUpdates_toolTip" xml:space="preserve"><value>Проверить обновления</value></data>
   <data name="checkForUpdates_longDescription" xml:space="preserve"><value>Запускает отдельный updater и проверяет наличие новой стабильной версии Revit Linter на GitHub.</value></data>
   <data name="updater_startFailed_message" xml:space="preserve"><value>Не удалось запустить updater Revit Linter. Восстановите или переустановите приложение и повторите попытку.&#xA;&#xA;{0}</value></data>
+  <data name="showWelcome_buttonText" xml:space="preserve"><value>Начало
+работы</value></data>
+  <data name="showWelcome_toolTip" xml:space="preserve"><value>Открыть окно знакомства</value></data>
+  <data name="showWelcome_longDescription" xml:space="preserve"><value>Снова показывает вводную информацию и предлагает загрузить примеры конфигураций.</value></data>
+  <data name="welcome_showFailed_message" xml:space="preserve"><value>Не удалось показать окно знакомства.
+
+{0}</value></data>
 </root>

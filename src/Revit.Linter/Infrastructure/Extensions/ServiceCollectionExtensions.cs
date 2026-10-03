@@ -13,15 +13,18 @@ internal static class ServiceCollectionExtensions
     private const long LogFileSizeLimitBytes = 20 * 1024 * 1024;
     private const int RetainedLogFileCountLimit = 14;
 
+    /// <summary>Gets the per-user directory that receives the add-in log files.</summary>
+    internal static string LogDirectory => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Volocy",
+        "Revit.Linter",
+        "logs");
+
     extension(IServiceCollection services)
     {
         public IServiceCollection AddAndConfigureSerilog()
         {
-            string logDirectory = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Volocy",
-                "Revit.Linter",
-                "logs");
+            string logDirectory = LogDirectory;
             Directory.CreateDirectory(logDirectory);
             string logPath = Path.Combine(logDirectory, "revit-linter-.log");
 

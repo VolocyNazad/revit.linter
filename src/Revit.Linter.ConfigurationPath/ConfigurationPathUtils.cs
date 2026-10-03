@@ -21,6 +21,11 @@ public static class ConfigurationPathUtils
 #endif
 
     /// <summary>
+    /// Gets the Revit release year this build targets, for example <c>2025</c>.
+    /// </summary>
+    public static int RevitVersion => _revitVersion;
+
+    /// <summary>
     /// The configuration directory for the current Revit version under the user's Documents folder.
     /// </summary>
     public static readonly string Directory = Path.Combine(

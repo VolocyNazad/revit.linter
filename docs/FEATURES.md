@@ -11,6 +11,7 @@ This document is the concise contract for the product's current scope. Detailed 
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
 - Export the displayed findings as a self-contained HTML report.
 - Configure paths, diagnostic rules, formulas, filters and visualization behavior.
+- Introduce the add-in on first start with a welcome wizard that can install example configurations by discipline.
 - Provide English and Russian UI resources, theme-aware WPF presentation and structured diagnostic logs.
 - Package the supported Revit 2021, 2023 and 2025 variants and the shared updater as one per-user MSI release.
 
