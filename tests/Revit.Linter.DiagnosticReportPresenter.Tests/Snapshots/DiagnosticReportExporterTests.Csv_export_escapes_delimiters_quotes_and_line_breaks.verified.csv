@@ -1,0 +1,5 @@
+Severity,Code,Message,Document,Created
+Error,ELM002,"Wall ""W-1"", level 1
+second line",Project A,10/01/2026 09:30:00
+Warning,ELM001,Plain message; with semicolon,Project A,10/01/2026 09:31:05
+Warning,ELM001,Another,Project A,10/01/2026 09:32:00

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0",
+  "metadata": {
+    "exportedAt": "2026-10-01T10:00:00+05:00",
+    "revitVersion": "2025",
+    "revitBuild": "25.0.2.419",
+    "addInVersion": "1.8.0",
+    "documentTitle": "Project A",
+    "scope": "Document",
+    "filters": {
+      "searchText": null,
+      "severities": [
+        "Error",
+        "Warning"
+      ],
+      "states": [
+        "Active"
+      ]
+    },
+    "totalItemCount": 5,
+    "exportedItemCount": 3
+  },
+  "items": [
+    {
+      "severity": "Error",
+      "severityDisplayName": "Error",
+      "code": "ELM002",
+      "message": "Wall \u0022W-1\u0022, level 1\nsecond line",
+      "document": "Project A",
+      "created": "2026-10-01T09:30:00+05:00",
+      "isObsolete": false,
+      "obsoleteDescription": null,
+      "targetElementId": "101",
+      "dependencyElementIds": [
+        "201",
+        "202"
+      ]
+    },
+    {
+      "severity": "Warning",
+      "severityDisplayName": "Warning",
+      "code": "ELM001",
+      "message": "Plain message; with semicolon",
+      "document": "Project A",
+      "created": "2026-10-01T09:31:05+05:00",
+      "isObsolete": true,
+      "obsoleteDescription": "Use ELM002",
+      "targetElementId": null,
+      "dependencyElementIds": []
+    },
+    {
+      "severity": "Warning",
+      "severityDisplayName": "Warning",
+      "code": "ELM001",
+      "message": "Another",
+      "document": "Project A",
+      "created": "2026-10-01T09:32:00+05:00",
+      "isObsolete": false,
+      "obsoleteDescription": null,
+      "targetElementId": "102",
+      "dependencyElementIds": []
+    }
+  ]
+}

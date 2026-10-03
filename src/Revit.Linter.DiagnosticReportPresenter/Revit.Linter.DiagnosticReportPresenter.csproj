@@ -3,6 +3,11 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.DiagnosticReportPresenter.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Humanizer.Core" />
 		<PackageReference Include="Humanizer.Core.ru" />

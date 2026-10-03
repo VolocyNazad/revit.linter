@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostic report</title>
+<style>
+body{margin:0;background:#f5f7fa;color:#172033;font-family:Segoe UI,Arial,sans-serif;font-size:14px}
+main{max-width:1200px;margin:0 auto;padding:32px 24px 48px}
+h1{margin:0 0 8px;font-size:28px}h2{margin:32px 0 12px;font-size:18px}
+.meta{color:#5d6678;margin-bottom:24px}.meta span+span:before{content:' · ';padding:0 6px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #dfe3eb;border-radius:8px;padding:16px}.card strong{display:block;font-size:26px;margin-bottom:4px}
+.error{border-top:4px solid #c62828}.warning{border-top:4px solid #ef8c00}.message{border-top:4px solid #1976d2}.total{border-top:4px solid #48566a}
+.table-wrap{overflow-x:auto;background:#fff;border:1px solid #dfe3eb;border-radius:8px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #e6e9ef}th{background:#eef1f6;white-space:nowrap}tr:last-child td{border-bottom:0}.count{width:1%;text-align:right}.message-cell{white-space:pre-wrap;min-width:320px}
+.empty{padding:24px;text-align:center;color:#5d6678}
+@media(max-width:700px){main{padding:20px 12px}.cards{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff}main{max-width:none;padding:0}.card,.table-wrap{break-inside:avoid}.table-wrap{overflow:visible}}
+</style>
+</head>
+<body><main>
+<h1>Diagnostic report</h1>
+<div class="meta"><span>Document: Project A</span><span>Generated: 10/01/2026 10:00:00</span></div>
+<section class="cards">
+<div class="card total"><strong>0</strong><span>Total</span></div>
+<div class="card error"><strong>0</strong><span>Errors</span></div>
+<div class="card warning"><strong>0</strong><span>Warnings</span></div>
+<div class="card message"><strong>0</strong><span>Messages</span></div>
+</section>
+<h2>Summary by code</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th><th class="count">Count</th></tr></thead><tbody>
+</tbody></table></div>
+<h2>Details</h2>
+<div class="table-wrap empty">No results</div>
+</main></body></html>
