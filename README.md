@@ -25,11 +25,11 @@ Ready-made builds are released for Revit 2021, 2023, and 2025.
 1. Open the [Releases](https://github.com/VolocyNazad/revit.linter/releases) page.
 2. Download the installer for your version of Revit.
 3. Close Revit and run the installer.
-4. After installation, open Revit — the extension's commands will appear on the **Volocy** tab.
+4. After installation, open Revit — the extension's commands will appear on the **Diagnostics** tab.
 
 ## Usage
 
-On the **Volocy** tab you can open the diagnostics, results, and fixes panels, as well as navigate to the configuration folder.
+On the **Diagnostics** tab you can open the diagnostics, results, and fixes panels, as well as navigate to the configuration folder.
 
 Diagnostics are configured with YAML files, separately for each version of Revit. See the [user documentation](wiki/Home.md) for the interface, built-in diagnostics, formulas, and configuration format. The `wiki/` folder contains English and Russian documentation and can also be opened directly as an Obsidian vault.
 
