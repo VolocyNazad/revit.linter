@@ -1,0 +1,25 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.DocumentQueries.RevitTests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.Testing</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="VolocyNazad.Revit.Sugar" />
+		<PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+</Project>

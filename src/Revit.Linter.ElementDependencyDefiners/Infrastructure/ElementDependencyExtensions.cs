@@ -11,8 +11,6 @@ internal static class ElementDependencyExtensions
     private static readonly ElementFilter SpaceFilter = new SpaceFilter();
     private static readonly ElementFilter ScopeBoxFilter =
         new ElementCategoryFilter(BuiltInCategory.OST_VolumeOfInterest);
-    private static readonly ElementFilter FamilyInstanceFilter =
-        new ElementClassFilter(typeof(FamilyInstance));
     private static readonly ElementFilter ElementIsNotElementTypeFilter =
         new ElementIsElementTypeFilter(inverted: true);
     private static readonly Options GeometryOptions = new();
@@ -79,11 +77,8 @@ internal static class ElementDependencyExtensions
 
     public static IEnumerable<Element> FindInserted(this FamilyInstance host)
     {
-        foreach (FamilyInstance instance in Collect(
-                     host.Document,
-                     "family-instances",
-                     () => new FilteredElementCollector(host.Document)
-                         .WherePasses(FamilyInstanceFilter)).OfType<FamilyInstance>())
+        foreach (FamilyInstance instance in DocumentElementCollectorCache.Queries
+                     .GetElementsOfClass<FamilyInstance>(host.Document))
             if (instance.Host?.Id == host.Id)
                 yield return instance;
     }
@@ -182,11 +177,8 @@ internal static class ElementDependencyExtensions
     private static IEnumerable<Element> FindPlaced<TElement>(Document document, Func<XYZ, bool> contains)
         where TElement : Element
     {
-        foreach (Element element in Collect(
-                     document,
-                     $"class:{typeof(TElement).FullName}",
-                     () => new FilteredElementCollector(document)
-                         .OfClass(typeof(TElement))))
+        foreach (Element element in DocumentElementCollectorCache.Queries
+                     .GetElementsOfClass<TElement>(document))
             if (element.Location is LocationPoint location && contains(location.Point))
                 yield return element;
     }
@@ -256,7 +248,7 @@ internal static class ElementDependencyExtensions
         => DocumentElementCollectorCache.GetOrCreate(
             document,
             collectorKey,
-            () => collectorFactory().ToElementIds());
+            () => collectorFactory().ToElements());
 
     public static IEnumerable<Element> FindExternalInsulations(this Element element)
         => FindInsulations(element, includeExternal: true, includeInternal: false);

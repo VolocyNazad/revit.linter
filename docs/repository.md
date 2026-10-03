@@ -27,6 +27,10 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 projects (diagnostics, presenters, state managers, etc.) — most are
  named `Revit.Linter.<Area>`. `Toolkit.Revit.Extensions` is Revit API
  extensions, separate from `Revit.Linter.*`.
+`Revit.Linter.DocumentQueries` owns the document queries shared by diagnostics (all elements, elements of a
+class, element types, element geometry) and the typed `DocumentQueryKey` under which their results are kept
+in the transaction cache. Diagnostic modules, the diagnostic service and the dependency definers reach
+`IRevitTransactionMemoryCache` only through its `IDocumentQueryService`.
 `Revit.Linter.ReportMessaging` holds the shared report message
 template parser (`Template` + `Args` to cached plain text and text parts with element links)
 and the typed WPF message view used by the diagnostic and fix report
@@ -192,7 +196,9 @@ The root `.editorconfig` defines the portable formatting baseline. Existing repo
 Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the .RevitTests suffix because they require a running Revit process.
 `Nice3point.TUnit.Revit` supports `RevitAPI` but not `RevitAPIUI`; services should therefore keep meaningful document behavior separate from thin UI adapters so the former remains testable in `*.RevitTests`.
 
-`tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the in-memory transaction cache, repository-root lookup). It is a library, not a test project: it has no test framework reference and its name does not end in `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in `Revit.Linter.Diagnostic.RevitTests`.
+`tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the in-memory transaction cache, the document query service built over it, repository-root lookup). It is a library, not a test project: it has no test framework reference and its name does not end in `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in `Revit.Linter.Diagnostic.RevitTests`.
+
+Generated report formats are pinned with snapshot tests in `Revit.Linter.DiagnosticReportPresenter.Tests`. `Snapshot.Match` from `Revit.Linter.Testing` compares the output with `Snapshots/<Class>.<Test>.verified.<ext>`; on a difference it writes a `*.received.*` file next to it (ignored by Git) and fails. To accept an intended format change, review the received file and rename it over the verified one in the same commit. Snapshot inputs use the invariant culture so the text is identical on .NET Framework and .NET.
 
 ## Continuous integration
 

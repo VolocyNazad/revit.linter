@@ -1,11 +1,14 @@
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Sugar;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.ProfileFamilySymbolUnused;
 
 internal sealed class ProfileFamilySymbolUnusedDiagnostic(
-    IRevitTransactionMemoryCache revitTransactionMemoryCache) : IElementDiagnostic
+    IDocumentQueryService documentQueries) : IElementDiagnostic
 {
+    private const string UsedProfileSymbolIdsQuery = "element-diagnostics:used-profile-symbol-ids";
+
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ProfileFamilySymbolUnused;
 
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
@@ -17,22 +20,19 @@ internal sealed class ProfileFamilySymbolUnusedDiagnostic(
     }
 
     private IReadOnlyCollection<ElementId> GetUsedProfileSymbolIds(Document document)
-        => revitTransactionMemoryCache.GetOrCreate(
-               $"used-profile-symbols:document:{document.Title}",
-               () => BuildUsedProfileSymbolIds(document))
-           ?? throw new InvalidOperationException("Failed to get used profile symbols from cache.");
+        => documentQueries.GetOrCreate(
+            DocumentQueryKey.Create(document, UsedProfileSymbolIdsQuery),
+            () => BuildUsedProfileSymbolIds(document));
 
-    private static HashSet<ElementId> BuildUsedProfileSymbolIds(Document document)
+    private HashSet<ElementId> BuildUsedProfileSymbolIds(Document document)
     {
-        HashSet<ElementId> profileSymbolIds = new FilteredElementCollector(document)
-            .OfClass(typeof(FamilySymbol))
-            .OfType<FamilySymbol>()
+        HashSet<ElementId> profileSymbolIds = documentQueries.GetElementsOfClass<FamilySymbol>(document)
             .Where(IsProfileSymbol)
             .Select(symbol => symbol.Id)
             .ToHashSet();
         var usedProfileSymbolIds = new HashSet<ElementId>();
 
-        foreach (Element elementType in new FilteredElementCollector(document).WhereElementIsElementType())
+        foreach (Element elementType in documentQueries.GetElementTypes(document))
         {
             foreach (Parameter parameter in elementType.Parameters)
             {

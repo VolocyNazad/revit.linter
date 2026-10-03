@@ -10,6 +10,7 @@ using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
+using Revit.Linter.Testing;
 using Toolkit.ValueStore.Abstractions;
 using TUnit.Core.Executors;
 
@@ -140,6 +141,7 @@ public abstract class DiagnosticTestBase : RevitApiTest
         services.AddSingleton<IDiagnosticReportSender>(sender);
         services.AddSingleton<IIgnoreElementDetector>(new IgnoreElementDetector(false));
         services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+        services.AddSingleton(TestDocumentQueries.Create());
         if (elementDiagnostics is not null || documentDiagnostics is not null)
             services.AddSingleton<IDiagnosticRegistrationProvider>(
                 new TestRegistrationProvider(elementDiagnostics, documentDiagnostics));
@@ -152,6 +154,7 @@ public abstract class DiagnosticTestBase : RevitApiTest
     {
         public List<DiagnosticReport> Reports { get; } = [];
         public void Send(DiagnosticReport report) => Reports.Add(report);
+        public void SendMany(IReadOnlyList<DiagnosticReport> reports) => Reports.AddRange(reports);
     }
 
     private protected sealed class DocumentDiagnostic(
@@ -216,9 +219,11 @@ public abstract class DiagnosticTestBase : RevitApiTest
         public bool Execute(Document targetDocument) => true;
     }
 
-    private protected sealed class IgnoreElementDetector(bool result) : IIgnoreElementDetector
+    private protected sealed class IgnoreElementDetector(bool result) : IIgnoreElementDetector, IIgnoredElements
     {
         public bool IsElementIgnored(string code, Element element) => result;
+        public IIgnoredElements GetIgnoredElements(Document document) => this;
+        public bool IsIgnored(string code, Element element) => result;
     }
 
     private protected sealed class TestRegistrationProvider(

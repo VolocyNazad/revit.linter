@@ -7,7 +7,6 @@ using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.Testing;
 using Toolkit.ValueStore.Abstractions;
-using Revit.TransactionMemoryCache.Abstractions.Services;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -317,7 +316,7 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     {
         ServiceCollection collection = new();
         collection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
-        collection.AddSingleton<IRevitTransactionMemoryCache, TestTransactionMemoryCache>();
+        collection.AddSingleton(TestDocumentQueries.Create());
         collection.AddSingleton<IValueStore<ElementDiagnosticOverridesSettings>>(
             new ValueStoreStub<ElementDiagnosticOverridesSettings>(new()));
         collection.AddSingleton<IElementVisualizationPipelineFactory, TestElementVisualizationPipelineFactory>();

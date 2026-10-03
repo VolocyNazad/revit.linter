@@ -33,6 +33,12 @@ This document records stable architectural rules. Implementation details belong 
   keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;
   the application shows them once per distinct description. Validation logic stays free of Revit API types
   so it is covered by headless tests; Revit-version knowledge is passed in from the compatibility boundary.
+- Diagnostics read the transaction cache only through `Revit.Linter.DocumentQueries`. Queries that several
+  modules need (all elements, elements of a class, element types, element geometry) are methods of
+  `IDocumentQueryService`, so one query has exactly one key. A module-specific derived value uses
+  `GetOrCreate` with a `DocumentQueryKey` whose query name starts with the module name. Every key identifies
+  the document, and the view when the result depends on it; a key never relies on an element identifier or a
+  document title alone.
 - Diagnostic codes and serialized configuration contracts are stable user-facing identifiers. Change them only with an explicit migration or compatibility decision.
 
 ## Element highlighting

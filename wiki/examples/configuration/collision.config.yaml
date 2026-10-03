@@ -1,6 +1,6 @@
 - code: "CLSN001"
   description: "custom"
-  message: "Element named '{elementName}' with identifier '{elementId}' intersects element '{intersection.elementName}' with identifier '{intersection.elementId}'. Execution time '{duration}' ms."
+  message: "Element named '{elementName}' with identifier '{elementId}' intersects {intersection.count} element(s) '{intersection.elementNames}' with identifiers '{intersection.elementIds}'. Execution time '{duration}' ms."
   severity: "Warning"
   isActive: true
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"

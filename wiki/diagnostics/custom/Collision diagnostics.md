@@ -14,7 +14,7 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 ```yml
 - code: "CLSN001"
   description: "custom"
-  message: "Element named '{elementName}' with identifier '{elementId}' intersects element '{intersection.elementName}' with identifier '{intersection.elementId}'. Execution time '{duration}' ms."
+  message: "Element named '{elementName}' with identifier '{elementId}' intersects {intersection.count} element(s) '{intersection.elementNames}' with identifiers '{intersection.elementIds}'. Execution time '{duration}' ms."
   severity: "Warning"
   isActive: true
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
@@ -85,7 +85,7 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 | --------------------- | --------------- | ------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `code`                | string          | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                                                        |
 | `description`         | string          | `string`            | `-`                              | Description of the diagnostic                                                                                                                                        |
-| `message`             | string          | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{intersection.elementName}`, `{intersection.elementId}`, `{duration}` |
+| `message`             | string          | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{intersection.elementNames}`, `{intersection.elementIds}`, `{intersection.count}`, `{duration}`. A finding lists every element the target intersects: `{intersection.elementNames}` and `{intersection.elementIds}` are comma-separated lists in the same order, and `{intersection.count}` is their number |
 | `severity`            | enum    | `string`            | `-`                              | [[Diagnostic severity\|Severity level]] (default: `Message`) (optional)                                                                  |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                                                              |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                                                   |

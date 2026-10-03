@@ -8,6 +8,7 @@ using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Exporting;
+using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
@@ -45,18 +46,45 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 
     public void Clear(string documentTitle)
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         RestoreActiveVisualization();
-        var toRemove = Collection.Where(i => i.DocumentTitle == documentTitle).ToList();
+        List<DiagnosticReportItemViewModel> remaining =
+            Collection.Where(i => i.DocumentTitle != documentTitle).ToList();
+        int removedCount = Collection.Count - remaining.Count;
 
-        foreach (var item in toRemove) Collection.Remove(item);
+        // Removing items one by one makes the sorted collection view search for and handle every item
+        // separately, which takes quadratic time on a large report. The items are dropped in one
+        // operation instead: a reset when nothing remains, a new collection when other documents' items do.
+        if (remaining.Count == 0)
+            Collection.Clear();
+        else if (removedCount > 0)
+            Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>(remaining);
 
         ClearFilters();
+        _logger.LogDebug(
+            "Cleared {ReportCount} diagnostic reports of {DocumentTitle} in {ElapsedMilliseconds} ms",
+            removedCount, documentTitle, stopwatch.ElapsedMilliseconds);
     }
 
 
     public void Refresh()
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        if (_batchRowCount > 0)
+        {
+            double ticksPerMillisecond = System.Diagnostics.Stopwatch.Frequency / 1000.0;
+            _logger.LogDebug(
+                "Diagnostic report rows received in batches: {RowCount}; creating the rows took {CreationMilliseconds:F0} ms, adding them to the list took {AdditionMilliseconds:F0} ms",
+                _batchRowCount, _batchCreationTicks / ticksPerMillisecond, _batchAdditionTicks / ticksPerMillisecond);
+            _batchRowCount = 0;
+            _batchCreationTicks = 0;
+            _batchAdditionTicks = 0;
+        }
+
         RefreshFilters();
+        _logger.LogDebug(
+            "Refreshed the diagnostic report view with {ReportCount} reports in {ElapsedMilliseconds} ms",
+            Collection.Count, stopwatch.ElapsedMilliseconds);
     }
 }
 
@@ -110,7 +138,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _confirmationDialog = confirmationDialog;
         _reportExporters = reportExporters.ToArray();
 
-        Collection = [];
+        Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
     }
 
     [ObservableProperty]
@@ -473,6 +501,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
 
         _diagnosticReportReceiver.ReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
+        _diagnosticReportReceiver.ReportsSent += DiagnosticReportReceiver_DiagnosticReportsSent;
         _elementChangesEnabled = true;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
 
@@ -490,6 +519,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
+        _diagnosticReportReceiver.ReportsSent -= DiagnosticReportReceiver_DiagnosticReportsSent;
         _elementChangesEnabled = false;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
         _pendingElementRefreshes.Clear();
@@ -633,9 +663,47 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     }
 
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, DiagnosticMessageSentEventArgs e)
-    {
-        DiagnosticReport report = e.Report;
+        => Collection.Add(CreateItem(e.Report, e.Report.Document.Title));
 
+    // The rows of a batch are created first and added with one collection notification. The two parts are
+    // timed apart and reported by Refresh, because only the second one is saved by batching.
+    private void DiagnosticReportReceiver_DiagnosticReportsSent(object? sender, DiagnosticReportsSentEventArgs e)
+    {
+        long started = System.Diagnostics.Stopwatch.GetTimestamp();
+        List<DiagnosticReportItemViewModel> items = new(e.Reports.Count);
+
+        // The reports of a batch normally belong to one document, so its title is read from Revit once.
+        Document? titledDocument = null;
+        string documentTitle = string.Empty;
+        foreach (DiagnosticReport report in e.Reports)
+        {
+            if (!ReferenceEquals(report.Document, titledDocument))
+            {
+                titledDocument = report.Document;
+                documentTitle = report.Document.Title;
+            }
+
+            items.Add(CreateItem(report, documentTitle));
+        }
+        long created = System.Diagnostics.Stopwatch.GetTimestamp();
+
+        if (Collection is BatchObservableCollection<DiagnosticReportItemViewModel> batchCollection)
+            batchCollection.AddRange(items);
+        else
+            foreach (DiagnosticReportItemViewModel item in items)
+                Collection.Add(item);
+
+        _batchRowCount += items.Count;
+        _batchCreationTicks += created - started;
+        _batchAdditionTicks += System.Diagnostics.Stopwatch.GetTimestamp() - created;
+    }
+
+    private int _batchRowCount;
+    private long _batchCreationTicks;
+    private long _batchAdditionTicks;
+
+    private DiagnosticReportItemViewModel CreateItem(DiagnosticReport report, string documentTitle)
+    {
         DiagnosticReportItemViewModel item = new() {
             Created = report.Created,
             ShowElementToolTipFormat = ShowElementToolTip,
@@ -648,16 +716,16 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 .OfType<Element>()
                 .Select(element => element.Id)
                 .ToArray() ?? [],
-            Fixes = CreateFixes(report),
-            VisualizationPipelines = CreateVisualizationPipelines(report),
+            FixesFactory = () => CreateFixes(report),
+            VisualizationPipelinesFactory = () => CreateVisualizationPipelines(report),
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             Severity = report.Severity,
-            DocumentTitle = report.Document.Title,
+            DocumentTitle = documentTitle,
             AccentElementDelegate = i => SelectElement(i),
             IsObsolete = report.IsObsolete,
             ObsoleteDescription = report.ObsoleteDescription,
         };
-        Collection.Add(item);
+        return item;
     }
 
     private IReadOnlyList<VisualizationPipelineViewModel> CreateVisualizationPipelines(DiagnosticReport report)

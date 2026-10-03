@@ -6,4 +6,7 @@
     <PackageReference Include="Revit_All_Main_Versions_API_x64" />
     <PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
+  </ItemGroup>
 </Project>

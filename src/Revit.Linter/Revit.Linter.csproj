@@ -75,6 +75,7 @@
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementVisualization\Revit.Linter.ElementVisualization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementChangesProvider\Revit.Linter.ElementChangesProvider.csproj" />

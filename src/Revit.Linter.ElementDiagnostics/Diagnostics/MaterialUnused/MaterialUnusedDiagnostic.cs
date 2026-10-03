@@ -1,11 +1,13 @@
-using Revit.TransactionMemoryCache.Abstractions.Services;
-using Revit.Sugar;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.MaterialUnused;
 
-internal sealed class MaterialUnusedDiagnostic(IRevitTransactionMemoryCache revitTransactionMemoryCache)
+internal sealed class MaterialUnusedDiagnostic(IDocumentQueryService documentQueries)
     : IElementDiagnostic
 {
+    private const string UsedMaterialIdsQuery = "element-diagnostics:used-material-ids";
+
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.MaterialUnused;
 
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
@@ -18,16 +20,14 @@ internal sealed class MaterialUnusedDiagnostic(IRevitTransactionMemoryCache revi
     }
 
     private IReadOnlyCollection<ElementId> GetUsedMaterialIds(Document document)
-        => revitTransactionMemoryCache
-            .GetOrCreate($"usedMaterials:document:{document.Title}", () => BuildUsedMaterialIds(document))
-            ?? throw new InvalidOperationException($"Failed to get object from cache.");
+        => documentQueries.GetOrCreate(
+            DocumentQueryKey.Create(document, UsedMaterialIdsQuery),
+            () => BuildUsedMaterialIds(document));
 
-    private static HashSet<ElementId> BuildUsedMaterialIds(Document document)
+    private HashSet<ElementId> BuildUsedMaterialIds(Document document)
     {
         var usedMaterialIds = new HashSet<ElementId>();
-        foreach (Element element in new FilteredElementCollector(document)
-            .WherePasses(ElementFilterUtils.AllFilter())
-            .ToElements())
+        foreach (Element element in documentQueries.GetElements(document))
         {
             foreach (ElementId materialId in element.GetMaterialIds(returnPaintMaterials: false))
                 usedMaterialIds.Add(materialId);

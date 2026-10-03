@@ -1,35 +1,39 @@
 using Autodesk.Revit.DB;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ElementDependencyDefiners.Infrastructure;
 
 /// <summary>
-/// Caches element identifiers returned by document-wide collectors.
+/// Caches elements returned by document-wide collectors.
 /// </summary>
+/// <remarks>
+/// Dependency definers are static extension methods and formula-created objects, so they reach the
+/// cached document queries through this static entry point instead of constructor injection.
+/// </remarks>
 public static class DocumentElementCollectorCache
 {
-    private static IRevitTransactionMemoryCache? _cache;
+    private const string CollectorQuery = "element-dependency-definers:collector";
+
+    private static IDocumentQueryService? _documentQueries;
 
     /// <summary>
-    /// Configures the transaction-bound cache used by element collectors.
+    /// Configures the cached document queries used by element collectors.
     /// </summary>
-    public static void Initialize(IRevitTransactionMemoryCache cache)
-        => _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    /// <param name="documentQueries">The query service that owns the transaction-bound cache.</param>
+    public static void Initialize(IDocumentQueryService documentQueries)
+        => _documentQueries = documentQueries ?? throw new ArgumentNullException(nameof(documentQueries));
 
-    internal static IEnumerable<Element> GetOrCreate(
+    internal static IDocumentQueryService Queries
+        => _documentQueries
+           ?? throw new InvalidOperationException(
+               $"{nameof(DocumentElementCollectorCache)} is not initialized.");
+
+    internal static IReadOnlyList<Element> GetOrCreate(
         Document document,
         string collectorKey,
-        Func<IEnumerable<ElementId>> factory)
-    {
-        IRevitTransactionMemoryCache cache = _cache
-            ?? throw new InvalidOperationException(
-                $"{nameof(DocumentElementCollectorCache)} is not initialized.");
-        string key = $"element-dependency-definers:collector:document:{document.Title}:query:{collectorKey}";
-        ElementId[] elementIds = cache.GetOrCreate(key, () => factory().ToArray()) ?? [];
-
-        foreach (ElementId elementId in elementIds)
-            if (document.GetElement(elementId) is { } element)
-                yield return element;
-    }
-
+        Func<IEnumerable<Element>> factory)
+        => Queries.GetOrCreate(
+            DocumentQueryKey.Create(document, CollectorQuery, argument: collectorKey),
+            () => factory().ToArray());
 }

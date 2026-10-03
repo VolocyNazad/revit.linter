@@ -8,6 +8,7 @@ using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
 using Revit.Linter.DiagnosticReportPresenter.Views;
 using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.ElementChangesMonitor.Abstractions.Services;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 using Revit.Linter.FixReportPresenter.Views;
@@ -322,7 +323,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         Program.Provider.GetRequiredService<IRevitTransactionMemoryCacheInitializer>().Initialize();
         DocumentElementCollectorCache.Initialize(
-            Program.Provider.GetRequiredService<IRevitTransactionMemoryCache>());
+            Program.Provider.GetRequiredService<IDocumentQueryService>());
     }
 
     private void RegisterDiagnosticReportDockablePane()

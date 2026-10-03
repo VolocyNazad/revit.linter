@@ -12,4 +12,15 @@ public interface IDiagnosticReportSender
     /// </summary>
     /// <param name="report">The diagnostic report to publish.</param>
     void Send(DiagnosticReport report);
+
+    /// <summary>
+    /// Publishes several diagnostic reports as one notification.
+    /// </summary>
+    /// <param name="reports">The diagnostic reports to publish, in the order they were produced.</param>
+    /// <remarks>
+    /// Receivers subscribed to <see cref="IDiagnosticReportReceiver.ReportsSent"/> get the reports as one
+    /// batch. When nobody is subscribed to it, every report is published separately through
+    /// <see cref="IDiagnosticReportReceiver.ReportSent"/>, so no report is lost either way.
+    /// </remarks>
+    void SendMany(IReadOnlyList<DiagnosticReport> reports);
 }

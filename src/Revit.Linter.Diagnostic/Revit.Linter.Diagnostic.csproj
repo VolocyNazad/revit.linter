@@ -7,6 +7,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<PackageReference Include="VolocyNazad.Revit.Sugar" />

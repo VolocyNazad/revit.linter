@@ -13,6 +13,7 @@ using Revit.Linter.DiagnosticReportPresenter.DI;
 using Revit.Linter.DiagnosticReportProvider.DI;
 using Revit.Linter.DialogPresenter.DI;
 using Revit.Linter.DocumentDiagnostics.DI;
+using Revit.Linter.DocumentQueries.DI;
 using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementChangesMonitor.DI;
 using Revit.Linter.ElementChangesProvider.DI;
@@ -78,7 +79,7 @@ internal sealed class Program
             .ConfigureServices((context, services) => services
                 .AddAndConfigureSerilog()
                 .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
-                .AddRevitContext().AddEvents().AddTransactionMemoryCache()
+                .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddDocumentQueries()
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()

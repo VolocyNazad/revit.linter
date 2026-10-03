@@ -20,7 +20,7 @@ public sealed class DependencyDefinerTests : RevitApiTest
     public void CreateModel()
     {
         _document = Application.NewProjectDocument(UnitSystem.Metric);
-        DocumentElementCollectorCache.Initialize(new TestTransactionMemoryCache());
+        DocumentElementCollectorCache.Initialize(TestDocumentQueries.Create());
 
         using Transaction transaction = new(_document, "Seed dependency definer tests");
         transaction.Start();
@@ -46,10 +46,10 @@ public sealed class DependencyDefinerTests : RevitApiTest
         int factoryCalls = 0;
         const string collectorKey = "test:walls";
 
-        IEnumerable<ElementId> Factory()
+        IEnumerable<Element> Factory()
         {
             factoryCalls++;
-            return [_firstWall!.Id, _secondWall!.Id];
+            return [_firstWall!, _secondWall!];
         }
 
         ElementId[] first = [.. DocumentElementCollectorCache

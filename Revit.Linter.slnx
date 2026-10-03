@@ -56,6 +56,9 @@
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.DocumentQueries/Revit.Linter.DocumentQueries.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ElementAccentor/Revit.Linter.ElementAccentor.csproj">
       <Platform Project="x64" />
     </Project>
@@ -110,7 +113,13 @@
     <Project Path="tests/Revit.Linter.Diagnostic.RevitTests/Revit.Linter.Diagnostic.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.DiagnosticReportPresenter.Tests/Revit.Linter.DiagnosticReportPresenter.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.DiagnosticReportProvider.RevitTests/Revit.Linter.DiagnosticReportProvider.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.DocumentQueries.RevitTests/Revit.Linter.DocumentQueries.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ElementVisualization.RevitTests/Revit.Linter.ElementVisualization.RevitTests.csproj">

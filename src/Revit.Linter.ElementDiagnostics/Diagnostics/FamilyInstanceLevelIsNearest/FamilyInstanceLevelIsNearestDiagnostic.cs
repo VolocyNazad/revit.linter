@@ -1,10 +1,9 @@
-﻿using Revit.TransactionMemoryCache.Abstractions.Services;
-using Revit.Sugar;
+﻿using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
 
 internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
-    IRevitTransactionMemoryCache revitTransactionMemoryCache) : IElementDiagnostic
+    IDocumentQueryService documentQueries) : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceLevelIsNearest;
 
@@ -16,11 +15,7 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
         var elevation = document.GetElement(levelId).get_Parameter(BuiltInParameter.LEVEL_ELEV).AsDouble();
         var elevationOffset = familyInstance.get_Parameter(BuiltInParameter.INSTANCE_ELEVATION_PARAM).AsDouble();
 
-        IList<Level> levels = revitTransactionMemoryCache
-            .GetOrCreate(
-                $"levels:document:{document.Title}",
-                () => new FilteredElementCollector(document).WhereElementIs<Level>().Cast<Level>().ToList())
-            ?? throw new InvalidOperationException($"Failed to get object from cache.");
+        IReadOnlyList<Level> levels = documentQueries.GetElementsOfClass<Level>(document);
 
         ElementId nearedsLevelId = levels.OrderBy(level
             => Math.Abs(level.get_Parameter(BuiltInParameter.LEVEL_ELEV).AsDouble() - (elevation + elevationOffset))).First().Id;

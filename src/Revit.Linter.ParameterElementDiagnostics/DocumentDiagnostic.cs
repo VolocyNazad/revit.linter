@@ -1,13 +1,16 @@
 using Revit.Sugar;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ParameterElementDiagnostics;
 
 internal sealed class DocumentDiagnostic(
-    IRevitTransactionMemoryCache revitTransactionMemoryCache) : IDocumentDiagnostic
+    IDocumentQueryService documentQueries) : IDocumentDiagnostic
 {
+    private const string SharedParameterElementsQuery = "parameter-element-diagnostics:shared-parameter-elements";
+
     public required DocumentDiagnosticId Identity { get; init; }
 
     public required IEnumerable<ParameterElementData> Parameters { get; init; }
@@ -24,11 +27,8 @@ internal sealed class DocumentDiagnostic(
             ParameterElement? target;
             if (parameterData.Guid is null or "")
             {
-                List<ParameterElement>? parameterElement = revitTransactionMemoryCache
-                  .GetOrCreate($"parameter-elements:document:{targetDocument.Title}\"", () =>
-                    new FilteredElementCollector(targetDocument)
-                        .WhereElementIs<ParameterElement>().Cast<ParameterElement>().ToList())
-                   ?? throw new InvalidOperationException($"Failed to get object from cache.");
+                IReadOnlyList<ParameterElement> parameterElement =
+                    documentQueries.GetElementsOfClass<ParameterElement>(targetDocument);
 
                 target = parameterElement.FirstOrDefault(i => i.Name == parameterData.Name);
                 if (target is null) {
@@ -39,11 +39,13 @@ internal sealed class DocumentDiagnostic(
             }
             else
             {
-                List<SharedParameterElement>? parameterElement = revitTransactionMemoryCache
-                    .GetOrCreate($"shared-parameter-elements:document:{targetDocument.Title}\"", () =>
-                      new FilteredElementCollector(targetDocument)
-                          .WhereElementIs<SharedParameterElement>().Cast<SharedParameterElement>().ToList())
-                     ?? throw new InvalidOperationException($"Failed to get object from cache.");
+                // Shared parameters are a subset of the parameter elements, so they are taken from
+                // that cached list instead of a second document-wide collector.
+                IReadOnlyList<SharedParameterElement> parameterElement = documentQueries.GetOrCreate(
+                    DocumentQueryKey.Create(targetDocument, SharedParameterElementsQuery),
+                    () => documentQueries.GetElementsOfClass<ParameterElement>(targetDocument)
+                        .OfType<SharedParameterElement>()
+                        .ToArray());
 
                 target = parameterElement.FirstOrDefault(i => i.GuidValue == Guid.Parse(parameterData.Guid));
                 if (target is null) {

@@ -5,6 +5,7 @@ using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.DI;
+using Revit.Linter.Testing;
 using System.Globalization;
 using TUnit.Core.Executors;
 
@@ -274,6 +275,8 @@ public sealed class IgnoreElementManagerTests : RevitApiTest
     private static ServiceProvider CreateServices()
     {
         ServiceCollection services = new();
+        // A new query service per provider: the test cache never invalidates on transactions.
+        services.AddSingleton(TestDocumentQueries.Create());
         services.AddElementIgnoringModule();
         return services.BuildServiceProvider();
     }

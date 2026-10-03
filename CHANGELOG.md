@@ -8,11 +8,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Speed up diagnostic runs: built-in, parameter and collision diagnostics, the diagnostic service and the dependency functions used in formulas now share one cached result for the same document query (all elements, elements of a class, element types, element geometry) instead of collecting it separately.
+- **Breaking:** a collision finding now lists every element the target intersects instead of the first one found. The message variables `{intersection.elementName}` and `{intersection.elementId}` are replaced by the comma-separated lists `{intersection.elementNames}` and `{intersection.elementIds}`, with the new `{intersection.count}` giving their number; update the `message` of existing rules in `collision.config.yaml`. The `Dependencies` element set of visualizations contains all intersecting elements.
+- Speed up runs with many active diagnostics: the ignore list is consulted only for the elements a rule applies to, the ignore parameter of an element is read once per run instead of once per diagnostic, it is not read at all in a document that has no ignore parameters, and the ignore information of the document is resolved once per run.
+- Speed up the unused parameter diagnostic: the parameters present in the document are collected once per run from one representative element per category, type and class, instead of asking every element about every parameter.
+- Speed up collision diagnostics: candidates from the spatial index are pre-checked against bounds stored in the index, so elements that are candidates of every query (long pipes, ducts) no longer cost a cached bounding-box lookup each, and the `groupBy` formula is evaluated once per element instead of twice.
+- Update the Wiki configuration examples: the project parameter template uses the Revit 2024+ `group` identifier with a note for Revit 2021–2023, and the collision template uses the new `intersection` message variables.
+- Hand the findings of each element diagnostic to the report as one batch during a full run instead of one notification per finding; findings produced before a diagnostic fails are still delivered. The fixes and visualizations of a report row are now prepared when the row is first shown or used instead of for every finding up front.
+- Clear the previous findings of a document from the diagnostic report in one operation instead of one by one, so a repeated run on a large report is not delayed by the cleanup.
+- Write the start and the result of each full diagnostic run to the log (duration, memory, garbage collections), with a timing breakdown for every diagnostic that takes 100 ms or longer: elements visited, ignored and checked, findings, and the time spent in the rule filter, the ignore list, checking and publishing findings. Faster diagnostics, cache hits and misses per document query, and report clearing and refreshing are written at the `Debug` level.
 - A diagnostic that fails no longer stops the others: the failure appears in the report as an error under the diagnostic's code, and the remaining diagnostics still produce their results.
 - Validate `parameter-element.config.yaml` when it is loaded: a rule with an unknown category, a group that is not valid for the running Revit version, an invalid GUID or a missing field is skipped with a message naming the rule, the parameter and the value, while the other rules stay in use.
 
 ### Fixed
 
+- Collision rules with different `andTake` formulas no longer check each other's elements; rules with the same formulas share the collected elements.
+- Cached diagnostic data is no longer mixed between open documents with the same title or the same element IDs, or between a run on the active view and a run on the whole document.
 - Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
 
 ## [1.8.0] - 2026-10-01

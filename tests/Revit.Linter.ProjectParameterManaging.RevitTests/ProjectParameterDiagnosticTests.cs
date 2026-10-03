@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
 using Revit.Linter.ParameterElementDiagnostics;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
@@ -112,6 +113,42 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         await Assert.That(details).Contains(ParameterId.ToString());
     }
 
+    [Test]
+    public async Task Parameter_bound_to_a_category_without_instances_is_unused()
+    {
+        AddParameter();
+        SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
+        ParameterElementUnusedDiagnostic diagnostic = new(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter);
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+    }
+
+    [Test]
+    public async Task Parameter_present_on_an_element_is_used()
+    {
+        AddParameter();
+        CreateWalls();
+        SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
+        ParameterElementUnusedDiagnostic diagnostic = new(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter);
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    // Two walls of one type: the diagnostic reads the parameters of one representative per type.
+    private void CreateWalls()
+    {
+        using Transaction transaction = new(_document!, "Create test walls");
+        transaction.Start();
+        Level level = Level.Create(_document!, 0);
+        Wall.Create(_document!, Line.CreateBound(new XYZ(0, 0, 0), new XYZ(10, 0, 0)), level.Id, false);
+        Wall.Create(_document!, Line.CreateBound(new XYZ(0, 5, 0), new XYZ(10, 5, 0)), level.Id, false);
+        transaction.Commit();
+    }
+
     private void RemoveBinding()
     {
         SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
@@ -141,7 +178,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
             throw new InvalidOperationException("Test project parameter could not be added.");
     }
 
-    private static DocumentDiagnostic CreateDiagnostic(params ParameterElementData[] parameters) => new(new TestTransactionMemoryCache())
+    private static DocumentDiagnostic CreateDiagnostic(params ParameterElementData[] parameters) => new(TestDocumentQueries.Create())
     {
         Identity = new DocumentDiagnosticId(
             "TEST", "Test", "Test", DiagnosticSeverity.Message, true, false, string.Empty),

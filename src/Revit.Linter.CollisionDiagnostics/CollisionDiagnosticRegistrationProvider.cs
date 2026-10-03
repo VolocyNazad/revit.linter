@@ -3,7 +3,7 @@ using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Models;
 using Revit.Linter.ConfigurationPath;
 using Toolkit.ValueStore.Abstractions;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics;
 
@@ -13,7 +13,7 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
     IGetElementBoundingBoxService boundingBoxService,
     IGetElementGeometryService geometryService,
-    IRevitTransactionMemoryCache transactionMemoryCache,
+    IDocumentQueryService documentQueries,
     ILoggerFactory loggerFactory,
     IElementVisualizationPipelineFactory visualizationPipelineFactory,
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
@@ -40,7 +40,7 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 identity,
                 new ElementDiagnostic(
                     elementFilterFactory, elementFunctionFactory, boundingBoxService, geometryService,
-                    transactionMemoryCache, loggerFactory.CreateLogger<ElementDiagnostic>())
+                    documentQueries, loggerFactory.CreateLogger<ElementDiagnostic>())
                     { Identity = identity, TakeFormula = rule.AndTake, GroupByFormula = rule.GroupBy },
                 new ElementDiagnosticFilter(elementFilterFactory) { Identity = identity, Formula = rule.Take },
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)

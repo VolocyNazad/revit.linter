@@ -42,9 +42,9 @@ internal sealed class BoundingBoxGridIndex
     private const int MaxCellsPerEntry = 64;
 
     private readonly double _cellSize;
-    private readonly Dictionary<(int X, int Y, int Z), List<Element>> _cells = [];
-    private readonly List<Element> _uncellable = [];
-    private readonly List<Element> _all = [];
+    private readonly Dictionary<(int X, int Y, int Z), List<Entry>> _cells = [];
+    private readonly List<Entry> _uncellable = [];
+    private readonly List<Entry> _all = [];
 
     private BoundingBoxGridIndex(double cellSize)
     {
@@ -54,68 +54,78 @@ internal sealed class BoundingBoxGridIndex
     public static BoundingBoxGridIndex Build(
         IEnumerable<Element> elements, Func<Element, BoundingBoxXYZ> getBoundingBox)
     {
-        List<(Element Element, BoundingBoxXYZ Box)> entries = elements
-            .Select(element => (Element: element, Box: getBoundingBox(element)))
+        List<Entry> entries = elements
+            .Select(element => new Entry(element, element.Id.Value(), Bounds.From(getBoundingBox(element))))
             .ToList();
 
         var index = new BoundingBoxGridIndex(ComputeCellSize(entries));
 
-        foreach ((Element element, BoundingBoxXYZ box) in entries)
-            index.Insert(element, box);
+        foreach (Entry entry in entries)
+            index.Insert(entry);
 
         return index;
     }
 
     /// <summary>
-    /// Returns every element whose bounding box shares at least one grid cell with <paramref name="box"/>,
-    /// plus every element that couldn't be cell-indexed (see the class remarks). This is a coarse
-    /// candidate set, not an exact overlap test - callers must still apply an exact bounding-box
-    /// (and, ultimately, solid) intersection check to what's returned.
+    /// Returns every element whose bounding box may overlap <paramref name="box"/>: the elements sharing
+    /// a grid cell with it plus the elements that couldn't be cell-indexed (see the class remarks), each
+    /// kept only when its stored bounds touch or overlap the query bounds.
     /// </summary>
+    /// <remarks>
+    /// The bounds are copied into plain numbers when the index is built, so this pre-check costs no Revit
+    /// API call and no cache lookup per candidate. That matters for the elements that are candidates of
+    /// every query: with long elements such as pipes there can be hundreds of them, and checking each
+    /// through the cached bounding-box service made that lookup the dominant cost of a collision rule.
+    /// The pre-check never rejects a pair that could collide, so callers keep their exact bounding-box
+    /// and solid checks for what is returned.
+    /// </remarks>
     public IEnumerable<Element> Query(BoundingBoxXYZ box)
     {
-        HashSet<long>? seen = null;
+        Bounds query = Bounds.From(box);
 
-        if (TryGetCellRange(box, out CellRange range))
-        {
-            for (int x = range.MinX; x <= range.MaxX; x++)
-                for (int y = range.MinY; y <= range.MaxY; y++)
-                    for (int z = range.MinZ; z <= range.MaxZ; z++)
-                    {
-                        if (!_cells.TryGetValue((x, y, z), out List<Element>? candidates)) continue;
-
-                        foreach (Element element in candidates)
-                        {
-                            seen ??= [];
-                            if (seen.Add(element.Id.Value()))
-                                yield return element;
-                        }
-                    }
-
-            foreach (Element element in _uncellable)
-            {
-                seen ??= [];
-                if (seen.Add(element.Id.Value()))
-                    yield return element;
-            }
-        }
-        else
+        if (!TryGetCellRange(query, out CellRange range))
         {
             // The query box itself couldn't be resolved to a bounded cell range (huge or
             // degenerate/non-finite). We can't cheaply narrow this down to a handful of cells, so
             // fall back to every element rather than risk missing a real collision.
-            foreach (Element element in _all)
-                yield return element;
+            foreach (Entry entry in _all)
+                if (entry.Bounds.MayOverlap(query))
+                    yield return entry.Element;
+
+            yield break;
         }
+
+        HashSet<long>? seen = null;
+
+        for (int x = range.MinX; x <= range.MaxX; x++)
+            for (int y = range.MinY; y <= range.MaxY; y++)
+                for (int z = range.MinZ; z <= range.MaxZ; z++)
+                {
+                    if (!_cells.TryGetValue((x, y, z), out List<Entry>? candidates)) continue;
+
+                    foreach (Entry entry in candidates)
+                    {
+                        if (!entry.Bounds.MayOverlap(query)) continue;
+
+                        seen ??= [];
+                        if (seen.Add(entry.Id))
+                            yield return entry.Element;
+                    }
+                }
+
+        // An uncellable element is in no cell, so it cannot have been returned above.
+        foreach (Entry entry in _uncellable)
+            if (entry.Bounds.MayOverlap(query))
+                yield return entry.Element;
     }
 
-    private void Insert(Element element, BoundingBoxXYZ box)
+    private void Insert(Entry entry)
     {
-        _all.Add(element);
+        _all.Add(entry);
 
-        if (!TryGetCellRange(box, out CellRange range))
+        if (!TryGetCellRange(entry.Bounds, out CellRange range))
         {
-            _uncellable.Add(element);
+            _uncellable.Add(entry);
             return;
         }
 
@@ -124,23 +134,23 @@ internal sealed class BoundingBoxGridIndex
                 for (int z = range.MinZ; z <= range.MaxZ; z++)
                 {
                     var cell = (x, y, z);
-                    if (!_cells.TryGetValue(cell, out List<Element>? bucket))
+                    if (!_cells.TryGetValue(cell, out List<Entry>? bucket))
                         _cells[cell] = bucket = [];
 
-                    bucket.Add(element);
+                    bucket.Add(entry);
                 }
     }
 
     // False when the box is non-finite/inverted, or would need more than MaxCellsPerEntry cells.
-    private bool TryGetCellRange(BoundingBoxXYZ box, out CellRange range)
+    private bool TryGetCellRange(Bounds box, out CellRange range)
     {
         range = default;
 
-        if (!IsFinite(box.Min) || !IsFinite(box.Max)) return false;
+        if (!box.IsRegular) return false;
 
-        int minX = ToCell(box.Min.X), maxX = ToCell(box.Max.X);
-        int minY = ToCell(box.Min.Y), maxY = ToCell(box.Max.Y);
-        int minZ = ToCell(box.Min.Z), maxZ = ToCell(box.Max.Z);
+        int minX = ToCell(box.MinX), maxX = ToCell(box.MaxX);
+        int minY = ToCell(box.MinY), maxY = ToCell(box.MaxY);
+        int minZ = ToCell(box.MinZ), maxZ = ToCell(box.MaxZ);
 
         if (maxX < minX || maxY < minY || maxZ < minZ) return false;
 
@@ -153,26 +163,20 @@ internal sealed class BoundingBoxGridIndex
 
     private int ToCell(double value) => (int)Math.Floor(value / _cellSize);
 
-    private static bool IsFinite(XYZ point) =>
-        IsFinite(point.X) && IsFinite(point.Y) && IsFinite(point.Z);
-
-    private static bool IsFinite(double value) =>
-        !double.IsNaN(value) && !double.IsInfinity(value);
-
     // The MEDIAN (not mean) of elements' largest bounding-box extent. Using the median means a
     // small number of outliers (huge or tiny relative to the rest of the group) can't drag the
     // cell size away from what fits the typical element - those outliers are instead caught by
     // MaxCellsPerEntry in TryGetCellRange and handled via the uncellable fallback. Non-finite or
     // degenerate (near-zero) boxes are excluded from the calculation entirely so they can't skew it.
-    private static double ComputeCellSize(List<(Element Element, BoundingBoxXYZ Box)> entries)
+    private static double ComputeCellSize(List<Entry> entries)
     {
         List<double> extents = new(entries.Count);
-        foreach ((_, BoundingBoxXYZ box) in entries)
+        foreach (Entry entry in entries)
         {
-            if (!IsFinite(box.Min) || !IsFinite(box.Max)) continue;
+            Bounds box = entry.Bounds;
+            if (!box.IsRegular) continue;
 
-            XYZ size = box.Max - box.Min;
-            double extent = Math.Max(size.X, Math.Max(size.Y, size.Z));
+            double extent = Math.Max(box.MaxX - box.MinX, Math.Max(box.MaxY - box.MinY, box.MaxZ - box.MinZ));
             if (extent > 1e-6) extents.Add(extent);
         }
 
@@ -184,4 +188,38 @@ internal sealed class BoundingBoxGridIndex
     }
 
     private readonly record struct CellRange(int MinX, int MaxX, int MinY, int MaxY, int MinZ, int MaxZ);
+
+    private sealed record Entry(Element Element, long Id, Bounds Bounds);
+
+    // A bounding box copied into plain numbers, so comparing two of them calls nothing in the Revit API.
+    // IsRegular is stored rather than derived: a query compares its bounds with every element that does
+    // not fit the grid cells, and recomputing the flag there doubled the cost of each comparison.
+    private readonly record struct Bounds(
+        double MinX, double MinY, double MinZ, double MaxX, double MaxY, double MaxZ, bool IsRegular)
+    {
+        public static Bounds From(BoundingBoxXYZ box)
+        {
+            XYZ min = box.Min;
+            XYZ max = box.Max;
+            double minX = min.X, minY = min.Y, minZ = min.Z;
+            double maxX = max.X, maxY = max.Y, maxZ = max.Z;
+
+            // Finite and not inverted, so the comparison in MayOverlap is meaningful.
+            bool isRegular =
+                IsFiniteNumber(minX) && IsFiniteNumber(minY) && IsFiniteNumber(minZ) &&
+                IsFiniteNumber(maxX) && IsFiniteNumber(maxY) && IsFiniteNumber(maxZ) &&
+                minX <= maxX && minY <= maxY && minZ <= maxZ;
+            return new Bounds(minX, minY, minZ, maxX, maxY, maxZ, isRegular);
+        }
+
+        // Touching boxes count as overlapping and an irregular box overlaps everything: the check may
+        // keep a pair that the exact test rejects later, but it never drops a pair that could collide.
+        public bool MayOverlap(Bounds other) =>
+            !IsRegular || !other.IsRegular ||
+            (MinX <= other.MaxX && other.MinX <= MaxX &&
+             MinY <= other.MaxY && other.MinY <= MaxY &&
+             MinZ <= other.MaxZ && other.MinZ <= MaxZ);
+
+        private static bool IsFiniteNumber(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
+    }
 }

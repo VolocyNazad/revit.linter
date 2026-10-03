@@ -21,8 +21,32 @@ internal sealed partial class DiagnosticReportItemViewModel
     public required string Template { get; init; }
     public required Dictionary<string, object> Args { get; init; }
     public required Action<ElementId> AccentElementDelegate { get; init; }
-    public required IEnumerable<FixViewModel>? Fixes { get; init; }
-    public required IReadOnlyList<VisualizationPipelineViewModel> VisualizationPipelines { get; init; }
+    public required Func<IEnumerable<FixViewModel>?> FixesFactory { get; init; }
+    public required Func<IReadOnlyList<VisualizationPipelineViewModel>> VisualizationPipelinesFactory { get; init; }
+
+    // Fixes and visualizations are built on first use rather than with the row. A report can hold tens
+    // of thousands of rows, each fix owns an icon control and several delegates, and only the rows the
+    // list actually shows, or the user acts on, ever need them.
+    private bool _fixesCreated;
+    private IEnumerable<FixViewModel>? _fixes;
+    private IReadOnlyList<VisualizationPipelineViewModel>? _visualizationPipelines;
+
+    public IEnumerable<FixViewModel>? Fixes
+    {
+        get
+        {
+            if (!_fixesCreated)
+            {
+                _fixes = FixesFactory();
+                _fixesCreated = true;
+            }
+
+            return _fixes;
+        }
+    }
+
+    public IReadOnlyList<VisualizationPipelineViewModel> VisualizationPipelines
+        => _visualizationPipelines ??= VisualizationPipelinesFactory();
     public required DateTime Created { get; init; }
     public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
     public required string ShowElementToolTipFormat { get; init; }

@@ -1,25 +1,16 @@
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
-using Revit.Sugar;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 
-internal sealed class GetElementGeometryService(IRevitTransactionMemoryCache revitTransactionMemoryCache) : IGetElementGeometryService
+// Derived from the shared cached geometry, so solids never trigger a second geometry calculation.
+internal sealed class GetElementGeometryService(IDocumentQueryService documentQueries)
+    : IGetElementGeometryService
 {
-    private static readonly Options _defaultOptions = new();
-
     public IReadOnlyCollection<Solid> Execute(Element element, View? view)
-        => revitTransactionMemoryCache.GetOrCreate(
-            $"element:geometry:id:{element.Id.Value()}",
-            () => element.GetSolids(view is null ? _defaultOptions : new() { View = view })) ?? throw new InvalidOperationException($"Failed to get object from cache.");
-
-#if BEFORE2024
-    public IReadOnlyCollection<Solid> Execute(int elementId, GeometryElement geometryElement)
-#else
-    public IReadOnlyCollection<Solid> Execute(long elementId, GeometryElement geometryElement)
-#endif
-        => revitTransactionMemoryCache.GetOrCreate(
-            $"element:geometry:id:{elementId}",
-            () => geometryElement.GetSolids()) ?? throw new InvalidOperationException($"Failed to get object from cache.");
+        => documentQueries.GetOrCreate(
+            DocumentQueryKey.Create(element.Document, CollisionQueryNames.Solids, view, element.Id),
+            () => documentQueries.GetRequiredGeometry(element, view).GetSolids());
 }

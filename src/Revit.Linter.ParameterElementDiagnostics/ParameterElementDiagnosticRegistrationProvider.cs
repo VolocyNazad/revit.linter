@@ -4,13 +4,13 @@ using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Services;
 using Toolkit.ValueStore.Abstractions;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ParameterElementDiagnostics;
 
 internal sealed class ParameterElementDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
-    IRevitTransactionMemoryCache transactionMemoryCache,
+    IDocumentQueryService documentQueries,
     IValueStore<DocumentDiagnosticOverridesSettings> overrideStore,
     ParameterConfigurationErrorState configurationErrorState,
     ILogger<ParameterElementDiagnosticRegistrationProvider> logger)
@@ -50,7 +50,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 rule.IsObsolete, rule.ObsoleteDescription);
             yield return new DocumentDiagnosticRegistration(
                 identity,
-                new DocumentDiagnostic(transactionMemoryCache) { Identity = identity, Parameters = rule.Parameters },
+                new DocumentDiagnostic(documentQueries) { Identity = identity, Parameters = rule.Parameters },
                 new DocumentDiagnosticFilter(documentFilterFactory) { Identity = identity, Formula = rule.Take },
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
                 []);

@@ -1,26 +1,16 @@
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
-using Revit.Sugar;
-using Revit.TransactionMemoryCache.Abstractions.Services;
+using Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 
-internal sealed class GetElementBoundingBoxService(IRevitTransactionMemoryCache revitTransactionMemoryCache) : IGetElementBoundingBoxService
+// Derived from the shared cached geometry, so a bounding box never triggers a second geometry calculation.
+internal sealed class GetElementBoundingBoxService(IDocumentQueryService documentQueries)
+    : IGetElementBoundingBoxService
 {
-    private static readonly Options _defaultOptions = new();
-
     public BoundingBoxXYZ Execute(Element element, View? view)
-        => revitTransactionMemoryCache.GetOrCreate(
-            $"element:b-box:id:{element.Id.Value()}",
-            () => element.get_Geometry(view is null ? _defaultOptions : new() { View = view }).GetBoundingBox()) 
-        ?? throw new InvalidOperationException($"Failed to get object from cache.");
-
-#if BEFORE2024
-    public BoundingBoxXYZ Execute(int elementId, GeometryElement geometryElement)
-#else
-    public BoundingBoxXYZ Execute(long elementId, GeometryElement geometryElement)
-#endif
-        => revitTransactionMemoryCache.GetOrCreate(
-            $"element:b-box:id:{elementId}",
-            () => geometryElement.GetBoundingBox()) 
-        ?? throw new InvalidOperationException($"Failed to get object from cache.");
+        => documentQueries.GetOrCreate(
+            DocumentQueryKey.Create(element.Document, CollisionQueryNames.BoundingBox, view, element.Id),
+            () => documentQueries.GetRequiredGeometry(element, view).GetBoundingBox());
 }
