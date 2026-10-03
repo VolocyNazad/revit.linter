@@ -170,6 +170,9 @@
     <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.WelcomePresenter.Tests/Revit.Linter.WelcomePresenter.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
   </Folder>
   <Folder Name="/ui/">
     <Project Path="src/Revit.Linter.Behaviors/Revit.Linter.Behaviors.csproj">
