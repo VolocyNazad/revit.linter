@@ -42,6 +42,11 @@ use it only at module composition boundaries, not as a general service locator.
 `DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
 address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
 it for F1 help, and the report row opens it; a renamed Wiki page must be renamed in the code that refers to it.
+`HelpToolTip` in `Revit.Linter.Behaviors` gives a pane control a ribbon-like tooltip through attached properties
+(title, description, note). Its inherited `HelpCommand`, set once on the root of a view, is executed when F1 is
+pressed while a tooltip is open; the key is caught by a thread keyboard hook that exists only while the tooltip is
+shown, because a dockable pane does not have the keyboard focus on hover. View models open pages through
+`IDocumentationLauncher`, implemented by the add-in host.
 `Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
 (`welcomeSettings.yml` in the settings value store) and the example configuration installer. The
 installed examples are the files under `wiki/examples/configuration/` (English) and its `ru/`

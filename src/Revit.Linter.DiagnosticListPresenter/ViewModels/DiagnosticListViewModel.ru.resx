@@ -16,4 +16,6 @@
   <data name="code_header" xml:space="preserve"><value>Код</value></data>
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data>
   <data name="description_header" xml:space="preserve"><value>Описание</value></data>
+  <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
+  <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
 </root>

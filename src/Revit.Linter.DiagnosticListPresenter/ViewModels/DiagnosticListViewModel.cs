@@ -19,6 +19,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IDiagnosticCatalog _diagnosticCatalog;
+    private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
@@ -59,6 +60,12 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     #region [CheckAll] Command - Check all
 
     /// <summary> Check all </summary>
+    private static readonly DocumentationPage PanePage = new("Diagnostics pane", "Панель диагностики");
+
+    /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
+    [RelayCommand]
+    private void OpenHelp() => _documentationLauncher.Open(PanePage);
+
     [RelayCommand]
     private void CheckAll()
         => UpdateIsActive(Collection, _ => true);

@@ -7,4 +7,6 @@
   <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
   <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
+  <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
+  <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
 </root>

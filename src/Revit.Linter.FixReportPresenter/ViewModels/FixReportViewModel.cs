@@ -21,16 +21,25 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly IRevitContext _revitContext;
     private readonly IFixReportReceiver _fixReportReceiver;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
+    private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
+
+    private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
     public FixReportViewModel(
         IRevitContext revitContext, IFixReportReceiver fixReportReceiver,
-        IEnumerable<IAccentElementsService> accentElementsServices)
+        IEnumerable<IAccentElementsService> accentElementsServices,
+        Core.Abstractions.Services.IDocumentationLauncher documentationLauncher)
     {
+        _documentationLauncher = documentationLauncher;
         _fixReportReceiver = fixReportReceiver;
         Collection = [];
         _revitContext = revitContext;
         _accentElementsServices = accentElementsServices;
     }
+
+    /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
+    [RelayCommand]
+    private void OpenHelp() => _documentationLauncher.Open(PanePage);
 
     [ObservableProperty]
     public partial ObservableCollection<FixReportItemViewModel> Collection { get; private set; }  = null!;

@@ -6,6 +6,9 @@
 		<EmbeddedResource Remove="DiagnosticSeverityLocalizations*.resx" />
 		<EmbeddedResource Include="DiagnosticSeverityLocalizations.resx" LogicalName="Revit.Linter.Localization.DiagnosticSeverityLocalizations.resources" />
 		<EmbeddedResource Include="DiagnosticSeverityLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticSeverityLocalizations.resources" />
+		<EmbeddedResource Remove="HelpToolTipLocalizations*.resx" />
+		<EmbeddedResource Include="HelpToolTipLocalizations.resx" LogicalName="Revit.Linter.Localization.HelpToolTipLocalizations.resources" />
+		<EmbeddedResource Include="HelpToolTipLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.HelpToolTipLocalizations.resources" />
 		<EmbeddedResource Remove="DiagnosticTargetTypeLocalizations*.resx" />
 		<EmbeddedResource Include="DiagnosticTargetTypeLocalizations.resx" LogicalName="Revit.Linter.Localization.DiagnosticTargetTypeLocalizations.resources" />
 		<EmbeddedResource Include="DiagnosticTargetTypeLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.DiagnosticTargetTypeLocalizations.resources" />

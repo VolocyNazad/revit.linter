@@ -28,7 +28,10 @@
   <data name="transactionStartFailed_message" xml:space="preserve"><value>Не удалось начать транзакцию.</value></data>
   <data name="operationFailed_message" xml:space="preserve"><value>Операция вернула отрицательный результат: элемент не может быть изменён. Возможно, он используется как тип по умолчанию, в спецификации, шаблоне вида или другом семействе.</value></data>
   <data name="openDocumentation_text" xml:space="preserve"><value>Документация по проверке</value></data>
-  <data name="openDocumentationFailed_message" xml:space="preserve"><value>Не удалось открыть страницу документации.
-
-{0}</value></data>
+  <data name="exportReport_description" xml:space="preserve"><value>Сохраняет отображаемые строки в CSV, JSON, YAML или самодостаточный HTML-отчёт. Поиск и фильтры учитываются.</value></data>
+  <data name="fix_title" xml:space="preserve"><value>Исправить</value></data>
+  <data name="fix_description" xml:space="preserve"><value>Запускает единственное доступное исправление. Если исправлений несколько, открывает меню выбора.</value></data>
+  <data name="showVisualization_description" xml:space="preserve"><value>Показывает замечание на активном виде. Если визуализаций несколько, открывает меню выбора. Повторный щелчок возвращает вид.</value></data>
+  <data name="moreFilters_title" xml:space="preserve"><value>Дополнительные фильтры</value></data>
+  <data name="moreFilters_description" xml:space="preserve"><value>Пока недоступно. Используйте поиск и фильтры рядом.</value></data>
 </root>

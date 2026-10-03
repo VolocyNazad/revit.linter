@@ -100,6 +100,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
     private readonly IDialog _dialog;
+    private readonly IDocumentationLauncher _documentationLauncher;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IReadOnlyList<IDiagnosticReportExporter> _reportExporters;
@@ -122,6 +123,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
             IDialog dialog, IConfirmationDialog confirmationDialog,
+            IDocumentationLauncher documentationLauncher,
             IEnumerable<IDiagnosticReportExporter> reportExporters,
             ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
     {
@@ -134,6 +136,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
         _dialog = dialog;
+        _documentationLauncher = documentationLauncher;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _reportExporters = reportExporters.ToArray();
@@ -924,22 +927,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     /// in the catalog, for example after its rule was removed from a configuration file, opens the
     /// diagnostics overview instead.
     /// </remarks>
-    private void OpenDocumentation(string code)
-    {
-        DocumentationPage page = _catalogLease?.Snapshot.FindDocumentation(code) ?? DiagnosticsOverviewPage;
-        string url = page.GetUrl();
-        try
-        {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(
-                exception, "Failed to open the documentation page {Url} for diagnostic {Code}", url, code);
-            _ = _dialog.Show(new DialogRequest(
-                GetLocalizedString("openDocumentationFailed_message", exception.Message)));
-        }
-    }
+    private void OpenDocumentation(string code) => _documentationLauncher.Open(
+        _catalogLease?.Snapshot.FindDocumentation(code) ?? DiagnosticsOverviewPage);
+
+    private static readonly DocumentationPage PanePage = new("Diagnostic reports pane", "Панель результатов диагностики");
+
+    /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
+    [RelayCommand]
+    private void OpenHelp() => _documentationLauncher.Open(PanePage);
 
     private List<FixViewModel> CreateFixes(DiagnosticReport report)
     {

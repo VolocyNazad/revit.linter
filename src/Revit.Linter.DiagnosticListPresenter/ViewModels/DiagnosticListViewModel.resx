@@ -16,4 +16,6 @@
   <data name="code_header" xml:space="preserve"><value>Code</value></data>
   <data name="severity_header" xml:space="preserve"><value>Severity</value></data>
   <data name="description_header" xml:space="preserve"><value>Description</value></data>
+  <data name="moreFilters_title" xml:space="preserve"><value>More filters</value></data>
+  <data name="moreFilters_description" xml:space="preserve"><value>Not available yet. Use the search box and the filter chips next to it.</value></data>
 </root>

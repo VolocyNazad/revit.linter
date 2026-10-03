@@ -21,3 +21,5 @@ detailed findings table.
 
 > **Note:** Search, document, severity, and status filters affect both the visible rows and exported content. Filtering does not edit report rows or disable text copying.
 
+
+Hover over a toolbar or row button to see what it does. While the tooltip is shown, press **F1** to open this page in the default browser.

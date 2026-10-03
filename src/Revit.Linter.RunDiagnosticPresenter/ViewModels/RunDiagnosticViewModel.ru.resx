@@ -7,4 +7,9 @@
   <data name="diagnosticsFailed_message" xml:space="preserve"><value>Не удалось завершить проверки. Результаты могут быть неполными.</value></data>
   <data name="onActiveView_text" xml:space="preserve"><value>На активном виде</value></data>
   <data name="diagnosticDuration_text" xml:space="preserve"><value>{0:0.##} с</value></data>
+  <data name="run_title" xml:space="preserve"><value>Запустить проверки</value></data>
+  <data name="run_description" xml:space="preserve"><value>Запускает включённые проверки для текущего документа или только для активного вида, если включена эта опция.</value></data>
+  <data name="pause_title" xml:space="preserve"><value>Пауза</value></data>
+  <data name="pause_description" xml:space="preserve"><value>Зарезервировано для приостановки проверок. Пока недоступно.</value></data>
+  <data name="onActiveView_description" xml:space="preserve"><value>Проверяет только элементы активного вида, а не весь документ.</value></data>
 </root>

@@ -93,6 +93,7 @@ internal sealed class Program
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddWelcomePresenterModule()
                 .AddSingleton<IWelcomeHost, WelcomeHost>()
+                .AddSingleton<IDocumentationLauncher, DocumentationLauncher>()
                 .AddSingleton<DiagnosticCatalogNotifier>()
                 .AddSingleton<ValueStoreNotifier>()
                 .AddSingleton<RevitIdlingScheduler>()

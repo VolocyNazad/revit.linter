@@ -1,6 +1,7 @@
 <UserControl
     x:Class="Revit.Linter.DiagnosticReportPresenter.Views.DiagnosticReportView"
     x:Name="Root"
+    behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
@@ -99,13 +100,14 @@
                     Width="35"
                     Height="35"
                     Margin="5"
+                    behaviors:HelpToolTip.Description="{Binding ExportReportDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ExportReportText, Mode=OneWay}"
                     d:Command="{x:Null}"
                     Command="{Binding ExportCommand}"
                     Content="{materialDesign:PackIcon Kind=Export,
                                                       Size=30}"
                     DockPanel.Dock="Left"
-                    Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="{Binding ExportReportText}" />
+                    Style="{StaticResource MaterialDesignIconButton}" />
                 <Rectangle
                     Width="1"
                     Margin="0,5"
@@ -113,6 +115,8 @@
                     DockPanel.Dock="Left"
                     Fill="{DynamicResource MaterialDesignDivider}" />
                 <Button
+                    behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding MoreFiltersTitle, Mode=OneWay}"
                     Content="{materialDesign:PackIcon Kind=FilterPlus,
                                                       Size=20}"
                     DockPanel.Dock="Right"
@@ -174,6 +178,8 @@
                                 <Button
                                     Width="25"
                                     Height="25"
+                                    behaviors:HelpToolTip.Description="{Binding DataContext.FixDescription, Source={StaticResource proxy}, Mode=OneWay}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.FixTitle, Source={StaticResource proxy}, Mode=OneWay}"
                                     Click="FixButton_OnClick"
                                     Content="{materialDesign:PackIcon Kind=Idea,
                                                                       Size=20}"
@@ -203,12 +209,13 @@
                                 <Button
                                     Width="25"
                                     Height="25"
+                                    behaviors:HelpToolTip.Description="{Binding DataContext.ShowVisualizationDescription, Source={StaticResource proxy}, Mode=OneWay}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}, Mode=OneWay}"
                                     Click="VisualizationButton_OnClick"
                                     Content="{materialDesign:PackIcon Kind=Eye,
                                                                       Size=20}"
                                     IsEnabled="{Binding HasVisualizationPipelines}"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    ToolTip="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}}">
+                                    Style="{StaticResource MaterialDesignIconButton}">
                                     <Button.ContextMenu>
                                         <ContextMenu
                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"

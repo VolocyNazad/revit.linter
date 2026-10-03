@@ -10,6 +10,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Show a three-step welcome window the first time Revit starts with the add-in: what the add-in does and changes in a document, an offer to load example configurations for the selected disciplines (MEP systems, architecture, structure), and links to the quick start, the documentation and support. The new **Getting started** ribbon command opens it again. Loading examples never overwrites a configuration file that already contains rules: such an example is written to the `examples` subfolder.
 - Open the documentation from the interface: **F1** over a ribbon button opens its Wiki page, and the new question-mark button in a diagnostic report row opens the page that describes the finding's diagnostic. Pages open in English or Russian following the Revit language.
+- Show ribbon-like tooltips on the pane buttons (run, pause, active-view option, export, more filters, fix, show): a title, a description and, where it applies, the duration of the last run. Disabled buttons explain why they are unavailable, and **F1** over a tooltip opens the Wiki page of the pane.
 
 ### Changed
 

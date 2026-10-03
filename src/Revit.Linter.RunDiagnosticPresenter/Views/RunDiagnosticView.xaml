@@ -2,6 +2,7 @@
     x:Class="Revit.Linter.RunDiagnosticPresenter.Views.RunDiagnosticView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -30,6 +31,8 @@
             Width="35"
             Height="35"
             Margin="10,5,5,5"
+            behaviors:HelpToolTip.Description="{Binding PauseDescription, Mode=OneWay}"
+            behaviors:HelpToolTip.Title="{Binding PauseTitle, Mode=OneWay}"
             materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Pause,
                                                                                   Size=30}"
             Background="Transparent"
@@ -44,13 +47,15 @@
             Width="35"
             Height="35"
             Margin="5"
+            behaviors:HelpToolTip.Description="{Binding RunDescription, Mode=OneWay}"
+            behaviors:HelpToolTip.Note="{Binding DiagnosticTime}"
+            behaviors:HelpToolTip.Title="{Binding RunTitle, Mode=OneWay}"
             d:Command="{x:Null}"
             Command="{Binding RunDiagnosticCommand}"
             Content="{materialDesign:PackIcon Kind=Play,
                                               Size=30}"
             DockPanel.Dock="Left"
-            Style="{StaticResource MaterialDesignIconButton}"
-            ToolTip="{Binding DiagnosticTime}" />
+            Style="{StaticResource MaterialDesignIconButton}" />
         <Rectangle
             Width="1"
             Margin="0,5"
@@ -59,6 +64,8 @@
             Fill="{DynamicResource MaterialDesignDivider}" />
         <CheckBox
             Margin="10,0,10,0"
+            behaviors:HelpToolTip.Description="{Binding OnActiveViewDescription, Mode=OneWay}"
+            behaviors:HelpToolTip.Title="{Binding OnActiveViewText, Mode=OneWay}"
             Content="{Binding OnActiveViewText}"
             DockPanel.Dock="Left"
             IsChecked="{Binding OnActiveViewMode}" />
