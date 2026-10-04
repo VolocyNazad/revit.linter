@@ -4,6 +4,7 @@ using Revit.Linter.CollisionDiagnostics.Models;
 using Revit.Linter.ConfigurationPath;
 using Toolkit.ValueStore.Abstractions;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
+using Revit.Linter.Languages.Factories;
 
 namespace Revit.Linter.CollisionDiagnostics;
 

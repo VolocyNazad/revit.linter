@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.Languages.DI;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 
@@ -17,9 +18,7 @@ public static class ServiceCollectionExtensions
         /// <returns>The service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddCollisionDiagnostics()
         {
-            services.AddSingleton<ElementFilterFactory>()
-                .AddSingleton<ElementFunctionFactory>()
-                .AddSingleton<DocumentFilterFactory>()
+            services.AddFormulaFactories()
                 .AddSingleton<IGetElementGeometryService, GetElementGeometryService>()
                 .AddSingleton<IGetElementBoundingBoxService, GetElementBoundingBoxService>()
                 .AddSingleton<CollisionDiagnosticRegistrationProvider>()

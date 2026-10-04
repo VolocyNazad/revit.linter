@@ -7,11 +7,10 @@ using Revit.Linter.CollisionDiagnostics.Infrastructure.Spatial;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
+using Revit.Linter.Languages.Factories;
 using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 using CollisionElementDiagnostic = Revit.Linter.CollisionDiagnostics.ElementDiagnostic;
-using CollisionElementFilterFactory = Revit.Linter.CollisionDiagnostics.ElementFilterFactory;
-using CollisionElementFunctionFactory = Revit.Linter.CollisionDiagnostics.ElementFunctionFactory;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -156,8 +155,8 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         IDocumentQueryService queries = TestDocumentQueries.Create();
         FormulaCompilationNotifier notifier = new();
         return new CollisionElementDiagnostic(
-            new CollisionElementFilterFactory(NullLogger<CollisionElementFilterFactory>.Instance, notifier),
-            new CollisionElementFunctionFactory(NullLogger<CollisionElementFunctionFactory>.Instance, notifier),
+            new ElementFilterFactory(NullLogger<ElementFilterFactory>.Instance, notifier),
+            new ElementFunctionFactory(NullLogger<ElementFunctionFactory>.Instance, notifier),
             new GetElementBoundingBoxService(queries),
             new GetElementGeometryService(queries),
             queries,

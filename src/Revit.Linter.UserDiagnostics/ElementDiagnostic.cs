@@ -1,4 +1,6 @@
-﻿namespace Revit.Linter.UserDiagnostics;
+﻿using Revit.Linter.Languages.Factories;
+
+namespace Revit.Linter.UserDiagnostics;
 
 internal sealed class ElementDiagnostic(ElementFunctionFactory elementFunctionFactory) : IElementDiagnostic
 {
@@ -7,5 +9,5 @@ internal sealed class ElementDiagnostic(ElementFunctionFactory elementFunctionFa
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
         => Delegate.Invoke(targetElement) ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
 
-    private Func<Element, bool> Delegate => field ??= elementFunctionFactory.Create(Formula);
+    private Func<Element, bool> Delegate => field ??= elementFunctionFactory.Create(Formula, fallback: true);
 }

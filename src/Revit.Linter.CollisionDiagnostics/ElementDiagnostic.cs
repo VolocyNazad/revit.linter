@@ -5,6 +5,7 @@ using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Sugar;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Languages.Factories;
 
 namespace Revit.Linter.CollisionDiagnostics;
 
@@ -116,7 +117,7 @@ internal sealed class ElementDiagnostic(
     }
 
     private ElementFilter Filter => field ??= elementFilterFactory.Create(TakeFormula);
-    private Func<Element, object> GroupByDelegate => field ??= elementFunctionFactory.Create(GroupByFormula);
+    private Func<Element, object> GroupByDelegate => field ??= elementFunctionFactory.Create<object>(GroupByFormula, string.Empty);
 
     private string GetGroup(Element element) => GroupByDelegate.Invoke(element)?.ToString() ?? string.Empty;
 

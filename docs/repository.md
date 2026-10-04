@@ -36,6 +36,10 @@ template parser (`Template` + `Args` to cached plain text and text parts with el
 and the typed WPF message view used by the diagnostic and fix report
 presenters. The project has no compile-time dependency on Revit API;
 presenters adapt `ElementId` values through the generic link factory.
+`Revit.Linter.Languages` owns the formula grammar and, in `Factories`, the factories that compile configuration
+formulas into document predicates, element functions and native element filters. The diagnostic modules share
+them through `AddFormulaFactories`; a formula that cannot be compiled is logged, reported through
+`IFormulaCompilationNotifier` and replaced by a fallback.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
