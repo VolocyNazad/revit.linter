@@ -1,11 +1,16 @@
-﻿#if BEFORE2024
-
-using Autodesk.Revit.ApplicationServices;
+﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ProjectParameterManaging.Infrastructure.Extensions;
 using System.Reflection;
+#if BEFORE2024
 using Revit.Sugar;
+#endif
+#if BEFORE2024
+using ParameterGroupId = Autodesk.Revit.DB.BuiltInParameterGroup;
+#else
+using ParameterGroupId = Autodesk.Revit.DB.ForgeTypeId;
+#endif
 
 namespace Revit.Linter.ProjectParameterManaging.Services;
 
@@ -16,249 +21,100 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
 
     public bool Add(
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
-        BuiltInParameterGroup builtInParameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false)
+        ParameterGroupId parameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false)
     {
         if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
 
-        Application application = document.Application;
-
         BindingMap bindingMap = document.ParameterBindings;
-        SharedParameterElement? targetParameter = SharedParameterElement.Lookup(document, targetParameterId);
-        var iterator = bindingMap.ForwardIterator();
-
-        iterator.Reset();
-        while (iterator.MoveNext())
+        if (FindBoundDefinition(document, bindingMap, targetParameterId) is { } boundDefinition)
         {
-            if (iterator.Key is not InternalDefinition definition) continue;
-            if (targetParameter is null || definition.Id != targetParameter.Id) continue;
-            ElementBinding binging = (ElementBinding)bindingMap.get_Item(definition);
-            bool hasDifference = false;
-            if (binging is InstanceBinding && !isInstance) hasDifference = true;
-            if (binging is TypeBinding && isInstance) hasDifference = true;
-            if (definition.ParameterGroup != builtInParameterGroup) hasDifference = true;
-            if (!binging.Categories
-                .Cast<Category>()
-                .Select(i => i.BuiltInCategory)
-                .SetEquals(builtInCategories)) hasDifference = true;
-            bool reInserted = true;
-            if (hasDifference)
-                reInserted = bindingMap.ReInsert(
-                    definition,
-                    CreateParameterBinding(document, builtInCategories, isInstance),
-                    builtInParameterGroup);
-            SetAllowVaryBetweenGroups(document, definition, allowVaryBetweenGroups);
+            bool reInserted =
+                !IsBoundDifferently(bindingMap, boundDefinition, builtInCategories, parameterGroup, isInstance)
+                || bindingMap.ReInsert(
+                    boundDefinition, CreateParameterBinding(document, builtInCategories, isInstance), parameterGroup);
+            boundDefinition.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
             return reInserted;
         }
 
-        string sharedParametersFilenameCache = application.SharedParametersFilename;
+        string sharedParameterFile = Path.Combine(DirectoryPath, SharedParameterFileName);
+        if (!File.Exists(sharedParameterFile)) return false;
+
+        // Revit reads shared parameters only from the file set on the application, so the user's file is
+        // replaced for the duration of the lookup and restored afterwards.
+        Application application = document.Application;
+        string userSharedParameterFile = application.SharedParametersFilename;
         try
         {
-            string? sharedParameterFile = GetSharedParameterFile();
-            if (sharedParameterFile is null) return false;
-
             application.SharedParametersFilename = sharedParameterFile;
-            DefinitionFile definitionFile = application.OpenSharedParameterFile();
-            foreach (DefinitionGroup group in definitionFile.Groups)
+            foreach (DefinitionGroup group in application.OpenSharedParameterFile().Groups)
             {
                 foreach (Definition definition in group.Definitions)
                 {
                     if (definition is not ExternalDefinition externalDefinition ||
                         externalDefinition.GUID != targetParameterId) continue;
-                    bool inserted = AddSharedParameterToDocument(
-                        document, externalDefinition, builtInCategories, builtInParameterGroup, isInstance);
-                    SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
+
+                    bool inserted = bindingMap.Insert(
+                        externalDefinition, CreateParameterBinding(document, builtInCategories, isInstance),
+                        parameterGroup);
+                    SharedParameterElement.Lookup(document, targetParameterId)?.GetDefinition()
+                        ?.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
                     return inserted;
                 }
             }
         }
         finally
         {
-            application.SharedParametersFilename = sharedParametersFilenameCache;
+            application.SharedParametersFilename = userSharedParameterFile;
         }
 
         return false;
     }
 
-    private static void SetAllowVaryBetweenGroups(
-        Document document, Guid targetParameterId, bool allowVaryBetweenGroups)
+    private static InternalDefinition? FindBoundDefinition(Document document, BindingMap bindingMap, Guid parameterId)
     {
-        InternalDefinition? definition =
-            SharedParameterElement.Lookup(document, targetParameterId)?.GetDefinition();
-        definition?.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
+        if (SharedParameterElement.Lookup(document, parameterId) is not { } parameter) return null;
+
+        var iterator = bindingMap.ForwardIterator();
+        iterator.Reset();
+        while (iterator.MoveNext())
+            if (iterator.Key is InternalDefinition definition && definition.Id == parameter.Id)
+                return definition;
+
+        return null;
     }
 
-    private static void SetAllowVaryBetweenGroups(
-        Document document, InternalDefinition definition, bool allowVaryBetweenGroups) =>
-        definition.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
-
-    private static bool AddSharedParameterToDocument(
-        Document document, ExternalDefinition parameterDefinition, IEnumerable<BuiltInCategory> builtInCategories,
-        BuiltInParameterGroup builtInParameterGroup, bool isInstance)
+    private static bool IsBoundDifferently(
+        BindingMap bindingMap, InternalDefinition definition, IEnumerable<BuiltInCategory> builtInCategories,
+        ParameterGroupId parameterGroup, bool isInstance)
     {
-        Binding binding = CreateParameterBinding(document, builtInCategories, isInstance);
-        bool result = document.ParameterBindings.Insert(parameterDefinition, binding, builtInParameterGroup);
-        return result;
+        ElementBinding binding = (ElementBinding)bindingMap.get_Item(definition);
+        return (binding is InstanceBinding && !isInstance)
+            || (binding is TypeBinding && isInstance)
+            || GetGroup(definition) != parameterGroup
+            || !binding.Categories.Cast<Category>().Select(i => i.BuiltInCategory).SetEquals(builtInCategories);
     }
+
+#if BEFORE2024
+    private static ParameterGroupId GetGroup(InternalDefinition definition) => definition.ParameterGroup;
+#else
+    private static ParameterGroupId GetGroup(InternalDefinition definition) => definition.GetGroupTypeId();
+#endif
 
     private static Binding CreateParameterBinding(
         Document document, IEnumerable<BuiltInCategory> builtInCategories, bool isInstance)
     {
+        if (!builtInCategories.Any())
+            throw new InvalidOperationException(
+                "Unable to create parameter binding to categories because category list is empty");
+
         Application application = document.Application;
-        CategorySet categorySet = CreateCategorySet(document, builtInCategories);
+        CategorySet categorySet = application.Create.NewCategorySet();
+        foreach (BuiltInCategory builtInCategory in builtInCategories)
+            if (Category.GetCategory(document, builtInCategory) is { } category)
+                categorySet.Insert(category);
+
         return isInstance
             ? application.Create.NewInstanceBinding(categorySet)
             : application.Create.NewTypeBinding(categorySet);
     }
-
-    private static CategorySet CreateCategorySet(Document document, IEnumerable<BuiltInCategory> builtInCategories)
-    {
-        Application application = document.Application;
-        CategorySet categorySet = application.Create.NewCategorySet();
-
-        if (builtInCategories.Any())
-        {
-            foreach (BuiltInCategory builtInCategory in builtInCategories)
-            {
-                Category category = Category.GetCategory(document, builtInCategory);
-                if (category != null)
-                {
-                    categorySet.Insert(category);
-                }
-            }
-        }
-        else throw new InvalidOperationException("Unable to create parameter binding to categories because category list is empty");
-        return categorySet;
-    }
-    private static string? GetSharedParameterFile()
-    {
-        string path = Path.Combine(DirectoryPath, SharedParameterFileName);
-        return File.Exists(path) ? path : null;
-    }
 }
-
-#else
-
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.DB;
-using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
-using Revit.Linter.ProjectParameterManaging.Infrastructure.Extensions;
-using System.Reflection;
-
-namespace Revit.Linter.ProjectParameterManaging.Services;
-
-internal sealed class ProjectParameterProvider : IProjectParameterProvider
-{
-    private const string SharedParameterFileName = "required-revit-project-parameters.txt";
-    private static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location)!;
-
-    public bool Add(
-        Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
-        ForgeTypeId groupTypeId, bool isInstance = true, bool allowVaryBetweenGroups = false)
-    {
-        if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
-        Application application = document.Application;
-
-        BindingMap bindingMap = document.ParameterBindings;
-        SharedParameterElement? targetParameter = SharedParameterElement.Lookup(document, targetParameterId);
-        var iterator = bindingMap.ForwardIterator();
-        iterator.Reset();
-        while (iterator.MoveNext()) {
-            if (iterator.Key is not InternalDefinition definition) continue;
-            if (targetParameter is null || definition.Id != targetParameter.Id) continue;
-            ElementBinding binging = (ElementBinding)bindingMap.get_Item(definition);
-            bool hasDifference = false;
-            if (binging is InstanceBinding && !isInstance) hasDifference = true;
-            if (binging is TypeBinding && isInstance) hasDifference = true;
-            if (definition.GetGroupTypeId() != groupTypeId) hasDifference = true;
-            if (!binging.Categories
-                .Cast<Category>()
-                .Select(i => i.BuiltInCategory)
-                .SetEquals(builtInCategories)) hasDifference = true;
-            bool reInserted = true;
-            if (hasDifference)
-                reInserted = bindingMap.ReInsert(
-                    definition,
-                    CreateParameterBinding(document, builtInCategories, isInstance),
-                    groupTypeId);
-            SetAllowVaryBetweenGroups(document, definition, allowVaryBetweenGroups);
-            return reInserted;
-        }
-
-        string sharedParametersFilenameCache = application.SharedParametersFilename;
-        try
-        {
-            string? sharedParameterFile = GetSharedParameterFile();
-            if (sharedParameterFile is null) return false;
-
-            application.SharedParametersFilename = sharedParameterFile;
-            DefinitionFile definitionFile = application.OpenSharedParameterFile();
-            foreach (DefinitionGroup group in definitionFile.Groups) {
-                foreach (Definition definition in group.Definitions) {
-                    if (definition is not ExternalDefinition externalDefinition ||
-                        externalDefinition.GUID != targetParameterId) continue;
-                    bool inserted = AddSharedParameterToDocument(
-                        document, externalDefinition, builtInCategories, groupTypeId, isInstance);
-                    SetAllowVaryBetweenGroups(document, targetParameterId, allowVaryBetweenGroups);
-                    return inserted;
-                }
-            }
-        }
-        finally
-        {
-            application.SharedParametersFilename = sharedParametersFilenameCache;
-        }
-        return false;
-    }
-
-    private static void SetAllowVaryBetweenGroups(
-        Document document, Guid targetParameterId, bool allowVaryBetweenGroups)
-    {
-        InternalDefinition? definition =
-            SharedParameterElement.Lookup(document, targetParameterId)?.GetDefinition();
-        definition?.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
-    }
-
-    private static void SetAllowVaryBetweenGroups(
-        Document document, InternalDefinition definition, bool allowVaryBetweenGroups) =>
-        definition.SetAllowVaryBetweenGroups(document, allowVaryBetweenGroups);
-
-    private static bool AddSharedParameterToDocument(
-        Document document, ExternalDefinition parameterDefinition, IEnumerable<BuiltInCategory> builtInCategories,
-        ForgeTypeId groupTypeId, bool isInstance)
-    {
-        Binding binding = CreateParameterBinding(document, builtInCategories, isInstance);
-        bool result = document.ParameterBindings.Insert(parameterDefinition, binding, groupTypeId);
-        return result;
-    }
-    private static Binding CreateParameterBinding(
-        Document document, IEnumerable<BuiltInCategory> builtInCategories, bool isInstance)
-    {
-        Application application = document.Application;
-        CategorySet categorySet = CreateCategorySet(document, builtInCategories);
-        return isInstance 
-            ? application.Create.NewInstanceBinding(categorySet) 
-            : application.Create.NewTypeBinding(categorySet);
-    }
-    private static CategorySet CreateCategorySet(Document document, IEnumerable<BuiltInCategory> builtInCategories)
-    {
-        Application application = document.Application;
-        CategorySet categorySet = application.Create.NewCategorySet();
-
-        if (builtInCategories.Any()) {
-            foreach (BuiltInCategory builtInCategory in builtInCategories) {
-                Category category = Category.GetCategory(document, builtInCategory);
-                if (category != null) {
-                    categorySet.Insert(category);
-                }
-            }
-        }
-        else throw new InvalidOperationException("Unable to create parameter binding to categories because category list is empty");
-        return categorySet;
-    }
-    private static string? GetSharedParameterFile()
-    {
-        string path = Path.Combine(DirectoryPath, SharedParameterFileName);
-        return File.Exists(path) ? path : null;
-    }
-}
-#endif
