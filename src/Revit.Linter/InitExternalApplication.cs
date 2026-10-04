@@ -36,8 +36,14 @@ internal sealed class InitExternalApplication : ExternalApplication
     private static readonly string AssemblyPath = Assembly.GetExecutingAssembly().Location;
     private static readonly string AssemblyDirectory = Path.GetDirectoryName(AssemblyPath)
         ?? throw new InvalidOperationException("The executing assembly path has no directory.");
+    private static readonly string IconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
     private static IStringLocalizer<GlobalLocalizations> Localizer =>
-        Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+        GetService<IStringLocalizer<GlobalLocalizations>>();
+    private static ILogger<InitExternalApplication> Logger => GetService<ILogger<InitExternalApplication>>();
+
+    // Every ribbon button shows the same placeholder icon, so it is read once per size.
+    private static BitmapImage Icon => field ??= new(new Uri(IconPath));
+    private static BitmapImage SmallIcon => field ??= LoadImage(IconPath, 16);
     private DiagnosticCatalogNotifier? _diagnosticCatalogNotifier;
     private ValueStoreNotifier? _valueStoreNotifier;
 
@@ -58,17 +64,15 @@ internal sealed class InitExternalApplication : ExternalApplication
     private void StartApplication()
     {
         RevitTask.Initialize(Application);
-        Program.Provider.GetRequiredService<RevitIdlingScheduler>().Initialize(Application);
+        GetService<RevitIdlingScheduler>().Initialize(Application);
 
         AssemblyLoadService.LoadAssemblies();
 
         InitializeRevitContext();
         InitializeRevitTransactionCache();
-        _diagnosticCatalogNotifier = Program.Provider.GetRequiredService<DiagnosticCatalogNotifier>();
-        _valueStoreNotifier = Program.Provider.GetRequiredService<ValueStoreNotifier>();
-        RegisterDiagnosticReportDockablePane();
-        RegisterFixReportDockablePane();
-        RegisterDiagnosticListDockablePane();
+        _diagnosticCatalogNotifier = GetService<DiagnosticCatalogNotifier>();
+        _valueStoreNotifier = GetService<ValueStoreNotifier>();
+        RegisterDockablePanes();
 
         string tabName = Localizer["ribbonTab_name"];
         try
@@ -79,13 +83,9 @@ internal sealed class InitExternalApplication : ExternalApplication
 
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 
-        AddShowAllPanesCommand(panel);
-        AddOpenConfigurationFolderCommand(panel);
-        AddCommunityCommands(panel);
-        AddShowWelcomeCommand(panel);
+        AddRibbonButtons(panel);
 
-        var elementChangesMonitor = Program.Provider.GetRequiredService<IElementChangesMonitor>();
-        elementChangesMonitor.Run();
+        GetService<IElementChangesMonitor>().Run();
 
         var app = Application.ControlledApplication;
         app.DocumentCreated += App_DocumentCreated;
@@ -95,8 +95,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         InitializeThemeHandling();
 #endif
 
-        Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
-            .LogInformation("Revit.Linter started (Revit {Version})", Application.ControlledApplication.VersionNumber);
+        Logger.LogInformation("Revit.Linter started (Revit {Version})", Application.ControlledApplication.VersionNumber);
 
         ScheduleWelcomeWizard();
     }
@@ -110,11 +109,11 @@ internal sealed class InitExternalApplication : ExternalApplication
     /// stored state; release builds show only the steps the user has not seen.
     /// </remarks>
     private static void ScheduleWelcomeWizard() =>
-        _ = Program.Provider.GetRequiredService<RevitIdlingScheduler>().RunAsync(_ =>
+        _ = GetService<RevitIdlingScheduler>().RunAsync(_ =>
         {
             try
             {
-                var wizard = Program.Provider.GetRequiredService<IWelcomeWizard>();
+                var wizard = GetService<IWelcomeWizard>();
 #if DEBUG
                 wizard.Show();
 #else
@@ -123,19 +122,18 @@ internal sealed class InitExternalApplication : ExternalApplication
             }
             catch (Exception exception)
             {
-                Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
-                    .LogError(exception, "Failed to show the welcome wizard on startup");
+                Logger.LogError(exception, "Failed to show the welcome wizard on startup");
             }
         });
 
     public override void OnShutdown()
     {
-        var logger = Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>();
+        ILogger logger = Logger;
         logger.LogInformation("Revit.Linter shutting down");
 
         try
         {
-            Program.Provider.GetRequiredService<IElementChangesMonitor>().Stop();
+            GetService<IElementChangesMonitor>().Stop();
             _diagnosticCatalogNotifier?.Dispose();
             _diagnosticCatalogNotifier = null;
             _valueStoreNotifier?.Dispose();
@@ -149,7 +147,7 @@ internal sealed class InitExternalApplication : ExternalApplication
             Application.ThemeChanged -= Application_ThemeChanged;
 #endif
 
-            Program.Provider.GetRequiredService<RevitIdlingScheduler>().Dispose();
+            GetService<RevitIdlingScheduler>().Dispose();
             RevitTask.Shutdown();
         }
         catch (Exception exception)
@@ -175,7 +173,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     private static void ChangePluginTheme()
     {
         bool isDarkTheme = UIThemeManager.CurrentTheme == UITheme.Dark;
-        Program.Provider.GetRequiredService<IThemeService>().ChangeTheme(isDarkTheme);
+        GetService<IThemeService>().ChangeTheme(isDarkTheme);
     }
 #endif
 
@@ -189,185 +187,95 @@ internal sealed class InitExternalApplication : ExternalApplication
     {
         try
         {
-            await AddProjectParameters(document);
+            await AddIgnoreListParameters(document);
         }
         catch (Exception exception)
         {
-            Program.Provider.GetRequiredService<ILogger<InitExternalApplication>>()
-                .LogError(exception, "Failed to configure project parameters");
-            var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
-            await Program.Provider.GetRequiredService<IDialog>().Show(new DialogRequest(
-                localizer["projectParameters_configurationFailed_message", exception.Message]));
+            Logger.LogError(exception, "Failed to configure project parameters");
+            await GetService<IDialog>().Show(new DialogRequest(
+                Localizer["projectParameters_configurationFailed_message", exception.Message]));
         }
     }
 
-    private static async Task AddProjectParameters(Document doc) => await AddIgnoreListParameter(doc);
-
-    private static async Task AddIgnoreListParameter(Document doc)
+    private static async Task AddIgnoreListParameters(Document doc)
     {
-        var projectParameterProvider = Program.Provider.GetRequiredService<IProjectParameterProvider>();
-        var dialog = Program.Provider.GetRequiredService<IDialog>();
-        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+        var projectParameterProvider = GetService<IProjectParameterProvider>();
+        var dialog = GetService<IDialog>();
 
-        bool parameterChanged = false;
         await RevitTask.RunAsync(() =>
         {
+            var categories = doc.Settings.Categories.Cast<Category>()
+                .Where(i => i.AllowsBoundParameters).Select(i => i.BuiltInCategory).ToList();
+#if BEFORE2024
+            var group = BuiltInParameterGroup.PG_IDENTITY_DATA;
+#else
+            var group = GroupTypeId.IdentityData;
+#endif
+            bool parameterChanged;
             using (Transaction transaction = new(doc, "Parameter project adding"))
             {
                 transaction.Start();
 
                 parameterChanged = projectParameterProvider.Add(
-                    doc, new Guid("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b"),
-                    doc.Settings.Categories.Cast<Category>().Where(i => i.AllowsBoundParameters).Select(i => i.BuiltInCategory).ToList(),
-#if BEFORE2024
-                    BuiltInParameterGroup.PG_IDENTITY_DATA,
-#else
-                    GroupTypeId.IdentityData,
-#endif
-                    true,
-                    true
-                );
-
+                    doc, new Guid("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b"), categories, group,
+                    isInstance: true, allowVaryBetweenGroups: true);
                 parameterChanged |= projectParameterProvider.Add(
-                    doc, new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53"),
-                    doc.Settings.Categories.Cast<Category>().Where(i => i.AllowsBoundParameters).Select(i => i.BuiltInCategory).ToList(),
-#if BEFORE2024
-                    BuiltInParameterGroup.PG_IDENTITY_DATA,
-#else
-                    GroupTypeId.IdentityData,
-#endif
-                    false,
-                    false
-                );
+                    doc, new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53"), categories, group,
+                    isInstance: false, allowVaryBetweenGroups: false);
 
                 transaction.Commit();
             }
 
             if (parameterChanged)
-                _ = dialog.Show(new DialogRequest(localizer["projectParameters_configured_message"]));
+                _ = dialog.Show(new DialogRequest(Localizer["projectParameters_configured_message"]));
         });
     }
 
-    private static void AddOpenConfigurationFolderCommand(RibbonPanel panel)
+    private static void AddRibbonButtons(RibbonPanel panel)
     {
-        PushButtonData buttonData = new(
-            "OpenConfigurationFolderButton",
-            Localizer["openConfigurationFolder_buttonText"],
-            AssemblyPath, typeof(OpenConfigurationFolderCommand).FullName)
-        {
-            ToolTip = Localizer["openConfigurationFolder_toolTip"],
-            LongDescription = Localizer["openConfigurationFolder_longDescription"],
-            LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
-
-        };
-
-        SetHelpPage(buttonData, new DocumentationPage("Diagnostic configuration path button", "Кнопка папки конфигурации"));
-        panel.AddItem(buttonData);
-    }
-
-    private static void AddShowAllPanesCommand(RibbonPanel panel)
-    {
-        PushButtonData buttonData = new(
-            "ShowAllPanesButton",
-            Localizer["showAllPanes_buttonText"],
-            AssemblyPath, typeof(ShowAllPanesCommand).FullName)
-        {
-            ToolTip = Localizer["showAllPanes_toolTip"],
-            LongDescription = Localizer["showAllPanes_longDescription"],
-            LargeImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            Image = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff")),
-            ToolTipImage = LoadImage(Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff"))
-        };
-
-        SetHelpPage(buttonData, new DocumentationPage("Dockable panes", "Закрепляемые панели"));
-        panel.AddItem(buttonData);
-    }
-
-    private static void AddShowWelcomeCommand(RibbonPanel panel)
-    {
-        string iconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
-        PushButtonData buttonData = new(
-            "ShowWelcomeButton",
-            Localizer["showWelcome_buttonText"],
-            AssemblyPath, typeof(ShowWelcomeCommand).FullName)
-        {
-            ToolTip = Localizer["showWelcome_toolTip"],
-            LongDescription = Localizer["showWelcome_longDescription"],
-            LargeImage = LoadImage(iconPath),
-            Image = LoadImage(iconPath),
-            ToolTipImage = LoadImage(iconPath)
-        };
-
-        SetHelpPage(buttonData, new DocumentationPage("Getting started button", "Кнопка начала работы"));
-        panel.AddItem(buttonData);
-    }
-
-    private static void AddCommunityCommands(RibbonPanel panel)
-    {
-        var updateButton = CreateCompactCommandButton(
-            "CheckForUpdatesButton",
-            "checkForUpdates_buttonText",
-            "checkForUpdates_toolTip",
-            "checkForUpdates_longDescription",
-            typeof(CheckForUpdatesCommand),
-            new DocumentationPage("Check for updates button", "Кнопка проверки обновлений"));
-        var supportButton = CreateExternalPageButton(
-            "OpenSupportButton",
-            "support_buttonText",
-            "support_toolTip",
-            "support_longDescription",
-            typeof(OpenSupportCommand),
-            new DocumentationPage("Support button", "Кнопка поддержки"));
-        var sponsorButton = CreateExternalPageButton(
-            "OpenSponsorButton",
-            "sponsor_buttonText",
-            "sponsor_toolTip",
-            "sponsor_longDescription",
-            typeof(OpenSponsorCommand),
-            new DocumentationPage("Sponsor button", "Кнопка спонсорства"));
-
-        panel.AddStackedItems(updateButton, supportButton, sponsorButton);
-    }
-
-    private static PushButtonData CreateExternalPageButton(
-        string name,
-        string textResourceKey,
-        string toolTipResourceKey,
-        string descriptionResourceKey,
-        Type commandType,
-        DocumentationPage helpPage)
-        => CreateCompactCommandButton(
-            name, textResourceKey, toolTipResourceKey, descriptionResourceKey, commandType, helpPage);
-
-    private static PushButtonData CreateCompactCommandButton(
-        string name,
-        string textResourceKey,
-        string toolTipResourceKey,
-        string descriptionResourceKey,
-        Type commandType,
-        DocumentationPage helpPage)
-    {
-        string iconPath = Path.Combine(AssemblyDirectory, "Resources", "None Icon.tiff");
-        PushButtonData buttonData = new(name, Localizer[textResourceKey], AssemblyPath, commandType.FullName)
-        {
-            ToolTip = Localizer[toolTipResourceKey],
-            LongDescription = Localizer[descriptionResourceKey],
-            Image = LoadImage(iconPath, 16),
-            ToolTipImage = LoadImage(iconPath)
-        };
-        SetHelpPage(buttonData, helpPage);
-        return buttonData;
+        panel.AddItem(CreateButton(
+            "ShowAllPanesButton", "showAllPanes", typeof(ShowAllPanesCommand),
+            new("Dockable panes", "Закрепляемые панели")));
+        panel.AddItem(CreateButton(
+            "OpenConfigurationFolderButton", "openConfigurationFolder", typeof(OpenConfigurationFolderCommand),
+            new("Diagnostic configuration path button", "Кнопка папки конфигурации")));
+        panel.AddStackedItems(
+            CreateButton(
+                "CheckForUpdatesButton", "checkForUpdates", typeof(CheckForUpdatesCommand),
+                new("Check for updates button", "Кнопка проверки обновлений"), compact: true),
+            CreateButton(
+                "OpenSupportButton", "support", typeof(OpenSupportCommand),
+                new("Support button", "Кнопка поддержки"), compact: true),
+            CreateButton(
+                "OpenSponsorButton", "sponsor", typeof(OpenSponsorCommand),
+                new("Sponsor button", "Кнопка спонсорства"), compact: true));
+        panel.AddItem(CreateButton(
+            "ShowWelcomeButton", "showWelcome", typeof(ShowWelcomeCommand),
+            new("Getting started button", "Кнопка начала работы")));
     }
 
     /// <summary>
-    /// Makes F1 over the ribbon button open its documentation page in the language of the current UI culture.
+    /// Creates a ribbon button whose texts are the <c>_buttonText</c>, <c>_toolTip</c> and
+    /// <c>_longDescription</c> resources that start with <paramref name="resourcePrefix"/>.
     /// </summary>
-    private static void SetHelpPage(RibbonItemData buttonData, DocumentationPage page) =>
-        buttonData.SetContextualHelp(new ContextualHelp(ContextualHelpType.Url, page.GetUrl()));
+    /// <remarks>A compact button is meant for a stacked column: it has a 16-pixel image and no large one.</remarks>
+    private static PushButtonData CreateButton(
+        string name, string resourcePrefix, Type commandType, DocumentationPage helpPage, bool compact = false)
+    {
+        PushButtonData buttonData = new(
+            name, Localizer[$"{resourcePrefix}_buttonText"], AssemblyPath, commandType.FullName)
+        {
+            ToolTip = Localizer[$"{resourcePrefix}_toolTip"],
+            LongDescription = Localizer[$"{resourcePrefix}_longDescription"],
+            Image = compact ? SmallIcon : Icon,
+            ToolTipImage = Icon
+        };
+        if (!compact) buttonData.LargeImage = Icon;
 
-    private static BitmapImage LoadImage(string path) => new(new Uri(path));
+        // F1 over the button opens its documentation page in the language of the current UI culture.
+        buttonData.SetContextualHelp(new ContextualHelp(ContextualHelpType.Url, helpPage.GetUrl()));
+        return buttonData;
+    }
 
     private static BitmapImage LoadImage(string path, int pixelSize)
     {
@@ -383,36 +291,29 @@ internal sealed class InitExternalApplication : ExternalApplication
     }
 
     private void InitializeRevitContext()
-        => Program.Provider.GetRequiredService<IRevitContextInitializer>().Initialize(Application);
+        => GetService<IRevitContextInitializer>().Initialize(Application);
 
     private static void InitializeRevitTransactionCache()
     {
-        Program.Provider.GetRequiredService<IRevitTransactionMemoryCacheInitializer>().Initialize();
-        DocumentElementCollectorCache.Initialize(
-            Program.Provider.GetRequiredService<IDocumentQueryService>());
+        GetService<IRevitTransactionMemoryCacheInitializer>().Initialize();
+        DocumentElementCollectorCache.Initialize(GetService<IDocumentQueryService>());
     }
 
-    private void RegisterDiagnosticReportDockablePane()
+    private void RegisterDockablePanes()
     {
-        var view = Program.Provider.GetRequiredService<DiagnosticReportView>();
-        var paneProvider = new DiagnosticReportDockablePaneProvider(view);
-        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
-        Application.RegisterDockablePane(DiagnosticReportPaneUtils.PaneId, localizer["diagnosticReport_dockablePane_title"], paneProvider);
+        RegisterDockablePane<DiagnosticReportView>(
+            DiagnosticReportPaneUtils.PaneId, "diagnosticReport_dockablePane_title");
+        RegisterDockablePane<FixReportView>(
+            FixReportPaneUtils.PaneId, "fixReport_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
+        RegisterDockablePane<DiagnosticListView>(
+            DiagnosticListPaneUtils.PaneId, "diagnosticList_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
     }
 
-    private void RegisterFixReportDockablePane()
-    {
-        var view = Program.Provider.GetRequiredService<FixReportView>();
-        var paneProvider = new FixReportDockablePaneProvider(view);
-        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
-        Application.RegisterDockablePane(FixReportPaneUtils.PaneId, localizer["fixReport_dockablePane_title"], paneProvider);
-    }
+    private void RegisterDockablePane<TView>(
+        DockablePaneId paneId, string titleResourceKey, DockablePaneId? tabBehind = null)
+        where TView : System.Windows.FrameworkElement
+        => Application.RegisterDockablePane(
+            paneId, Localizer[titleResourceKey], new DockablePaneProvider(GetService<TView>(), tabBehind));
 
-    private void RegisterDiagnosticListDockablePane()
-    {
-        var view = Program.Provider.GetRequiredService<DiagnosticListView>();
-        var paneProvider = new DiagnosticListDockablePaneProvider(view);
-        var localizer = Program.Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
-        Application.RegisterDockablePane(DiagnosticListPaneUtils.PaneId, localizer["diagnosticList_dockablePane_title"], paneProvider);
-    }
+    private static T GetService<T>() where T : notnull => Program.Provider.GetRequiredService<T>();
 }
