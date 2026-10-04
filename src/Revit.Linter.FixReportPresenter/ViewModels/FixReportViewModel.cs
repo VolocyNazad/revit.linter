@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
-using Revit.Linter.FixReportPresenter.ViewModels.Base;
+using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.Linter.Localization;

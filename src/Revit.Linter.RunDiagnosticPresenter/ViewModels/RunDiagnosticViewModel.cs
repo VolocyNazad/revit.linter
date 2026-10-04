@@ -8,7 +8,7 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Localization;
-using Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
+using Revit.Linter.Presentation.ViewModels;
 using Toolkit.ValueStore.Abstractions;
 using System.Diagnostics;
 
@@ -137,7 +137,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     }
 
     /// <inheritdoc />
-    protected override void OnRevitChanged()
+    protected override void OnRevitChanged(RevitEventType revitEventType)
     {
         RunDiagnosticCommand.NotifyCanExecuteChanged();
     }

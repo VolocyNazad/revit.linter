@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.OpenedDocuments.ViewModels.Base;
+namespace Revit.Linter.Presentation.ViewModels;
 
 /// <summary>
 /// Identifies a Revit application event observed by an interaction view model.

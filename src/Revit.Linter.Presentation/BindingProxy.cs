@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace Revit.Linter.FixReportPresenter.Infrastructure;
+namespace Revit.Linter.Presentation;
 
 /// <summary>
 /// Carries a data context into WPF objects, such as data-grid columns, that are outside the visual tree.
