@@ -39,6 +39,10 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+`Revit.Linter.ThemeManaging` owns the look shared by all views. `SharedThemeResources` is the single
+resource dictionary with the theme, palette and default control styles; every root view merges it instead of
+declaring theme dictionaries itself, and `IThemeService` switches its base theme for registered element trees.
+It is a class rather than a XAML dictionary so that views reference it by type, which survives ILRepack.
 `DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
 address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
 it for F1 help, and the report row opens it; a renamed Wiki page must be renamed in the code that refers to it.
