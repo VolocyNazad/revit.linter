@@ -3,69 +3,42 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:viewModels="clr-namespace:Revit.Linter.WelcomePresenter.ViewModels"
     Title="{Binding WindowTitle}"
     Width="620"
     Height="520"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:WelcomeViewModel}}"
+    FocusManager.FocusedElement="{Binding ElementName=NextButton}"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
+    Style="{DynamicResource LinterViewRoot}"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
     mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme
-                    BaseTheme="Light"
-                    PrimaryColor="Cyan"
-                    SecondaryColor="DeepOrange" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
+                <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-            <Style x:Key="ParagraphText" TargetType="{x:Type TextBlock}">
-                <Setter Property="TextWrapping" Value="Wrap" />
-                <Setter Property="Margin" Value="0,0,0,12" />
-            </Style>
-            <Style x:Key="StatusText" BasedOn="{StaticResource ParagraphText}" TargetType="{x:Type TextBlock}">
-                <Style.Triggers>
-                    <Trigger Property="Text" Value="{x:Null}">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Trigger>
-                    <Trigger Property="Text" Value="">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <!-- Light-hearted remarks are set off like a quotation: an accent bar in the theme's primary color. -->
-            <Style x:Key="RemarkBorder" TargetType="{x:Type Border}">
-                <Setter Property="Padding" Value="12,4,0,4" />
-                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
-                <Setter Property="BorderThickness" Value="3,0,0,0" />
-            </Style>
-            <Style x:Key="RemarkText" TargetType="{x:Type TextBlock}">
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="FontStyle" Value="Italic" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
             <DataTemplate DataType="{x:Type viewModels:WelcomeIntroStepViewModel}">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding AboutText, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding TabInfo, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AboutText, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding TabInfo, Mode=OneWay}" />
                     <TextBlock
                         FontWeight="SemiBold"
-                        Style="{StaticResource ParagraphText}"
+                        Style="{StaticResource LinterParagraphText}"
                         Text="{Binding ImportantHeaderText, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding ParametersText, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding ConfigurationInfo, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding LogsInfo, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ParametersText, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ConfigurationInfo, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding LogsInfo, Mode=OneWay}" />
                 </StackPanel>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:WelcomeExamplesStepViewModel}">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding IntroText, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding IntroText, Mode=OneWay}" />
                     <CheckBox
                         Margin="0,0,0,8"
                         Content="{Binding MepText, Mode=OneWay}"
@@ -78,28 +51,28 @@
                         Margin="0,0,0,12"
                         Content="{Binding StructureText, Mode=OneWay}"
                         IsChecked="{Binding IsStructureSelected}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding ContentsText, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding TargetInfo, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ContentsText, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding TargetInfo, Mode=OneWay}" />
                     <Button
                         Margin="0,0,0,12"
                         HorizontalAlignment="Left"
                         Command="{Binding InstallCommand}"
                         Content="{Binding InstallButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignFlatButton}" />
+                        Style="{StaticResource LinterDialogButton}" />
                     <Border
                         Margin="0,0,0,12"
-                        Style="{StaticResource RemarkBorder}"
+                        Style="{StaticResource LinterRemarkBorder}"
                         Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibility}}">
-                        <TextBlock Style="{StaticResource RemarkText}" Text="{Binding InstalledText, Mode=OneWay}" />
+                        <TextBlock Style="{StaticResource LinterRemarkText}" Text="{Binding InstalledText, Mode=OneWay}" />
                     </Border>
-                    <TextBlock Style="{StaticResource StatusText}" Text="{Binding StatusMessage, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterStatusText}" Text="{Binding StatusMessage, Mode=OneWay}" />
                 </StackPanel>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:WelcomeFinishStepViewModel}">
                 <StackPanel>
                     <Border Margin="0,0,0,12">
                         <Border.Style>
-                            <Style BasedOn="{StaticResource RemarkBorder}" TargetType="{x:Type Border}">
+                            <Style BasedOn="{StaticResource LinterRemarkBorder}" TargetType="{x:Type Border}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Note}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -107,40 +80,49 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <TextBlock Style="{StaticResource RemarkText}" Text="{Binding Note, Mode=OneWay}" />
+                        <TextBlock Style="{StaticResource LinterRemarkText}" Text="{Binding Note, Mode=OneWay}" />
                     </Border>
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding SummaryText, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding SummaryText, Mode=OneWay}" />
                     <CheckBox
                         Margin="0,0,0,12"
                         Content="{Binding OpenPanesText, Mode=OneWay}"
                         IsChecked="{Binding OpenPanes}" />
-                    <TextBlock Style="{StaticResource ParagraphText}" Text="{Binding ReopenInfo, Mode=OneWay}" />
+                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ReopenInfo, Mode=OneWay}" />
                     <StackPanel Orientation="Horizontal">
                         <Button
                             Command="{Binding OpenQuickStartCommand}"
                             Content="{Binding QuickStartText, Mode=OneWay}"
-                            Style="{StaticResource MaterialDesignFlatButton}" />
+                            Style="{StaticResource LinterDialogButton}" />
                         <Button
                             Margin="8,0,0,0"
                             Command="{Binding OpenDocumentationCommand}"
                             Content="{Binding DocumentationText, Mode=OneWay}"
-                            Style="{StaticResource MaterialDesignFlatButton}" />
+                            Style="{StaticResource LinterDialogButton}" />
                         <Button
                             Margin="8,0,0,0"
                             Command="{Binding OpenSupportCommand}"
                             Content="{Binding SupportText, Mode=OneWay}"
-                            Style="{StaticResource MaterialDesignFlatButton}" />
+                            Style="{StaticResource LinterDialogButton}" />
                     </StackPanel>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
-    <materialDesign:ColorZone
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        VerticalContentAlignment="Stretch">
-        <Grid Margin="24,20,24,16">
+    <!--  Enter presses the default button (Next, or Finish on the last step) and Esc the cancel button.  -->
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Left"
+            Command="{Binding GoBackCommand}"
+            Modifiers="Alt" />
+        <KeyBinding
+            Key="Right"
+            Command="{Binding GoNextCommand}"
+            Modifiers="Alt" />
+        <KeyBinding Key="PageUp" Command="{Binding GoBackCommand}" />
+        <KeyBinding Key="PageDown" Command="{Binding GoNextCommand}" />
+    </Window.InputBindings>
+    <Border Style="{StaticResource LinterWindowPanel}">
+        <Grid Style="{StaticResource LinterDialogContent}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -154,10 +136,7 @@
                     DockPanel.Dock="Right"
                     Opacity="0.6"
                     Text="{Binding Progress, Mode=OneWay}" />
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="{Binding WindowTitle, Mode=OneWay}" />
+                <TextBlock Style="{StaticResource LinterDialogTitleText}" Text="{Binding WindowTitle, Mode=OneWay}" />
             </DockPanel>
             <ItemsControl
                 Grid.Row="1"
@@ -197,8 +176,8 @@
             <Border
                 Grid.Row="2"
                 Margin="0,16,0,16"
-                Style="{StaticResource RemarkBorder}">
-                <TextBlock Style="{StaticResource RemarkText}" Text="{Binding CurrentStep.Caption, Mode=OneWay}" />
+                Style="{StaticResource LinterRemarkBorder}">
+                <TextBlock Style="{StaticResource LinterRemarkText}" Text="{Binding CurrentStep.Caption, Mode=OneWay}" />
             </Border>
             <ScrollViewer
                 Grid.Row="3"
@@ -211,33 +190,32 @@
             </ScrollViewer>
             <DockPanel Grid.Row="4" Margin="0,16,0,0">
                 <Button
-                    MinWidth="80"
                     Content="{Binding CloseButtonText, Mode=OneWay}"
                     DockPanel.Dock="Left"
                     IsCancel="True"
-                    Style="{StaticResource MaterialDesignFlatButton}" />
+                    Style="{StaticResource LinterDialogButton}" />
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button
-                        MinWidth="80"
                         Command="{Binding GoBackCommand}"
                         Content="{Binding BackButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignFlatButton}" />
+                        Style="{StaticResource LinterDialogButton}" />
                     <Button
-                        MinWidth="80"
+                        x:Name="NextButton"
                         Margin="8,0,0,0"
                         Command="{Binding GoNextCommand}"
                         Content="{Binding NextButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
+                        IsDefault="{Binding HasNextStep}"
+                        Style="{StaticResource LinterDialogButton}"
                         Visibility="{Binding HasNextStep, Converter={StaticResource BooleanToVisibility}}" />
                     <Button
-                        MinWidth="80"
                         Margin="8,0,0,0"
                         Click="FinishButton_Click"
                         Content="{Binding FinishButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
+                        IsDefault="{Binding IsLastStep}"
+                        Style="{StaticResource LinterDialogButton}"
                         Visibility="{Binding IsLastStep, Converter={StaticResource BooleanToVisibility}}" />
                 </StackPanel>
             </DockPanel>
         </Grid>
-    </materialDesign:ColorZone>
+    </Border>
 </Window>

@@ -24,6 +24,7 @@ This document records stable architectural rules. Implementation details belong 
 - Reusable WPF mechanics live in `Revit.Linter.Behaviors`. Prefer bindings, converters, commands and behaviors over event handlers.
 - `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
 - Shared styles and resources are defined once and consumed through resource references. Theme-dependent values use `DynamicResource`.
+- Control styles, fonts, sizes and paddings live in `SharedThemeResources` of `Revit.Linter.ThemeManaging`. Views keep layout and bindings and refer to `Linter*` style keys; they do not reference third-party style keys or repeat sizes that a shared style defines. A style specific to one view is still declared there, based on a shared one.
 
 ## Diagnostics and reports
 

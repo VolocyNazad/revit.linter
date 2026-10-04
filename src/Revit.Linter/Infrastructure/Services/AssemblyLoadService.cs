@@ -7,8 +7,6 @@ internal static class AssemblyLoadService
 {
     private static readonly IEnumerable<string> Troubled = [
             "Microsoft.Xaml.Behaviors",
-            "MaterialDesignThemes.Wpf",
-            "MaterialDesignColors",
         ];
     public static void LoadAssemblies()
     {

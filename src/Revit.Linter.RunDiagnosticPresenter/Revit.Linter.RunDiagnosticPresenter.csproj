@@ -3,7 +3,6 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
@@ -29,6 +28,7 @@
 		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 		<PackageReference Include="VolocyNazad.ValueStore" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />

@@ -51,6 +51,9 @@ public sealed partial class DiagnosticReportView
         if (sender is not Button { DataContext: DiagnosticReportItemViewModel item } button)
             return;
 
+        // The row becomes the current one, so that stepping to the next finding continues from it.
+        (DataContext as DiagnosticReportViewModel)?.CollectionViewSource?.View.MoveCurrentTo(item);
+
         if (item.VisualizationPipelines.Count == 1)
         {
             item.ShowVisualizationCommand.Execute(null);

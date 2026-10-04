@@ -32,8 +32,12 @@
   <data name="fix_title" xml:space="preserve"><value>Fix</value></data>
   <data name="fix_description" xml:space="preserve"><value>Runs the only available fix. If the finding has several fixes, opens their menu.</value></data>
   <data name="showVisualization_description" xml:space="preserve"><value>Shows the finding in the active view. If several visualizations are available, opens their menu. Click again to restore the view.</value></data>
-  <data name="moreFilters_title" xml:space="preserve"><value>More filters</value></data>
-  <data name="moreFilters_description" xml:space="preserve"><value>Not available yet. Use the search box and the filter chips next to it.</value></data>
+  <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>
+  <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows. The number next to a filter is the number of rows it matches.</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows only the findings of the selected open document.</value></data>
   <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case. The list is updated when you leave the field. The search also limits what is exported.</value></data>
+  <data name="showPrevious_text" xml:space="preserve"><value>Previous finding</value></data>
+  <data name="showPrevious_description" xml:space="preserve"><value>Selects the previous row of the table and shows it in the active view, the same way it was shown last time. Rows that cannot be shown are skipped. In the table, Up and Down select a row and Enter shows it.</value></data>
+  <data name="showNext_text" xml:space="preserve"><value>Next finding</value></data>
+  <data name="showNext_description" xml:space="preserve"><value>Selects the next row of the table and shows it in the active view, the same way it was shown last time. Rows that cannot be shown are skipped. In the table, Up and Down select a row and Enter shows it.</value></data>
 </root>

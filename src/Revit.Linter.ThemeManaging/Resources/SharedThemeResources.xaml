@@ -1,0 +1,1307 @@
+<ResourceDictionary
+    x:Class="Revit.Linter.ThemeManaging.Resources.SharedThemeResources"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls"
+    xmlns:local="clr-namespace:Revit.Linter.ThemeManaging.Resources"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <ResourceDictionary.MergedDictionaries>
+        <!--  Replaced with the dark palette when the theme changes.  -->
+        <local:LightPalette />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--
+        The look of every control the add-in uses: flat, dense and colored like the Revit palettes. Templates
+        are written here rather than taken from a control library. Colors always come from the Linter* brushes
+        of the palette merged above, through DynamicResource, so that they follow the theme. Views refer to the
+        Linter* keys and keep only layout and bindings.
+    -->
+
+    <!--  Metrics  -->
+
+    <FontFamily x:Key="LinterFontFamily">Segoe UI</FontFamily>
+    <system:Double x:Key="LinterFontSize">12</system:Double>
+    <system:Double x:Key="LinterRemarkFontSize">13</system:Double>
+    <system:Double x:Key="LinterTitleFontSize">16</system:Double>
+    <system:Double x:Key="LinterIconSize">16</system:Double>
+
+    <!--  Narrowest width of the table column that takes the room left by the fixed columns.  -->
+    <system:Double x:Key="LinterStretchColumnMinWidth">200</system:Double>
+
+    <!--  View root: the font and the colors every element of a pane or a window inherits  -->
+
+    <Style x:Key="LinterViewRoot" TargetType="{x:Type Control}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource LinterFontFamily}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+
+    <!--  Content of a pane.  -->
+    <Style x:Key="LinterViewPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+    </Style>
+
+    <!--  Content of a window without a system frame: the outline stands in for the frame.  -->
+    <Style
+        x:Key="LinterWindowPanel"
+        BasedOn="{StaticResource LinterViewPanel}"
+        TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!--  Icons  -->
+
+    <Style TargetType="{x:Type controls:PathIcon}">
+        <Setter Property="Height" Value="{StaticResource LinterIconSize}" />
+        <Setter Property="Width" Value="{StaticResource LinterIconSize}" />
+    </Style>
+
+    <!--  Tool bar of a pane  -->
+
+    <Style x:Key="LinterToolBarPanel" TargetType="{x:Type DockPanel}">
+        <Setter Property="Background" Value="{DynamicResource LinterSurfaceBrush}" />
+        <Setter Property="Height" Value="30" />
+    </Style>
+
+    <Style x:Key="LinterVerticalDivider" TargetType="{x:Type Rectangle}">
+        <Setter Property="Fill" Value="{DynamicResource LinterBorderBrush}" />
+        <Setter Property="Margin" Value="2,4" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Width" Value="1" />
+    </Style>
+
+    <Style x:Key="LinterHorizontalDivider" TargetType="{x:Type Rectangle}">
+        <Setter Property="Fill" Value="{DynamicResource LinterBorderBrush}" />
+        <Setter Property="Height" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style x:Key="LinterToolBarLabel" TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!--  Names what the table currently shows, such as the selected document; a long name is cut with an ellipsis.  -->
+    <Style
+        x:Key="LinterToolBarContextLabel"
+        BasedOn="{StaticResource LinterToolBarLabel}"
+        TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="6,0" />
+        <Setter Property="MaxWidth" Value="220" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <!--  Position in a list, such as "3 / 47": wide enough not to move its neighbours as the number grows.  -->
+    <Style
+        x:Key="LinterToolBarCounterLabel"
+        BasedOn="{StaticResource LinterToolBarLabel}"
+        TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="MinWidth" Value="52" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <!--  Buttons that show an icon  -->
+
+    <!--  Flat square button: no outline until it is pointed at, pressed or given one by a style.  -->
+    <ControlTemplate x:Key="LinterIconButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <Border
+            x:Name="border"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            CornerRadius="2"
+            SnapsToDevicePixels="True">
+            <ContentPresenter
+                Margin="{TemplateBinding Padding}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                <Setter TargetName="border" Property="BorderThickness" Value="1" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="LinterToolBarIconButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template" Value="{StaticResource LinterIconButtonTemplate}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Width" Value="24" />
+    </Style>
+
+    <!--  Icon button of the tool bar that stays pressed; the styles below give the pressed state a meaning.  -->
+    <Style x:Key="LinterToolBarIconToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template" Value="{StaticResource LinterIconButtonTemplate}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Width" Value="24" />
+    </Style>
+
+    <!--  Toggle whose icon alone tells its state, such as pause and resume: being pressed changes nothing else.  -->
+    <Style
+        x:Key="LinterToolBarToggleButton"
+        BasedOn="{StaticResource LinterToolBarIconToggleButton}"
+        TargetType="{x:Type ToggleButton}">
+        <Setter Property="Margin" Value="6,0,2,0" />
+    </Style>
+
+    <!--
+        Option of the tool bar that is on while the button is pressed: a neutral dimmed icon when off, an
+        accent icon on the selection color with an outline when on, like a pressed ribbon button.
+    -->
+    <Style
+        x:Key="LinterToolBarOptionToggleButton"
+        BasedOn="{StaticResource LinterToolBarIconToggleButton}"
+        TargetType="{x:Type ToggleButton}">
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Opacity" Value="0.6" />
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+                <Setter Property="Opacity" Value="1" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        Tool bar button that opens a popup: bind the IsOpen of the popup to its IsChecked. While the popup is
+        open the button ignores the pointer, so the click that closes the popup does not open it again.
+    -->
+    <Style
+        x:Key="LinterToolBarPopupToggleButton"
+        BasedOn="{StaticResource LinterToolBarIconToggleButton}"
+        TargetType="{x:Type ToggleButton}">
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Closes on a click outside of it.  -->
+    <Style x:Key="LinterToolBarPopup" TargetType="{x:Type Popup}">
+        <Setter Property="AllowsTransparency" Value="True" />
+        <Setter Property="Placement" Value="Bottom" />
+        <Setter Property="StaysOpen" Value="False" />
+    </Style>
+
+    <Style x:Key="LinterPopupPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+    </Style>
+
+    <!--  Check boxes  -->
+
+    <Style x:Key="LinterCheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Background" Value="{DynamicResource LinterInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterSecondaryForegroundBrush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Padding" Value="6,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="box"
+                            Width="14"
+                            Height="14"
+                            VerticalAlignment="Center"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                            <Grid>
+                                <Path
+                                    x:Name="mark"
+                                    Width="12"
+                                    Height="12"
+                                    Data="M 2.5 6 L 5 8.5 L 9.5 3.5"
+                                    Stroke="{DynamicResource LinterAccentForegroundBrush}"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="1.6"
+                                    Visibility="Collapsed" />
+                                <Rectangle
+                                    x:Name="dash"
+                                    Width="6"
+                                    Height="2"
+                                    Fill="{DynamicResource LinterAccentForegroundBrush}"
+                                    Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter
+                            x:Name="content"
+                            Grid.Column="1"
+                            Margin="{TemplateBinding Padding}"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="False">
+                            <Setter TargetName="content" Property="Margin" Value="0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="box" Property="Background" Value="{DynamicResource LinterAccentBrush}" />
+                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                            <Setter TargetName="mark" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="box" Property="Background" Value="{DynamicResource LinterAccentBrush}" />
+                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                            <Setter TargetName="dash" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterCheckBox}" TargetType="{x:Type CheckBox}" />
+
+    <!--  One filter of a filter popup. Expects an item with the IsActive property; its text is the item itself.  -->
+    <DataTemplate x:Key="LinterFilterCheckBoxTemplate">
+        <CheckBox
+            Margin="0,2"
+            Content="{Binding}"
+            IsChecked="{Binding IsActive, Mode=TwoWay}" />
+    </DataTemplate>
+
+    <!--  Radio buttons  -->
+
+    <Style x:Key="LinterRadioButton" TargetType="{x:Type RadioButton}">
+        <Setter Property="Background" Value="{DynamicResource LinterInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterSecondaryForegroundBrush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Padding" Value="6,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid
+                            Width="14"
+                            Height="14"
+                            VerticalAlignment="Center">
+                            <Ellipse
+                                x:Name="ring"
+                                Fill="{TemplateBinding Background}"
+                                Stroke="{TemplateBinding BorderBrush}"
+                                StrokeThickness="1" />
+                            <Ellipse
+                                x:Name="dot"
+                                Width="6"
+                                Height="6"
+                                Fill="{DynamicResource LinterAccentBrush}"
+                                Visibility="Collapsed" />
+                        </Grid>
+                        <ContentPresenter
+                            Grid.Column="1"
+                            Margin="{TemplateBinding Padding}"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="dot" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterRadioButton}" TargetType="{x:Type RadioButton}" />
+
+    <!--
+        List with a single choice drawn as radio buttons, for a filter popup. Each item is a radio button
+        bound to the selection of the list, so choosing another item clears the previous one.
+    -->
+    <Style x:Key="LinterRadioListBoxItem" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <RadioButton
+                        Margin="0,2"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                        Focusable="False"
+                        IsChecked="{Binding IsSelected, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LinterRadioListBox" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource LinterRadioListBoxItem}" />
+        <Setter Property="MaxHeight" Value="240" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <ScrollViewer Focusable="False">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Text boxes  -->
+
+    <!--  The hint set through controls:Hint.Text is shown while the box is empty.  -->
+    <ControlTemplate x:Key="LinterTextBoxTemplate" TargetType="{x:Type TextBox}">
+        <Border
+            x:Name="border"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            SnapsToDevicePixels="True">
+            <Grid Margin="{TemplateBinding Padding}">
+                <TextBlock
+                    x:Name="hint"
+                    Margin="2,0"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource LinterSecondaryForegroundBrush}"
+                    IsHitTestVisible="False"
+                    Text="{TemplateBinding controls:Hint.Text}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="Collapsed" />
+                <ScrollViewer
+                    x:Name="PART_ContentHost"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                    Focusable="False"
+                    HorizontalScrollBarVisibility="Hidden"
+                    VerticalScrollBarVisibility="Hidden" />
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter TargetName="hint" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="LinterTextBox" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="{DynamicResource LinterInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CaretBrush" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Padding" Value="3,2" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="Template" Value="{StaticResource LinterTextBoxTemplate}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterTextBox}" TargetType="{x:Type TextBox}" />
+
+    <!--  Search box of the tool bar: a magnifier in front of the text and the hint inside the box.  -->
+    <Style
+        x:Key="LinterSearchTextBox"
+        BasedOn="{StaticResource LinterTextBox}"
+        TargetType="{x:Type TextBox}">
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <DockPanel>
+                            <controls:PathIcon
+                                Width="14"
+                                Height="14"
+                                Margin="4,0,0,0"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Left"
+                                Foreground="{DynamicResource LinterSecondaryForegroundBrush}"
+                                Kind="Magnify" />
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <TextBlock
+                                    x:Name="hint"
+                                    Margin="2,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource LinterSecondaryForegroundBrush}"
+                                    IsHitTestVisible="False"
+                                    Text="{TemplateBinding controls:Hint.Text}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="Collapsed" />
+                                <ScrollViewer
+                                    x:Name="PART_ContentHost"
+                                    VerticalAlignment="Center"
+                                    Focusable="False"
+                                    HorizontalScrollBarVisibility="Hidden"
+                                    VerticalScrollBarVisibility="Hidden" />
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="hint" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Width" Value="180" />
+    </Style>
+
+    <!--  Selectable read-only text of a table cell: no box around it.  -->
+    <Style
+        x:Key="LinterReadOnlyCellTextBox"
+        BasedOn="{StaticResource LinterTextBox}"
+        TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="IsReadOnlyCaretVisible" Value="False" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!--  Expects a row view model with the IsObsolete and ObsoleteDescription properties.  -->
+    <Style
+        x:Key="LinterObsoleteAwareCellTextBox"
+        BasedOn="{StaticResource LinterReadOnlyCellTextBox}"
+        TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsObsolete}" Value="True">
+                <Setter Property="TextDecorations" Value="Strikethrough" />
+                <Setter Property="ToolTip" Value="{Binding ObsoleteDescription}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        Code of a finding colored by its severity, which is also named in the tool tip so that the color is not
+        the only cue. Expects a row view model with the Severity and SeverityText properties in addition to
+        those of the obsolete-aware style; the obsolete trigger of that style replaces the tool tip.
+    -->
+    <Style
+        x:Key="LinterSeverityCodeCellTextBox"
+        BasedOn="{StaticResource LinterObsoleteAwareCellTextBox}"
+        TargetType="{x:Type TextBox}">
+        <Setter Property="ToolTip" Value="{Binding SeverityText}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                <Setter Property="Foreground" Value="{DynamicResource LinterSeverityWarningBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Severity}" Value="Error">
+                <Setter Property="Foreground" Value="{DynamicResource LinterSeverityErrorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Combo boxes (not editable)  -->
+
+    <Style x:Key="LinterComboBoxItem" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Padding" Value="6,3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border
+                        x:Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="Transparent"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Covers the whole combo box, so a click anywhere opens the list; draws only the chevron.  -->
+    <ControlTemplate x:Key="LinterComboBoxToggleTemplate" TargetType="{x:Type ToggleButton}">
+        <Border Background="Transparent">
+            <Path
+                Margin="0,0,6,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Data="M 0 0 L 4 4 L 8 0"
+                Stroke="{DynamicResource LinterSecondaryForegroundBrush}"
+                StrokeEndLineCap="Round"
+                StrokeLineJoin="Round"
+                StrokeStartLineCap="Round"
+                StrokeThickness="1.4" />
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="LinterComboBox" TargetType="{x:Type ComboBox}">
+        <Setter Property="Background" Value="{DynamicResource LinterInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource LinterComboBoxItem}" />
+        <Setter Property="Padding" Value="6,2,20,2" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border
+                            x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                        <ToggleButton
+                            ClickMode="Press"
+                            Focusable="False"
+                            IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                            Template="{StaticResource LinterComboBoxToggleTemplate}" />
+                        <ContentPresenter
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False" />
+                        <Popup
+                            x:Name="PART_Popup"
+                            AllowsTransparency="True"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="None">
+                            <Border
+                                MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                Background="{DynamicResource LinterBackgroundBrush}"
+                                BorderBrush="{DynamicResource LinterStrongBorderBrush}"
+                                BorderThickness="1"
+                                TextElement.Foreground="{DynamicResource LinterForegroundBrush}">
+                                <ScrollViewer>
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterComboBox}" TargetType="{x:Type ComboBox}" />
+
+    <!--  Menus  -->
+
+    <!--  Item of a flat menu. Submenus are not drawn: add a popup to this template before nesting menu items.  -->
+    <Style x:Key="LinterMenuItem" TargetType="{x:Type MenuItem}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Padding" Value="6,0,12,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border
+                        x:Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="Transparent"
+                        SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition
+                                    Width="Auto"
+                                    MinWidth="22"
+                                    SharedSizeGroup="LinterMenuIcon" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="LinterMenuGesture" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter
+                                Margin="0,0,6,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                ContentSource="Icon" />
+                            <Path
+                                x:Name="check"
+                                Width="12"
+                                Height="12"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Data="M 2.5 6 L 5 8.5 L 9.5 3.5"
+                                Stroke="{DynamicResource LinterAccentBrush}"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="1.6"
+                                Visibility="Collapsed" />
+                            <ContentPresenter
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                ContentSource="Header"
+                                RecognizesAccessKey="True" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource LinterSecondaryForegroundBrush}"
+                                Text="{TemplateBinding InputGestureText}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="check" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="{x:Type MenuItem}" />
+
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border
+                        Height="1"
+                        Margin="4,3"
+                        Background="{DynamicResource LinterBorderBrush}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  A menu opens in its own window, so it sets the font and the colors again instead of inheriting them.  -->
+    <Style x:Key="LinterContextMenu" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="{StaticResource LinterFontFamily}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="True" />
+        <Setter Property="Padding" Value="0,2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterContextMenu}" TargetType="{x:Type ContextMenu}" />
+
+    <!--  Tool tips  -->
+
+    <!--  A tool tip opens in its own window, so it sets the font and the colors again instead of inheriting them.  -->
+    <Style TargetType="{x:Type ToolTip}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="{StaticResource LinterFontFamily}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+    </Style>
+
+    <!--  Scroll bars  -->
+
+    <!--
+        Scroll bars drawn like those of the Revit palettes: a light track of system thickness, chevron arrows
+        and a narrow pill-shaped thumb in the middle of the track.
+    -->
+
+    <system:Double x:Key="LinterScrollBarThumbThickness">8</system:Double>
+
+    <!--  Arrow button; Content is the geometry of the chevron.  -->
+    <Style x:Key="LinterScrollBarLineButton" TargetType="{x:Type RepeatButton}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Grid>
+                        <Border
+                            x:Name="highlight"
+                            Background="{DynamicResource LinterForegroundBrush}"
+                            Opacity="0" />
+                        <Path
+                            x:Name="arrow"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                            Stroke="{DynamicResource LinterScrollBarArrowBrush}"
+                            StrokeEndLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeStartLineCap="Round"
+                            StrokeThickness="1.5" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="highlight" Property="Opacity" Value="0.12" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="highlight" Property="Opacity" Value="0.3" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="arrow" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Invisible part of the track on either side of the thumb; a click scrolls by a page.  -->
+    <Style x:Key="LinterScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Border Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LinterScrollBarThumb" TargetType="{x:Type Thumb}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <!--  The whole width of the track takes the pointer; only the pill is drawn.  -->
+                    <Border Background="Transparent">
+                        <Border
+                            x:Name="thumb"
+                            Background="{DynamicResource LinterScrollBarThumbBrush}"
+                            CornerRadius="4" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Vertical">
+                            <Setter TargetName="thumb" Property="Width" Value="{StaticResource LinterScrollBarThumbThickness}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
+                            <Setter TargetName="thumb" Property="Height" Value="{StaticResource LinterScrollBarThumbThickness}" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="thumb" Property="Background" Value="{DynamicResource LinterScrollBarThumbHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="thumb" Property="Background" Value="{DynamicResource LinterScrollBarThumbHoverBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="LinterVerticalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
+        <Grid SnapsToDevicePixels="True">
+            <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}" />
+                <RowDefinition Height="0.00001*" />
+                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}" />
+            </Grid.RowDefinitions>
+            <Border Grid.RowSpan="3" Background="{DynamicResource LinterScrollBarTrackBrush}" />
+            <RepeatButton
+                Grid.Row="0"
+                Command="{x:Static ScrollBar.LineUpCommand}"
+                Content="M 0 4.5 L 4.5 0 L 9 4.5"
+                Style="{StaticResource LinterScrollBarLineButton}" />
+            <Track
+                x:Name="PART_Track"
+                Grid.Row="1"
+                IsDirectionReversed="True">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource LinterScrollBarPageButton}" />
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{StaticResource LinterScrollBarThumb}" />
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource LinterScrollBarPageButton}" />
+                </Track.IncreaseRepeatButton>
+            </Track>
+            <RepeatButton
+                Grid.Row="2"
+                Command="{x:Static ScrollBar.LineDownCommand}"
+                Content="M 0 0 L 4.5 4.5 L 9 0"
+                Style="{StaticResource LinterScrollBarLineButton}" />
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="LinterHorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
+        <Grid SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
+                <ColumnDefinition Width="0.00001*" />
+                <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="3" Background="{DynamicResource LinterScrollBarTrackBrush}" />
+            <RepeatButton
+                Grid.Column="0"
+                Command="{x:Static ScrollBar.LineLeftCommand}"
+                Content="M 4.5 0 L 0 4.5 L 4.5 9"
+                Style="{StaticResource LinterScrollBarLineButton}" />
+            <Track x:Name="PART_Track" Grid.Column="1">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource LinterScrollBarPageButton}" />
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{StaticResource LinterScrollBarThumb}" />
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource LinterScrollBarPageButton}" />
+                </Track.IncreaseRepeatButton>
+            </Track>
+            <RepeatButton
+                Grid.Column="2"
+                Command="{x:Static ScrollBar.LineRightCommand}"
+                Content="M 0 0 L 4.5 4.5 L 0 9"
+                Style="{StaticResource LinterScrollBarLineButton}" />
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="LinterScrollBar" TargetType="{x:Type ScrollBar}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
+        <Setter Property="Template" Value="{StaticResource LinterVerticalScrollBarTemplate}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="Height" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}" />
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}" />
+                <Setter Property="MinWidth" Value="0" />
+                <Setter Property="Template" Value="{StaticResource LinterHorizontalScrollBarTemplate}" />
+                <Setter Property="Width" Value="Auto" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterScrollBar}" TargetType="{x:Type ScrollBar}" />
+
+    <!--  Tables  -->
+
+    <!--  Invisible strip on the edge of a column header that resizes the column when dragged.  -->
+    <Style x:Key="LinterColumnHeaderGripper" TargetType="{x:Type Thumb}">
+        <Setter Property="Cursor" Value="SizeWE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Width" Value="6" />
+    </Style>
+
+    <Style x:Key="LinterDataGridColumnHeader" TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="Background" Value="{DynamicResource LinterSurfaceBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                    <Grid>
+                        <Border
+                            x:Name="border"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource LinterBorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="Center"
+                                    RecognizesAccessKey="True" />
+                                <Path
+                                    x:Name="sort"
+                                    Grid.Column="1"
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Data="M 0 4 L 3.5 0.5 L 7 4"
+                                    Stroke="{DynamicResource LinterSecondaryForegroundBrush}"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="1.2"
+                                    Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <Thumb
+                            x:Name="PART_LeftHeaderGripper"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource LinterColumnHeaderGripper}" />
+                        <Thumb
+                            x:Name="PART_RightHeaderGripper"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource LinterColumnHeaderGripper}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="sort" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="sort" Property="Data" Value="M 0 0.5 L 3.5 4 L 7 0.5" />
+                            <Setter TargetName="sort" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="{x:Type DataGridColumnHeader}" />
+
+    <!--  The row shows the pointer and the selection; its cells stay transparent over it.  -->
+    <Style x:Key="LinterDataGridRow" TargetType="{x:Type DataGridRow}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="MinHeight" Value="22" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterDataGridRow}" TargetType="{x:Type DataGridRow}" />
+
+    <Style x:Key="LinterDataGridCell" TargetType="{x:Type DataGridCell}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterDataGridCell}" TargetType="{x:Type DataGridCell}" />
+
+    <Style x:Key="LinterDataGrid" TargetType="{x:Type DataGrid}">
+        <Setter Property="Background" Value="{DynamicResource LinterBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CanUserResizeRows" Value="False" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource LinterBorderBrush}" />
+        <Setter Property="RowBackground" Value="Transparent" />
+    </Style>
+
+    <Style BasedOn="{StaticResource LinterDataGrid}" TargetType="{x:Type DataGrid}" />
+
+    <!--
+        Row actions stay quiet until they are needed: the icon takes the text color and is dimmed, and becomes
+        fully visible in the row under the pointer and in the selected row. A view may still set an accent
+        Foreground on a button whose color is a signal. The disabled trigger is last so that it wins in those
+        rows as well.
+    -->
+    <Style
+        x:Key="LinterGridIconButton"
+        BasedOn="{StaticResource LinterToolBarIconButton}"
+        TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Opacity" Value="0.45" />
+        <Setter Property="Width" Value="20" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+            </DataTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.2" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        A hyperlink inside a cell template does not pick up an implicit style from outside the template.
+        Declare an implicit style based on this one in the resources of that template.
+    -->
+    <Style x:Key="LinterReportHyperlink" TargetType="{x:Type Hyperlink}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource LinterAccentHoverBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Dialogs and the welcome window  -->
+
+    <Style x:Key="LinterDialogContent" TargetType="{x:Type Grid}">
+        <Setter Property="Margin" Value="16,14,16,12" />
+    </Style>
+
+    <!--  Outlined button; the default button and the one with the keyboard focus have an accent outline.  -->
+    <Style x:Key="LinterDialogButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{DynamicResource LinterSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterStrongBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="{StaticResource LinterFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="MinWidth" Value="75" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LinterSelectionBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LinterDialogTitleText" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource LinterTitleFontSize}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="LinterParagraphText" TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!--  A paragraph that takes no room while it has no text.  -->
+    <Style
+        x:Key="LinterStatusText"
+        BasedOn="{StaticResource LinterParagraphText}"
+        TargetType="{x:Type TextBlock}">
+        <Style.Triggers>
+            <Trigger Property="Text" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Light-hearted remarks are set off like a quotation: an accent bar in the accent color.  -->
+    <Style x:Key="LinterRemarkBorder" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
+        <Setter Property="Padding" Value="10,2,0,2" />
+    </Style>
+
+    <Style x:Key="LinterRemarkText" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource LinterRemarkFontSize}" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+</ResourceDictionary>

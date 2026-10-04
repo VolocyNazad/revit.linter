@@ -39,6 +39,17 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+`Revit.Linter.ThemeManaging` owns the look shared by all views and depends on no control library.
+`SharedThemeResources` is the single resource dictionary with the palette and the style and template of every
+control the add-in uses, drawn flat and dense like the Revit palettes; each root view merges it instead of
+declaring colors or restyling controls itself. Views refer only to its `Linter*` keys and take the font and the
+colors from the `LinterViewRoot` style set on the root element. Colors live in `LightPalette` and `DarkPalette`
+next to it: both declare the same `Linter*Brush` keys, with values taken from the Revit interface, and styles
+reference them only through `DynamicResource`; `IThemeService` calls `SharedThemeResources.ApplyTheme` for
+registered element trees when the Revit theme changes. `Controls` holds what the styles need beyond WPF:
+`PathIcon` with its `IconKind` outlines (from Material Design Icons, Apache License 2.0) and the `Hint.Text`
+attached property for the text shown in an empty text box. The dictionaries are XAML-compiled classes that
+views reference by type rather than by a pack URI, which survives ILRepack.
 `DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
 address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
 it for F1 help, and the report row opens it; a renamed Wiki page must be renamed in the code that refers to it.
@@ -123,7 +134,7 @@ continue while a Revit process is running.
 
 - `VolocyNazad.Revit.Sdk` (a custom MSBuild SDK, source in a separate
   repository `toolkit.revit.sdk`) + `Revit_All_Main_Versions_API_x64`
-- WPF, CommunityToolkit.Mvvm, MaterialDesignThemes, Microsoft.Xaml.Behaviors.Wpf
+- WPF with the add-in's own control styles, CommunityToolkit.Mvvm, Microsoft.Xaml.Behaviors.Wpf
 - `VolocyNazad.Revit.Async`, `VolocyNazad.Revit.Context`,
   `VolocyNazad.Revit.Events`, `VolocyNazad.Revit.TransactionMemoryCache`,
   `VolocyNazad.MVVM.DependencyInjection`, `VolocyNazad.AssemblyResolver` —

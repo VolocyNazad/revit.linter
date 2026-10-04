@@ -8,8 +8,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:infrastructure="clr-namespace:Revit.Linter.FixReportPresenter.Infrastructure"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
     xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
@@ -17,15 +18,12 @@
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:FixReportViewModel}}"
     d:DesignHeight="400"
     d:DesignWidth="2000"
+    Style="{DynamicResource LinterViewRoot}"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme
-                    BaseTheme="Light"
-                    PrimaryColor="Cyan"
-                    SecondaryColor="DeepOrange" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
+                <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -34,58 +32,52 @@
             <i:InvokeCommandAction Command="{Binding InitializeCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <materialDesign:ColorZone
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        VerticalContentAlignment="Stretch">
+    <Border Style="{StaticResource LinterViewPanel}">
         <DockPanel>
-            <DockPanel Height="45" DockPanel.Dock="Top">
+            <DockPanel DockPanel.Dock="Top" Style="{StaticResource LinterToolBarPanel}">
                 <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
-                <ComboBox
-                    MinWidth="150"
-                    Margin="5"
-                    behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
-                    behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
-                    materialDesign:HintAssist.Hint="{Binding DocumentText}"
-                    materialDesign:HintAssist.IsFloating="True"
-                    DisplayMemberPath="DisplayName"
-                    ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
-                    SelectedValue="{Binding TargetDocumentTitle}"
-                    SelectedValuePath="Title"
-                    Style="{StaticResource MaterialDesignComboBox}" />
-                <Button
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarContextLabel}"
+                    Text="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}"
+                    ToolTip="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}" />
+                <ToggleButton
+                    x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding MoreFiltersTitle, Mode=OneWay}"
-                    Content="{materialDesign:PackIcon Kind=FilterPlus,
-                                                      Size=20}"
+                    Content="{controls:Icon Kind=Filter}"
                     DockPanel.Dock="Right"
-                    IsEnabled="False"
-                    Style="{StaticResource MaterialDesignIconButton}" />
+                    Style="{StaticResource LinterToolBarPopupToggleButton}" />
+                <Popup
+                    IsOpen="{Binding IsChecked, ElementName=FiltersButton, Mode=TwoWay}"
+                    PlacementTarget="{Binding ElementName=FiltersButton}"
+                    Style="{StaticResource LinterToolBarPopup}">
+                    <Border Style="{StaticResource LinterPopupPanel}">
+                        <ListBox
+                            x:Name="DocumentFilterList"
+                            behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
+                            behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
+                            SelectedValue="{Binding TargetDocumentTitle}"
+                            SelectedValuePath="Title"
+                            Style="{StaticResource LinterRadioListBox}" />
+                    </Border>
+                </Popup>
                 <TextBox
-                    Width="200"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
                     behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
-                    materialDesign:HintAssist.Hint="{Binding SearchText}"
-                    materialDesign:TextFieldAssist.HasLeadingIcon="True"
-                    materialDesign:TextFieldAssist.LeadingIcon="Search"
+                    controls:Hint.Text="{Binding SearchText}"
                     DockPanel.Dock="Right"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Style="{StaticResource LinterSearchTextBox}"
                     Text="{Binding SearchField, UpdateSourceTrigger=LostFocus}" />
                 <TextBlock
-                    Margin="5"
-                    VerticalAlignment="Center"
                     DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarLabel}"
                     Text="{Binding FixesText}" />
                 <UIElement />
             </DockPanel>
-            <Rectangle
-                Height="1"
-                HorizontalAlignment="Stretch"
-                DockPanel.Dock="Top"
-                Fill="{DynamicResource MaterialDesignDivider}" />
+            <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <DataGrid
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
@@ -98,33 +90,21 @@
                     <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding Code}" />
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding Code}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="MessageText">
+                    <DataGridTemplateColumn
+                        Width="*"
+                        MinWidth="{StaticResource LinterStretchColumnMinWidth}"
+                        Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="MessageText">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <DataTemplate.Resources>
-                                    <Style TargetType="Hyperlink">
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-                                        <Setter Property="TextDecorations" Value="Underline" />
-                                        <Setter Property="Cursor" Value="Hand" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
+                                    <Style BasedOn="{StaticResource LinterReportHyperlink}" TargetType="Hyperlink" />
                                 </DataTemplate.Resources>
                                 <messaging:ReportMessageView
-                                    Width="1800"
                                     HorizontalScrollBarVisibility="Disabled"
                                     IsSelectionEnabled="True"
                                     LinkCommand="{Binding AccentElementCommand}"
@@ -142,31 +122,19 @@
                     <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding DocumentTitle}" />
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding CreatedText, Mode=OneWay}" />
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding CreatedText, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-    </materialDesign:ColorZone>
+    </Border>
 </UserControl>

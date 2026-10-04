@@ -1,5 +1,5 @@
-using MaterialDesignThemes.Wpf;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
+using Revit.Linter.ThemeManaging.Resources;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -68,10 +68,10 @@ internal sealed partial class ThemeService : IThemeService
     {
         foreach (ResourceDictionary dictionary in resources.MergedDictionaries)
         {
-            if (dictionary is BundledTheme bundledTheme)
-                bundledTheme.BaseTheme = isDarkTheme ? BaseTheme.Dark : BaseTheme.Light;
-
-            UpdateResources(dictionary, isDarkTheme);
+            if (dictionary is SharedThemeResources sharedThemeResources)
+                sharedThemeResources.ApplyTheme(isDarkTheme);
+            else
+                UpdateResources(dictionary, isDarkTheme);
         }
     }
 }

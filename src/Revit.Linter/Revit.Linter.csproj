@@ -10,7 +10,7 @@
 		<GenerateAddinOnBuild Condition="'$(IsDebug)' == 'true'">true</GenerateAddinOnBuild>
 		<AddinOutputDirectory>$(AppData)\Autodesk\Revit</AddinOutputDirectory>
 		<IsRepackable>true</IsRepackable>
-		<RepackBinariesExcludes>MaterialDesignThemes.Wpf.dll;MaterialDesignColors.dll;Microsoft.Xaml.Behaviors.dll;Revit.Linter.Localization.dll</RepackBinariesExcludes>
+		<RepackBinariesExcludes>Microsoft.Xaml.Behaviors.dll;Revit.Linter.Localization.dll</RepackBinariesExcludes>
 		<StartArguments>/language RUS</StartArguments>
 	</PropertyGroup>
 	<ItemGroup>

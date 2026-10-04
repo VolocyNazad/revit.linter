@@ -1,0 +1,49 @@
+<ResourceDictionary
+    x:Class="Revit.Linter.ThemeManaging.Resources.DarkPalette"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:ClassModifier="internal">
+    <!--
+        Colors of the dark theme, taken from the Revit interface with a color picker. The other palette declares
+        the same keys; keep the two files in step. Styles refer to the Linter* brushes through DynamicResource.
+    -->
+
+    <!--  Content of a pane or a window, as in the project browser.  -->
+    <SolidColorBrush x:Key="LinterBackgroundBrush" Color="#3B4453" />
+    <!--  Tool bar and table header, as the group rows of the project browser.  -->
+    <SolidColorBrush x:Key="LinterSurfaceBrush" Color="#333B49" />
+    <!--  Inside of input fields, check boxes and radio buttons.  -->
+    <SolidColorBrush x:Key="LinterInputBackgroundBrush" Color="#2C3440" />
+    <!--  Text and neutral icons.  -->
+    <SolidColorBrush x:Key="LinterForegroundBrush" Color="#F5F5F5" />
+    <!--  Hints and other text of lower importance.  -->
+    <SolidColorBrush x:Key="LinterSecondaryForegroundBrush" Color="#A2A6AD" />
+    <!--  Dividers and table lines.  -->
+    <SolidColorBrush x:Key="LinterBorderBrush" Color="#485363" />
+    <!--  Outlines of input fields, check boxes and popups.  -->
+    <SolidColorBrush x:Key="LinterStrongBorderBrush" Color="#515C6B" />
+    <!--  Row or item under the pointer.  -->
+    <SolidColorBrush x:Key="LinterHoverBrush" Color="#44505F" />
+    <!--  Selected row and pressed button, as the pressed ribbon button.  -->
+    <SolidColorBrush x:Key="LinterSelectionBrush" Color="#3A5368" />
+    <!--  Links, accent icons and checked marks.  -->
+    <SolidColorBrush x:Key="LinterAccentBrush" Color="#7FBFF5" />
+    <!--  Accent under the pointer.  -->
+    <SolidColorBrush x:Key="LinterAccentHoverBrush" Color="#A9D5FA" />
+    <!--  Text and marks drawn on the accent color.  -->
+    <SolidColorBrush x:Key="LinterAccentForegroundBrush" Color="#1A1F25" />
+    <!--  Icon that draws attention, such as the fix button.  -->
+    <SolidColorBrush x:Key="LinterHighlightIconBrush" Color="#FFB74D" />
+    <!--  Text of a warning; dark enough to read as small text.  -->
+    <SolidColorBrush x:Key="LinterSeverityWarningBrush" Color="#FFB74D" />
+    <!--  Text of an error.  -->
+    <SolidColorBrush x:Key="LinterSeverityErrorBrush" Color="#EF5350" />
+    <!--  Track of a scroll bar.  -->
+    <SolidColorBrush x:Key="LinterScrollBarTrackBrush" Color="#323844" />
+    <!--  Thumb of a scroll bar.  -->
+    <SolidColorBrush x:Key="LinterScrollBarThumbBrush" Color="#778599" />
+    <!--  Thumb of a scroll bar under the pointer or dragged.  -->
+    <SolidColorBrush x:Key="LinterScrollBarThumbHoverBrush" Color="#94A1B3" />
+    <!--  Chevrons of a scroll bar.  -->
+    <SolidColorBrush x:Key="LinterScrollBarArrowBrush" Color="#A2A6B0" />
+</ResourceDictionary>

@@ -8,8 +8,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticReportPresenter.Infrastructure"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
     xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
@@ -17,15 +18,12 @@
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticReportViewModel}}"
     d:DesignHeight="450"
     d:DesignWidth="1400"
+    Style="{DynamicResource LinterViewRoot}"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme
-                    BaseTheme="Light"
-                    PrimaryColor="Cyan"
-                    SecondaryColor="DeepOrange" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
+                <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -34,133 +32,104 @@
             <i:InvokeCommandAction Command="{Binding InitializeCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <materialDesign:ColorZone
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        VerticalContentAlignment="Stretch">
+    <Border Style="{StaticResource LinterViewPanel}">
         <DockPanel>
-            <DockPanel Height="45" DockPanel.Dock="Top">
+            <DockPanel DockPanel.Dock="Top" Style="{StaticResource LinterToolBarPanel}">
                 <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
-                <Rectangle
-                    Width="1"
-                    Margin="0,5"
-                    VerticalAlignment="Stretch"
+                <Rectangle DockPanel.Dock="Left" Style="{StaticResource LinterVerticalDivider}" />
+                <TextBlock
                     DockPanel.Dock="Left"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
-                <ComboBox
-                    MinWidth="150"
-                    Margin="5"
-                    behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
-                    behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
-                    materialDesign:HintAssist.Hint="{Binding DocumentText}"
-                    materialDesign:HintAssist.IsFloating="True"
-                    DisplayMemberPath="DisplayName"
-                    ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
-                    SelectedValue="{Binding TargetDocumentTitle}"
-                    SelectedValuePath="Title"
-                    Style="{StaticResource MaterialDesignComboBox}" />
-                <Rectangle
-                    Width="1"
-                    Margin="0,5"
-                    VerticalAlignment="Stretch"
-                    DockPanel.Dock="Left"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
-                <ListBox
-                    VerticalAlignment="Center"
-                    d:ItemsSource="{d:SampleData ItemCount=2}"
-                    DataContext="{Binding SeverityFilters}"
-                    DockPanel.Dock="Left"
-                    ItemsSource="{Binding}"
-                    Style="{StaticResource MaterialDesignFilterChipSecondaryListBox}">
-                    <ListBox.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource MaterialDesignFilterChipSecondaryListBoxItem}" TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="IsSelected" Value="{Binding IsActive, Mode=TwoWay}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-                <ListBox
-                    VerticalAlignment="Center"
-                    d:ItemsSource="{d:SampleData ItemCount=3}"
-                    DataContext="{Binding Filters}"
-                    DockPanel.Dock="Left"
-                    ItemsSource="{Binding}"
-                    Style="{StaticResource MaterialDesignFilterChipSecondaryListBox}">
-                    <ListBox.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource MaterialDesignFilterChipSecondaryListBoxItem}" TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="IsSelected" Value="{Binding IsActive, Mode=TwoWay}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-                <Rectangle
-                    Width="1"
-                    Margin="0,5"
-                    VerticalAlignment="Stretch"
-                    DockPanel.Dock="Left"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
+                    Style="{StaticResource LinterToolBarContextLabel}"
+                    Text="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}"
+                    ToolTip="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}" />
+                <Rectangle DockPanel.Dock="Left" Style="{StaticResource LinterVerticalDivider}" />
                 <Button
-                    Width="35"
-                    Height="35"
-                    Margin="5"
+                    behaviors:HelpToolTip.Description="{Binding ShowPreviousDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ShowPreviousText, Mode=OneWay}"
+                    Command="{Binding ShowPreviousVisualizationCommand}"
+                    Content="{controls:Icon Kind=ChevronUp}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarCounterLabel}"
+                    Text="{Binding NavigationPositionText}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding ShowNextDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ShowNextText, Mode=OneWay}"
+                    Command="{Binding ShowNextVisualizationCommand}"
+                    Content="{controls:Icon Kind=ChevronDown}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <Button
                     behaviors:HelpToolTip.Description="{Binding ExportReportDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ExportReportText, Mode=OneWay}"
                     d:Command="{x:Null}"
                     Command="{Binding ExportCommand}"
-                    Content="{materialDesign:PackIcon Kind=Export,
-                                                      Size=30}"
-                    DockPanel.Dock="Left"
-                    Style="{StaticResource MaterialDesignIconButton}" />
-                <Rectangle
-                    Width="1"
-                    Margin="0,5"
-                    VerticalAlignment="Stretch"
-                    DockPanel.Dock="Left"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
-                <Button
+                    Content="{controls:Icon Kind=Export}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <ToggleButton
+                    x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding MoreFiltersTitle, Mode=OneWay}"
-                    Content="{materialDesign:PackIcon Kind=FilterPlus,
-                                                      Size=20}"
+                    Content="{controls:Icon Kind=Filter}"
                     DockPanel.Dock="Right"
-                    IsEnabled="False"
-                    Style="{StaticResource MaterialDesignIconButton}" />
+                    Style="{StaticResource LinterToolBarPopupToggleButton}" />
+                <Popup
+                    IsOpen="{Binding IsChecked, ElementName=FiltersButton, Mode=TwoWay}"
+                    PlacementTarget="{Binding ElementName=FiltersButton}"
+                    Style="{StaticResource LinterToolBarPopup}">
+                    <Border Style="{StaticResource LinterPopupPanel}">
+                        <StackPanel>
+                            <ListBox
+                                x:Name="DocumentFilterList"
+                                behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
+                                behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
+                                DisplayMemberPath="DisplayName"
+                                ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
+                                SelectedValue="{Binding TargetDocumentTitle}"
+                                SelectedValuePath="Title"
+                                Style="{StaticResource LinterRadioListBox}" />
+                            <Rectangle Margin="0,4" Style="{StaticResource LinterHorizontalDivider}" />
+                            <ItemsControl ItemTemplate="{StaticResource LinterFilterCheckBoxTemplate}" ItemsSource="{Binding SeverityFilters}" />
+                            <Rectangle Margin="0,4" Style="{StaticResource LinterHorizontalDivider}" />
+                            <ItemsControl ItemTemplate="{StaticResource LinterFilterCheckBoxTemplate}" ItemsSource="{Binding Filters}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
                 <TextBox
-                    Width="200"
-                    Margin="5"
                     d:Text="Search text"
                     behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
-                    materialDesign:HintAssist.Hint="{Binding SearchText}"
-                    materialDesign:TextFieldAssist.HasLeadingIcon="True"
-                    materialDesign:TextFieldAssist.LeadingIcon="Search"
+                    controls:Hint.Text="{Binding SearchText}"
                     DockPanel.Dock="Right"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Style="{StaticResource LinterSearchTextBox}"
                     Text="{Binding SearchField, UpdateSourceTrigger=LostFocus}" />
                 <TextBlock
-                    Margin="5"
-                    VerticalAlignment="Center"
                     DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarLabel}"
                     Text="{Binding ReportsText}" />
                 <UIElement />
             </DockPanel>
-            <Rectangle
-                Height="1"
-                HorizontalAlignment="Stretch"
-                DockPanel.Dock="Top"
-                Fill="{DynamicResource MaterialDesignDivider}" />
+            <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <DataGrid
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 IsReadOnly="True"
+                IsSynchronizedWithCurrentItem="True"
                 ItemsSource="{Binding CollectionViewSource.View}">
+                <i:Interaction.Behaviors>
+                    <behaviors:DataGridRowNavigationBehavior ActivateCommand="{Binding ShowCurrentVisualizationCommand}" />
+                </i:Interaction.Behaviors>
                 <DataGrid.RowStyle>
-                    <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="DataGridRow">
+                    <Style BasedOn="{StaticResource LinterDataGridRow}" TargetType="DataGridRow">
                         <Setter Property="ContextMenu">
                             <Setter.Value>
                                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding Fixes}">
                                     <ContextMenu.ItemContainerStyle>
-                                        <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                        <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                             <Setter Property="Header" Value="{Binding Title}" />
                                             <Setter Property="Command" Value="{Binding FixCommand}" />
                                             <Setter Property="Icon" Value="{Binding Icon}" />
@@ -180,22 +149,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
-                                    Width="25"
-                                    Height="25"
                                     behaviors:HelpToolTip.Description="{Binding DataContext.FixDescription, Source={StaticResource proxy}, Mode=OneWay}"
                                     behaviors:HelpToolTip.Title="{Binding DataContext.FixTitle, Source={StaticResource proxy}, Mode=OneWay}"
                                     Click="FixButton_OnClick"
-                                    Content="{materialDesign:PackIcon Kind=Idea,
-                                                                      Size=20}"
-                                    Foreground="#FFB74D"
-                                    IsEnabled="{Binding HasFixes}"
-                                    Style="{StaticResource MaterialDesignIconButton}">
+                                    Content="{controls:Icon Kind=Lightbulb}"
+                                    Foreground="{DynamicResource LinterHighlightIconBrush}"
+                                    Style="{StaticResource LinterGridIconButton}"
+                                    Visibility="{Binding HasFixes, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <Button.ContextMenu>
                                         <ContextMenu
                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                                             ItemsSource="{Binding Fixes}">
                                             <ContextMenu.ItemContainerStyle>
-                                                <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                                <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
                                                     <Setter Property="Command" Value="{Binding FixCommand}" />
                                                     <Setter Property="Icon" Value="{Binding Icon}" />
@@ -211,21 +177,18 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
-                                    Width="25"
-                                    Height="25"
                                     behaviors:HelpToolTip.Description="{Binding DataContext.ShowVisualizationDescription, Source={StaticResource proxy}, Mode=OneWay}"
                                     behaviors:HelpToolTip.Title="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}, Mode=OneWay}"
                                     Click="VisualizationButton_OnClick"
-                                    Content="{materialDesign:PackIcon Kind=Eye,
-                                                                      Size=20}"
+                                    Content="{controls:Icon Kind=Eye}"
                                     IsEnabled="{Binding HasVisualizationPipelines}"
-                                    Style="{StaticResource MaterialDesignIconButton}">
+                                    Style="{StaticResource LinterGridIconButton}">
                                     <Button.ContextMenu>
                                         <ContextMenu
                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                                             ItemsSource="{Binding VisualizationPipelines}">
                                             <ContextMenu.ItemContainerStyle>
-                                                <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                                <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
                                                     <Setter Property="Command" Value="{Binding ShowCommand}" />
                                                 </Style>
@@ -236,83 +199,24 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button
-                                    Width="25"
-                                    Height="25"
-                                    Command="{Binding OpenDocumentationCommand}"
-                                    Content="{materialDesign:PackIcon Kind=HelpCircleOutline,
-                                                                      Size=20}"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    ToolTip="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <DataTemplate.Resources>
-                                    <Style x:Key="SeverityTextBlockStyle" TargetType="{x:Type TextBlock}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Severity}" Value="Warning">
-                                                <Setter Property="Foreground" Value="#FFB74D" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Severity}" Value="Error">
-                                                <Setter Property="Foreground" Value="#EF5350" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataTemplate.Resources>
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    d:Text="Severity"
-                                    Style="{StaticResource SeverityTextBlockStyle}"
-                                    Text="{Binding SeverityText}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False">
-                                    <TextBox.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
-                                            <Setter Property="Text" Value="{Binding Code}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
-                                                    <Setter Property="TextDecorations" Value="Strikethrough" />
-                                                    <Setter Property="ToolTip" Value="{Binding ObsoleteDescription}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
+                                <TextBox Style="{StaticResource LinterSeverityCodeCellTextBox}" Text="{Binding Code}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}" SortMemberPath="MessageText">
+                    <DataGridTemplateColumn
+                        Width="*"
+                        MinWidth="{StaticResource LinterStretchColumnMinWidth}"
+                        Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="MessageText">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <DataTemplate.Resources>
-                                    <Style TargetType="Hyperlink">
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-                                        <Setter Property="TextDecorations" Value="Underline" />
-                                        <Setter Property="Cursor" Value="Hand" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
+                                    <Style BasedOn="{StaticResource LinterReportHyperlink}" TargetType="Hyperlink" />
                                 </DataTemplate.Resources>
                                 <messaging:ReportMessageView
-                                    Width="1200"
                                     VerticalAlignment="Center"
                                     HorizontalScrollBarVisibility="Disabled"
                                     IsObsolete="{Binding IsObsolete}"
@@ -331,31 +235,30 @@
                     <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding DocumentTitle}" />
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    IsReadOnlyCaretVisible="False"
-                                    Style="{StaticResource MaterialDesignTextBox}"
-                                    Text="{Binding CreatedText, Mode=OneWay}" />
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding CreatedText, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Command="{Binding OpenDocumentationCommand}"
+                                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                                    Style="{StaticResource LinterGridIconButton}"
+                                    ToolTip="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-    </materialDesign:ColorZone>
+    </Border>
 </UserControl>
