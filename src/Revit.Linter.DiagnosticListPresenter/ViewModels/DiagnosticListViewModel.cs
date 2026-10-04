@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
-using Revit.Linter.DiagnosticListPresenter.ViewModels.Base;
+using Revit.Linter.Presentation.ViewModels;
 using Toolkit.ValueStore.Abstractions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

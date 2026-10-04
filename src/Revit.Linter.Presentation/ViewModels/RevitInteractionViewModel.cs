@@ -1,17 +1,17 @@
-﻿using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI.Events;
 using Revit.Linter.Core.Abstractions.Services;
 
-namespace Revit.Linter.RunDiagnosticPresenter.ViewModels.Base;
+namespace Revit.Linter.Presentation.ViewModels;
 
 /// <summary>
-/// Maintains Revit event subscriptions for view models whose command availability depends on application state.
+/// Maintains Revit event subscriptions for view models that react to document and view changes.
 /// </summary>
 [XamlConstructor]
 public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
     /// <summary>
-    /// Schedules subscription work in a valid Revit API context.
+    /// Schedules work in a valid Revit API context.
     /// </summary>
     protected readonly IRevitIdlingScheduler _idlingScheduler;
 
@@ -54,21 +54,22 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
         }, cancellationToken);
     }
 
-    private void FamilyLoadedIntoDocument(object? sender, FamilyLoadedIntoDocumentEventArgs e) => OnRevitChanged();
-    private void DocumentChanged(object? sender, DocumentChangedEventArgs e) => OnRevitChanged();
-    private void ViewActivated(object? sender, ViewActivatedEventArgs e) => OnRevitChanged();
-    private void DocumentCreated(object? sender, DocumentCreatedEventArgs e) => OnRevitChanged();
-    private void DocumentOpened(object? sender, DocumentOpenedEventArgs e) => OnRevitChanged();
-    private void DocumentClosed(object? sender, DocumentClosedEventArgs e) => OnRevitChanged();
+    private void FamilyLoadedIntoDocument(object? sender, FamilyLoadedIntoDocumentEventArgs e) => OnRevitChanged(RevitEventType.FamilyLoadedIntoDocument);
+    private void DocumentChanged(object? sender, DocumentChangedEventArgs e) => OnRevitChanged(RevitEventType.DocumentChanged);
+    private void ViewActivated(object? sender, ViewActivatedEventArgs e) => OnRevitChanged(RevitEventType.ViewActivated);
+    private void DocumentCreated(object? sender, DocumentCreatedEventArgs e) => OnRevitChanged(RevitEventType.DocumentCreated);
+    private void DocumentOpened(object? sender, DocumentOpenedEventArgs e) => OnRevitChanged(RevitEventType.DocumentOpened);
+    private void DocumentClosed(object? sender, DocumentClosedEventArgs e) => OnRevitChanged(RevitEventType.DocumentClosed);
     private void DocumentFocusChanged(object? sender, ViewActivatedEventArgs e)
     {
         if (e.CurrentActiveView is null || e.PreviousActiveView is null) return;
         if (e.CurrentActiveView.Document.Equals(e.PreviousActiveView.Document)) return;
-        OnRevitChanged();
+        OnRevitChanged(RevitEventType.DocumentFocusChanged);
     }
 
     /// <summary>
-    /// Responds when a subscribed Revit application event may have changed presentation state.
+    /// Responds to a subscribed Revit application event.
     /// </summary>
-    protected abstract void OnRevitChanged();
+    /// <param name="revitEventType">The kind of Revit change that occurred.</param>
+    protected abstract void OnRevitChanged(RevitEventType revitEventType);
 }

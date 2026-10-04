@@ -7,7 +7,6 @@
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:infrastructure="clr-namespace:Revit.Linter.FixReportPresenter.Infrastructure"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
@@ -84,7 +83,7 @@
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
                 <DataGrid.Resources>
-                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                    <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
-using Revit.Linter.OpenedDocuments.ViewModels.Base;
+using Revit.Linter.Presentation.ViewModels;
 using System.Collections.ObjectModel;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels;

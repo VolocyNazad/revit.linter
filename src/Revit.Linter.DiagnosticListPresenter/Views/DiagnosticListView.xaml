@@ -81,7 +81,7 @@
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}">
                 <DataGrid.Resources>
-                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                    <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>
                 <DataGrid.ContextMenu>
                     <ContextMenu>

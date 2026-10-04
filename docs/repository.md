@@ -39,6 +39,11 @@ presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
+The project also holds what the presenter modules would otherwise each repeat: the view-model bases in
+`ViewModels` (`InitializableObservableObject` with the initialize and deinitialize commands, and
+`RevitInteractionViewModel`, which subscribes to Revit document and view events and reports them as
+`RevitEventType`) and `BindingProxy` for bindings outside the visual tree. Because of the Revit event
+subscriptions it references `Revit.Linter.Core` and the Revit API.
 `Revit.Linter.ThemeManaging` owns the look shared by all views and depends on no control library.
 `SharedThemeResources` is the single resource dictionary with the palette and the style and template of every
 control the add-in uses, drawn flat and dense like the Revit palettes; each root view merges it instead of

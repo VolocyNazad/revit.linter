@@ -9,7 +9,7 @@ using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Exporting;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
-using Revit.Linter.DiagnosticReportPresenter.ViewModels.Base;
+using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Models;

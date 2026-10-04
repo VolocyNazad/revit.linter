@@ -7,7 +7,6 @@
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticReportPresenter.Infrastructure"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
@@ -141,7 +140,7 @@
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Resources>
-                    <infrastructure:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                    <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
