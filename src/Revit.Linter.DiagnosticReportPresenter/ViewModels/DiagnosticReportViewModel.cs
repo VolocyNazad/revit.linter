@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MaterialDesignThemes.Wpf;
+using Revit.Linter.ThemeManaging.Controls;
 using Microsoft.Extensions.Logging;
 using Revit.Async;
 using Revit.Context.Abstractions.Services;
@@ -763,6 +763,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             Title = pipeline.Value,
             ShowDelegate = async cancellationToken =>
             {
+                _preferredVisualizationName = pipeline.Value;
                 _logger.LogInformation(
                     "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
                     pipeline.Value, report.Code, target.Id);
@@ -945,9 +946,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             var elementId = element.Id;
 
             var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
-            PackIcon icon = new()
+            PathIcon icon = new()
             {
-                Kind = PackIconKind.Idea,
+                Kind = IconKind.Lightbulb,
                 Foreground = new SolidColorBrush(iconColor)
             };
             FixViewModel ignoreFix = new()
@@ -986,7 +987,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
             icon = new()
             {
-                Kind = PackIconKind.Idea,
+                Kind = IconKind.Lightbulb,
                 Foreground = new SolidColorBrush(iconColor)
             };
             async Task RunIgnoreFixAll(CancellationToken cancellationToken)
@@ -1062,9 +1063,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     List<FixViewModel> fixes = [];
 
                     var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
-                    PackIcon icon = new()
+                    PathIcon icon = new()
                     {
-                        Kind = PackIconKind.Idea,
+                        Kind = IconKind.Lightbulb,
                         Foreground = new SolidColorBrush(iconColor)
                     };
                     FixViewModel fix = new() {
@@ -1103,7 +1104,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
                     icon = new()
                     {
-                        Kind = PackIconKind.Idea,
+                        Kind = IconKind.Lightbulb,
                         Foreground = new SolidColorBrush(iconColor)
                     };
                     async Task RunFixAll(CancellationToken cancellationToken)
@@ -1183,9 +1184,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 .Select(i =>
                 {
                     var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
-                    PackIcon icon = new()
+                    PathIcon icon = new()
                     {
-                        Kind = PackIconKind.Idea,
+                        Kind = IconKind.Lightbulb,
                         Foreground = new SolidColorBrush(iconColor)
                     };
                     FixViewModel fix = new() {

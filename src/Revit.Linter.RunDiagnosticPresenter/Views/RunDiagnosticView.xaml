@@ -5,11 +5,12 @@
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:viewModels="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:RunDiagnosticViewModel}}"
+    Style="{DynamicResource LinterViewRoot}"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,46 +26,43 @@
     </i:Interaction.Triggers>
     <DockPanel>
         <ToggleButton
-            Width="35"
-            Height="35"
-            Margin="10,5,5,5"
             behaviors:HelpToolTip.Description="{Binding PauseDescription, Mode=OneWay}"
             behaviors:HelpToolTip.Title="{Binding PauseTitle, Mode=OneWay}"
-            materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Pause,
-                                                                                  Size=30}"
-            Background="Transparent"
-            Content="{materialDesign:PackIcon Kind=Play,
-                                              Size=30}"
             DockPanel.Dock="Left"
-            Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
             IsChecked="True"
             IsEnabled="false"
-            Style="{StaticResource MaterialDesignActionToggleButton}" />
+            Style="{StaticResource LinterToolBarToggleButton}">
+            <!--  Shows what a click does next: pause while running, resume while paused.  -->
+            <controls:PathIcon>
+                <controls:PathIcon.Style>
+                    <Style BasedOn="{StaticResource {x:Type controls:PathIcon}}" TargetType="{x:Type controls:PathIcon}">
+                        <Setter Property="Kind" Value="Play" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
+                                <Setter Property="Kind" Value="Pause" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:PathIcon.Style>
+            </controls:PathIcon>
+        </ToggleButton>
         <Button
-            Width="35"
-            Height="35"
-            Margin="5"
             behaviors:HelpToolTip.Description="{Binding RunDescription, Mode=OneWay}"
             behaviors:HelpToolTip.Note="{Binding DiagnosticTime}"
             behaviors:HelpToolTip.Title="{Binding RunTitle, Mode=OneWay}"
             d:Command="{x:Null}"
             Command="{Binding RunDiagnosticCommand}"
-            Content="{materialDesign:PackIcon Kind=Play,
-                                              Size=30}"
+            Content="{controls:Icon Kind=Play}"
             DockPanel.Dock="Left"
-            Style="{StaticResource MaterialDesignIconButton}" />
-        <Rectangle
-            Width="1"
-            Margin="0,5"
-            VerticalAlignment="Stretch"
-            DockPanel.Dock="Left"
-            Fill="{DynamicResource MaterialDesignDivider}" />
-        <CheckBox
-            Margin="10,0,10,0"
+            Style="{StaticResource LinterToolBarIconButton}" />
+        <Rectangle DockPanel.Dock="Left" Style="{StaticResource LinterVerticalDivider}" />
+        <ToggleButton
             behaviors:HelpToolTip.Description="{Binding OnActiveViewDescription, Mode=OneWay}"
             behaviors:HelpToolTip.Title="{Binding OnActiveViewText, Mode=OneWay}"
-            Content="{Binding OnActiveViewText}"
+            AutomationProperties.Name="{Binding OnActiveViewText, Mode=OneWay}"
+            Content="{controls:Icon Kind=ApplicationOutline}"
             DockPanel.Dock="Left"
-            IsChecked="{Binding OnActiveViewMode}" />
+            IsChecked="{Binding OnActiveViewMode}"
+            Style="{StaticResource LinterToolBarOptionToggleButton}" />
     </DockPanel>
 </UserControl>

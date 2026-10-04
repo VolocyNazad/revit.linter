@@ -3,7 +3,6 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MaterialDesignThemes" />
 		<PackageReference Include="Humanizer.Core" />
 		<PackageReference Include="Humanizer.Core.ru" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
