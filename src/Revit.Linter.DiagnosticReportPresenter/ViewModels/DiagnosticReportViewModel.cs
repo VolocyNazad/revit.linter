@@ -375,7 +375,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString())
         };
         exporter.Export(fileName, context, document);
-        _activityStream.Publish(new DiagnosticReportExportedActivity());
+        _activityStream.Publish(new DiagnosticReportExportedActivity(exporter.Extension));
     }
 
     private string CreateExportFileName()

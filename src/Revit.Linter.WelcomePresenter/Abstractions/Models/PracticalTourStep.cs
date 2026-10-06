@@ -39,6 +39,9 @@ public enum PracticalTourStep
     /// <summary>The tour points out report export.</summary>
     ExportReport = 6,
 
+    /// <summary>The tour asks for the same report in another export format.</summary>
+    ExportReportAnotherFormat = 13,
+
     /// <summary>The practical tour has reached its final step.</summary>
     Completed = 7,
 }

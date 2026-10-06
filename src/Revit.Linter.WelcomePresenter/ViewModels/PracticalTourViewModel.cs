@@ -24,6 +24,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.UnderstandFix,
         PracticalTourStep.FixList,
         PracticalTourStep.ExportReport,
+        PracticalTourStep.ExportReportAnotherFormat,
     ];
 
     private bool _tutorialSampleQueued;
@@ -32,6 +33,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     public PracticalTourStep CurrentStep => stateMachine.CurrentStep;
     public bool HasCleanRun => stateMachine.HasCleanRun;
     public bool HasSingleVisualization => stateMachine.HasSingleVisualization;
+    public string? FirstExportFormat => stateMachine.FirstExportFormat;
     public IReadOnlyList<PracticalTourStepRow> Steps => _steps;
 
     public string Instruction => CurrentStep switch
@@ -50,6 +52,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.FixList => FixListText,
         PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
         PracticalTourStep.ExportReport => ExportReportText,
+        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatText,
         _ => CompletedText,
     };
 
@@ -63,7 +66,8 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
             hasOpenDocument,
             progress?.CurrentStep,
             progress?.HasCleanRun == true,
-            progress?.HasSingleVisualization == true);
+            progress?.HasSingleVisualization == true,
+            progress?.FirstExportFormat);
         RefreshSteps();
         OnPropertyChanged(nameof(CurrentStep));
         OnPropertyChanged(nameof(Instruction));
@@ -93,6 +97,15 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         OnPropertyChanged(nameof(CurrentStep));
         OnPropertyChanged(nameof(Instruction));
         OnPropertyChanged(nameof(HasSingleVisualization));
+    }
+
+    public void ObserveReportExport(string format)
+    {
+        if (!stateMachine.ObserveReportExport(format)) return;
+        RefreshSteps();
+        OnPropertyChanged(nameof(CurrentStep));
+        OnPropertyChanged(nameof(Instruction));
+        if (!stateMachine.IsActive) StopRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void RefreshSteps()
@@ -137,6 +150,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.UnderstandFix => InspectFixesStepText,
         PracticalTourStep.FixList => FixListStepText,
         PracticalTourStep.ExportReport => ExportReportStepText,
+        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatStepText,
         _ => string.Empty,
     };
 
@@ -156,6 +170,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.FixList => FixListText,
         PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
         PracticalTourStep.ExportReport => ExportReportText,
+        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatText,
         _ => string.Empty,
     };
 

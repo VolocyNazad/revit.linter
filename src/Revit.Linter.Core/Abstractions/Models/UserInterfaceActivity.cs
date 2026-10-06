@@ -54,7 +54,8 @@ public sealed record FixAppliedActivity(string DiagnosticCode) : UserInterfaceAc
 public sealed record FindingNavigationUsedActivity(string DiagnosticCode) : UserInterfaceActivity;
 
 /// <summary>Indicates that a diagnostic report was exported successfully.</summary>
-public sealed record DiagnosticReportExportedActivity : UserInterfaceActivity;
+/// <param name="Format">The exporter file extension, for example <c>.csv</c>.</param>
+public sealed record DiagnosticReportExportedActivity(string Format) : UserInterfaceActivity;
 
 /// <summary>Indicates that the user narrowed the diagnostics list with the search box or filters.</summary>
 public sealed record DiagnosticListFilteredActivity : UserInterfaceActivity;

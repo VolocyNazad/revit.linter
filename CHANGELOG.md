@@ -21,6 +21,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Ask for the practical-tour report in one more format: after the first export, the tour waits for the same report in a different format, so users see that findings export to CSV, JSON, YAML and HTML.
 - Show a localized success notification after the practical tour is completed, and write the completion to the log.
 - Install a dedicated `TOUR001` diagnostic for the practical tour, with the visualizations and fix menu required by every guided task.
 - Extend the practical tour with tasks for opening the custom-configuration folder, selecting a visualization from a finding row's menu, stepping through findings, using search and filters, opening the Fix list pane, and applying the fix.

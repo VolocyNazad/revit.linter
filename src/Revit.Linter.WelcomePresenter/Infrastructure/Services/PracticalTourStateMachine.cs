@@ -25,6 +25,7 @@ internal sealed class PracticalTourStateMachine
         PracticalTourStep.UnderstandFix,
         PracticalTourStep.FixList,
         PracticalTourStep.ExportReport,
+        PracticalTourStep.ExportReportAnotherFormat,
         PracticalTourStep.Completed,
     ];
 
@@ -40,12 +41,16 @@ internal sealed class PracticalTourStateMachine
     /// <summary>Gets a value indicating that the inspected finding offers no visualization choice.</summary>
     public bool HasSingleVisualization { get; private set; }
 
+    /// <summary>Gets the export format of the first tour report export, if any.</summary>
+    public string? FirstExportFormat { get; private set; }
+
     /// <summary>Starts a new session at the action appropriate to the current document state.</summary>
     public void Start(
         bool hasOpenDocument,
         PracticalTourStep? resumeStep = null,
         bool hasCleanRun = false,
-        bool hasSingleVisualization = false)
+        bool hasSingleVisualization = false,
+        string? firstExportFormat = null)
     {
         PracticalTourStep firstAvailableStep = hasOpenDocument
             ? PracticalTourStep.OpenConfigurationFolder
@@ -55,11 +60,14 @@ internal sealed class PracticalTourStateMachine
             : resumeStep.Value;
         if (hasOpenDocument && CurrentStep == PracticalTourStep.OpenDocument)
             CurrentStep = PracticalTourStep.OpenConfigurationFolder;
-        HasCleanRun = hasCleanRun && CurrentStep == PracticalTourStep.ExportReport;
+        HasCleanRun = hasCleanRun && CurrentStep is PracticalTourStep.ExportReport
+            or PracticalTourStep.ExportReportAnotherFormat;
         HasSingleVisualization = hasSingleVisualization
                                  && CurrentStep is PracticalTourStep.UnderstandFix
                                      or PracticalTourStep.ExportReport
+                                     or PracticalTourStep.ExportReportAnotherFormat
                                      or PracticalTourStep.Completed;
+        FirstExportFormat = firstExportFormat;
         IsActive = true;
     }
 
@@ -67,9 +75,45 @@ internal sealed class PracticalTourStateMachine
     /// Advances only when the host reports the action currently expected by the tour.
     /// </summary>
     /// <returns><see langword="true"/> when the state advanced; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>
+    /// Export steps carry a format and advance only through <see cref="ObserveReportExport"/>;
+    /// a generic observation of either export step is ignored.
+    /// </remarks>
     public bool Observe(PracticalTourStep completedAction)
     {
-        if (!IsActive || completedAction != CurrentStep) return false;
+        if (!IsActive
+            || completedAction != CurrentStep
+            || completedAction is PracticalTourStep.ExportReport
+                or PracticalTourStep.ExportReportAnotherFormat)
+            return false;
+
+        Advance();
+        return true;
+    }
+
+    /// <summary>
+    /// Completes an export step when the reported format satisfies the current expectation.
+    /// </summary>
+    /// <param name="format">The exporter file extension of the completed export.</param>
+    /// <returns><see langword="true"/> when the state advanced; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>
+    /// The first export is accepted in any format and remembered. The follow-up export advances
+    /// the tour only when its format differs, so the user sees that reports come in several formats.
+    /// </remarks>
+    public bool ObserveReportExport(string format)
+    {
+        if (!IsActive) return false;
+
+        if (CurrentStep == PracticalTourStep.ExportReport)
+        {
+            FirstExportFormat = format;
+            Advance();
+            return true;
+        }
+
+        if (CurrentStep != PracticalTourStep.ExportReportAnotherFormat
+            || string.Equals(format, FirstExportFormat, StringComparison.OrdinalIgnoreCase))
+            return false;
 
         Advance();
         return true;

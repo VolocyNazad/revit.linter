@@ -154,10 +154,15 @@ internal sealed class PracticalTour(
                 return;
             }
 
+            if (activity is DiagnosticReportExportedActivity exported)
+            {
+                _viewModel?.ObserveReportExport(exported.Format);
+                return;
+            }
+
             PracticalTourStep step = activity switch
             {
                 DocumentOpenedActivity => PracticalTourStep.OpenDocument,
-                DiagnosticReportExportedActivity => PracticalTourStep.ExportReport,
                 _ => PracticalTourStep.Completed,
             };
             if (activity is DocumentOpenedActivity) welcomeHost.ShowPanes();
@@ -260,6 +265,7 @@ internal sealed class PracticalTour(
         PracticalTourStep.UnderstandFix => "UnderstandFix",
         PracticalTourStep.FixList => "FixList",
             PracticalTourStep.ExportReport => "ExportReport",
+            PracticalTourStep.ExportReportAnotherFormat => "ExportReport",
             _ => null,
         });
 
@@ -365,11 +371,13 @@ internal sealed class PracticalTour(
         int revitVersion = ConfigurationPathUtils.RevitVersion;
         bool hasCleanRun = _viewModel?.HasCleanRun == true;
         bool hasSingleVisualization = _viewModel?.HasSingleVisualization == true;
+        string? firstExportFormat = _viewModel?.FirstExportFormat;
         settingsStore.Update(settings => settings.PracticalTourProgressByRevitVersion[revitVersion] = new()
         {
             CurrentStep = step,
             HasCleanRun = hasCleanRun,
             HasSingleVisualization = hasSingleVisualization,
+            FirstExportFormat = firstExportFormat,
             IsCompleted = isCompleted,
             IsOptedOut = isOptedOut,
         });

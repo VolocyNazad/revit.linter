@@ -82,6 +82,7 @@ internal sealed class PracticalTourDesignData
         new("Выполнить исправление", string.Empty, false, false, false),
         new("Панель исправлений", string.Empty, false, false, false),
         new("Экспортировать отчёт", string.Empty, false, false, false),
+        new("Экспорт в другом формате", string.Empty, false, false, false),
     ];
     public string OptOutText => "Больше не показывать";
     public string StopText => "Продолжить позже";

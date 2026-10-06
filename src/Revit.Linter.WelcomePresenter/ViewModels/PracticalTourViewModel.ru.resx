@@ -33,6 +33,8 @@
   <data name="selectVisualization_text" xml:space="preserve"><value>В той же строке TOUR001 снова раскройте меню «Показать» и выберите «Изучить подробно: окрасить, подрезать, сфокусироваться».</value></data>
   <data name="understandFix_text" xml:space="preserve"><value>В строке TOUR001 откройте меню с лампочкой и примените исправление.</value></data>
   <data name="exportReport_text" xml:space="preserve"><value>В правом верхнем углу панели «Предупреждения» нажмите «Экспортировать отчет» и выберите формат.</value></data>
+  <data name="exportReportAnotherFormatStep_text" xml:space="preserve"><value>Экспорт в другом формате</value></data>
+  <data name="exportReportAnotherFormat_text" xml:space="preserve"><value>Экспортируйте отчёт ещё раз, выбрав другой формат — например, HTML после CSV.</value></data>
   <data name="cleanRunExportReport_text" xml:space="preserve"><value>Замечаний нет — это успешный результат. Экспорт находится в правом верхнем углу панели «Предупреждения».</value></data>
   <data name="completed_text" xml:space="preserve"><value>Практическое обучение завершено.</value></data>
 </root>

@@ -55,7 +55,6 @@ public sealed class PracticalTourStateMachineTests
                      PracticalTourStep.NavigateFindings,
                      PracticalTourStep.UnderstandFix,
                      PracticalTourStep.FixList,
-                     PracticalTourStep.ExportReport,
                  })
         {
             if (step == PracticalTourStep.ShowElement)
@@ -69,8 +68,49 @@ public sealed class PracticalTourStateMachineTests
             }
         }
 
+        Assert.Equal(PracticalTourStep.ExportReport, tour.CurrentStep);
+        Assert.True(tour.ObserveReportExport(".csv"));
+        Assert.Equal(PracticalTourStep.ExportReportAnotherFormat, tour.CurrentStep);
+        Assert.True(tour.ObserveReportExport(".html"));
+
         Assert.False(tour.IsActive);
         Assert.Equal(PracticalTourStep.Completed, tour.CurrentStep);
+    }
+
+    [Fact]
+    public void Ignores_a_repeat_export_in_the_same_format()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true, resumeStep: PracticalTourStep.ExportReport);
+
+        Assert.True(tour.ObserveReportExport(".csv"));
+
+        Assert.False(tour.ObserveReportExport(".CSV"));
+        Assert.Equal(PracticalTourStep.ExportReportAnotherFormat, tour.CurrentStep);
+        Assert.Equal(".csv", tour.FirstExportFormat);
+    }
+
+    [Fact]
+    public void Advances_on_an_export_in_another_format()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true, resumeStep: PracticalTourStep.ExportReport);
+
+        Assert.True(tour.ObserveReportExport(".csv"));
+        Assert.True(tour.ObserveReportExport(".json"));
+
+        Assert.False(tour.IsActive);
+        Assert.Equal(PracticalTourStep.Completed, tour.CurrentStep);
+    }
+
+    [Fact]
+    public void Ignores_a_generic_observation_of_export_steps()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true, resumeStep: PracticalTourStep.ExportReport);
+
+        Assert.False(tour.Observe(PracticalTourStep.ExportReport));
+        Assert.Equal(PracticalTourStep.ExportReport, tour.CurrentStep);
     }
 
     [Fact]

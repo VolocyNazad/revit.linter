@@ -12,6 +12,9 @@ public sealed class PracticalTourProgress
     /// <summary>Gets or sets whether the inspected finding offered only one visualization.</summary>
     public bool HasSingleVisualization { get; set; }
 
+    /// <summary>Gets or sets the export format of the first tour report export, if any.</summary>
+    public string? FirstExportFormat { get; set; }
+
     /// <summary>Gets or sets whether the user completed every applicable step.</summary>
     public bool IsCompleted { get; set; }
 

@@ -33,6 +33,8 @@
   <data name="selectVisualization_text" xml:space="preserve"><value>In the same TOUR001 row, open the Show menu again and choose “Inspect closely: color, crop, focus”.</value></data>
   <data name="understandFix_text" xml:space="preserve"><value>In the TOUR001 row, open the lightbulb menu and apply the fix.</value></data>
   <data name="exportReport_text" xml:space="preserve"><value>At the top right of the Warnings pane, select Export report and choose a format.</value></data>
+  <data name="exportReportAnotherFormatStep_text" xml:space="preserve"><value>Export in another format</value></data>
+  <data name="exportReportAnotherFormat_text" xml:space="preserve"><value>Export the report once more, this time choosing a different format — for example, HTML after CSV.</value></data>
   <data name="cleanRunExportReport_text" xml:space="preserve"><value>No findings were found — that is a successful result. Export is at the top right of the Warnings pane.</value></data>
   <data name="completed_text" xml:space="preserve"><value>The practical tour is complete.</value></data>
 </root>
