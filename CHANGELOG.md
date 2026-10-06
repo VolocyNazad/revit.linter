@@ -6,16 +6,81 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep localized table headers, diagnostic codes, severities, document names and timestamps from being clipped by undersized columns.
+- Focus the practical-tour activation step on the `TOUR001` checkbox instead of highlighting the entire diagnostics table.
+- Explain and automatically skip the visualization-choice tour task when the selected finding offers only one visualization.
+- Clarify where every practical-tour action is located in the Revit ribbon and diagnostic panes.
+- Restore the startup welcome wizard by keeping practical-tour orchestration out of the welcome host dependency graph.
+- Practical-tour prompts now size to their content and leave enough room for localized button labels.
+- Turning a visualization off no longer fails with "Failed to restore the previous visualization state" when Revit cannot return the view to its previous zoom.
+- A visualization started from a view that does not show the elements, such as a sheet, is now applied to the view Revit opens to show them instead of the view the user has left.
+- Running diagnostics while a visualization is active no longer fails with "Failed to restore the previous visualization state": the run now executes in a Revit API context and restores the visualization before it starts.
+- Collision rules with different `andTake` formulas no longer check each other's elements; rules with the same formulas share the collected elements.
+- Cached diagnostic data is no longer mixed between open documents with the same title or the same element IDs, or between a run on the active view and a run on the whole document.
+- Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
+
 ### Added
 
+- Show a localized success notification after the practical tour is completed.
+- Install a dedicated `TOUR001` diagnostic for the practical tour, with the visualizations and fix menu required by every guided task.
+- Extend the practical tour with tasks for opening the custom-configuration folder, selecting a visualization from a finding row's menu, stepping through findings, using search and filters, opening the Fix list pane, and applying the fix.
+- Expand the installed element-rule examples with every visualization step and practical combined pipelines for close inspection, distraction-free review, and coordination.
+- Host the practical tour in a right-side Revit dockable pane and provide a ribbon command for resuming it from the saved step.
+- Make the welcome step labels clickable, hide technical sample metadata, and automatically open the prepared Autodesk copy in the current Revit instance.
+- Guide an optional modeless practical tour through the real diagnostics workflow. The tour observes document opening, diagnostic selection and execution, finding inspection, element visualization, available fixes and successful report export without taking ownership of those actions; it highlights the relevant controls inside Revit Linter panels, skips finding-only steps after a clean run, and keeps resumable progress separately for each Revit version. Users can continue later, opt out, or reset the tour from **Getting started**.
+- Prepare every Autodesk tutorial model in a uniquely owned temporary session, delete its copy only after the document closes, and safely clean abandoned sessions while leaving copies used by another Revit process alone.
+- Explain built-in diagnostics and user-defined YAML rules in a new welcome step, including a localized read-only example that identifies the purpose of the main rule fields.
+- Show read-only, syntax-highlighted examples for element, collision and project-parameter YAML configuration files in the welcome wizard.
+- Load rules placed in the `examples` configuration subfolder, mark them as examples in the diagnostics list, and show an animated in-window confirmation after installation.
 - Step through the findings of the diagnostic report: the new previous and next buttons of the tool bar select the neighbouring row and show it in the active view, with the position among the shown rows between them, such as "3 / 47". In the table, **Up** and **Down** select a row and **Enter** shows it. Stepping repeats the visualization that was used last and skips rows that cannot be shown.
 - Control the add-in dialogs from the keyboard: **Enter** presses the default button (Close, the confirming button, or Next and Finish in the welcome window), **Esc** closes the dialog, and **Alt+Left**/**Alt+Right** or **Page Up**/**Page Down** move between the steps of the welcome window. The default button has the keyboard focus when a dialog opens.
-- Show a three-step welcome window the first time Revit starts with the add-in: what the add-in does and changes in a document, an offer to load example configurations for the selected disciplines (MEP systems, architecture, structure), and links to the quick start, the documentation and support. The new **Getting started** ribbon command opens it again. Loading examples never overwrites a configuration file that already contains rules: such an example is written to the `examples` subfolder.
+- Show a welcome window the first time Revit starts with the add-in: what the add-in does and changes in a document, the available diagnostics, an offer to load example configurations for the selected disciplines (MEP systems, architecture, structure), the optional practical tour, and links to the quick start, the documentation and support. The new **Getting started** ribbon command opens it again. Loading examples never overwrites a configuration file that already contains rules: such an example is written to the `examples` subfolder.
 - Open the documentation from the interface: **F1** over a ribbon button opens its Wiki page, and the new question-mark button in a diagnostic report row opens the page that describes the finding's diagnostic. Pages open in English or Russian following the Revit language.
 - Show ribbon-like tooltips on the pane buttons (run, pause, active-view option, export, more filters, fix, show): a title, a description and, where it applies, the duration of the last run. Disabled buttons explain why they are unavailable, and **F1** over a tooltip opens the Wiki page of the pane. The document list, the search boxes, the **Active** and severity column headers and the bulk selection menu of the diagnostics pane are explained the same way: what the search covers, that your changes override the rule and are saved, and how "all" differs from "visible".
 
 ### Changed
 
+- Keep the managed practical-tour configuration in the `tour` configuration subfolder instead of `examples/`, mark its rules with a tour badge, and pin them at the top of the Diagnostics pane. A superseded `examples/practical-tour.config.yaml` is removed when the tour starts, and the managed file is removed when the tour is completed or dismissed.
+- Pulse only the selected finding row's **Show** (eye) and fix (lightbulb) buttons during the practical tour instead of every row's buttons.
+- Pulse only the first `TOUR001` row on the finding-inspection tour step instead of the whole findings table.
+- Breathe highlighted tour controls slightly: the glow pulse is joined by a subtle scale pulse, suppressed together when Windows client-area animations are off. Large surfaces such as the findings table keep the glow only.
+- Align the practical-tour visualization instructions with the real report controls: **Show** opens a menu, and the second option is named in full.
+- Add a practical-tour step for stepping through neighbouring findings with the previous and next report arrows.
+- Add practical-tour steps for narrowing the Diagnostics pane with search and filters, and for opening the Fix list pane.
+- Apply the `TOUR001` fix as the practical-tour fix step instead of merely viewing the menu, so the Fix list pane has a result to show.
+- Log the practical-tour completion alongside its notification, so a missing window is visible in the log.
+- Complete the Fix list tour step by selecting an applied fix; opening the pane still counts.
+- Bring the Fix list pane forward on its practical-tour step.
+- Observe diagnostic selection changes made through bulk check actions, so the practical tour no longer misses them.
+- Pulse only the first `TOUR001` row in the Fix list pane on the fix-list tour step instead of the whole pane.
+- Name the practical-tour visualization steps “Visualize” and “Visualize differently” (“Визуализировать” / “Визуализировать иначе”).
+- List the user rule kinds (element, collision and project parameter checks) on the welcome diagnostics step.
+- Switch the `TOUR001` check off when the practical tour starts fresh, so the user enables it as the guided step asks. Resumed tours keep the current selection.
+- Remove the redundant welcome messages: the skipped-examples note on the practical-tour step, the closing summary on the finish step, and the configuration-folder and log-folder notes in "Good to know".
+- Configure the project ignore-list parameters silently when a document is opened: no success dialog, and no transaction when the bindings are already correct. A failed setup is logged and still reported once; an empty transaction is rolled back instead of committed.
+- Select the target element in the `Focus on the element` example visualizations (`config.yaml` and `practical-tour.config.yaml`, English and Russian).
+- Run diagnostic visualizations in a reusable `Revit Linter — Visualization` 3D view so crop and combined pipelines behave consistently instead of being redirected to a plan view.
+- Advance finding-specific practical-tour tasks only for `TOUR001`, so unrelated rules and warnings cannot desynchronize the walkthrough.
+- Bring the pane needed by each practical-tour task to the foreground and keep the target control gently pulsing until the action is completed.
+- Focus each practical-tour step with a high-contrast non-blocking spotlight, clearly dimmed surroundings and a localized next-step label.
+- Explain the collision-specific and project-parameter-specific keys below their YAML examples in the welcome wizard.
+- Activate the **Warnings** pane as soon as a diagnostic run starts, so the previous report is cleared and new findings appear in front of the user.
+- Present the practical tour as a lightweight checklist with a highlighted active task and check marks for completed tasks, remove manual step skipping, and make applying the fix an explicit task.
+- Simplify the practical-tour welcome step to one primary remark, with the selected next action and feedback shown as compact inline status text.
+- Wrap the practical-tour ribbon label onto two lines so the button uses less horizontal space.
+- Move Autodesk sample selection and all practical-tour controls into a dedicated welcome step, leaving the final step as a short completion summary with documentation links.
+- Highlight YAML keys, strings and comments in the read-only rule example using colors that follow the active Revit theme.
+- Populate the welcome and practical-tour windows with representative design-time data for accurate XAML previews without starting Revit.
+- Improve the welcome layout by centering the workflow, expanding the YAML preview without wrapping, and grouping ribbon-tab information under the important notes.
+- Present each important welcome note as a separate marked item instead of an undifferentiated text block.
+- Reshape the English and Russian getting-started Wiki around user tasks: choosing built-in diagnostics or YAML rules, creating a first rule, following the practical tour, and starting with or without an open document or Autodesk sample.
+- Isolate the practical tour behind neutral typed UI activity events and a disposable highlight session, so observer failures cannot affect diagnostic commands and the report presenter no longer exposes an onboarding-specific result query.
+- Contain and log failures at the onboarding boundary so a broken coach window, highlight, progress store, or tutorial cleanup cannot interrupt the main diagnostics workflow.
+- Clarify the welcome flow with a model-to-report overview and an adaptive final instruction that distinguishes between an already open document and a Revit session without one.
+- Make the final welcome action reflect every selected option immediately, and keep the panels enabled whenever the practical tour needs them.
+- After preparing an Autodesk sample, keep a modeless instruction visible until the user opens it from the dedicated ribbon command; the copy then opens in the current Revit instance, shows the panels and starts the tour.
 - Draw every control with the add-in's own flat templates instead of Material Design: square buttons without ripple animations, outlined dialog buttons and input fields, plain check boxes, radio buttons, menus and tool tips. The Material Design libraries are no longer installed with the add-in, which removes a source of version conflicts with other add-ins.
 - Color the panes and windows like the Revit interface in both the light and the dark theme: background, text, lines, selection and scroll bars use the colors of the Revit palettes, and the accent color is the Autodesk blue instead of cyan. Warning codes use a darker orange in the light theme so that they stay readable.
 - Make the panes and windows denser so they sit closer to the Revit interface: 12 px Segoe UI text, 16 px icons, smaller tool bar buttons, tighter table rows, menus and dialog buttons. The search box of a pane now shows its hint inside the field instead of above it.
@@ -37,15 +102,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Write the start and the result of each full diagnostic run to the log (duration, memory, garbage collections), with a timing breakdown for every diagnostic that takes 100 ms or longer: elements visited, ignored and checked, findings, and the time spent in the rule filter, the ignore list, checking and publishing findings. Faster diagnostics, cache hits and misses per document query, and report clearing and refreshing are written at the `Debug` level.
 - A diagnostic that fails no longer stops the others: the failure appears in the report as an error under the diagnostic's code, and the remaining diagnostics still produce their results.
 - Validate `parameter-element.config.yaml` when it is loaded: a rule with an unknown category, a group that is not valid for the running Revit version, an invalid GUID or a missing field is skipped with a message naming the rule, the parameter and the value, while the other rules stay in use.
-
-### Fixed
-
-- Turning a visualization off no longer fails with "Failed to restore the previous visualization state" when Revit cannot return the view to its previous zoom.
-- A visualization started from a view that does not show the elements, such as a sheet, is now applied to the view Revit opens to show them instead of the view the user has left.
-- Running diagnostics while a visualization is active no longer fails with "Failed to restore the previous visualization state": the run now executes in a Revit API context and restores the visualization before it starts.
-- Collision rules with different `andTake` formulas no longer check each other's elements; rules with the same formulas share the collected elements.
-- Cached diagnostic data is no longer mixed between open documents with the same title or the same element IDs, or between a run on the active view and a run on the whole document.
-- Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
 
 ## [1.8.0] - 2026-10-01
 
