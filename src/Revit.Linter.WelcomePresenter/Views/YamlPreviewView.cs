@@ -44,13 +44,18 @@ internal sealed class YamlPreviewView : FlowDocumentScrollViewer
             if (index < lines.Length - 1) paragraph.Inlines.Add(new LineBreak());
         }
 
-        return new FlowDocument(paragraph)
+        FlowDocument document = new(paragraph)
         {
             FontFamily = new("Consolas"),
             FontSize = 12,
             PageWidth = 650,
             PagePadding = new(0),
         };
+
+        // Plain runs carry no explicit foreground, so the document itself follows the theme.
+        // Colored runs above keep their own DynamicResource brushes.
+        document.SetResourceReference(TextElement.ForegroundProperty, "LinterForegroundBrush");
+        return document;
     }
 
     private static void AppendLine(Paragraph paragraph, string line)

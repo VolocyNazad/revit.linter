@@ -391,13 +391,10 @@
                                 Opacity="0.5"
                                 Text="&#x2192;" />
                             <Button
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
                                 Command="{Binding DataContext.GoToStepCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                 CommandParameter="{Binding}"
-                                Cursor="Hand"
-                                Focusable="False">
+                                Focusable="False"
+                                Style="{StaticResource LinterStepButton}">
                                 <TextBlock x:Name="StepLabel" Opacity="0.5">
                                     <Run Text="{Binding Number, Mode=OneWay}" /><Run Text=". " /><Run Text="{Binding Title, Mode=OneWay}" />
                                 </TextBlock>
