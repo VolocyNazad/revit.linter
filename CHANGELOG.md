@@ -17,13 +17,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Turning a visualization off no longer fails with "Failed to restore the previous visualization state" when Revit cannot return the view to its previous zoom.
 - A visualization started from a view that does not show the elements, such as a sheet, is now applied to the view Revit opens to show them instead of the view the user has left.
 - Running diagnostics while a visualization is active no longer fails with "Failed to restore the previous visualization state": the run now executes in a Revit API context and restores the visualization before it starts.
-- Collision rules with different `andTake` formulas no longer check each other's elements; rules with the same formulas share the collected elements.
-- Cached diagnostic data is no longer mixed between open documents with the same title or the same element IDs, or between a run on the active view and a run on the whole document.
 - Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
 
 ### Added
 
-- Show a localized success notification after the practical tour is completed.
+- Show a localized success notification after the practical tour is completed, and write the completion to the log.
 - Install a dedicated `TOUR001` diagnostic for the practical tour, with the visualizations and fix menu required by every guided task.
 - Extend the practical tour with tasks for opening the custom-configuration folder, selecting a visualization from a finding row's menu, stepping through findings, using search and filters, opening the Fix list pane, and applying the fix.
 - Expand the installed element-rule examples with every visualization step and practical combined pipelines for close inspection, distraction-free review, and coordination.
@@ -43,21 +41,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Keep the managed practical-tour configuration in the `tour` configuration subfolder instead of `examples/`, mark its rules with a tour badge, and pin them at the top of the Diagnostics pane. A superseded `examples/practical-tour.config.yaml` is removed when the tour starts, and the managed file is removed when the tour is completed or dismissed.
-- Pulse only the selected finding row's **Show** (eye) and fix (lightbulb) buttons during the practical tour instead of every row's buttons.
-- Pulse only the first `TOUR001` row on the finding-inspection tour step instead of the whole findings table.
+- Pulse only the relevant row during the practical tour instead of whole tables: the selected row's **Show** (eye) and fix (lightbulb) buttons, and the first `TOUR001` finding and fix rows.
 - Breathe highlighted tour controls slightly: the glow pulse is joined by a subtle scale pulse, suppressed together when Windows client-area animations are off. Large surfaces such as the findings table keep the glow only.
 - Align the practical-tour visualization instructions with the real report controls: **Show** opens a menu, and the second option is named in full.
-- Add a practical-tour step for stepping through neighbouring findings with the previous and next report arrows.
-- Add practical-tour steps for narrowing the Diagnostics pane with search and filters, and for opening the Fix list pane.
+- Add practical-tour steps for stepping through neighbouring findings, narrowing the Diagnostics pane with search and filters, and opening the Fix list pane.
 - Apply the `TOUR001` fix as the practical-tour fix step instead of merely viewing the menu, so the Fix list pane has a result to show.
-- Log the practical-tour completion alongside its notification, so a missing window is visible in the log.
 - Reset the Diagnostics search and filters when the practical tour is completed or dismissed.
 - Open the rule configuration from its diagnostics row: the configuration step advances only on the `TOUR001` file, showing that every check is an editable YAML rule.
 - Complete the Fix list tour step by selecting an applied fix; opening the pane still counts.
 - Bring the Fix list pane forward on its practical-tour step.
 - Keep the current pane on the practical-tour export step instead of switching to Warnings.
 - Observe diagnostic selection changes made through bulk check actions, so the practical tour no longer misses them.
-- Pulse only the first `TOUR001` row in the Fix list pane on the fix-list tour step instead of the whole pane.
 - Name the practical-tour visualization steps “Visualize” and “Visualize differently” (“Визуализировать” / “Визуализировать иначе”).
 - List the user rule kinds (element, collision and project parameter checks) on the welcome diagnostics step.
 - Switch the `TOUR001` check off when the practical tour starts fresh, so the user enables it as the guided step asks. Resumed tours keep the current selection.
@@ -94,7 +88,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Replace the scroll bars of the panes and windows with ones drawn like those of the Revit palettes: a light track, chevron arrows and a narrow rounded thumb that follow the light and the dark theme.
 - Replace the Wiki configuration examples with rules that are usable as shipped: nine collision rules (three per discipline), six element checks, and project parameter rules built from the ADSK shared parameter file. The examples are available with English and Russian message texts and reference parameters by `BuiltInParameter` name.
 - Correct the ribbon tab name in the README and the Wiki: the commands are on the **Diagnostics** tab.
-- Speed up diagnostic runs: built-in, parameter and collision diagnostics, the diagnostic service and the dependency functions used in formulas now share one cached result for the same document query (all elements, elements of a class, element types, element geometry) instead of collecting it separately.
+- Speed up diagnostic runs: built-in, parameter and collision diagnostics, the diagnostic service and the dependency functions used in formulas now share one cached result for the same document query (all elements, elements of a class, element types, element geometry) instead of collecting it separately. Results are keyed by document, view and rule filter, so runs never mix each other's data.
 - **Breaking:** a collision finding now lists every element the target intersects instead of the first one found. The message variables `{intersection.elementName}` and `{intersection.elementId}` are replaced by the comma-separated lists `{intersection.elementNames}` and `{intersection.elementIds}`, with the new `{intersection.count}` giving their number; update the `message` of existing rules in `collision.config.yaml`. The `Dependencies` element set of visualizations contains all intersecting elements.
 - Speed up runs with many active diagnostics: the ignore list is consulted only for the elements a rule applies to, the ignore parameter of an element is read once per run instead of once per diagnostic, it is not read at all in a document that has no ignore parameters, and the ignore information of the document is resolved once per run.
 - Speed up the unused parameter diagnostic: the parameters present in the document are collected once per run from one representative element per category, type and class, instead of asking every element about every parameter.
