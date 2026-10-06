@@ -9,6 +9,7 @@ namespace Revit.Linter.WelcomePresenter.ViewModels;
 [GenerateLocalizedProperties]
 internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine stateMachine) : ObservableObject
 {
+
     private static readonly PracticalTourStep[] VisibleSteps =
     [
         PracticalTourStep.OpenDocument,

@@ -16,7 +16,7 @@ When the tour starts, Revit Linter installs and refreshes the managed `TOUR001` 
 
 ## If a document is already open
 
-Finish the welcome window with **Start or continue the practical tour** selected. The panels open and the tour first points to **Diagnostics → Open configuration folder**, where the YAML files for your own rules are stored.
+Finish the welcome window with **Start or continue the practical tour** selected. The panels open and the tour first points to the document button in the TOUR001 row, showing that every check is a YAML file you can copy and adapt.
 
 ## If no document is open
 

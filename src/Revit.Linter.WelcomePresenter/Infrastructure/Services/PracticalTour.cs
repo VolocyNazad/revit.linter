@@ -147,10 +147,16 @@ internal sealed class PracticalTour(
                 return;
             }
 
+            if (activity is RuleConfigurationOpenedActivity ruleConfiguration
+                && IsPracticalTourDiagnostic(ruleConfiguration.DiagnosticCode))
+            {
+                _viewModel?.Observe(PracticalTourStep.OpenConfigurationFolder);
+                return;
+            }
+
             PracticalTourStep step = activity switch
             {
                 DocumentOpenedActivity => PracticalTourStep.OpenDocument,
-                ConfigurationFolderOpenedActivity => PracticalTourStep.OpenConfigurationFolder,
                 DiagnosticReportExportedActivity => PracticalTourStep.ExportReport,
                 _ => PracticalTourStep.Completed,
             };
@@ -243,6 +249,7 @@ internal sealed class PracticalTour(
 
     private void UpdateHighlight(PracticalTourStep step) => _highlightSession?.SetActiveKey(step switch
     {
+        PracticalTourStep.OpenConfigurationFolder => "OpenConfiguration",
         PracticalTourStep.SearchAndFilters => "SearchAndFilters",
         PracticalTourStep.SelectDiagnostic => "SelectDiagnostic",
             PracticalTourStep.RunDiagnostics => "RunDiagnostics",

@@ -31,7 +31,7 @@ internal sealed class UserDiagnosticRegistrationProvider(
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
-        List<(DiagnosticRule Rule, bool IsExample, bool IsTour)> loadedRules = [];
+        List<(DiagnosticRule Rule, bool IsExample, bool IsTour, string ConfigurationPath)> loadedRules = [];
         HashSet<string> codes = new(StringComparer.Ordinal);
         Exception? configurationError = null;
         string? configurationErrorPath = null;
@@ -50,7 +50,7 @@ internal sealed class UserDiagnosticRegistrationProvider(
             }
 
             foreach (DiagnosticRule rule in (rules ?? []).Where(rule => codes.Add(rule.Code)))
-                loadedRules.Add((rule, isExample, isTour));
+                loadedRules.Add((rule, isExample, isTour, path));
         }
 
         if (configurationError is null)
@@ -60,7 +60,7 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 configurationError,
                 "Failed to parse user diagnostic configuration {ConfigurationPath}; treating it as empty",
                 configurationErrorPath);
-        foreach ((DiagnosticRule rule, bool isExample, bool isTour) in loadedRules)
+        foreach ((DiagnosticRule rule, bool isExample, bool isTour, string configurationPath) in loadedRules)
         {
             ElementDiagnosticId identity = new(
                 rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive,
@@ -76,7 +76,8 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 rule.Visualizations
                     .Select(pipeline => visualizationPipelineFactory.Create(
                         identity, pipeline.Name, pipeline.Steps))
-                    .ToArray())
+                    .ToArray(),
+                configurationPath)
             {
                 Documentation = new("User diagnostics", "Пользовательские проверки"),
             };

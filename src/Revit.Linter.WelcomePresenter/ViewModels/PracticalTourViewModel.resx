@@ -25,7 +25,7 @@
   <data name="exportReportStep_text" xml:space="preserve"><value>Export a report</value></data>
   <data name="openDocument_text" xml:space="preserve"><value>On the Revit Home page, select Open and choose a project or family.</value></data>
   <data name="openTutorialSample_text" xml:space="preserve"><value>If the sample did not open automatically, on the Revit ribbon select Diagnostics → Open tutorial.</value></data>
-  <data name="openConfigurationFolder_text" xml:space="preserve"><value>On the Revit ribbon, open Diagnostics → Open configuration folder. This folder contains the YAML files for your own rules.</value></data>
+  <data name="openConfigurationFolder_text" xml:space="preserve"><value>Every check is a YAML file you can copy and adapt. In the TOUR001 row, press the document button to see its rule.</value></data>
   <data name="selectDiagnostic_text" xml:space="preserve"><value>At the top of the Diagnostics pane, enable TOUR001 “Practical tour: review a model element”. Only actions with this check advance the tour.</value></data>
   <data name="runDiagnostics_text" xml:space="preserve"><value>At the top of the Diagnostics pane, select Run diagnostics with TOUR001 enabled.</value></data>
   <data name="inspectFinding_text" xml:space="preserve"><value>In the Warnings pane, select a TOUR001 finding and review its message and affected element.</value></data>

@@ -13,7 +13,7 @@ Run this checklist in a debug build for every supported Revit generation that is
 ## Practical tour
 
 - Start or resume the tour and verify that `tour/practical-tour.config.yaml` is installed for the running Revit version and `TOUR001` appears pinned at the top of the Diagnostics pane with the tour badge.
-- Open the configuration folder from **Diagnostics → Open configuration folder**. Verify that the folder opens and only this action advances the corresponding task.
+- In the `TOUR001` row, press the document button. Verify that the rule configuration opens in an editor and only this action advances the corresponding task.
 - On the diagnostic-selection step, verify that `TOUR001` starts cleared at the top of the list; toggle another check and verify that the tour does not advance; then enable `TOUR001` and verify that it does.
 - On the search step, type text into the Diagnostics search box and toggle a filter. Verify that each action completes **Search and filters**.
 - Open the Fix list pane from the ribbon. Verify that showing it completes **Fix list pane**.

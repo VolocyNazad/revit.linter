@@ -25,7 +25,7 @@
   <data name="exportReportStep_text" xml:space="preserve"><value>Экспортировать отчёт</value></data>
   <data name="openDocument_text" xml:space="preserve"><value>На главной странице Revit нажмите «Открыть» и выберите проект или семейство.</value></data>
   <data name="openTutorialSample_text" xml:space="preserve"><value>Если пример не открылся автоматически: на ленте Revit откройте «Диагностика» → «Открыть учебный проект».</value></data>
-  <data name="openConfigurationFolder_text" xml:space="preserve"><value>На ленте Revit откройте «Диагностика» → «Открыть папку с конфигурациями». В этой папке находятся YAML-файлы собственных правил.</value></data>
+  <data name="openConfigurationFolder_text" xml:space="preserve"><value>Каждая проверка — это YAML-файл, который можно скопировать и изменить под себя. В строке TOUR001 нажмите кнопку с документом, чтобы увидеть её правило.</value></data>
   <data name="selectDiagnostic_text" xml:space="preserve"><value>Вверху панели «Проверки» включите TOUR001 «Практическое обучение: изучение элемента модели». Обучение учитывает действия только с этой проверкой.</value></data>
   <data name="runDiagnostics_text" xml:space="preserve"><value>В верхней части панели «Проверки» нажмите «Запустить проверки», оставив TOUR001 включённой.</value></data>
   <data name="inspectFinding_text" xml:space="preserve"><value>На панели «Предупреждения» выберите одно из замечаний TOUR001 и изучите его.</value></data>

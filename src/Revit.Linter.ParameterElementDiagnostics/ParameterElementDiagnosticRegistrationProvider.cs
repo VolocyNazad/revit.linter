@@ -28,7 +28,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
     {
-        List<(DiagnosticRule Rule, bool IsExample)> validRules = [];
+        List<(DiagnosticRule Rule, bool IsExample, string ConfigurationPath)> validRules = [];
         List<ParameterConfigurationError> errors = [];
         HashSet<string> codes = new(StringComparer.Ordinal);
         foreach ((string path, bool isExample) in new[] { (_configPath, false), (_exampleConfigPath, true) })
@@ -42,7 +42,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 IReadOnlyList<ParameterConfigurationError> ruleErrors = ParameterRuleValidator.Validate(
                     rule, ParameterIdentifierParser.IsKnownCategory, ParameterIdentifierParser.IsKnownGroup);
                 if (ruleErrors.Count == 0)
-                    validRules.Add((rule, isExample));
+                    validRules.Add((rule, isExample, path));
                 else
                     errors.AddRange(ruleErrors);
             }
@@ -50,7 +50,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
 
         ReportSkippedRules(errors);
 
-        foreach ((DiagnosticRule rule, bool isExample) in validRules)
+        foreach ((DiagnosticRule rule, bool isExample, string configurationPath) in validRules)
         {
             DocumentDiagnosticId identity = new(
                 rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive,
@@ -60,7 +60,8 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 new DocumentDiagnostic(documentQueries) { Identity = identity, Parameters = rule.Parameters },
                 new DocumentDiagnosticFilter(documentFilterFactory) { Identity = identity, Formula = rule.Take },
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
-                [])
+                [],
+                configurationPath)
             {
                 Documentation = new("Project parameter diagnostics", "Проверки параметров проекта"),
             };

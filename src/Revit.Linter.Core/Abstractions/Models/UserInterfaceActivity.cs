@@ -59,6 +59,10 @@ public sealed record DiagnosticReportExportedActivity : UserInterfaceActivity;
 /// <summary>Indicates that the user narrowed the diagnostics list with the search box or filters.</summary>
 public sealed record DiagnosticListFilteredActivity : UserInterfaceActivity;
 
+/// <summary>Indicates that the user opened the configuration file of a diagnostic.</summary>
+/// <param name="DiagnosticCode">The stable code of the diagnostic whose configuration was opened.</param>
+public sealed record RuleConfigurationOpenedActivity(string DiagnosticCode) : UserInterfaceActivity;
+
 /// <summary>Indicates that the fix list pane became visible.</summary>
 public sealed record FixListPaneShownActivity : UserInterfaceActivity;
 

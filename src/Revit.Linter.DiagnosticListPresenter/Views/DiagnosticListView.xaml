@@ -127,6 +127,31 @@
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False"
+                        CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    behaviors:HelpToolTip.Description="{Binding DataContext.OpenConfigurationDescription, Source={StaticResource proxy}, Mode=OneWay}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.OpenConfigurationTitle, Source={StaticResource proxy}, Mode=OneWay}"
+                                    Command="{Binding OpenConfigurationCommand}"
+                                    Content="{controls:Icon Kind=FileDocumentOutline}"
+                                    Visibility="{Binding HasConfiguration, Converter={StaticResource BooleanToVisibility}}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Code}" Value="TOUR001">
+                                                    <Setter Property="behaviors:OnboardingHighlight.Key" Value="OpenConfiguration" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridToggleColumnMinWidth}"
                         Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}"

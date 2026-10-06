@@ -8,12 +8,14 @@ namespace Revit.Linter.Core.Abstractions.Models;
 /// <param name="Filter">The document applicability filter.</param>
 /// <param name="Override">The effective user settings.</param>
 /// <param name="Fixes">The fixes offered for findings.</param>
+/// <param name="ConfigurationPath">The configuration file the rule came from, or <see langword="null"/> for built-in diagnostics.</param>
 public sealed record DocumentDiagnosticRegistration(
     DocumentDiagnosticId Identity,
     IDocumentDiagnostic Diagnostic,
     IDocumentDiagnosticFilter Filter,
     DocumentDiagnosticIdOverride Override,
-    IReadOnlyList<IDocumentFix> Fixes)
+    IReadOnlyList<IDocumentFix> Fixes,
+    string? ConfigurationPath = null)
 {
     /// <summary>
     /// Gets the documentation page that describes the diagnostic, or <see langword="null"/> when the

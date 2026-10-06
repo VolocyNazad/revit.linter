@@ -262,13 +262,13 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
             {
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-                viewModel.Initialize(registration.Override);
+                viewModel.Initialize(registration.Override, registration.ConfigurationPath);
                 items.Add(viewModel);
             }
             foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
             {
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-                viewModel.Initialize(registration.Override);
+                viewModel.Initialize(registration.Override, registration.ConfigurationPath);
                 items.Add(viewModel);
             }
 

@@ -52,6 +52,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Apply the `TOUR001` fix as the practical-tour fix step instead of merely viewing the menu, so the Fix list pane has a result to show.
 - Log the practical-tour completion alongside its notification, so a missing window is visible in the log.
 - Reset the Diagnostics search and filters when the practical tour is completed or dismissed.
+- Open the rule configuration from its diagnostics row: the configuration step advances only on the `TOUR001` file, showing that every check is an editable YAML rule.
 - Complete the Fix list tour step by selecting an applied fix; opening the pane still counts.
 - Bring the Fix list pane forward on its practical-tour step.
 - Keep the current pane on the practical-tour export step instead of switching to Warnings.
