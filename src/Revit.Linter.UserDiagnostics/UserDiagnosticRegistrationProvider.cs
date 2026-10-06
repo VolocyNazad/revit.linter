@@ -19,33 +19,52 @@ internal sealed class UserDiagnosticRegistrationProvider(
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
     private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, "config.yaml");
-    private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
+    private static readonly string _exampleConfigPath = Path.Combine(
+        ConfigurationPathUtils.Directory, "examples", "config.yaml");
+    private static readonly string _practicalTourConfigPath = Path.Combine(
+        ConfigurationPathUtils.Directory, "tour", "practical-tour.config.yaml");
+    private readonly ConfigurationFileChangeSource _changeSource = new(
+        [_configPath, _exampleConfigPath, _practicalTourConfigPath]);
 
     public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
     public void Dispose() => _changeSource.Dispose();
 
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
-        bool loaded = ConfigurationPathUtils.TryGetConfigurations(
-            _configPath, out List<DiagnosticRule>? rules, out Exception? error);
-        if (!loaded)
+        List<(DiagnosticRule Rule, bool IsExample, bool IsTour)> loadedRules = [];
+        HashSet<string> codes = new(StringComparer.Ordinal);
+        Exception? configurationError = null;
+        string? configurationErrorPath = null;
+        foreach ((string path, bool isExample, bool isTour) in new[]
+                  {
+                      (_configPath, false, false), (_exampleConfigPath, true, false), (_practicalTourConfigPath, false, true),
+                  })
         {
-            if (configurationErrorState.Set(error!))
-                logger.LogError(
-                    error,
-                    "Failed to parse user diagnostic configuration {ConfigurationPath}; treating it as empty",
-                    _configPath);
-            yield break;
+            bool loaded = ConfigurationPathUtils.TryGetConfigurations(
+                path, out List<DiagnosticRule>? rules, out Exception? error);
+            if (!loaded)
+            {
+                configurationError = error;
+                configurationErrorPath = path;
+                continue;
+            }
+
+            foreach (DiagnosticRule rule in (rules ?? []).Where(rule => codes.Add(rule.Code)))
+                loadedRules.Add((rule, isExample, isTour));
         }
 
-        configurationErrorState.Clear();
-        if (rules is null) yield break;
-
-        foreach (DiagnosticRule rule in rules)
+        if (configurationError is null)
+            configurationErrorState.Clear();
+        else if (configurationErrorState.Set(configurationError))
+            logger.LogError(
+                configurationError,
+                "Failed to parse user diagnostic configuration {ConfigurationPath}; treating it as empty",
+                configurationErrorPath);
+        foreach ((DiagnosticRule rule, bool isExample, bool isTour) in loadedRules)
         {
             ElementDiagnosticId identity = new(
                 rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive,
-                rule.IsObsolete, rule.ObsoleteDescription);
+                rule.IsObsolete, rule.ObsoleteDescription, isExample, isTour);
             yield return new ElementDiagnosticRegistration(
                 identity,
                 new ElementDiagnostic(elementFunctionFactory) { Identity = identity, Formula = rule.Check },

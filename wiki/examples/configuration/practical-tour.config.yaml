@@ -1,0 +1,39 @@
+# Practical-tour diagnostic. Revit Linter installs and manages this file automatically.
+# It deliberately reports common model elements so every tour has findings to work with.
+
+- code: "TOUR001"
+  description: "Practical tour: review a model element"
+  message: "Training finding for '{elementName}' ({elementId}). Use it to try the report controls."
+  severity: "Message"
+  isActive: false
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Walls') or builtincategory('OST_StructuralFraming') or builtincategory('OST_DuctCurves') or builtincategory('OST_PipeCurves'))"
+  check: "isnull(property('Id'))"
+  fixes:
+    - name: "Delete the training element"
+      steps:
+        - type: "Delete"
+          elementSets: ["Target"]
+    - name: "Delete related elements"
+      steps:
+        - type: "Delete"
+          elementSets: ["Dependencies"]
+  visualizations:
+    - name: "Inspect: Focus and select"
+      steps:
+        - type: "Show"
+          elementSets: ["Target"]
+        - type: "Select"
+          elementSets: ["Target"]
+    - name: "Inspect closely: color, crop, focus"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+        - type: "Cut"
+          elementSets: ["Target"]
+        - type: "Show"
+          elementSets: ["Target"]

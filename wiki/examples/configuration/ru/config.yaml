@@ -10,11 +10,86 @@
   take: "instance and builtincategory('OST_GenericModel')"
   check: "isnull(property('Id'))"
   visualizations:
-    - name: "Показать и выбрать"
+    # Одиночные примеры: все поддерживаемые операции визуализации.
+    - name: "Сфокусироваться на элементе"
       steps:
         - type: "Show"
           elementSets: ["Target"]
+
+    - name: "Выбрать элемент"
+      steps:
         - type: "Select"
+          elementSets: ["Target"]
+
+    - name: "Изолировать элемент"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target"]
+
+    - name: "Подрезать 3D-вид вокруг элемента"
+      steps:
+        - type: "Cut"
+          elementSets: ["Target"]
+
+    - name: "Окрасить элемент"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#B71C1C", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#B71C1C", pattern: "SolidFill", isVisible: true }
+
+    - name: "Окрасить временным фильтром"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            transparency: 25
+            projectionLines: { color: "#FB8C00", pattern: "Solid", weight: 5 }
+            surfaceForeground: { color: "#FB8C00", pattern: "SolidFill", isVisible: true }
+
+    # Комбинированные примеры: последовательности решают понятные задачи проверки.
+    - name: "Изучить подробно: окрасить, подрезать, сфокусироваться"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+        - type: "Cut"
+          elementSets: ["Target"]
+        - type: "Show"
+          elementSets: ["Target"]
+
+    - name: "Убрать лишнее: изолировать, окрасить, сфокусироваться"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target"]
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            projectionLines: { color: "#2E7D32", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#43A047", pattern: "SolidFill", isVisible: true }
+        - type: "Show"
+          elementSets: ["Target"]
+
+    - name: "Скоординировать: фильтр, выбор, фокус"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            projectionLines: { color: "#1565C0", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#1E88E5", pattern: "SolidFill", isVisible: true }
+        - type: "Select"
+          elementSets: ["Target"]
+        - type: "Show"
           elementSets: ["Target"]
 
 - code: "CSTM101"

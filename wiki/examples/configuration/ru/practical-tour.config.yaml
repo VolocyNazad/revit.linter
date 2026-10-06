@@ -1,0 +1,39 @@
+# Проверка для практического обучения. Revit Linter устанавливает и обновляет этот файл автоматически.
+# Она намеренно находит распространённые элементы модели, чтобы в обучении всегда были замечания.
+
+- code: "TOUR001"
+  description: "Практическое обучение: изучение элемента модели"
+  message: "Учебное замечание для элемента «{elementName}» ({elementId}). Используйте его, чтобы попробовать команды отчёта."
+  severity: "Message"
+  isActive: false
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Walls') or builtincategory('OST_StructuralFraming') or builtincategory('OST_DuctCurves') or builtincategory('OST_PipeCurves'))"
+  check: "isnull(property('Id'))"
+  fixes:
+    - name: "Удалить элемент (учебный)"
+      steps:
+        - type: "Delete"
+          elementSets: ["Target"]
+    - name: "Удалить связанные элементы (учебный)"
+      steps:
+        - type: "Delete"
+          elementSets: ["Dependencies"]
+  visualizations:
+    - name: "Изучить: показать и выделить"
+      steps:
+        - type: "Show"
+          elementSets: ["Target"]
+        - type: "Select"
+          elementSets: ["Target"]
+    - name: "Изучить подробно: окрасить, подрезать, сфокусироваться"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+        - type: "Cut"
+          elementSets: ["Target"]
+        - type: "Show"
+          elementSets: ["Target"]

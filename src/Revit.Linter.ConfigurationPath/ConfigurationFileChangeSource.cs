@@ -7,7 +7,7 @@ public sealed class ConfigurationFileChangeSource : IDisposable
 {
     private readonly object _sync = new();
     private readonly List<Action> _listeners = [];
-    private readonly FileSystemWatcher _watcher;
+    private readonly FileSystemWatcher[] _watchers;
     private bool _disposed;
 
     /// <summary>
@@ -15,21 +15,21 @@ public sealed class ConfigurationFileChangeSource : IDisposable
     /// </summary>
     /// <param name="filePath">The path of the configuration file to watch.</param>
     /// <exception cref="ArgumentException"><paramref name="filePath"/> does not contain a directory.</exception>
-    public ConfigurationFileChangeSource(string filePath)
+    public ConfigurationFileChangeSource(string filePath) : this([filePath])
     {
-        string directory = Path.GetDirectoryName(filePath)
-            ?? throw new ArgumentException("Configuration file path must contain a directory.", nameof(filePath));
-        Directory.CreateDirectory(directory);
-        _watcher = new FileSystemWatcher(directory, Path.GetFileName(filePath))
-        {
-            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
-            EnableRaisingEvents = true,
-        };
-        _watcher.Changed += FileChanged;
-        _watcher.Created += FileChanged;
-        _watcher.Deleted += FileChanged;
-        _watcher.Renamed += FileChanged;
-        _watcher.Error += WatcherError;
+    }
+
+    /// <summary>
+    /// Initializes a change source for several configuration files and creates their parent directories when necessary.
+    /// </summary>
+    /// <param name="filePaths">The configuration files to watch.</param>
+    /// <exception cref="ArgumentException">A path does not contain a directory, or no paths were supplied.</exception>
+    public ConfigurationFileChangeSource(IEnumerable<string> filePaths)
+    {
+        string[] paths = filePaths.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        if (paths.Length == 0) throw new ArgumentException("At least one configuration file is required.", nameof(filePaths));
+
+        _watchers = paths.Select(CreateWatcher).ToArray();
     }
 
     /// <summary>
@@ -61,7 +61,25 @@ public sealed class ConfigurationFileChangeSource : IDisposable
             _disposed = true;
             _listeners.Clear();
         }
-        _watcher.Dispose();
+        foreach (FileSystemWatcher watcher in _watchers) watcher.Dispose();
+    }
+
+    private FileSystemWatcher CreateWatcher(string filePath)
+    {
+        string directory = Path.GetDirectoryName(filePath)
+            ?? throw new ArgumentException("Configuration file path must contain a directory.", nameof(filePath));
+        Directory.CreateDirectory(directory);
+        FileSystemWatcher watcher = new(directory, Path.GetFileName(filePath))
+        {
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+        };
+        watcher.Changed += FileChanged;
+        watcher.Created += FileChanged;
+        watcher.Deleted += FileChanged;
+        watcher.Renamed += FileChanged;
+        watcher.Error += WatcherError;
+        return watcher;
     }
 
     private void FileChanged(object sender, FileSystemEventArgs args) => NotifyListeners();

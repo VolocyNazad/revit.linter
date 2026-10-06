@@ -23,6 +23,18 @@ public sealed class ExampleConfigurationTests
         Assert.NotEmpty(parameterRules);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("ru")]
+    public void Practical_tour_configuration_deserializes_with_two_visualizations(string languageFolder)
+    {
+        List<UserRule>? tourRules = Read<List<UserRule>>(
+            Path.Combine(languageFolder, "practical-tour.config.yaml"));
+
+        UserRule tourRule = Assert.Single(tourRules ?? [], rule => rule.Code == "TOUR001");
+        Assert.Equal(2, tourRule.Visualizations.Length);
+    }
+
     private static T? Read<T>(string fileName) where T : class =>
         ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(RepositoryRoot.Find(),
             "wiki", "examples", "configuration", fileName));
