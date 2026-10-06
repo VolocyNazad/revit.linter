@@ -42,6 +42,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - A visualization started from a view that does not show the elements, such as a sheet, is now applied to the view Revit opens to show them instead of the view the user has left.
 - Running diagnostics while a visualization is active no longer fails with "Failed to restore the previous visualization state": the run now executes in a Revit API context and restores the visualization before it starts.
 - Report a project parameter that exists in the document but is not bound to categories instead of aborting the whole diagnostic run.
+- Export YAML report timestamps identically on machines in any time zone instead of rendering `localDateTime` in the computer's time zone.
 
 ## [1.8.0] - 2026-10-01
 
