@@ -1,12 +1,16 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.ViewModels;
 using Toolkit.ValueStore.Abstractions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Threading;
 
@@ -21,6 +25,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
+    private readonly IDialog _dialog;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
@@ -96,6 +101,35 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     [RelayCommand]
     private void CheckAll()
         => UpdateIsActive(Collection, _ => true);
+
+    #endregion
+
+    #region [OpenConfigurationFolder] Command - Open configuration folder
+
+    /// <summary>Opens the configuration folder for the running Revit version.</summary>
+    [RelayCommand]
+    private async Task OpenConfigurationFolder(CancellationToken cancellationToken)
+    {
+        try
+        {
+            string directory = ConfigurationPathUtils.Directory;
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directory,
+                UseShellExecute = true,
+            });
+            _activityStream.Publish(new ConfigurationFolderOpenedActivity());
+        }
+        catch (Exception exception)
+        {
+            await _dialog.Show(
+                new DialogRequest(GetLocalizedString("configurationFolder_openFailed_message", exception.Message)),
+                cancellationToken);
+        }
+    }
 
     #endregion
 

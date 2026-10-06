@@ -298,9 +298,6 @@ internal sealed class InitExternalApplication : ExternalApplication
         panel.AddItem(CreateButton(
             "ShowAllPanesButton", "showAllPanes", typeof(ShowAllPanesCommand),
             new("Dockable panes", "Закрепляемые панели")));
-        panel.AddItem(CreateButton(
-            "OpenConfigurationFolderButton", "openConfigurationFolder", typeof(OpenConfigurationFolderCommand),
-            new("Diagnostic configuration path button", "Кнопка папки конфигурации")));
         panel.AddStackedItems(
             CreateButton(
                 "CheckForUpdatesButton", "checkForUpdates", typeof(CheckForUpdatesCommand),

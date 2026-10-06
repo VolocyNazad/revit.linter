@@ -29,6 +29,9 @@ public enum IconKind
     /// <summary>A funnel: filters.</summary>
     Filter,
 
+    /// <summary>A folder with a tab: open the configuration folder.</summary>
+    FolderOutline,
+
     /// <summary>A document with folded corner: open the defining file.</summary>
     FileDocumentOutline,
 

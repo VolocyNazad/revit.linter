@@ -22,8 +22,10 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
-		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Presentation\Revit.Linter.Presentation.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />

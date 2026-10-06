@@ -132,9 +132,6 @@
   <data name="projectParameters_configurationFailed_message" xml:space="preserve">
     <value>Не удалось настроить параметры проекта.&#xA;&#xA;{0}</value>
   </data>
-  <data name="configurationFolder_openFailed_message" xml:space="preserve">
-    <value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value>
-  </data>
   <data name="settingsFile_loadFailed_message" xml:space="preserve">
     <value>Изменения файла настроек «{0}» не применены. Используются предыдущие корректные значения.&#xA;&#xA;{1}</value>
   </data>
@@ -155,10 +152,6 @@
   </data>
   <data name="ribbonPanel_diagnostics_name" xml:space="preserve"><value>Проверки</value></data>
   <data name="ribbonTab_name" xml:space="preserve"><value>Диагностика</value></data>
-  <data name="openConfigurationFolder_buttonText" xml:space="preserve"><value>Открыть папку
-конфигурации</value></data>
-  <data name="openConfigurationFolder_toolTip" xml:space="preserve"><value>Открыть папку конфигурации линтера</value></data>
-  <data name="openConfigurationFolder_longDescription" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
   <data name="showAllPanes_buttonText" xml:space="preserve"><value>Показать/Скрыть
 проверки</value></data>
   <data name="showAllPanes_toolTip" xml:space="preserve"><value>Показать или скрыть все панели проверок</value></data>

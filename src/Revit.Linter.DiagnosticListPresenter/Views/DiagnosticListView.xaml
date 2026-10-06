@@ -47,6 +47,13 @@
         <DockPanel>
             <DockPanel DockPanel.Dock="Top" Style="{StaticResource LinterToolBarPanel}">
                 <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding OpenConfigurationFolderDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding OpenConfigurationFolderTitle, Mode=OneWay}"
+                    Command="{Binding OpenConfigurationFolderCommand}"
+                    Content="{controls:Icon Kind=FolderOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
                 <ToggleButton
                     x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"

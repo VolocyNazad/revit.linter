@@ -9,7 +9,6 @@ The **Diagnostics** ribbon tab contains commands for showing Revit Linter panels
 - [[Show or hide diagnostic report button|Show/Hide diagnostic report button]]
 - [[Show or hide fix reports button|Show/Hide fix report button]]
 - [[Show or hide diagnostics button|Show/Hide diagnostic list button]]
-- [[Diagnostic configuration path button|Diagnostic configuration path button]]
 - [[Getting started button|Getting started button]]
 - [[Check for updates button|Check for updates button]]
 - [[Support button|Support button]]

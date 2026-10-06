@@ -16,6 +16,9 @@
   <data name="code_header" xml:space="preserve"><value>Код</value></data>
   <data name="example_text" xml:space="preserve"><value>Пример</value></data>
   <data name="tour_text" xml:space="preserve"><value>Обучение</value></data>
+  <data name="openConfigurationFolder_title" xml:space="preserve"><value>Открыть папку конфигураций</value></data>
+  <data name="openConfigurationFolder_description" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
+  <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value></data>
   <data name="openConfigurationTitle_text" xml:space="preserve"><value>Открыть конфигурацию правила</value></data>
   <data name="openConfigurationDescription_text" xml:space="preserve"><value>Открывает YAML-файл, которым задано это правило.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data>

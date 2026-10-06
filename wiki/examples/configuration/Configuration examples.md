@@ -43,4 +43,4 @@ Revit Linter reads the working YAML files in the [[Diagnostic configuration path
 
 `C:\Users\{UserName}\Documents\Revit Linter\2025\`
 
-The easiest way to open this folder is the [[Diagnostic configuration path button|configuration folder button]] on the **Diagnostics** ribbon tab. To use an example by hand, copy it to that folder and keep its required filename.
+The easiest way to open this folder is the [[Diagnostic configuration path button|configuration folder button]] on the Diagnostics pane. To use an example by hand, copy it to that folder and keep its required filename.
