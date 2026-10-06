@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Show a single configuration-change notification when the practical tour completes: reading the removed managed tour configuration no longer recreates the file, which previously triggered a second catalog refresh with a duplicate message.
 - Keep localized table headers, diagnostic codes, severities, document names and timestamps from being clipped by undersized columns.
 - Focus the practical-tour activation step on the `TOUR001` checkbox instead of highlighting the entire diagnostics table.
 - Explain and automatically skip the visualization-choice tour task when the selected finding offers only one visualization.
@@ -22,6 +23,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Ask for the practical-tour report in one more format: after the first export, the tour waits for the same report in a different format, so users see that findings export to CSV, JSON, YAML and HTML.
+- Add a restart button to the practical-tour pane: starting over discards saved progress and resumes the tour at the first applicable step.
 - Show a localized success notification after the practical tour is completed, and write the completion to the log.
 - Install a dedicated `TOUR001` diagnostic for the practical tour, with the visualizations and fix menu required by every guided task.
 - Extend the practical tour with tasks for opening the custom-configuration folder, selecting a visualization from a finding row's menu, stepping through findings, using search and filters, opening the Fix list pane, and applying the fix.
@@ -163,4 +165,3 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Preserve unknown message placeholders, support escaped braces, and handle element identifiers correctly on Revit 2024 and later.
 - Use the active Material Design palette for panel backgrounds in both light and dark themes.
 - Publish Wiki links with the correct targets when source pages use Obsidian aliases.
-- Show a single configuration-change notification when the practical tour completes: reading the removed managed tour configuration no longer recreates the file, which previously triggered a second catalog refresh with a duplicate message.

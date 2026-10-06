@@ -61,6 +61,7 @@ internal sealed class PracticalTour(
             view.DataContext = viewModel;
             viewModel.StopRequested += ViewModel_StopRequested;
             viewModel.OptOutRequested += ViewModel_OptOutRequested;
+            viewModel.RestartRequested += ViewModel_RestartRequested;
             view.PaneHidden += View_PaneHidden;
             _viewModel = viewModel;
             _highlightSession = OnboardingHighlight.StartSession();
@@ -203,6 +204,13 @@ internal sealed class PracticalTour(
         EndSession(hidePane: true);
         RemovePracticalTourConfiguration();
         ResetDiagnosticsSearchAndFilters();
+    }
+
+    private void ViewModel_RestartRequested(object? sender, EventArgs args)
+    {
+        // Start discards the current session and saved progress when restarted,
+        // reinstalls the managed configuration and resumes at the first applicable step.
+        Start(welcomeHost.HasOpenDocument, restart: true);
     }
 
     private void RemovePracticalTourConfiguration()
@@ -351,6 +359,7 @@ internal sealed class PracticalTour(
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             viewModel.StopRequested -= ViewModel_StopRequested;
             viewModel.OptOutRequested -= ViewModel_OptOutRequested;
+            viewModel.RestartRequested -= ViewModel_RestartRequested;
             view.PaneHidden -= View_PaneHidden;
             _highlightSession?.Dispose();
             _highlightSession = null;

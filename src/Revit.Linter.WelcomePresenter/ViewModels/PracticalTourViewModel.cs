@@ -58,6 +58,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
 
     public event EventHandler? StopRequested;
     public event EventHandler? OptOutRequested;
+    public event EventHandler? RestartRequested;
 
     public void Start(bool hasOpenDocument, PracticalTourProgress? progress, bool tutorialSampleQueued = false)
     {
@@ -184,6 +185,12 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     private void OptOut()
     {
         OptOutRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    [RelayCommand]
+    private void Restart()
+    {
+        RestartRequested?.Invoke(this, EventArgs.Empty);
     }
 }
 

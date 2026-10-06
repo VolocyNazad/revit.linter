@@ -85,6 +85,7 @@ internal sealed class PracticalTourDesignData
         new("Экспорт в другом формате", string.Empty, false, false, false),
     ];
     public string OptOutText => "Больше не показывать";
+    public string RestartText => "Начать заново";
     public string StopText => "Продолжить позже";
 }
 

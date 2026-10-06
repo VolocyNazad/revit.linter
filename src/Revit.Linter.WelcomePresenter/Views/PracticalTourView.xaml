@@ -64,6 +64,7 @@
             </ScrollViewer>
             <StackPanel Grid.Row="2" Margin="0,12,0,0">
                 <Button Margin="0,6,0,0" Command="{Binding StopCommand}" Content="{Binding StopText}" Style="{StaticResource LinterDialogButton}" />
+                <Button Margin="0,6,0,0" Command="{Binding RestartCommand}" Content="{Binding RestartText}" Style="{StaticResource LinterDialogButton}" />
                 <Button Margin="0,6,0,0" Command="{Binding OptOutCommand}" Content="{Binding OptOutText}" Style="{StaticResource LinterDialogButton}" />
             </StackPanel>
         </Grid>

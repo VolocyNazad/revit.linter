@@ -6,6 +6,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
   <data name="title_text" xml:space="preserve"><value>Практическое обучение</value></data>
   <data name="stop_text" xml:space="preserve"><value>Продолжить позже</value></data>
+  <data name="restart_text" xml:space="preserve"><value>Начать заново</value></data>
   <data name="optOut_text" xml:space="preserve"><value>Больше не показывать</value></data>
   <data name="openDocumentStep_text" xml:space="preserve"><value>Открыть модель</value></data>
   <data name="openConfigurationFolderStep_text" xml:space="preserve"><value>Открыть папку с конфигурациями</value></data>
