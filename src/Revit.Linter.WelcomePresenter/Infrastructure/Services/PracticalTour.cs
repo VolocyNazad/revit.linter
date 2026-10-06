@@ -173,6 +173,7 @@ internal sealed class PracticalTour(
         EndSession(hidePane: true);
         if (!isCompleted) return;
         RemovePracticalTourConfiguration();
+        ResetDiagnosticsSearchAndFilters();
         try
         {
             welcomeHost.ShowPracticalTourCompletedNotification();
@@ -190,6 +191,7 @@ internal sealed class PracticalTour(
         _optOutRequested = true;
         EndSession(hidePane: true);
         RemovePracticalTourConfiguration();
+        ResetDiagnosticsSearchAndFilters();
     }
 
     private void RemovePracticalTourConfiguration()
@@ -201,6 +203,18 @@ internal sealed class PracticalTour(
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to remove the practical-tour diagnostic configuration");
+        }
+    }
+
+    private void ResetDiagnosticsSearchAndFilters()
+    {
+        try
+        {
+            welcomeHost.ResetDiagnosticsSearchAndFilters();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to reset the diagnostics search and filters");
         }
     }
 

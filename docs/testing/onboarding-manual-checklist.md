@@ -29,6 +29,7 @@ Run this checklist in a debug build for every supported Revit generation that is
 - Move through every task and verify that its required Revit Linter pane is brought to the foreground, except Export, which stays where the user left it. Verify that the surrounding pane is dimmed, the target remains unobscured inside an accent outline, and the localized next-step label points to it without blocking mouse or keyboard input. Disable Windows client-area animations and verify that the glow and scale pulsing is suppressed.
 - Use **Continue later** and **Do not show again**. Verify resume and opt-out independently for the running Revit version.
 - Complete the tour and verify that `tour/practical-tour.config.yaml` is removed and `TOUR001` disappears from the Diagnostics pane. Opt out and verify the same.
+- Complete or dismiss the tour after using search and filters, and verify that the search box is cleared and every filter is enabled again.
 - For a finding with fixes, open the lightbulb menu and apply the fix. Verify that applying completes **Apply the fix** and the applied fix appears in the Fix list pane.
 - Repeat finding selection, visualization and fix-menu actions on a code other than `TOUR001`; verify that none advances the corresponding task.
 - Start every `TOUR001` visualization from a floor plan. Verify that Revit creates and activates one `Revit Linter — Visualization` 3D view, reuses it for later findings, and that crop plus combined visualizations stay in that view without opening additional plans.

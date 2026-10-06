@@ -33,6 +33,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     private readonly ITutorialSampleCopyService _tutorialSampleCopyService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly IDialog _dialog;
+    private readonly DiagnosticListPresenter.Views.DiagnosticListView _diagnosticListView;
 
     public WelcomeHost(
         IRevitContext revitContext,
@@ -41,7 +42,8 @@ internal sealed class WelcomeHost : IWelcomeHost
         TutorialSampleOpenRequest tutorialSampleOpenRequest,
         ITutorialSampleCopyService tutorialSampleCopyService,
         IRevitIdlingScheduler idlingScheduler,
-        IDialog dialog)
+        IDialog dialog,
+        DiagnosticListPresenter.Views.DiagnosticListView diagnosticListView)
     {
         _revitContext = revitContext;
         _localizer = localizer;
@@ -50,6 +52,7 @@ internal sealed class WelcomeHost : IWelcomeHost
         _tutorialSampleCopyService = tutorialSampleCopyService;
         _idlingScheduler = idlingScheduler;
         _dialog = dialog;
+        _diagnosticListView = diagnosticListView;
     }
 
     public string RibbonTabName => _localizer["ribbonTab_name"];
@@ -116,6 +119,8 @@ internal sealed class WelcomeHost : IWelcomeHost
 
     public void ShowPracticalTourCompletedNotification()
         => _ = _dialog.Show(new DialogRequest(_localizer["practicalTour_completed_message"]));
+
+    public void ResetDiagnosticsSearchAndFilters() => _diagnosticListView.ResetSearchAndFilters();
 
     private void QueuePracticalTourPaneVisibility(bool visible)
         => _ = _idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));

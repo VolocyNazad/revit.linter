@@ -33,6 +33,9 @@ public interface IWelcomeHost
     /// <summary>Shows a localized notification after the practical tour is completed.</summary>
     void ShowPracticalTourCompletedNotification();
 
+    /// <summary>Clears the diagnostics pane search and re-enables its filters.</summary>
+    void ResetDiagnosticsSearchAndFilters();
+
     /// <summary>Queues a prepared disposable sample copy for the dedicated Revit ribbon command.</summary>
     void QueueTutorialSample(string path);
 

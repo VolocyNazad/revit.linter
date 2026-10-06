@@ -25,6 +25,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
+    private bool _isResettingFilters;
     private Dispatcher? _dispatcher;
 
     [ObservableProperty]
@@ -63,7 +64,24 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         RefreshCollectionView();
-        _activityStream.Publish(new DiagnosticListFilteredActivity());
+        if (!_isResettingFilters)
+            _activityStream.Publish(new DiagnosticListFilteredActivity());
+    }
+
+    /// <summary>Clears the search box and re-enables every filter without publishing user activity.</summary>
+    public void ResetSearchAndFilters()
+    {
+        SearchField = string.Empty;
+        _isResettingFilters = true;
+        try
+        {
+            foreach (DiagnosticTargetTypeFilterViewModel filter in Filters.OfType<DiagnosticTargetTypeFilterViewModel>())
+                filter.IsActive = true;
+        }
+        finally
+        {
+            _isResettingFilters = false;
+        }
     }
 
     #region [CheckAll] Command - Check all
