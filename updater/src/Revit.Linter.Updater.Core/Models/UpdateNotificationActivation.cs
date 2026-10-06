@@ -1,13 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Web;
+using Revit.Linter.Core.Abstractions;
 
 namespace Revit.Linter.Updater.Core.Models;
 
 /// <summary>Represents validated arguments received from a Windows update notification.</summary>
 public sealed class UpdateNotificationActivation
 {
-    private const string RepositoryReleasePath = "/VolocyNazad/revit.linter/releases/";
+    private static string RepositoryReleasePath => ProductIdentity.RepositoryReleasePath;
 
     private UpdateNotificationActivation(
         UpdateNotificationAction action,
@@ -101,7 +102,7 @@ public sealed class UpdateNotificationActivation
     {
         bool trusted = Uri.TryCreate(value, UriKind.Absolute, out releasePage) &&
                        releasePage.Scheme == Uri.UriSchemeHttps &&
-                       releasePage.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) &&
+                       releasePage.Host.Equals(ProductIdentity.GitHubHost, StringComparison.OrdinalIgnoreCase) &&
                        releasePage.IsDefaultPort &&
                        string.IsNullOrEmpty(releasePage.UserInfo) &&
                        string.IsNullOrEmpty(releasePage.Fragment) &&

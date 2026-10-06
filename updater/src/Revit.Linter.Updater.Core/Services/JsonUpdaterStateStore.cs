@@ -12,9 +12,7 @@ public sealed class JsonUpdaterStateStore : IUpdaterStateStore
 
     /// <summary>Creates a state store for the conventional per-user updater path.</summary>
     public JsonUpdaterStateStore()
-        : this(Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Volocy", "Revit.Linter", "updater", "state.json"))
+        : this(UpdaterPaths.GetStatePath(UpdaterPaths.GetUpdaterDirectory()))
     {
     }
 

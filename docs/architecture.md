@@ -5,6 +5,7 @@ This document records stable architectural rules. Implementation details belong 
 ## Module boundaries
 
 - Projects are small modules with one primary responsibility. A module owns its contracts, implementation and composition extensions.
+- Product-wide identity segments (vendor, product, repository, registry policy, updater synchronization) are owned by `ProductIdentity` in `Revit.Linter.Core`; path composition stays with the owning module. Independent build units (`updater/`, `installer/`) compile the same source file via link instead of taking a project reference.
 - Cross-project consumers depend on contracts under the owning project's `Abstractions/` namespace, not on its infrastructure implementation.
 - `Infrastructure/` contains implementation details and external adapters. It must not become a second public contract surface.
 - New project references must follow the direction from composition and presentation toward abstractions and domain behavior. Do not introduce reference cycles or use a service locator to bypass them.

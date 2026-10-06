@@ -5,10 +5,6 @@ namespace Revit.Linter.Installer;
 
 public static class CustomActions
 {
-    private const string AddInName = "Revit.Linter";
-    private const string Vendor = "VolocyNazad";
-
-
     [CustomAction]
     public static ActionResult PrepareForFileChanges(Session session)
     {
@@ -62,19 +58,23 @@ public static class CustomActions
                     continue;
                 }
 
-                string installDirectory = session["INSTALLDIR"];
+                string installDirectory = session[InstallerProduct.InstallDirectoryProperty];
                 if (string.IsNullOrWhiteSpace(installDirectory))
-                    throw new InvalidOperationException("MSI property INSTALLDIR is not set.");
+                    throw new InvalidOperationException(
+                        $"MSI property {InstallerProduct.InstallDirectoryProperty} is not set.");
 
                 ExternalApplicationDefinition definition = new()
                 {
-                    Name = AddInName,
-                    FullClassName = $"{AddInName}.InitExternalApplication",
+                    Name = InstallerProduct.AddInName,
+                    FullClassName = $"{InstallerProduct.AddInName}.InitExternalApplication",
                     Assembly = Path.Combine(
                         installDirectory,
-                        "Addins", revitVersion, "sources", $"{AddInName}.dll"),
-                    VendorId = Vendor,
-                    VendorDescription = Vendor,
+                        InstallerProduct.AddinsFolderName,
+                        revitVersion,
+                        InstallerProduct.SourcesFolderName,
+                        $"{InstallerProduct.AddInName}.dll"),
+                    VendorId = InstallerProduct.Vendor,
+                    VendorDescription = InstallerProduct.Vendor,
                 };
                 MultiAddInManifestGenerator.CreateManifests(filePath, definition);
                 session.Log($"Manifest created successfully at: {filePath}");
@@ -119,9 +119,10 @@ public static class CustomActions
 
     private static string[] GetRevitVersions(Session session)
     {
-        string value = session["REVIT_VERSIONS"];
+        string value = session[InstallerProduct.RevitVersionsProperty];
         if (string.IsNullOrWhiteSpace(value))
-            throw new InvalidOperationException("MSI property REVIT_VERSIONS is not set.");
+            throw new InvalidOperationException(
+                $"MSI property {InstallerProduct.RevitVersionsProperty} is not set.");
 
         return value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
@@ -136,7 +137,7 @@ public static class CustomActions
 
     private static void StopUpdater(Session session)
     {
-        foreach (Process process in Process.GetProcessesByName("Revit.Linter.Updater"))
+        foreach (Process process in Process.GetProcessesByName(InstallerProduct.UpdaterProcessName))
         {
             using (process)
             {
@@ -148,11 +149,5 @@ public static class CustomActions
         }
     }
 
-    private static string GetManifestPath(string revitVersion)
-    {
-        string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string directoryPath = Path.Combine(appDataPath, "Autodesk", "Revit", "Addins", revitVersion);
-        string filePath = Path.Combine(directoryPath, $"{AddInName}.addin");
-        return filePath;
-    }
+    private static string GetManifestPath(string revitVersion) => InstallerProduct.GetManifestPath(revitVersion);
 }

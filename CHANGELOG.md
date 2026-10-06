@@ -40,6 +40,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Centralize product-wide paths and names behind `ProductIdentity` (`Revit.Linter.Core`), composed by `ConfigurationPathUtils` for user configurations, `UpdaterPaths` for the updater and `InstallerProduct` for the MSI: vendor, GitHub destinations, registry policy location, updater synchronization name, log/updater/settings folders and configuration file names now have a single owner per build unit. The per-user ValueStore directory is unified to `%LOCALAPPDATA%\Volocy\Revit.Linter\settings\` (existing files on this machine were moved there); no in-product migration is performed.
 - Keep the managed practical-tour configuration in the `tour` configuration subfolder instead of `examples/`, mark its rules with a tour badge, and pin them at the top of the Diagnostics pane. A superseded `examples/practical-tour.config.yaml` is removed when the tour starts, and the managed file is removed when the tour is completed or dismissed.
 - Pulse only the relevant row during the practical tour instead of whole tables: the selected row's **Show** (eye) and fix (lightbulb) buttons, and the first `TOUR001` finding and fix rows.
 - Breathe highlighted tour controls slightly: the glow pulse is joined by a subtle scale pulse, suppressed together when Windows client-area animations are off. Large surfaces such as the findings table keep the glow only.

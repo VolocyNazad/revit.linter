@@ -1,3 +1,4 @@
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Microsoft.Extensions.Logging;
@@ -129,8 +130,9 @@ internal sealed class TutorialSampleCopyService(ILogger<TutorialSampleCopyServic
         }
     }
 
-    private static string GetMutexName(string sessionDirectory)
-        => $"Local\\RevitLinterTutorial_{Path.GetFileName(sessionDirectory)}";
+    private static string GetMutexName(string sessionDirectory) =>
+        ProductIdentity.GetLocalMutexName(
+            $"{ProductIdentity.TutorialSessionMutexPrefix}{Path.GetFileName(sessionDirectory)}");
 
     private static bool TryAcquire(Mutex sessionLock)
     {

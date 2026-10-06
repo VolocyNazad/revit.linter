@@ -251,9 +251,7 @@ internal sealed class WindowsUpdateNotificationService : IUpdateNotificationServ
         using var operationTimeout = new CancellationTokenSource(TimeSpan.FromMinutes(30));
         try
         {
-            string downloadDirectory = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Volocy", "Revit.Linter", "updater", "downloads");
+            string downloadDirectory = UpdaterPaths.GetDownloadDirectory(UpdaterPaths.GetUpdaterDirectory());
             string installerPath = await _installerDownloader.DownloadAsync(
                 activation.Installer!,
                 downloadDirectory,

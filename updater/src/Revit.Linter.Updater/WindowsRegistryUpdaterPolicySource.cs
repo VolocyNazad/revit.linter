@@ -1,6 +1,7 @@
 using System.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Updater.Core.Abstractions;
 using Revit.Linter.Updater.Core.Models;
 
@@ -8,7 +9,12 @@ namespace Revit.Linter.Updater;
 
 internal sealed class WindowsRegistryUpdaterPolicySource : IUpdaterPolicySource
 {
-    internal const string PolicySubKey = @"Software\Policies\Volocy\Revit.Linter\Updater";
+    internal const string PolicySubKey = ProductIdentity.PolicySubKey;
+
+    private const string ChecksEnabledValueName = "ChecksEnabled";
+    private const string NotificationsEnabledValueName = "NotificationsEnabled";
+    private const string CheckIntervalHoursValueName = "CheckIntervalHours";
+    private const string ReleaseApiUrlValueName = "ReleaseApiUrl";
     private readonly ILogger<WindowsRegistryUpdaterPolicySource> _logger;
 
     public WindowsRegistryUpdaterPolicySource(ILogger<WindowsRegistryUpdaterPolicySource> logger) =>
@@ -29,10 +35,10 @@ internal sealed class WindowsRegistryUpdaterPolicySource : IUpdaterPolicySource
 
             return new UpdaterPolicy
             {
-                ChecksEnabled = ReadBoolean(policyKey, "ChecksEnabled"),
-                NotificationsEnabled = ReadBoolean(policyKey, "NotificationsEnabled"),
-                AutomaticCheckInterval = ReadInterval(policyKey, "CheckIntervalHours"),
-                ReleaseApiUri = ReadHttpsUri(policyKey, "ReleaseApiUrl")
+                ChecksEnabled = ReadBoolean(policyKey, ChecksEnabledValueName),
+                NotificationsEnabled = ReadBoolean(policyKey, NotificationsEnabledValueName),
+                AutomaticCheckInterval = ReadInterval(policyKey, CheckIntervalHoursValueName),
+                ReleaseApiUri = ReadHttpsUri(policyKey, ReleaseApiUrlValueName)
             };
         }
         catch (Exception exception) when (

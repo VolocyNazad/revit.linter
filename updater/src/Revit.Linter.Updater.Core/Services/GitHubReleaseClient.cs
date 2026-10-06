@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Updater.Core.Abstractions;
 using Revit.Linter.Updater.Core.Models;
 
@@ -37,7 +38,7 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
     public async Task<ReleaseInfo?> GetLatestAsync(CancellationToken cancellationToken = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, _latestReleaseUri);
-        request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
+        request.Headers.UserAgent.Add(new ProductInfoHeaderValue(ProductIdentity.UpdaterProcessName, "1.0"));
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
 
@@ -114,7 +115,7 @@ public sealed class GitHubReleaseClient : IGitHubReleaseClient
             return null;
         }
 
-        string expectedName = $"RevitLinter-{version}.msi";
+        string expectedName = ProductIdentity.GetMsiAssetName(version.ToString());
         foreach (JsonElement asset in assets.EnumerateArray())
         {
             string? name = asset.TryGetProperty("name", out JsonElement nameElement)

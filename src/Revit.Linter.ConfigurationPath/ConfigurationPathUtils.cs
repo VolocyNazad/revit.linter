@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using Revit.Linter.Core.Abstractions;
+using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Core;
 
@@ -9,6 +10,23 @@ namespace Revit.Linter.ConfigurationPath;
 /// </summary>
 public static class ConfigurationPathUtils
 {
+    /// <summary>Gets the user configuration file name shared by element diagnostics.</summary>
+    public const string ConfigFileName = "config.yaml";
+
+    /// <summary>Gets the user configuration file name for collision diagnostics.</summary>
+    public const string CollisionConfigFileName = "collision.config.yaml";
+
+    /// <summary>Gets the user configuration file name for project-parameter diagnostics.</summary>
+    public const string ParameterElementConfigFileName = "parameter-element.config.yaml";
+
+    /// <summary>Gets the managed practical-tour configuration file name.</summary>
+    public const string PracticalTourFileName = "practical-tour.config.yaml";
+
+    /// <summary>Gets the subfolder that receives examples without overwriting user files.</summary>
+    public const string ExamplesFolderName = "examples";
+
+    /// <summary>Gets the subfolder that holds the managed practical-tour configuration.</summary>
+    public const string TourFolderName = "tour";
     private static int _revitVersion =
 #if IS2021
     2021;
@@ -30,9 +48,33 @@ public static class ConfigurationPathUtils
     /// </summary>
     public static readonly string Directory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "Revit Linter",
+        ProductIdentity.DocumentsFolderName,
         _revitVersion.ToString()
     );
+
+    /// <summary>Gets the main user configuration file path for the current Revit version.</summary>
+    public static string ConfigPath => Path.Combine(Directory, ConfigFileName);
+
+    /// <summary>Gets the example user configuration file path for the current Revit version.</summary>
+    public static string ExampleConfigPath => Path.Combine(Directory, ExamplesFolderName, ConfigFileName);
+
+    /// <summary>Gets the managed practical-tour configuration file path.</summary>
+    public static string PracticalTourConfigPath =>
+        Path.Combine(Directory, TourFolderName, PracticalTourFileName);
+
+    /// <summary>Gets the collision configuration file path for the current Revit version.</summary>
+    public static string CollisionConfigPath => Path.Combine(Directory, CollisionConfigFileName);
+
+    /// <summary>Gets the example collision configuration file path.</summary>
+    public static string ExampleCollisionConfigPath =>
+        Path.Combine(Directory, ExamplesFolderName, CollisionConfigFileName);
+
+    /// <summary>Gets the project-parameter configuration file path.</summary>
+    public static string ParameterElementConfigPath => Path.Combine(Directory, ParameterElementConfigFileName);
+
+    /// <summary>Gets the example project-parameter configuration file path.</summary>
+    public static string ExampleParameterElementConfigPath =>
+        Path.Combine(Directory, ExamplesFolderName, ParameterElementConfigFileName);
 
     /// <summary>
     /// Creates the parent directory and an empty file when the specified configuration file does not exist.

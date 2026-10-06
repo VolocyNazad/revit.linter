@@ -2,6 +2,7 @@ using Autodesk.Revit.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using System.ComponentModel;
@@ -19,9 +20,6 @@ namespace Revit.Linter;
 [Transaction(TransactionMode.Manual)]
 public sealed class CheckForUpdatesCommand : ExternalCommand
 {
-    private const string Vendor = "VolocyNazad";
-    private const string UpdaterExecutableName = "Revit.Linter.Updater.exe";
-
     /// <inheritdoc />
     public override void Execute()
     {
@@ -51,12 +49,15 @@ public sealed class CheckForUpdatesCommand : ExternalCommand
     {
         string installedPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Programs", Vendor, "Revit.Linter", UpdaterExecutableName);
+            "Programs",
+            ProductIdentity.InstallVendor,
+            ProductIdentity.AddInName,
+            ProductIdentity.UpdaterExecutableName);
         if (File.Exists(installedPath))
             return installedPath;
 
         string? assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        string adjacentPath = Path.Combine(assemblyDirectory ?? string.Empty, UpdaterExecutableName);
+        string adjacentPath = Path.Combine(assemblyDirectory ?? string.Empty, ProductIdentity.UpdaterExecutableName);
         if (File.Exists(adjacentPath))
             return adjacentPath;
 

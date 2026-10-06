@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Context.Abstractions.Services;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.SerilogEnrichers;
 using Serilog;
 using Serilog.Events;
@@ -16,9 +17,9 @@ internal static class ServiceCollectionExtensions
     /// <summary>Gets the per-user directory that receives the add-in log files.</summary>
     internal static string LogDirectory => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Volocy",
-        "Revit.Linter",
-        "logs");
+        ProductIdentity.CompanyDirectoryName,
+        ProductIdentity.ProductDirectoryName,
+        ProductIdentity.LogsFolderName);
 
     extension(IServiceCollection services)
     {

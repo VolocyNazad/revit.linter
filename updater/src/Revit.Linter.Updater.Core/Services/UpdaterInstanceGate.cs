@@ -1,5 +1,7 @@
 namespace Revit.Linter.Updater.Core.Services;
 
+using Revit.Linter.Core.Abstractions;
+
 /// <summary>Coordinates updater processes for the current Windows user.</summary>
 /// <remarks>
 /// The process that acquires the gate owns update work. A concurrent manual invocation signals that
@@ -17,11 +19,11 @@ public sealed class UpdaterInstanceGate : IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        _semaphore = new Semaphore(1, 1, $"Local\\{name}");
+        _semaphore = new Semaphore(1, 1, ProductIdentity.GetLocalMutexName(name));
         _manualCheckRequested = new EventWaitHandle(
             false,
             EventResetMode.AutoReset,
-            $"Local\\{name}.CheckNow");
+            ProductIdentity.GetLocalMutexName($"{name}{ProductIdentity.UpdaterManualCheckEventSuffix}"));
     }
 
     /// <summary>Attempts to become the updater process that performs work.</summary>

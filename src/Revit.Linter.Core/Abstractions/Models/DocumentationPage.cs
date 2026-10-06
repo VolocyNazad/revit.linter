@@ -13,9 +13,7 @@ namespace Revit.Linter.Core.Abstractions.Models;
 /// </remarks>
 public sealed record DocumentationPage(string EnglishPageName, string RussianPageName)
 {
-#pragma warning disable S1075 // This is the intentional, stable documentation destination.
-    private const string WikiRootUrl = "https://github.com/VolocyNazad/revit.linter/wiki/";
-#pragma warning restore S1075
+    private static string WikiRootUrl => ProductIdentity.WikiRootUrl;
 
     /// <summary>Gets the address of the page in the language of the current UI culture.</summary>
     /// <returns>The absolute HTTPS address of the page.</returns>

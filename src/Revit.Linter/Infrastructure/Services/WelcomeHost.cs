@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Context.Abstractions.Services;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
@@ -19,10 +20,8 @@ namespace Revit.Linter.Infrastructure.Services;
 /// </summary>
 internal sealed class WelcomeHost : IWelcomeHost
 {
-#pragma warning disable S1075 // These are the intentional, stable documentation and support destinations.
-    private const string DocumentationUrl = "https://github.com/VolocyNazad/revit.linter/wiki";
-    private const string SupportUrl = "https://github.com/VolocyNazad/revit.linter/issues";
-#pragma warning restore S1075
+    private static string DocumentationUrl => ProductIdentity.DocumentationUrl;
+    private static string SupportUrl => ProductIdentity.SupportUrl;
 
     private static readonly DocumentationPage QuickStartPage = new("Quick start", "Быстрый старт");
 

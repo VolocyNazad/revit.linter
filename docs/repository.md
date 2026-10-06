@@ -157,6 +157,18 @@ synchronization follows the requested feature states
 on install, repair and modify. Before any file change, setup stops the short-lived updater and refuses to
 continue while a Revit process is running.
 
+Product-wide identity (vendor, product and repository names, GitHub destinations, registry policy
+location, updater synchronization name) is owned by `ProductIdentity` in `Revit.Linter.Core`
+(`src/Revit.Linter.Core/Abstractions/ProductIdentity.cs`). The updater and the installer compile the
+same file as a source link, so they stay independent build units without a project reference to the
+Revit API. Path composition stays with the owning module: `ConfigurationPathUtils` for user
+configurations (`Documents\Revit Linter\<year>\`, `config.yaml`, `examples/`, `tour/`), `UpdaterPaths`
+in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\` (`logs/`, `state.json`,
+`downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the composition root for
+add-in logs (`...\\logs\\`) and the ValueStore settings directory (`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`).
+Renaming the vendor, product or repository requires editing `ProductIdentity` only; the `build/` asset
+name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
+
 ## Technology stack
 
 - `VolocyNazad.Revit.Sdk` (a custom MSBuild SDK, source in a separate

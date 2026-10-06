@@ -20,10 +20,8 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
     IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
-    private static readonly string _configPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "collision.config.yaml");
-    private static readonly string _exampleConfigPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "examples", "collision.config.yaml");
+    private static readonly string _configPath = ConfigurationPathUtils.CollisionConfigPath;
+    private static readonly string _exampleConfigPath = ConfigurationPathUtils.ExampleCollisionConfigPath;
     private readonly ConfigurationFileChangeSource _changeSource = new([_configPath, _exampleConfigPath]);
 
     public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);

@@ -23,10 +23,13 @@
 		<PackageReference Include="WixToolset.UI.wixext" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="..\..\updater\src\Revit.Linter.Updater\Resources\Icon.ico" Link="Resources\Icon.ico">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\updater\src\Revit.Linter.Updater\Resources\Icon.ico" Link="Resources\Icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\Revit.Linter.Core\Abstractions\ProductIdentity.cs" Link="ProductIdentity.cs" />
+  </ItemGroup>
 
 </Project>

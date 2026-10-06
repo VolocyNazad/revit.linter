@@ -4,9 +4,6 @@ using System.Text;
 using System.Xml.Linq;
 using WixSharp;
 
-const string AddInName = "Revit.Linter";
-const string Vendor = "VolocyNazad";
-const string UpgradeCode = "ed6109bc-3ea6-4fe3-a1ab-e31a7db46ac1";
 string productIcon = Path.Combine(AppContext.BaseDirectory, "Resources", "Icon.ico");
 string[] legacyUpgradeCodes =
 [
@@ -35,7 +32,7 @@ if (!Version.TryParse(args[0], out Version? version))
 string updaterDirectory = Path.GetFullPath(args[1]);
 string outputDirectory = Path.GetFullPath(args[2]);
 if (!Directory.Exists(updaterDirectory) ||
-    !System.IO.File.Exists(Path.Combine(updaterDirectory, "Revit.Linter.Updater.exe")))
+    !System.IO.File.Exists(Path.Combine(updaterDirectory, InstallerProduct.UpdaterExecutableName)))
 {
     Console.Error.WriteLine($"Published updater directory is invalid: '{updaterDirectory}'.");
     return 1;
@@ -89,7 +86,7 @@ var installEntities = new List<WixEntity>
     new Files(coreFeature, Path.Combine(updaterDirectory, "*.*")),
     new Dir(
         coreFeature,
-        "Addins",
+        InstallerProduct.AddinsFolderName,
         targets
             .OrderBy(target => target.Version)
             .Select(target => new Dir(
@@ -97,7 +94,7 @@ var installEntities = new List<WixEntity>
                 target.Version.ToString(),
                 new Dir(
                     revitFeatures[target.Version],
-                    "sources",
+                    InstallerProduct.SourcesFolderName,
                     new Files(revitFeatures[target.Version], Path.Combine(target.SourceDirectory, "*.*")))))
             .Cast<WixEntity>()
             .ToArray())
@@ -106,18 +103,18 @@ var installEntities = new List<WixEntity>
 Project project = new()
 {
     MajorUpgrade = MajorUpgrade.Default,
-    UpgradeCode = new Guid(UpgradeCode),
-    GUID = GenerateProductGuid(AddInName, version),
+    UpgradeCode = new Guid(InstallerProduct.UpgradeCode),
+    GUID = GenerateProductGuid(InstallerProduct.AddInName, version),
     Version = version,
-    Name = AddInName,
+    Name = InstallerProduct.AddInName,
     OutDir = outputDirectory,
-    OutFileName = $"RevitLinter-{version}",
+    OutFileName = InstallerProduct.GetMsiOutFileName(version),
     ControlPanelInfo =
     {
-        Name = AddInName,
-        Manufacturer = Vendor,
+        Name = InstallerProduct.AddInName,
+        Manufacturer = InstallerProduct.Vendor,
         Comments = "Revit Linter per-user installer.",
-        HelpLink = "https://github.com/VolocyNazad/revit.linter",
+        HelpLink = InstallerProduct.HelpLink,
         ProductIcon = productIcon,
     },
     Platform = WixSharp.Platform.x64,
@@ -126,12 +123,12 @@ Project project = new()
     Dirs =
     [
         new InstallDir(
-            $@"%LocalAppDataFolder%\Programs\{Vendor}\{AddInName}",
+            InstallerProduct.InstallDirectory,
             installEntities.ToArray())
     ],
     Properties =
     [
-        new Property("REVIT_VERSIONS", revitVersions),
+        new Property(InstallerProduct.RevitVersionsProperty, revitVersions),
         .. targets.Select(target => new Property(
             $"REVIT_{target.Version}_DETECTED",
             new RegistrySearch(
@@ -147,8 +144,8 @@ Project project = new()
             coreFeature,
             RegistryHive.CurrentUser,
             @"Software\Microsoft\Windows\CurrentVersion\Run",
-            AddInName,
-            "\"[INSTALLDIR]Revit.Linter.Updater.exe\"")
+            InstallerProduct.AddInName,
+            $"\"[INSTALLDIR]{InstallerProduct.UpdaterExecutableName}\"")
     ],
     Actions =
     [

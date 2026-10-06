@@ -1,4 +1,5 @@
 using Autodesk.Revit.Attributes;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using Revit.Linter.Infrastructure.Utils;
 
@@ -9,10 +10,6 @@ namespace Revit.Linter;
 [Transaction(TransactionMode.Manual)]
 public sealed class OpenSupportCommand : ExternalCommand
 {
-#pragma warning disable S1075 // This is the intentional, stable support destination.
-    private const string SupportUrl = "https://github.com/VolocyNazad/revit.linter/issues";
-#pragma warning restore S1075
-
     /// <inheritdoc />
-    public override void Execute() => ExternalPageLauncher.Open<OpenSupportCommand>(SupportUrl);
+    public override void Execute() => ExternalPageLauncher.Open<OpenSupportCommand>(ProductIdentity.SupportUrl);
 }

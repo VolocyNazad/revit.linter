@@ -18,11 +18,9 @@ internal sealed class UserDiagnosticRegistrationProvider(
     ILogger<UserDiagnosticRegistrationProvider> logger)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
-    private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, "config.yaml");
-    private static readonly string _exampleConfigPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "examples", "config.yaml");
-    private static readonly string _practicalTourConfigPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "tour", "practical-tour.config.yaml");
+    private static readonly string _configPath = ConfigurationPathUtils.ConfigPath;
+    private static readonly string _exampleConfigPath = ConfigurationPathUtils.ExampleConfigPath;
+    private static readonly string _practicalTourConfigPath = ConfigurationPathUtils.PracticalTourConfigPath;
     private readonly ConfigurationFileChangeSource _changeSource = new(
         [_configPath, _exampleConfigPath, _practicalTourConfigPath]);
 

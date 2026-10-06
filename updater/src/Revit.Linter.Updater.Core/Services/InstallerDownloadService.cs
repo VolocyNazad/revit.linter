@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Updater.Core.Models;
 
 namespace Revit.Linter.Updater.Core.Services;
@@ -120,7 +121,7 @@ public sealed class InstallerDownloadService
         while (true)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Revit.Linter.Updater", "1.0"));
+            request.Headers.UserAgent.Add(new ProductInfoHeaderValue(ProductIdentity.UpdaterProcessName, "1.0"));
             HttpResponseMessage response = await _httpClient.SendAsync(
                 request,
                 HttpCompletionOption.ResponseHeadersRead,
@@ -160,6 +161,6 @@ public sealed class InstallerDownloadService
         uri.Scheme == Uri.UriSchemeHttps &&
         uri.IsDefaultPort &&
         string.IsNullOrEmpty(uri.UserInfo) &&
-        (uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
-         uri.Host.EndsWith(".githubusercontent.com", StringComparison.OrdinalIgnoreCase));
+        (uri.Host.Equals(ProductIdentity.GitHubHost, StringComparison.OrdinalIgnoreCase) ||
+         uri.Host.EndsWith(ProductIdentity.GitHubAssetHostSuffix, StringComparison.OrdinalIgnoreCase));
 }

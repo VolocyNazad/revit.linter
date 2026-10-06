@@ -17,10 +17,8 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     ILogger<ParameterElementDiagnosticRegistrationProvider> logger)
     : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
 {
-    private const string ConfigFileName = "parameter-element.config.yaml";
-    private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, ConfigFileName);
-    private static readonly string _exampleConfigPath = Path.Combine(
-        ConfigurationPathUtils.Directory, "examples", ConfigFileName);
+    private static readonly string _configPath = ConfigurationPathUtils.ParameterElementConfigPath;
+    private static readonly string _exampleConfigPath = ConfigurationPathUtils.ExampleParameterElementConfigPath;
     private readonly ConfigurationFileChangeSource _changeSource = new([_configPath, _exampleConfigPath]);
 
     public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
@@ -74,7 +72,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     {
         string? description = errors.Count == 0
             ? null
-            : ParameterConfigurationErrorFormatter.Format(ConfigFileName, errors);
+            : ParameterConfigurationErrorFormatter.Format(ConfigurationPathUtils.ParameterElementConfigFileName, errors);
 
         // The state reports a change only once per distinct description, which keeps the log and the
         // notification from repeating on every catalog refresh.

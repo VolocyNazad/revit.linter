@@ -1,11 +1,12 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Updater;
 using Revit.Linter.Updater.Core.Models;
 using Revit.Linter.Updater.Core.Services;
 using Serilog;
 
-const string instanceGateName = "Volocy.Revit.Linter.Updater";
+const string instanceGateName = ProductIdentity.UpdaterMutexName;
 bool manual = args.Contains("--check-now", StringComparer.OrdinalIgnoreCase);
 
 using var instanceGate = new UpdaterInstanceGate(instanceGateName);
@@ -18,14 +19,12 @@ if (!instanceGate.TryAcquire())
 
 try
 {
-    string updaterDirectory = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Volocy", "Revit.Linter", "updater");
+    string updaterDirectory = UpdaterPaths.GetUpdaterDirectory();
     Directory.CreateDirectory(updaterDirectory);
     Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
         .WriteTo.File(
-            Path.Combine(updaterDirectory, "logs", "updater-.log"),
+            UpdaterPaths.GetLogPath(updaterDirectory),
             rollingInterval: RollingInterval.Day,
             retainedFileCountLimit: 14)
         .CreateLogger();

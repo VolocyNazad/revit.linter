@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticListPresenter.DI;
@@ -113,7 +114,9 @@ internal sealed class Program
                 {
                     options.DirectoryPath = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        "RevitLinter");
+                        ProductIdentity.CompanyDirectoryName,
+                        ProductIdentity.ProductDirectoryName,
+                        ProductIdentity.SettingsFolderName);
                     options.WatchForExternalChanges = true;
                 })
             )

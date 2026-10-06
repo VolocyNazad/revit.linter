@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Revit.Linter.Core.Abstractions;
 
 namespace Revit.Linter.Updater.Core.Models;
 
@@ -57,8 +58,8 @@ public sealed class ReleaseInstaller
     {
         installer = null;
         failureReason = null;
-        string expectedName = $"RevitLinter-{version}.msi";
-        string expectedPath = $"/VolocyNazad/revit.linter/releases/download/v{version}/{expectedName}";
+        string expectedName = ProductIdentity.GetMsiAssetName(version.ToString());
+        string expectedPath = ProductIdentity.GetMsiAssetPath(version.ToString(), expectedName);
         if (!string.Equals(name, expectedName, StringComparison.Ordinal))
         {
             failureReason = "unexpected asset name";
@@ -76,7 +77,7 @@ public sealed class ReleaseInstaller
         }
         if (!Uri.TryCreate(downloadUrl, UriKind.Absolute, out Uri? downloadUri) ||
             downloadUri.Scheme != Uri.UriSchemeHttps ||
-            !downloadUri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
+            !downloadUri.Host.Equals(ProductIdentity.GitHubHost, StringComparison.OrdinalIgnoreCase) ||
             !downloadUri.IsDefaultPort ||
             !string.IsNullOrEmpty(downloadUri.UserInfo) ||
             !string.IsNullOrEmpty(downloadUri.Query) ||

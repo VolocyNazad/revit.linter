@@ -1,12 +1,16 @@
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
 using System.IO;
+using Revit.Linter.Core.Abstractions;
 
 /// <summary>Plans a fresh path below the application-owned temporary tutorial root.</summary>
 internal static class TutorialCopyPathPlanner
 {
     public static string GetVersionRoot(int revitVersion) => Path.Combine(
-        Path.GetTempPath(), "Revit Linter", "Tutorial", revitVersion.ToString());
+        Path.GetTempPath(),
+        ProductIdentity.DocumentsFolderName,
+        ProductIdentity.TutorialFolderName,
+        revitVersion.ToString());
 
     public static string Create(string sourceFile, int revitVersion)
     {

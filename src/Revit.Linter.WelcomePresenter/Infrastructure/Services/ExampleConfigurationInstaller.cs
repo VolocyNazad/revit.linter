@@ -10,15 +10,15 @@ namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
 internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInstaller
 {
-    internal const string AsideFolderName = "examples";
-    internal const string TourFolderName = "tour";
-    internal const string PracticalTourFileName = "practical-tour.config.yaml";
+    internal const string AsideFolderName = ConfigurationPathUtils.ExamplesFolderName;
+    internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
+    internal const string PracticalTourFileName = ConfigurationPathUtils.PracticalTourFileName;
 
     private const string ResourcePrefix = "Revit.Linter.WelcomePresenter.Examples.";
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
     private static readonly string[] FileNames =
-        ["config.yaml", "collision.config.yaml", "parameter-element.config.yaml"];
+        [ConfigurationPathUtils.ConfigFileName, ConfigurationPathUtils.CollisionConfigFileName, ConfigurationPathUtils.ParameterElementConfigFileName];
 
     private readonly ILogger<ExampleConfigurationInstaller> _logger;
 
