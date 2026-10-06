@@ -162,3 +162,4 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Preserve unknown message placeholders, support escaped braces, and handle element identifiers correctly on Revit 2024 and later.
 - Use the active Material Design palette for panel backgrounds in both light and dark themes.
 - Publish Wiki links with the correct targets when source pages use Obsidian aliases.
+- Show a single configuration-change notification when the practical tour completes: reading the removed managed tour configuration no longer recreates the file, which previously triggered a second catalog refresh with a duplicate message.

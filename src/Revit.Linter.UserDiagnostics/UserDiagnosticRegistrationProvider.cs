@@ -38,6 +38,10 @@ internal sealed class UserDiagnosticRegistrationProvider(
                       (_configPath, false, false), (_exampleConfigPath, true, false), (_practicalTourConfigPath, false, true),
                   })
         {
+            // The managed tour configuration is optional and owned by the practical tour:
+            // reading it must not recreate the file after the tour removed it, otherwise
+            // the recreated file triggers a second catalog refresh and a duplicate notification.
+            if (isTour && !File.Exists(path)) continue;
             bool loaded = ConfigurationPathUtils.TryGetConfigurations(
                 path, out List<DiagnosticRule>? rules, out Exception? error);
             if (!loaded)
