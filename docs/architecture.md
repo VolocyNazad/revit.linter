@@ -21,6 +21,8 @@ This document records stable architectural rules. Implementation details belong 
 ## Presentation
 
 - Views contain layout and view-only mechanics. View models own state and commands; application and diagnostic behavior lives in services.
+- Presenter modules publish completed, product-level UI facts through `IUserInterfaceActivityStream`; event types describe the action and result without naming an observer. Optional observers such as onboarding translate those facts in their own module. Observer failures are isolated by the host stream and never change the originating command's result.
+- The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup refreshes the managed `tour/practical-tour.config.yaml` file and clears the persisted selection override, so the user enables the check as the guided step asks. Completing the tour or opting out removes the managed file. Step advancement itself stays purely observational — only observed UI facts move the tour state machine, and resumed tours keep the current selection. Tour rules carry the `IsTour` mark, shown with a tour badge and sorted above the rest of the diagnostics list.
 - Reusable WPF mechanics live in `Revit.Linter.Behaviors`. Prefer bindings, converters, commands and behaviors over event handlers.
 - `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
 - View-model bases shared by presenter modules (`InitializableObservableObject`, `RevitInteractionViewModel`) and `BindingProxy` live in `Revit.Linter.Presentation`; a presenter module does not keep its own copy.

@@ -12,12 +12,15 @@ lang: en
 
 - [[Installation|Installation]]
 - [[Quick start|Quick start]]
+- [[Practical tour|Practical tour]]
+- [[Create your first rule|Create your first rule]]
 - [[Diagnostic configuration path convention|Configuration folders]]
 - [[Troubleshooting|Troubleshooting and logs]]
 
 ## Configure diagnostics
 
 - [[Diagnostics overview|Diagnostics overview]]
+- [[Built-in diagnostics and user rules|Built-in diagnostics and user rules]]
 - [[Diagnostic modules|Available modules]]
 - [[Diagnostic parameters|Common parameters]]
 - [[User diagnostics|User diagnostics]]

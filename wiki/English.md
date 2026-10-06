@@ -15,13 +15,15 @@ Revit Linter helps designers and BIM teams find model problems before they affec
 
 1. [[Installation|Install Revit Linter]].
 2. Follow the [[Quick start|quick start]] to run the first check.
-3. Open [[Diagnostics pane|Diagnostics]] to choose which checks are active.
-4. Review findings in [[Diagnostic reports pane|Diagnostic results]].
+3. Use the [[Practical tour]] if you want guidance inside Revit.
+4. Open [[Diagnostics pane|Diagnostics]] to choose which checks are active.
+5. Review findings in [[Diagnostic reports pane|Diagnostic results]].
 
 ## Common tasks
 
 - [[Diagnostic configuration path button|Open the configuration folder]]
-- [[User diagnostics|Create a custom diagnostic]]
+- [[Built-in diagnostics and user rules|Choose between built-in diagnostics and user rules]]
+- [[Create your first rule]]
 - [[Collision diagnostics|Configure collision checks]]
 - [[Project parameter diagnostics|Configure project parameter checks]]
 - [[Formula syntax|Write a formula]]
