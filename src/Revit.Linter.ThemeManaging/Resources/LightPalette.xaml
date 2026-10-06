@@ -46,4 +46,6 @@
     <SolidColorBrush x:Key="LinterScrollBarThumbHoverBrush" Color="#6E6E6E" />
     <!--  Chevrons of a scroll bar.  -->
     <SolidColorBrush x:Key="LinterScrollBarArrowBrush" Color="#808080" />
+    <!--  Dimming around the practical-tour target.  -->
+    <SolidColorBrush x:Key="LinterSpotlightDimBrush" Color="#B0000000" />
 </ResourceDictionary>

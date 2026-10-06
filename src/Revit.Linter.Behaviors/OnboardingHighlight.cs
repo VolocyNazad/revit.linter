@@ -313,7 +313,10 @@ internal sealed class SpotlightAdorner : Adorner, IDisposable
         foreach (Rect targetRect in targetRects)
             mask.Children.Add(new RectangleGeometry(targetRect, 4, 4));
 
-        drawingContext.DrawGeometry(new SolidColorBrush(Color.FromArgb(176, 0, 0, 0)), null, mask);
+        drawingContext.DrawGeometry(
+            GetBrush((FrameworkElement)AdornedElement, "LinterSpotlightDimBrush", Color.FromArgb(176, 0, 0, 0)),
+            null,
+            mask);
         Brush accent = GetBrush((FrameworkElement)AdornedElement, "LinterAccentBrush", Color.FromRgb(43, 123, 179));
         Pen outline = new(accent, 4);
         foreach (Rect targetRect in targetRects)
