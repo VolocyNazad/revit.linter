@@ -264,12 +264,13 @@ internal sealed class PracticalTour(
             return;
         }
 
+        // ExportReport keeps the current pane: yanking the user away right after
+        // they selected a fix row hides what they came to look at.
         if (step is PracticalTourStep.InspectFinding
             or PracticalTourStep.ShowElement
             or PracticalTourStep.SelectVisualization
             or PracticalTourStep.NavigateFindings
-            or PracticalTourStep.UnderstandFix
-            or PracticalTourStep.ExportReport)
+            or PracticalTourStep.UnderstandFix)
             welcomeHost.ShowPane(WelcomePane.Warnings);
     }
 

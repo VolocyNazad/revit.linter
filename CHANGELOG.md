@@ -53,6 +53,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Log the practical-tour completion alongside its notification, so a missing window is visible in the log.
 - Complete the Fix list tour step by selecting an applied fix; opening the pane still counts.
 - Bring the Fix list pane forward on its practical-tour step.
+- Keep the current pane on the practical-tour export step instead of switching to Warnings.
 - Observe diagnostic selection changes made through bulk check actions, so the practical tour no longer misses them.
 - Pulse only the first `TOUR001` row in the Fix list pane on the fix-list tour step instead of the whole pane.
 - Name the practical-tour visualization steps “Visualize” and “Visualize differently” (“Визуализировать” / “Визуализировать иначе”).
