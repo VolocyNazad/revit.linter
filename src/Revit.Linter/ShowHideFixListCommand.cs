@@ -1,4 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
+using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using Revit.Linter.Infrastructure.Utils;
 
@@ -14,6 +17,11 @@ public class ShowHideFixListCommand : ExternalCommand
         DockablePane pane = Application.GetDockablePane(FixReportPaneUtils.PaneId);
 
         if (pane.IsShown()) pane.Hide();
-        else pane.Show();
+        else
+        {
+            pane.Show();
+            Program.Provider.GetRequiredService<IUserInterfaceActivityStream>()
+                .Publish(new FixListPaneShownActivity());
+        }
     }
 }

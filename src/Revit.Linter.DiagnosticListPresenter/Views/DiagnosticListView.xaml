@@ -35,6 +35,7 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             <infrastructure:DiagnosticSeverityConverter x:Key="DiagnosticSeverityConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -50,6 +51,7 @@
                     x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding MoreFiltersTitle, Mode=OneWay}"
+                    behaviors:OnboardingHighlight.Key="SearchAndFilters"
                     Content="{controls:Icon Kind=Filter}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarPopupToggleButton}" />
@@ -64,6 +66,7 @@
                 <TextBox
                     behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
+                    behaviors:OnboardingHighlight.Key="SearchAndFilters"
                     controls:Hint.Text="{Binding SearchText}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterSearchTextBox}"
@@ -123,7 +126,11 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}" SortMemberPath="IsActive">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridToggleColumnMinWidth}"
+                        Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="IsActive">
                         <DataGridTemplateColumn.HeaderStyle>
                             <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="DataGridColumnHeader">
                                 <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}, Mode=OneWay}" />
@@ -132,18 +139,66 @@
                         </DataGridTemplateColumn.HeaderStyle>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <CheckBox.Style>
+                                        <Style BasedOn="{StaticResource {x:Type CheckBox}}" TargetType="CheckBox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Code}" Value="TOUR001">
+                                                    <Setter Property="behaviors:OnboardingHighlight.Key" Value="SelectDiagnostic" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </CheckBox.Style>
+                                </CheckBox>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridExampleCodeColumnMinWidth}"
+                        Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Style="{StaticResource LinterObsoleteAwareCellTextBox}" Text="{Binding Code, Mode=OneWay}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Style="{StaticResource LinterObsoleteAwareCellTextBox}" Text="{Binding Code, Mode=OneWay}" />
+                                    <Border
+                                        Margin="6,0,0,0"
+                                        Padding="5,1"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource LinterSelectionBrush}"
+                                        BorderBrush="{DynamicResource LinterAccentBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="2"
+                                        Visibility="{Binding IsExample, Converter={StaticResource BooleanToVisibility}}">
+                                        <TextBlock
+                                            FontSize="10"
+                                            Foreground="{DynamicResource LinterAccentBrush}"
+                                            Text="{Binding DataContext.ExampleText, ElementName=Root, Mode=OneWay}" />
+                                    </Border>
+                                    <Border
+                                        Margin="6,0,0,0"
+                                        Padding="5,1"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource LinterSelectionBrush}"
+                                        BorderBrush="{DynamicResource LinterAccentBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="2"
+                                        Visibility="{Binding IsTour, Converter={StaticResource BooleanToVisibility}}">
+                                        <TextBlock
+                                            FontSize="10"
+                                            Foreground="{DynamicResource LinterAccentBrush}"
+                                            Text="{Binding DataContext.TourText, ElementName=Root, Mode=OneWay}" />
+                                    </Border>
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}" SortMemberPath="Severity">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridSeverityColumnMinWidth}"
+                        Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Severity">
                         <DataGridTemplateColumn.HeaderStyle>
                             <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="DataGridColumnHeader">
                                 <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}, Mode=OneWay}" />

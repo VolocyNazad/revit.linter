@@ -85,11 +85,15 @@ internal sealed partial class DiagnosticReportItemViewModel
 internal sealed partial class VisualizationPipelineViewModel
 {
     public required string Title { get; init; }
-    public required Func<CancellationToken, Task> ShowDelegate { get; init; }
+    public required Func<bool, CancellationToken, Task> ShowDelegate { get; init; }
 
     [RelayCommand]
     public async Task Show(CancellationToken cancellationToken)
-        => await ShowDelegate(cancellationToken);
+        => await ShowDelegate(false, cancellationToken);
+
+    [RelayCommand]
+    private async Task ShowFromMenu(CancellationToken cancellationToken)
+        => await ShowDelegate(true, cancellationToken);
 }
 
 internal sealed partial class FixViewModel

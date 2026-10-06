@@ -21,7 +21,9 @@ public interface IDiagnosticReportPresenter
     void Clear(string documentTitle);
 
     /// <summary>
-    /// Refreshes the displayed diagnostic reports.
+    /// Refreshes the displayed diagnostic reports and counts the findings for a document.
     /// </summary>
-    void Refresh();
+    /// <param name="documentTitle">The title of the document whose findings are counted after refresh.</param>
+    /// <returns>The number of matching findings currently presented.</returns>
+    int Refresh(string documentTitle);
 }

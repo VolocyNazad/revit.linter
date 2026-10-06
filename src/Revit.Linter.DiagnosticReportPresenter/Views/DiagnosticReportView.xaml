@@ -45,6 +45,7 @@
                 <Button
                     behaviors:HelpToolTip.Description="{Binding ShowPreviousDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ShowPreviousText, Mode=OneWay}"
+                    behaviors:OnboardingHighlight.Key="NavigateFindings"
                     Command="{Binding ShowPreviousVisualizationCommand}"
                     Content="{controls:Icon Kind=ChevronUp}"
                     DockPanel.Dock="Left"
@@ -56,6 +57,7 @@
                 <Button
                     behaviors:HelpToolTip.Description="{Binding ShowNextDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ShowNextText, Mode=OneWay}"
+                    behaviors:OnboardingHighlight.Key="NavigateFindings"
                     Command="{Binding ShowNextVisualizationCommand}"
                     Content="{controls:Icon Kind=ChevronDown}"
                     DockPanel.Dock="Left"
@@ -65,6 +67,7 @@
                     behaviors:HelpToolTip.Title="{Binding ExportReportText, Mode=OneWay}"
                     d:Command="{x:Null}"
                     Command="{Binding ExportCommand}"
+                    behaviors:OnboardingHighlight.Key="ExportReport"
                     Content="{controls:Icon Kind=Export}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarIconButton}" />
@@ -113,12 +116,16 @@
             </DockPanel>
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <DataGrid
+                x:Name="FindingsGrid"
                 d:ItemsSource="{d:SampleData ItemCount=2}"
+                LoadingRow="FindingsGrid_LoadingRow"
+                UnloadingRow="FindingsGrid_UnloadingRow"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 IsReadOnly="True"
                 IsSynchronizedWithCurrentItem="True"
-                ItemsSource="{Binding CollectionViewSource.View}">
+                ItemsSource="{Binding CollectionViewSource.View}"
+                SelectedItem="{Binding SelectedReport, Mode=TwoWay}">
                 <i:Interaction.Behaviors>
                     <behaviors:DataGridRowNavigationBehavior ActivateCommand="{Binding ShowCurrentVisualizationCommand}" />
                 </i:Interaction.Behaviors>
@@ -144,7 +151,9 @@
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
@@ -153,8 +162,16 @@
                                     Click="FixButton_OnClick"
                                     Content="{controls:Icon Kind=Lightbulb}"
                                     Foreground="{DynamicResource LinterHighlightIconBrush}"
-                                    Style="{StaticResource LinterGridIconButton}"
                                     Visibility="{Binding HasFixes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                                                    <Setter Property="behaviors:OnboardingHighlight.Key" Value="UnderstandFix" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
                                     <Button.ContextMenu>
                                         <ContextMenu
                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
@@ -172,7 +189,9 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
@@ -180,8 +199,16 @@
                                     behaviors:HelpToolTip.Title="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}, Mode=OneWay}"
                                     Click="VisualizationButton_OnClick"
                                     Content="{controls:Icon Kind=Eye}"
-                                    IsEnabled="{Binding HasVisualizationPipelines}"
-                                    Style="{StaticResource LinterGridIconButton}">
+                                    IsEnabled="{Binding HasVisualizationPipelines}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                                                    <Setter Property="behaviors:OnboardingHighlight.Key" Value="ShowElement" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
                                     <Button.ContextMenu>
                                         <ContextMenu
                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
@@ -189,7 +216,7 @@
                                             <ContextMenu.ItemContainerStyle>
                                                 <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
-                                                    <Setter Property="Command" Value="{Binding ShowCommand}" />
+                                                    <Setter Property="Command" Value="{Binding ShowFromMenuCommand}" />
                                                 </Style>
                                             </ContextMenu.ItemContainerStyle>
                                         </ContextMenu>
@@ -198,7 +225,11 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterSeverityCodeCellTextBox}" Text="{Binding Code}" />
@@ -231,21 +262,31 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridDocumentColumnMinWidth}"
+                        Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCreatedColumnMinWidth}"
+                        Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding CreatedText, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button

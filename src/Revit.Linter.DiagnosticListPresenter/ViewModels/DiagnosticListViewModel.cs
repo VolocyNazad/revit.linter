@@ -20,6 +20,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IServiceProvider _serviceProvider;
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDocumentationLauncher _documentationLauncher;
+    private readonly IUserInterfaceActivityStream _activityStream;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
@@ -39,7 +40,12 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
+    partial void OnSearchFieldChanged(string value)
+    {
+        RefreshCollectionView();
+        if (!string.IsNullOrWhiteSpace(value))
+            _activityStream.Publish(new DiagnosticListFilteredActivity());
+    }
 
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticListFilter> Filters { get; private set; } = [];
@@ -55,7 +61,10 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         RefreshCollectionView();
     }
     private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        => RefreshCollectionView();
+    {
+        RefreshCollectionView();
+        _activityStream.Publish(new DiagnosticListFilteredActivity());
+    }
 
     #region [CheckAll] Command - Check all
 
@@ -124,11 +133,21 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         var items = source.ToArray();
         var elements = items.Where(item => item.TargetType == TargetType.Element).ToArray();
         var documents = items.Where(item => item.TargetType == TargetType.Document).ToArray();
+        var transitions = items
+            .Select(item => (Item: item, Before: item.IsActive))
+            .Where(transition => transform(transition.Before) != transition.Before)
+            .ToArray();
 
         if (elements.Length > 0)
             _elementOverrideStore.Update(settings => UpdateSettings(settings.Overrides, elements, transform));
         if (documents.Length > 0)
             _documentOverrideStore.Update(settings => UpdateSettings(settings.Overrides, documents, transform));
+
+        // Bulk actions change the selection without touching a checkbox, so observers
+        // would otherwise miss them. Only genuinely changed diagnostics are published.
+        foreach (var transition in transitions)
+            _activityStream.Publish(new DiagnosticSelectionChangedActivity(
+                transition.Item.Code, transform(transition.Before)));
     }
 
     private static void UpdateSettings(
@@ -154,6 +173,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         CollectionViewSource.Filter += CollectionViewSource_Filter;
 
         CollectionViewSource.SortDescriptions.Clear();
+        CollectionViewSource.SortDescriptions.Add(
+            new SortDescription(nameof(DiagnosticItemViewModel.IsTour), ListSortDirection.Descending));
         CollectionViewSource.SortDescriptions.Add(
             new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending));
 

@@ -78,15 +78,23 @@
             </DockPanel>
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <DataGrid
+                x:Name="FixesGrid"
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
-                ItemsSource="{Binding CollectionViewSource.View}">
+                ItemsSource="{Binding CollectionViewSource.View}"
+                SelectedItem="{Binding SelectedFixReport, Mode=TwoWay}"
+                LoadingRow="FixesGrid_LoadingRow"
+                UnloadingRow="FixesGrid_UnloadingRow">
                 <DataGrid.Resources>
                     <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}" SortMemberPath="Code">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding Code}" />
@@ -118,14 +126,22 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}" SortMemberPath="DocumentTitle">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridDocumentColumnMinWidth}"
+                        Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding DocumentTitle}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}" SortMemberPath="Created">
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCreatedColumnMinWidth}"
+                        Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding CreatedText, Mode=OneWay}" />
