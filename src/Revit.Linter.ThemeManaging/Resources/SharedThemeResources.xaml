@@ -28,6 +28,15 @@
     <!--  Narrowest width of the table column that takes the room left by the fixed columns.  -->
     <system:Double x:Key="LinterStretchColumnMinWidth">200</system:Double>
 
+    <!--  Table columns keep enough room for localized headers and representative cell values.  -->
+    <DataGridLength x:Key="LinterGridActionColumnWidth">32</DataGridLength>
+    <system:Double x:Key="LinterGridToggleColumnMinWidth">64</system:Double>
+    <system:Double x:Key="LinterGridCodeColumnMinWidth">76</system:Double>
+    <system:Double x:Key="LinterGridExampleCodeColumnMinWidth">132</system:Double>
+    <system:Double x:Key="LinterGridSeverityColumnMinWidth">128</system:Double>
+    <system:Double x:Key="LinterGridDocumentColumnMinWidth">160</system:Double>
+    <system:Double x:Key="LinterGridCreatedColumnMinWidth">136</system:Double>
+
     <!--  View root: the font and the colors every element of a pane or a window inherits  -->
 
     <Style x:Key="LinterViewRoot" TargetType="{x:Type Control}">
@@ -1083,7 +1092,7 @@
                                     StrokeLineJoin="Round"
                                     StrokeStartLineCap="Round"
                                     StrokeThickness="1.2"
-                                    Visibility="Collapsed" />
+                                    Visibility="Hidden" />
                             </Grid>
                         </Border>
                         <Thumb

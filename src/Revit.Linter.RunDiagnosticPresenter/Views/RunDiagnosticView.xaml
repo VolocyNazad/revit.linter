@@ -52,6 +52,7 @@
             behaviors:HelpToolTip.Title="{Binding RunTitle, Mode=OneWay}"
             d:Command="{x:Null}"
             Command="{Binding RunDiagnosticCommand}"
+            behaviors:OnboardingHighlight.Key="RunDiagnostics"
             Content="{controls:Icon Kind=Play}"
             DockPanel.Dock="Left"
             Style="{StaticResource LinterToolBarIconButton}" />

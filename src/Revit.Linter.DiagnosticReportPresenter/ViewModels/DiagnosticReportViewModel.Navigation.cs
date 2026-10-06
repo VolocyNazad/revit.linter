@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Revit.Linter.Core.Abstractions.Models;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Windows.Data;
@@ -89,6 +90,7 @@ internal sealed partial class DiagnosticReportViewModel
 
             view.MoveCurrentToPosition(index);
             await ShowPreferredVisualizationAsync(item);
+            _activityStream.Publish(new FindingNavigationUsedActivity(item.Code));
             return;
         }
     }

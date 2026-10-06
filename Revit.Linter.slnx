@@ -362,6 +362,9 @@
   <Folder Name="/docs/policies/">
     <File Path="docs/policies/development.md" />
   </Folder>
+  <Folder Name="/docs/testing/">
+    <File Path="docs/testing/onboarding-manual-checklist.md" />
+  </Folder>
   <Folder Name="/solutionItems/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
     <File Path=".github/workflows/publish-release.yml" />

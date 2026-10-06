@@ -202,6 +202,79 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         await Assert.That(GetBinding() is TypeBinding).IsTrue();
     }
 
+    [Test]
+    public async Task IsConfigured_returns_false_before_add_and_true_after_it()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+        using Transaction transaction = new(_document!, "Add test project parameter");
+        transaction.Start();
+
+        bool before = IsConfigured(provider, _document!, [BuiltInCategory.OST_Walls]);
+        _ = Add(provider, _document!, [BuiltInCategory.OST_Walls]);
+        bool after = IsConfigured(provider, _document!, [BuiltInCategory.OST_Walls]);
+        transaction.RollBack();
+
+        await Assert.That(before).IsFalse();
+        await Assert.That(after).IsTrue();
+    }
+
+    [Test]
+    public async Task IsConfigured_returns_false_when_categories_differ()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+        using Transaction transaction = new(_document!, "Add test project parameter");
+        transaction.Start();
+
+        _ = Add(provider, _document!, [BuiltInCategory.OST_Walls]);
+        bool result = IsConfigured(provider, _document!, [BuiltInCategory.OST_Doors]);
+        transaction.RollBack();
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    public async Task IsConfigured_returns_false_when_binding_type_differs()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+        using Transaction transaction = new(_document!, "Add test project parameter");
+        transaction.Start();
+
+        _ = Add(provider, _document!, [BuiltInCategory.OST_Walls]);
+        bool result = IsConfigured(provider, _document!, ParameterId, [BuiltInCategory.OST_Walls], isInstance: false);
+        transaction.RollBack();
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    public async Task IsConfigured_returns_false_when_vary_between_groups_differs()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+        using Transaction transaction = new(_document!, "Add test project parameter");
+        transaction.Start();
+
+        _ = Add(provider, _document!, ParameterId, [BuiltInCategory.OST_Walls], allowVaryBetweenGroups: true);
+        bool result = IsConfigured(provider, _document!, ParameterId, [BuiltInCategory.OST_Walls]);
+        transaction.RollBack();
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    public async Task IsConfigured_returns_false_for_invalid_document()
+    {
+        using ServiceProvider services = CreateServices();
+        IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
+
+        bool result = IsConfigured(provider, null!, [BuiltInCategory.OST_Walls]);
+
+        await Assert.That(result).IsFalse();
+    }
+
     private ElementBinding GetBinding()
     {
         SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
@@ -232,5 +305,24 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         provider.Add(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance, allowVaryBetweenGroups);
 #else
         provider.Add(document, parameterId, categories, GroupTypeId.Data, isInstance, allowVaryBetweenGroups);
+#endif
+
+    private static bool IsConfigured(
+        IProjectParameterProvider provider,
+        Document document,
+        IEnumerable<BuiltInCategory> categories) =>
+        IsConfigured(provider, document, ParameterId, categories);
+
+    private static bool IsConfigured(
+        IProjectParameterProvider provider,
+        Document document,
+        Guid parameterId,
+        IEnumerable<BuiltInCategory> categories,
+        bool isInstance = true,
+        bool allowVaryBetweenGroups = false) =>
+#if BEFORE2024
+        provider.IsConfigured(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance, allowVaryBetweenGroups);
+#else
+        provider.IsConfigured(document, parameterId, categories, GroupTypeId.Data, isInstance, allowVaryBetweenGroups);
 #endif
 }

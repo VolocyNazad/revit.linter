@@ -1,4 +1,6 @@
-﻿namespace Revit.Linter.CollisionDiagnostics;
+﻿using Revit.Linter.Languages.Factories;
+
+namespace Revit.Linter.CollisionDiagnostics;
 
 internal sealed class ElementDiagnosticFilter(
     ElementFilterFactory elementFilterFactory) : IElementDiagnosticFilter

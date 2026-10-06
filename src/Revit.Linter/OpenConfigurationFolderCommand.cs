@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using System.Diagnostics;
@@ -20,6 +22,8 @@ public class OpenConfigurationFolderCommand : ExternalCommand
     private IDialog Dialog => field ??= Provider.GetRequiredService<IDialog>();
     private IStringLocalizer<GlobalLocalizations> Localizer => field
         ??= Provider.GetRequiredService<IStringLocalizer<GlobalLocalizations>>();
+    private IUserInterfaceActivityStream ActivityStream => field
+        ??= Provider.GetRequiredService<IUserInterfaceActivityStream>();
 
     /// <inheritdoc />
     public override void Execute()
@@ -35,6 +39,7 @@ public class OpenConfigurationFolderCommand : ExternalCommand
                 FileName = directory,
                 UseShellExecute = true,
             });
+            ActivityStream.Publish(new ConfigurationFolderOpenedActivity());
         }
         catch (Exception ex)
         {

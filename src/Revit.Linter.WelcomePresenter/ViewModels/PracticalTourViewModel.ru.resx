@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Практическое обучение</value></data>
+  <data name="stop_text" xml:space="preserve"><value>Продолжить позже</value></data>
+  <data name="optOut_text" xml:space="preserve"><value>Больше не показывать</value></data>
+  <data name="openDocumentStep_text" xml:space="preserve"><value>Открыть модель</value></data>
+  <data name="openConfigurationFolderStep_text" xml:space="preserve"><value>Открыть папку с конфигурациями</value></data>
+  <data name="selectDiagnosticStep_text" xml:space="preserve"><value>Включить учебную проверку</value></data>
+  <data name="searchAndFiltersStep_text" xml:space="preserve"><value>Поиск и фильтры</value></data>
+  <data name="searchAndFilters_text" xml:space="preserve"><value>На панели «Проверки» введите TOUR001 в строку поиска, сузьте список фильтрами и снимите галочку «Документ».</value></data>
+  <data name="fixListStep_text" xml:space="preserve"><value>Панель исправлений</value></data>
+  <data name="fixList_text" xml:space="preserve"><value>На вкладке «Диагностика» нажмите «Показать/Скрыть проверки», чтобы показать все панели, затем откройте вкладку «Исправления» и выберите применённое исправление.</value></data>
+  <data name="runDiagnosticsStep_text" xml:space="preserve"><value>Запустить проверки</value></data>
+  <data name="inspectFindingStep_text" xml:space="preserve"><value>Изучить замечание</value></data>
+  <data name="showElementStep_text" xml:space="preserve"><value>Визуализировать</value></data>
+  <data name="selectVisualizationStep_text" xml:space="preserve"><value>Визуализировать иначе</value></data>
+  <data name="selectVisualizationUnavailableStep_text" xml:space="preserve"><value>Визуализировать иначе — у замечания только один вариант</value></data>
+  <data name="navigateFindingsStep_text" xml:space="preserve"><value>Листать замечания</value></data>
+  <data name="navigateFindings_text" xml:space="preserve"><value>Вверху панели «Предупреждения» стрелками переходите к соседним замечаниям TOUR001. Счётчик между стрелками показывает позицию, например 3 / 47.</value></data>
+  <data name="inspectFixesStep_text" xml:space="preserve"><value>Выполнить исправление</value></data>
+  <data name="exportReportStep_text" xml:space="preserve"><value>Экспортировать отчёт</value></data>
+  <data name="openDocument_text" xml:space="preserve"><value>На главной странице Revit нажмите «Открыть» и выберите проект или семейство.</value></data>
+  <data name="openTutorialSample_text" xml:space="preserve"><value>Если пример не открылся автоматически: на ленте Revit откройте «Диагностика» → «Открыть учебный проект».</value></data>
+  <data name="openConfigurationFolder_text" xml:space="preserve"><value>Каждая проверка — это YAML-файл, который можно скопировать и изменить под себя. В строке TOUR001 нажмите кнопку с документом, чтобы увидеть её правило.</value></data>
+  <data name="selectDiagnostic_text" xml:space="preserve"><value>Вверху панели «Проверки» включите TOUR001 «Практическое обучение: изучение элемента модели». Обучение учитывает действия только с этой проверкой.</value></data>
+  <data name="runDiagnostics_text" xml:space="preserve"><value>В верхней части панели «Проверки» нажмите «Запустить проверки», оставив TOUR001 включённой.</value></data>
+  <data name="inspectFinding_text" xml:space="preserve"><value>На панели «Предупреждения» выберите одно из замечаний TOUR001 и изучите его.</value></data>
+  <data name="showElement_text" xml:space="preserve"><value>В выбранной строке TOUR001 нажмите «Показать», чтобы открыть меню визуализации, и выберите любой вариант, чтобы найти элемент в модели.</value></data>
+  <data name="selectVisualization_text" xml:space="preserve"><value>В той же строке TOUR001 снова раскройте меню «Показать» и выберите «Изучить подробно: окрасить, подрезать, сфокусироваться».</value></data>
+  <data name="understandFix_text" xml:space="preserve"><value>В строке TOUR001 откройте меню с лампочкой и примените исправление.</value></data>
+  <data name="exportReport_text" xml:space="preserve"><value>В правом верхнем углу панели «Предупреждения» нажмите «Экспортировать отчет» и выберите формат.</value></data>
+  <data name="cleanRunExportReport_text" xml:space="preserve"><value>Замечаний нет — это успешный результат. Экспорт находится в правом верхнем углу панели «Предупреждения».</value></data>
+  <data name="completed_text" xml:space="preserve"><value>Практическое обучение завершено.</value></data>
+</root>

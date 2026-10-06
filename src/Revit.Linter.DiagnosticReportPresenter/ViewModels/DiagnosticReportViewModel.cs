@@ -67,7 +67,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     }
 
 
-    public void Refresh()
+    public int Refresh(string documentTitle)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         if (_batchRowCount > 0)
@@ -85,6 +85,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
         _logger.LogDebug(
             "Refreshed the diagnostic report view with {ReportCount} reports in {ElapsedMilliseconds} ms",
             Collection.Count, stopwatch.ElapsedMilliseconds);
+        return Collection.Count(item => string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal));
     }
 }
 
@@ -101,6 +102,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IIgnoreElementProvider _ignoreElementProvider;
     private readonly IDialog _dialog;
     private readonly IDocumentationLauncher _documentationLauncher;
+    private readonly IUserInterfaceActivityStream _activityStream;
+    private readonly IVisualizationViewActivator _visualizationViewActivator;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IReadOnlyList<IDiagnosticReportExporter> _reportExporters;
@@ -124,6 +127,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
             IDialog dialog, IConfirmationDialog confirmationDialog,
             IDocumentationLauncher documentationLauncher,
+            IUserInterfaceActivityStream activityStream,
+            IVisualizationViewActivator visualizationViewActivator,
             IEnumerable<IDiagnosticReportExporter> reportExporters,
             ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
     {
@@ -137,6 +142,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _ignoreElementProvider = ignoreElementProvider;
         _dialog = dialog;
         _documentationLauncher = documentationLauncher;
+        _activityStream = activityStream;
+        _visualizationViewActivator = visualizationViewActivator;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _reportExporters = reportExporters.ToArray();
@@ -184,58 +191,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     public partial string? TargetDocumentTitle { get; set; }
     partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
 
-    #region [ShowElement] Command - Show element
-
-    /// <summary> Show element </summary>
-    [RelayCommand(CanExecute = nameof(CanShowElement))]
-    private void ShowElement(object? parameter)
+    [ObservableProperty]
+    public partial DiagnosticReportItemViewModel? SelectedReport { get; set; }
+    partial void OnSelectedReportChanged(DiagnosticReportItemViewModel? value)
     {
-#if BEFORE2024
-        if (parameter is not int elementId) return;
-#else
-        if (parameter is not long elementId) return;
-#endif
-
-        ShowElement(new(elementId));
+        if (value is not null) _activityStream.Publish(new FindingSelectedActivity(value.Code));
     }
-    private void ShowElement(ElementId elementId)
-    {
-        Document? targetdocument = _revitContext.ActiveDocument;
-        if (targetdocument is null) return;
 
-        _accentElementsServices
-            .First(i => i.Type == AccentElementsType.ShowElements)
-            .Execute(targetdocument, elementId);
-    }
-    private bool CanShowElement(object? elementId)
-#if BEFORE2024
-        => elementId is int
-#else
-        => elementId is long
-#endif
-        && _revitContext.ActiveDocument is { IsFamilyDocument: false };
-
-    #endregion
-
-    #region [SelectElement] Command - Select element
-
-    /// <summary> Select element </summary>
-    [RelayCommand(CanExecute = nameof(CanSelectElement))]
-    private void SelectElement(object? parameter)
-    {
-        if (parameter is ElementId element)
-        {
-            SelectElement(element);
-            return;
-        }
-#if BEFORE2024
-        if (parameter is not int elementId) return;
-#else
-        if (parameter is not long elementId) return;
-#endif
-
-        SelectElement(new(elementId));
-    }
     private void SelectElement(ElementId elementId)
     {
         Document? targetdocument = _revitContext.ActiveDocument;
@@ -245,15 +207,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             .First(i => i.Type == AccentElementsType.SelectElements)
             .Execute(targetdocument, elementId);
     }
-    private bool CanSelectElement(object? elementId)
-#if BEFORE2024
-        => elementId is int
-#else
-        => elementId is long or ElementId
-#endif
-        && _revitContext.ActiveDocument is { IsFamilyDocument: false };
-
-    #endregion
 
     #region [IsolateElementsOnView] Command - Isolate element in the active view
 
@@ -422,6 +375,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString())
         };
         exporter.Export(fileName, context, document);
+        _activityStream.Publish(new DiagnosticReportExportedActivity());
     }
 
     private string CreateExportFileName()
@@ -510,8 +464,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
 
-        ShowElementCommand.NotifyCanExecuteChanged();
-        SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
         CutViewByElementCommand.NotifyCanExecuteChanged();
     }
@@ -559,7 +511,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     }
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
-        if (revitEventType == RevitEventType.DocumentChanged && _visualizationMutationDepth > 0)
+        if (_visualizationMutationDepth > 0 &&
+            revitEventType is RevitEventType.DocumentChanged or RevitEventType.ViewActivated)
         {
             _logger.LogDebug(
                 "Ignoring {RevitEventType} raised by the active visualization operation",
@@ -575,8 +528,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
 
-        ShowElementCommand.NotifyCanExecuteChanged();
-        SelectElementCommand.NotifyCanExecuteChanged();
         IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
         CutViewByElementCommand.NotifyCanExecuteChanged();
     }
@@ -761,7 +712,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return registration.VisualizationPipelines.Select(pipeline => new VisualizationPipelineViewModel
         {
             Title = pipeline.Value,
-            ShowDelegate = async cancellationToken =>
+            ShowDelegate = async (selectedFromMenu, cancellationToken) =>
             {
                 _preferredVisualizationName = pipeline.Value;
                 _logger.LogInformation(
@@ -827,7 +778,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             [ElementVisualizationSetKeys.Dependencies] = dependencyIds
                         };
                         bool applied = ExecuteVisualizationMutation(() =>
-                            pipeline.Apply(new(document, document.ActiveView, elementSets)));
+                        {
+                            _visualizationViewActivator.Activate();
+                            if (document.ActiveView is not View3D visualizationView)
+                                throw new InvalidOperationException(
+                                    "The diagnostic visualization view was not activated.");
+                            return pipeline.Apply(new(document, visualizationView, elementSets));
+                        });
                         if (applied)
                         {
                             _activeVisualizationPipeline = pipeline;
@@ -838,6 +795,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
                     if (!success && !restoredOnly)
                         await _dialog.Show(new DialogRequest(VisualizationFailedMessage), cancellationToken);
+                    else if (success && !restoredOnly)
+                        _activityStream.Publish(new VisualizationAppliedActivity(
+                            report.Code,
+                            selectedFromMenu,
+                            registration.VisualizationPipelines.Count));
                 }
                 catch (Exception exception)
                 {
@@ -975,6 +937,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         : IgnoreElementSucceededMessage;
                     _fixReportSender.Send(new FixReport(
                         report.Code, report.Document.Title, new(message, ("elementId", elementId))));
+                    if (success) ReportFixApplied(report.Code);
 
                     if (!success)
                     {
@@ -1034,6 +997,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     : "ignoreElementsSucceeded_message");
                 _fixReportSender.Send(new FixReport(
                     report.Code, report.Document.Title, new(message, ("elementId", elementId))));
+                if (!hasErrors) ReportFixApplied(report.Code);
 
                 if (hasErrors)
                 {
@@ -1087,6 +1051,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 : "fixElementFailed_message");
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title, new(message, ("elementId", elementId))));
+                            if (success) ReportFixApplied(report.Code);
 
                             if (!success)
                             {
@@ -1151,6 +1116,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             ? "fixElementsFailed_message"
                             : "fixElementsSucceeded_message");
                         _fixReportSender.Send(new FixReport(i.Identity.Code, report.Document.Title, new(message)));
+                        if (!hasErrors) ReportFixApplied(report.Code);
 
                         if (hasErrors)
                         {
@@ -1205,6 +1171,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             _fixReportSender.Send(new FixReport(
                                 i.Identity.Code, report.Document.Title,
                                 new(message, ("documentTitle", documentTitle))));
+                            if (success) ReportFixApplied(report.Code);
 
                             if (!success)
                             {
@@ -1222,6 +1189,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
         return [];
     }
+
+    private void ReportFixApplied(string diagnosticCode)
+        => _activityStream.Publish(new FixAppliedActivity(diagnosticCode));
 
     private static ElementFixContext CreateFixContext(
         Document document,

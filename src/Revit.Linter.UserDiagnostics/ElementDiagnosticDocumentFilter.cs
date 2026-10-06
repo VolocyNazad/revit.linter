@@ -1,4 +1,6 @@
-﻿namespace Revit.Linter.UserDiagnostics;
+﻿using Revit.Linter.Languages.Factories;
+
+namespace Revit.Linter.UserDiagnostics;
 
 internal sealed class ElementDiagnosticDocumentFilter(
     DocumentFilterFactory documentFilterFactory) : IElementDiagnosticDocumentFilter

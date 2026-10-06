@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Проверки</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Используйте готовые проверки Revit Linter или опишите собственные правила в YAML.</value></data>
+  <data name="builtInTitle_text" xml:space="preserve"><value>Встроенные проверки</value></data>
+  <data name="builtInDescription_text" xml:space="preserve"><value>Работают без настройки. Они поддерживаются и обновляются вместе с Revit Linter.</value></data>
+  <data name="userTitle_text" xml:space="preserve"><value>Пользовательские правила</value></data>
+  <data name="userDescription_text" xml:space="preserve"><value>YAML-файлы, которые можно копировать, изменять и адаптировать под проект или BIM-стандарт компании.</value></data>
+  <data name="visualizerTitle_text" xml:space="preserve"><value>Примеры файлов конфигурации YAML</value></data>
+  <data name="ruleKindsTitle_text" xml:space="preserve"><value>Пользовательские правила проверяют:</value></data>
+  <data name="elementRuleKind_text" xml:space="preserve"><value>Проверка элементов и их свойств и параметров через формулы (config.yaml).</value></data>
+  <data name="collisionRuleKind_text" xml:space="preserve"><value>Проверка модели на коллизии (collision.config.yaml).</value></data>
+  <data name="parameterRuleKind_text" xml:space="preserve"><value>Проверка общих параметров проекта (parameter-element.config.yaml).</value></data>
+  <data name="elementPreviewTitle_text" xml:space="preserve"><value>config.yaml — проверка элементов</value></data>
+  <data name="rulePreview_text" xml:space="preserve"><value>- code: "CSTM201"&#xA;  description: "Двери без марки"&#xA;  message: "У двери '{elementName}' ({elementId}) не заполнена марка."&#xA;  severity: "Warning"&#xA;  takeDocument: "!property('IsFamilyDocument')"&#xA;  take: "instance and builtincategory('OST_Doors')"&#xA;  check: "!isnullorempty(parameter(me, 'ALL_MODEL_MARK'))"</value></data>
+  <data name="collisionPreviewTitle_text" xml:space="preserve"><value>collision.config.yaml — проверка коллизий</value></data>
+  <data name="collisionRulePreview_text" xml:space="preserve"><value>- code: "CLSN101"&#xA;  description: "Воздуховоды против труб"&#xA;  message: "'{elementName}' пересекает элементов: {intersection.count}."&#xA;  severity: "Error"&#xA;  takeDocument: "!property('IsFamilyDocument')"&#xA;  take: "instance and builtincategory('OST_DuctCurves')"&#xA;  andTake: "instance and builtincategory('OST_PipeCurves')"&#xA;  groupBy: "'all'"</value></data>
+  <data name="projectParameterPreviewTitle_text" xml:space="preserve"><value>parameter-element.config.yaml — проверка параметров проекта</value></data>
+  <data name="projectParameterRuleTemplate_text" xml:space="preserve"><value>- code: "PRMTR201"&#xA;  description: "Параметр номера квартиры"&#xA;  message: "Параметры проекта настроены неверно:&#xA;&#xA;{details}"&#xA;  severity: "Message"&#xA;  take: "!property('IsFamilyDocument')"&#xA;  parameters:&#xA;    - guid: "10fb72de-237e-4b9c-915b-8849b8907695"&#xA;      name: "ADSK_Номер квартиры"&#xA;      group: "{parameterGroup}"&#xA;      isInstance: true&#xA;      categories: ["OST_Rooms"]&#xA;      allowVaryBetweenGroups: false</value></data>
+  <data name="codeExplanation_text" xml:space="preserve"><value>code — постоянный уникальный код</value></data>
+  <data name="descriptionExplanation_text" xml:space="preserve"><value>description — понятное название</value></data>
+  <data name="severityExplanation_text" xml:space="preserve"><value>severity — сообщение, предупреждение или ошибка</value></data>
+  <data name="takeExplanation_text" xml:space="preserve"><value>take — какие элементы Revit проверять</value></data>
+  <data name="checkExplanation_text" xml:space="preserve"><value>check — условие корректного элемента</value></data>
+  <data name="andTakeExplanation_text" xml:space="preserve"><value>andTake — с какими элементами искать пересечения</value></data>
+  <data name="groupByExplanation_text" xml:space="preserve"><value>groupBy — как кандидаты объединяются для поиска</value></data>
+  <data name="intersectionExplanation_text" xml:space="preserve"><value>intersection — данные о пересекающихся элементах</value></data>
+  <data name="collisionTakeExplanation_text" xml:space="preserve"><value>take — какие элементы проверять на коллизии</value></data>
+  <data name="parametersExplanation_text" xml:space="preserve"><value>parameters — обязательные параметры проекта</value></data>
+  <data name="guidExplanation_text" xml:space="preserve"><value>guid — идентификатор общего параметра</value></data>
+  <data name="groupExplanation_text" xml:space="preserve"><value>group — группа параметра в Revit</value></data>
+  <data name="categoriesExplanation_text" xml:space="preserve"><value>categories — категории привязки параметра</value></data>
+  <data name="isInstanceExplanation_text" xml:space="preserve"><value>isInstance — параметр экземпляра или типа</value></data>
+  <data name="allowVaryExplanation_text" xml:space="preserve"><value>allowVaryBetweenGroups — могут ли значения различаться в группах</value></data>
+</root>

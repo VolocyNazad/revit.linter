@@ -123,11 +123,11 @@
   <data name="diagnosticReport_dockablePane_title" xml:space="preserve">
     <value>Предупреждения</value>
   </data>
+  <data name="practicalTour_dockablePane_title" xml:space="preserve">
+    <value>Практическое обучение</value>
+  </data>
   <data name="fixReport_dockablePane_title" xml:space="preserve">
     <value>Исправления</value>
-  </data>
-  <data name="projectParameters_configured_message" xml:space="preserve">
-    <value>Параметры проекта настроены.</value>
   </data>
   <data name="projectParameters_configurationFailed_message" xml:space="preserve">
     <value>Не удалось настроить параметры проекта.&#xA;&#xA;{0}</value>
@@ -188,6 +188,14 @@
   <data name="updater_startFailed_message" xml:space="preserve"><value>Не удалось запустить updater Revit Linter. Восстановите или переустановите приложение и повторите попытку.&#xA;&#xA;{0}</value></data>
   <data name="showWelcome_buttonText" xml:space="preserve"><value>Начало
 работы</value></data>
+  <data name="openTutorialSample_buttonText" xml:space="preserve"><value>Открыть учебный проект</value></data>
+  <data name="showPracticalTour_buttonText" xml:space="preserve"><value>Практическое
+обучение</value></data>
+  <data name="showPracticalTour_toolTip" xml:space="preserve"><value>Продолжить практическое обучение</value></data>
+  <data name="showPracticalTour_longDescription" xml:space="preserve"><value>Показывает панель практического обучения и продолжает с сохранённого шага.</value></data>
+  <data name="practicalTour_completed_message" xml:space="preserve"><value>Практическое обучение успешно завершено.</value></data>
+  <data name="openTutorialSample_toolTip" xml:space="preserve"><value>Открыть подготовленный учебный проект</value></data>
+  <data name="openTutorialSample_longDescription" xml:space="preserve"><value>Открывает временную копию официального примера Autodesk, подготовленную в окне знакомства.</value></data>
   <data name="showWelcome_toolTip" xml:space="preserve"><value>Открыть окно знакомства</value></data>
   <data name="showWelcome_longDescription" xml:space="preserve"><value>Снова показывает вводную информацию и предлагает загрузить примеры конфигураций.</value></data>
   <data name="welcome_showFailed_message" xml:space="preserve"><value>Не удалось показать окно знакомства.

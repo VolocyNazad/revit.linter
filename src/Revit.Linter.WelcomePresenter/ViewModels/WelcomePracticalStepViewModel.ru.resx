@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Практическое обучение</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Пройдите полный сценарий в вашем проекте или официальном примере проекта Autodesk.</value></data>
+  <data name="startWithOpenDocument_text" xml:space="preserve"><value>После завершения откроются панели диагностики, и обучение начнётся в текущем документе.</value></data>
+  <data name="prepareSample_text" xml:space="preserve"><value>После завершения копия выбранного примера Autodesk откроется в Revit. Вместе с проектом появятся панель практического обучения.</value></data>
+  <data name="waitForDocument_text" xml:space="preserve"><value>После завершения обучение дождётся открытия проекта или семейства и затем покажет нужные панели.</value></data>
+  <data name="skipTour_text" xml:space="preserve"><value>Практическое обучение не запустится. К нему можно вернуться позже через «Начало работы».</value></data>
+  <data name="openDocumentHint_text" xml:space="preserve"><value>Для практического обучения будет использован текущий документ.</value></data>
+  <data name="useTutorialSample_text" xml:space="preserve"><value>Использовать официальный пример Autodesk</value></data>
+  <data name="tutorialSampleHint_text" xml:space="preserve"><value>Выберите найденный пример Autodesk или снимите флажок, чтобы открыть собственный документ.</value></data>
+  <data name="tutorialSampleUnavailable_text" xml:space="preserve"><value>Совместимый пример Autodesk не найден. Можно продолжить с документом, который вы откроете самостоятельно.</value></data>
+  <data name="tutorialSampleFailed_text" xml:space="preserve"><value>Не удалось подготовить учебную копию. Продолжите, самостоятельно открыв проект или семейство.</value></data>
+  <data name="startPracticalTour_text" xml:space="preserve"><value>Начать или продолжить практическое обучение</value></data>
+  <data name="resetPracticalTour_text" xml:space="preserve"><value>Сбросить практическое обучение</value></data>
+  <data name="practicalTourReset_text" xml:space="preserve"><value>Прогресс практического обучения сброшен.</value></data>
+</root>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Practical tour</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Try the complete workflow in an open document or an official Autodesk sample.</value></data>
+  <data name="startWithOpenDocument_text" xml:space="preserve"><value>When you finish, the diagnostic panels will open and the tour will start in the current document.</value></data>
+  <data name="prepareSample_text" xml:space="preserve"><value>When you finish, a disposable copy of the selected Autodesk sample will open in this Revit instance. The required panels will appear with the document.</value></data>
+  <data name="waitForDocument_text" xml:space="preserve"><value>When you finish, the tour will wait for a project or family and then show the required panels.</value></data>
+  <data name="skipTour_text" xml:space="preserve"><value>The practical tour will not start. You can return to it later from Getting started.</value></data>
+  <data name="openDocumentHint_text" xml:space="preserve"><value>The current document will be used for the practical tour.</value></data>
+  <data name="useTutorialSample_text" xml:space="preserve"><value>Use an official Autodesk sample</value></data>
+  <data name="tutorialSampleHint_text" xml:space="preserve"><value>Choose a found Autodesk sample, or clear the option to open your own document.</value></data>
+  <data name="tutorialSampleUnavailable_text" xml:space="preserve"><value>No compatible Autodesk sample was found. You can continue with a document you open yourself.</value></data>
+  <data name="tutorialSampleFailed_text" xml:space="preserve"><value>The tutorial copy could not be prepared. Continue by opening a project or family yourself.</value></data>
+  <data name="startPracticalTour_text" xml:space="preserve"><value>Start or continue the practical tour</value></data>
+  <data name="resetPracticalTour_text" xml:space="preserve"><value>Reset practical tour</value></data>
+  <data name="practicalTourReset_text" xml:space="preserve"><value>Practical tour progress was reset.</value></data>
+</root>

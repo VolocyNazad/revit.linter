@@ -14,6 +14,10 @@
   <data name="invertVisible_text" xml:space="preserve"><value>Invert visible</value></data>
   <data name="isActive_header" xml:space="preserve"><value>Active</value></data>
   <data name="code_header" xml:space="preserve"><value>Code</value></data>
+  <data name="example_text" xml:space="preserve"><value>Example</value></data>
+  <data name="tour_text" xml:space="preserve"><value>Tour</value></data>
+  <data name="openConfigurationTitle_text" xml:space="preserve"><value>Open rule configuration</value></data>
+  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Opens the YAML file that defines this rule.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Severity</value></data>
   <data name="description_header" xml:space="preserve"><value>Description</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>

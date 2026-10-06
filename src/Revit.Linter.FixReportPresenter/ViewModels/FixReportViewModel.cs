@@ -22,19 +22,22 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly IFixReportReceiver _fixReportReceiver;
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
+    private readonly Core.Abstractions.Services.IUserInterfaceActivityStream _activityStream;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
     public FixReportViewModel(
         IRevitContext revitContext, IFixReportReceiver fixReportReceiver,
         IEnumerable<IAccentElementsService> accentElementsServices,
-        Core.Abstractions.Services.IDocumentationLauncher documentationLauncher)
+        Core.Abstractions.Services.IDocumentationLauncher documentationLauncher,
+        Core.Abstractions.Services.IUserInterfaceActivityStream activityStream)
     {
         _documentationLauncher = documentationLauncher;
         _fixReportReceiver = fixReportReceiver;
         Collection = [];
         _revitContext = revitContext;
         _accentElementsServices = accentElementsServices;
+        _activityStream = activityStream;
     }
 
     /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
@@ -48,6 +51,14 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
+
+    [ObservableProperty]
+    public partial FixReportItemViewModel? SelectedFixReport { get; set; }
+    partial void OnSelectedFixReportChanged(FixReportItemViewModel? value)
+    {
+        if (value is not null)
+            _activityStream.Publish(new Core.Abstractions.Models.FixSelectedActivity(value.Code));
+    }
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;

@@ -3,6 +3,7 @@ using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Infrastructure.Services;
 using Revit.Linter.WelcomePresenter.ViewModels;
+using Revit.Linter.WelcomePresenter.Views;
 
 namespace Revit.Linter.WelcomePresenter.DI;
 
@@ -24,8 +25,13 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddWelcomePresenterModule()
             => services
                 .AddSingleton<IExampleConfigurationInstaller, ExampleConfigurationInstaller>()
+                .AddSingleton<ITutorialSampleCopyService, TutorialSampleCopyService>()
+                .AddSingleton<PracticalTourView>()
+                .AddSingleton<IPracticalTour, PracticalTour>()
                 .AddTransient<WelcomeIntroStepViewModel>()
+                .AddTransient<WelcomeRulesStepViewModel>()
                 .AddTransient<WelcomeExamplesStepViewModel>()
+                .AddTransient<WelcomePracticalStepViewModel>()
                 .AddTransient<WelcomeFinishStepViewModel>()
                 .AddTransient<IWelcomeWizard, WelcomeViewModel>()
         ;

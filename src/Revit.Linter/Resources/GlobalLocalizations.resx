@@ -123,11 +123,11 @@
   <data name="diagnosticReport_dockablePane_title" xml:space="preserve">
     <value>Error list</value>
   </data>
+  <data name="practicalTour_dockablePane_title" xml:space="preserve">
+    <value>Practical tour</value>
+  </data>
   <data name="fixReport_dockablePane_title" xml:space="preserve">
     <value>Fix list</value>
-  </data>
-  <data name="projectParameters_configured_message" xml:space="preserve">
-    <value>Project parameters configured.</value>
   </data>
   <data name="projectParameters_configurationFailed_message" xml:space="preserve">
     <value>Project parameters could not be configured.&#xA;&#xA;{0}</value>
@@ -188,6 +188,14 @@ diagnostics</value></data>
   <data name="updater_startFailed_message" xml:space="preserve"><value>The Revit Linter updater could not be started. Repair or reinstall the application and try again.&#xA;&#xA;{0}</value></data>
   <data name="showWelcome_buttonText" xml:space="preserve"><value>Getting
 started</value></data>
+  <data name="openTutorialSample_buttonText" xml:space="preserve"><value>Open tutorial</value></data>
+  <data name="showPracticalTour_buttonText" xml:space="preserve"><value>Practical
+tour</value></data>
+  <data name="showPracticalTour_toolTip" xml:space="preserve"><value>Continue the practical tour</value></data>
+  <data name="showPracticalTour_longDescription" xml:space="preserve"><value>Shows the practical-tour pane and continues from the saved step.</value></data>
+  <data name="practicalTour_completed_message" xml:space="preserve"><value>Practical tour completed successfully.</value></data>
+  <data name="openTutorialSample_toolTip" xml:space="preserve"><value>Open the prepared tutorial project</value></data>
+  <data name="openTutorialSample_longDescription" xml:space="preserve"><value>Opens a disposable copy of an official Autodesk sample prepared by the welcome window.</value></data>
   <data name="showWelcome_toolTip" xml:space="preserve"><value>Open the welcome wizard</value></data>
   <data name="showWelcome_longDescription" xml:space="preserve"><value>Shows the introduction again and offers to load the example configurations.</value></data>
   <data name="welcome_showFailed_message" xml:space="preserve"><value>Failed to show the welcome window.

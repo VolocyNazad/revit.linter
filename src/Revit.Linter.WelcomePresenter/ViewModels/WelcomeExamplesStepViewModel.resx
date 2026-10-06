@@ -13,7 +13,7 @@
   <data name="contents_text" xml:space="preserve"><value>Every discipline adds three collision rules and a project parameter rule based on the ADSK shared parameters. Six element checks are installed in any case.</value></data>
   <data name="target_format" xml:space="preserve"><value>The files are written to {0}. Your own non-empty files are never overwritten: such an example goes to the "examples" subfolder instead.</value></data>
   <data name="installButton_text" xml:space="preserve"><value>Load examples</value></data>
-  <data name="installed_text" xml:space="preserve"><value>Done. Now you have something to break.</value></data>
+  <data name="installed_format" xml:space="preserve"><value>Done. {0} configuration files were installed in {1}. The examples are now available in the diagnostics list.</value></data>
   <data name="installedAside_format" xml:space="preserve"><value>These files already contained your rules, so their examples are in the "examples" subfolder: {0}.</value></data>
   <data name="failed_format" xml:space="preserve"><value>The examples could not be written: {0}</value></data>
 </root>

@@ -23,15 +23,18 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     /// The version of the wizard content. Increase it when a new step or new important information must be
     /// shown again to users who already completed an earlier version.
     /// </summary>
-    internal const int CurrentWizardVersion = 1;
+    internal const int CurrentWizardVersion = 3;
 
     private readonly IRevitContext _revitContext;
     private readonly IThemeService _themeService;
     private readonly IValueStore<WelcomeSettings> _settingsStore;
     private readonly IWelcomeHost _host;
     private readonly ILogger<WelcomeViewModel> _logger;
+    private readonly IPracticalTour _practicalTour;
     private readonly WelcomeIntroStepViewModel _introStep;
+    private readonly WelcomeRulesStepViewModel _rulesStep;
     private readonly WelcomeExamplesStepViewModel _examplesStep;
+    private readonly WelcomePracticalStepViewModel _practicalStep;
     private readonly WelcomeFinishStepViewModel _finishStep;
     private int _currentIndex;
 
@@ -40,18 +43,24 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         IThemeService themeService,
         IValueStore<WelcomeSettings> settingsStore,
         IWelcomeHost host,
+        IPracticalTour practicalTour,
         ILogger<WelcomeViewModel> logger,
         WelcomeIntroStepViewModel introStep,
+        WelcomeRulesStepViewModel rulesStep,
         WelcomeExamplesStepViewModel examplesStep,
+        WelcomePracticalStepViewModel practicalStep,
         WelcomeFinishStepViewModel finishStep)
     {
         _revitContext = revitContext;
         _themeService = themeService;
         _settingsStore = settingsStore;
         _host = host;
+        _practicalTour = practicalTour;
         _logger = logger;
         _introStep = introStep;
+        _rulesStep = rulesStep;
         _examplesStep = examplesStep;
+        _practicalStep = practicalStep;
         _finishStep = finishStep;
     }
 
@@ -81,8 +90,13 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     private void ShowSteps(WelcomeWizardPlan plan)
     {
         Steps.Clear();
-        if (plan.IncludeIntro) Steps.Add(_introStep);
+        if (plan.IncludeIntro)
+        {
+            Steps.Add(_introStep);
+            Steps.Add(_rulesStep);
+        }
         if (plan.IncludeExamples) Steps.Add(_examplesStep);
+        Steps.Add(_practicalStep);
         Steps.Add(_finishStep);
         for (int index = 0; index < Steps.Count; index++)
             Steps[index].Number = index + 1;
@@ -106,7 +120,16 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
             "Welcome wizard closed (finished: {Finished}, examples installed: {ExamplesInstalled})",
             finished, _examplesStep.IsInstalled);
 
-        if (finished && _finishStep.OpenPanes) _host.ShowPanes();
+        if (finished)
+        {
+            bool sampleQueued = _practicalStep.StartPracticalTour
+                && _practicalStep.PrepareTutorialSample(ConfigurationPathUtils.RevitVersion);
+            if (_practicalStep.StartPracticalTour && _host.HasOpenDocument) _host.ShowPanes();
+            if (sampleQueued)
+                _practicalTour.Start(hasOpenDocument: false, restart: true, tutorialSampleQueued: true);
+            else if (_practicalStep.StartPracticalTour)
+                _practicalTour.Start(_host.HasOpenDocument);
+        }
     }
 
     private bool CanGoBack() => _currentIndex > 0;
@@ -119,6 +142,15 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext() => MoveTo(_currentIndex + 1);
 
+    [RelayCommand]
+    private void GoToStep(WelcomeStepViewModel? step)
+    {
+        if (step is null) return;
+
+        int index = Steps.IndexOf(step);
+        if (index >= 0 && index != _currentIndex) MoveTo(index);
+    }
+
     private void MoveTo(int index)
     {
         _currentIndex = index;
@@ -126,8 +158,14 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
             Steps[stepIndex].IsCurrent = stepIndex == index;
         CurrentStep = Steps[index];
 
-        if (IsLastStep && Steps.Contains(_examplesStep))
-            _finishStep.Note = _examplesStep.IsInstalled ? null : _finishStep.ExamplesSkippedText;
+        if (ReferenceEquals(CurrentStep, _practicalStep))
+        {
+            List<ExampleDiscipline> disciplines = [];
+            if (_examplesStep.IsMepSelected) disciplines.Add(ExampleDiscipline.Mep);
+            if (_examplesStep.IsArchitectureSelected) disciplines.Add(ExampleDiscipline.Architecture);
+            if (_examplesStep.IsStructureSelected) disciplines.Add(ExampleDiscipline.Structure);
+            _practicalStep.RefreshTutorialSamples(disciplines);
+        }
 
         OnPropertyChanged(nameof(IsLastStep));
         OnPropertyChanged(nameof(HasNextStep));

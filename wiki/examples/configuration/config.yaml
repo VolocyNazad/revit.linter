@@ -10,11 +10,86 @@
   take: "instance and builtincategory('OST_GenericModel')"
   check: "isnull(property('Id'))"
   visualizations:
-    - name: "Show and select"
+    # Single-step examples: every supported visualization operation.
+    - name: "Focus on the element"
       steps:
         - type: "Show"
           elementSets: ["Target"]
+
+    - name: "Select the element"
+      steps:
         - type: "Select"
+          elementSets: ["Target"]
+
+    - name: "Isolate the element"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target"]
+
+    - name: "Crop a 3D view around the element"
+      steps:
+        - type: "Cut"
+          elementSets: ["Target"]
+
+    - name: "Color the element"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#B71C1C", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#B71C1C", pattern: "SolidFill", isVisible: true }
+
+    - name: "Color through a temporary filter"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            transparency: 25
+            projectionLines: { color: "#FB8C00", pattern: "Solid", weight: 5 }
+            surfaceForeground: { color: "#FB8C00", pattern: "SolidFill", isVisible: true }
+
+    # Combined examples: ordered steps solve a recognizable review task.
+    - name: "Inspect closely: color, crop, focus"
+      steps:
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            transparency: 10
+            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+        - type: "Cut"
+          elementSets: ["Target"]
+        - type: "Show"
+          elementSets: ["Target"]
+
+    - name: "Remove distractions: isolate, color, focus"
+      steps:
+        - type: "Isolate"
+          elementSets: ["Target"]
+        - type: "OverrideElements"
+          elementSets: ["Target"]
+          style:
+            projectionLines: { color: "#2E7D32", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#43A047", pattern: "SolidFill", isVisible: true }
+        - type: "Show"
+          elementSets: ["Target"]
+
+    - name: "Coordinate: filter color, select, focus"
+      steps:
+        - type: "OverrideFilter"
+          elementSets: ["Target"]
+          style:
+            halftone: false
+            projectionLines: { color: "#1565C0", pattern: "Solid", weight: 6 }
+            surfaceForeground: { color: "#1E88E5", pattern: "SolidFill", isVisible: true }
+        - type: "Select"
+          elementSets: ["Target"]
+        - type: "Show"
           elementSets: ["Target"]
 
 - code: "CSTM101"

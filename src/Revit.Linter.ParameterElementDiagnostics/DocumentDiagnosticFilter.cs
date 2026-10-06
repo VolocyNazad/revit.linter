@@ -1,4 +1,6 @@
-﻿namespace Revit.Linter.ParameterElementDiagnostics;
+﻿using Revit.Linter.Languages.Factories;
+
+namespace Revit.Linter.ParameterElementDiagnostics;
 
 internal sealed class DocumentDiagnosticFilter(DocumentFilterFactory documentFilterFactory) : IDocumentDiagnosticFilter
 {

@@ -5,11 +5,10 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="title_text" xml:space="preserve"><value>Welcome</value></data>
-  <data name="caption_text" xml:space="preserve"><value>Three short steps, and then you can hunt for mistakes. Other people's, of course.</value></data>
-  <data name="about_text" xml:space="preserve"><value>Revit Linter finds issues in projects and families before they reach your drawings or your colleagues: built-in checks, your own YAML rules, collisions and project parameters.</value></data>
-  <data name="tab_format" xml:space="preserve"><value>All commands are on the "{0}" ribbon tab.</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Find model problems early and save your time.</value></data>
+  <data name="about_text" xml:space="preserve"><value>Revit Linter checks projects and families, collects findings and helps you inspect or fix the affected elements.</value></data>
+  <data name="workflow_text" xml:space="preserve"><value>Revit model  →  Diagnostics  →  Findings  →  Show or fix  →  Export report</value></data>
+  <data name="tab_format" xml:space="preserve"><value>Revit Linter adds the "{0}" tab to the Revit ribbon at startup.</value></data>
   <data name="importantHeader_text" xml:space="preserve"><value>Good to know</value></data>
   <data name="parameters_text" xml:space="preserve"><value>When a document is opened or created, the add-in adds two shared project parameters to it: Linter_Ignored and Linter_IgnoredType. They store the list of ignored findings, so the model is modified.</value></data>
-  <data name="configuration_format" xml:space="preserve"><value>The rules are YAML files in {0}. Every Revit version has its own folder.</value></data>
-  <data name="logs_format" xml:space="preserve"><value>If something goes wrong, the logs are in {0}.</value></data>
 </root>

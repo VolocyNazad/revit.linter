@@ -29,6 +29,9 @@ public enum IconKind
     /// <summary>A funnel: filters.</summary>
     Filter,
 
+    /// <summary>A document with folded corner: open the defining file.</summary>
+    FileDocumentOutline,
+
     /// <summary>A question mark in a circle: documentation.</summary>
     HelpCircleOutline,
 

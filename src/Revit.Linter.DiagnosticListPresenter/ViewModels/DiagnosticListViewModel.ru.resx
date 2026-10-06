@@ -14,6 +14,10 @@
   <data name="invertVisible_text" xml:space="preserve"><value>Инвертировать видимые</value></data>
   <data name="isActive_header" xml:space="preserve"><value>Активна</value></data>
   <data name="code_header" xml:space="preserve"><value>Код</value></data>
+  <data name="example_text" xml:space="preserve"><value>Пример</value></data>
+  <data name="tour_text" xml:space="preserve"><value>Обучение</value></data>
+  <data name="openConfigurationTitle_text" xml:space="preserve"><value>Открыть конфигурацию правила</value></data>
+  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Открывает YAML-файл, которым задано это правило.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data>
   <data name="description_header" xml:space="preserve"><value>Описание</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>

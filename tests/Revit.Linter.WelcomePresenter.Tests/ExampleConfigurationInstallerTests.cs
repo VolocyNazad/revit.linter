@@ -132,6 +132,83 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
         Assert.DoesNotContain("group: \"autodesk.parameter.group:", content);
     }
 
+    [Fact]
+    public void Practical_tour_install_writes_the_template_into_the_tour_folder()
+    {
+        string path = ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
+
+        Assert.Equal(
+            Path.Combine(
+                _tempDirectory,
+                ExampleConfigurationInstaller.TourFolderName,
+                ExampleConfigurationInstaller.PracticalTourFileName),
+            path);
+        Assert.Equal("# practical-tour", File.ReadAllText(path));
+        byte[] bytes = File.ReadAllBytes(path);
+        Assert.False(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF);
+    }
+
+    [Fact]
+    public void Practical_tour_install_removes_the_stale_examples_configuration()
+    {
+        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName));
+        string stalePath = Path.Combine(
+            _tempDirectory,
+            ExampleConfigurationInstaller.AsideFolderName,
+            ExampleConfigurationInstaller.PracticalTourFileName);
+        string siblingPath = Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName, "config.yaml");
+        File.WriteAllText(stalePath, "stale");
+        File.WriteAllText(siblingPath, "- code: \"MINE\"");
+
+        ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
+
+        Assert.False(File.Exists(stalePath));
+        Assert.Equal("- code: \"MINE\"", File.ReadAllText(siblingPath));
+    }
+
+    [Fact]
+    public void Practical_tour_install_refreshes_an_existing_tour_configuration()
+    {
+        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.TourFolderName));
+        File.WriteAllText(
+            Path.Combine(
+                _tempDirectory,
+                ExampleConfigurationInstaller.TourFolderName,
+                ExampleConfigurationInstaller.PracticalTourFileName),
+            "stale");
+
+        string path = ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
+
+        Assert.Equal("# practical-tour", File.ReadAllText(path));
+    }
+
+    [Fact]
+    public void Practical_tour_remove_deletes_the_installed_configuration()
+    {
+        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.TourFolderName));
+        string path = Path.Combine(
+            _tempDirectory,
+            ExampleConfigurationInstaller.TourFolderName,
+            ExampleConfigurationInstaller.PracticalTourFileName);
+        string siblingPath = Path.Combine(_tempDirectory, "config.yaml");
+        File.WriteAllText(path, "stale");
+        File.WriteAllText(siblingPath, "- code: \"MINE\"");
+
+        bool removed = ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory);
+
+        Assert.True(removed);
+        Assert.False(File.Exists(path));
+        Assert.Equal("- code: \"MINE\"", File.ReadAllText(siblingPath));
+    }
+
+    [Fact]
+    public void Practical_tour_remove_reports_a_missing_configuration()
+    {
+        bool removed = ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory);
+
+        Assert.False(removed);
+    }
+
     [Theory]
     [InlineData("en")]
     [InlineData("ru")]

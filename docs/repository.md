@@ -13,6 +13,7 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `src/` - projects
 - `tests/` - tests
 - `docs/` - contributor documentation and repository policies
+- `docs/testing/` - manual verification checklists for workflows that require a live Revit UI
 - `installer/` -msi installer
 - `updater/` - the standalone updater (`src/`, `tests/`) with its own
   `Directory.Build.props`, `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; it is not part of the root solution
@@ -36,6 +37,10 @@ template parser (`Template` + `Args` to cached plain text and text parts with el
 and the typed WPF message view used by the diagnostic and fix report
 presenters. The project has no compile-time dependency on Revit API;
 presenters adapt `ElementId` values through the generic link factory.
+`Revit.Linter.Languages` owns the formula grammar and, in `Factories`, the factories that compile configuration
+formulas into document predicates, element functions and native element filters. The diagnostic modules share
+them through `AddFormulaFactories`; a formula that cannot be compiled is logged, reported through
+`IFormulaCompilationNotifier` and replaced by a fallback.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
@@ -64,17 +69,34 @@ pressed while a tooltip is open; the key is caught by a thread keyboard hook tha
 shown, because a dockable pane does not have the keyboard focus on hover. View models open pages through
 `IDocumentationLauncher`, implemented by the add-in host.
 `Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
-(`welcomeSettings.yml` in the settings value store) and the example configuration installer. The
+(`welcomeSettings.yml` in the settings value store), resumable practical-tour progress stored separately for
+each Revit version, and the example configuration installer. The
 installed examples are the files under `wiki/examples/configuration/` (English) and its `ru/`
 subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
 ribbon tab name, the log folder and the pane and link actions through `IWelcomeHost`. Its headless rules
 (example composition, installation without overwriting, first-run state) are covered by
-`Revit.Linter.WelcomePresenter.Tests`; the window itself is not. Debug builds show the whole wizard on every
+`Revit.Linter.WelcomePresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on every
 Revit start; release builds show only the steps the user has not seen.
+The optional practical tour observes neutral completed UI facts published through `IUserInterfaceActivityStream`;
+diagnostic presenters do not reference welcome or onboarding types. Its WPF emphasis is owned by a disposable
+highlight session, so closing or restarting the tour restores every affected control. A non-blocking spotlight dims
+the surrounding pane, outlines the active target and labels it as the next step; the target glow pulses while Windows
+client-area animations are enabled. The host also brings the required pane to the foreground. The tour is hosted in a
+right-side Revit dockable pane; its registration and visibility remain host actions behind `IWelcomeHost`.
+Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file and clears the persisted
+`TOUR001` selection, so the user enables the check as the guided step asks. Completing the tour or
+opting out removes the managed file, so no training configuration is left behind; starting the tour
+again reinstalls it. Its `TOUR001` diagnostic owns
+the visualizations and fix menu required by the walkthrough, is marked with the tour badge, and stays pinned
+at the top of the diagnostics list; typed UI activities carry diagnostic codes so
+unrelated findings cannot advance the tour.
 `Revit.Linter.ElementAccentor` contains atomic, reversible element interaction and graphics
 operations such as show, select, isolate, crop, per-element overrides, and temporary-filter
 overrides. `Revit.Linter.ElementVisualization` composes those operations into diagnostic
 visualization pipelines and restores their sessions in reverse order.
+The diagnostic report presenter activates a persistent `Revit Linter — Visualization` isometric view before
+applying any pipeline. The host owns creation and activation behind `IVisualizationViewActivator`, keeping
+`RevitAPIUI` calls out of the presenter while allowing crop and combined visualizations to use a predictable 3D view.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
 consumed by the diagnostic report presenter; the initial supported step deletes the target element.
 The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`

@@ -50,6 +50,36 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     }
 
     [Test]
+    public async Task Catalog_snapshot_preserves_the_tour_mark()
+    {
+        ElementDiagnosticId tourId = new(
+            "TOUR-CATALOG", "Description", "Message", DiagnosticSeverity.Warning, true, false, "",
+            isExample: false, isTour: true);
+        ElementDiagnosticId regularId = CreateElementId("ELM-CATALOG");
+        using ServiceProvider services = CreateServices(configure: collection =>
+        {
+            collection.AddSingleton<IDiagnosticRegistrationProvider>(
+                new TestRegistrationProvider(elementDiagnostics:
+                [
+                    CreateElementRegistration(tourId),
+                    CreateElementRegistration(regularId),
+                ]));
+        });
+
+        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        using IDiagnosticCatalogSnapshotLease lease = catalog.AcquireSnapshot();
+
+        ElementDiagnosticRegistration tourRegistration = lease.Snapshot.ElementDiagnostics
+            .Single(registration => registration.Identity.Code == "TOUR-CATALOG");
+        ElementDiagnosticRegistration regularRegistration = lease.Snapshot.ElementDiagnostics
+            .Single(registration => registration.Identity.Code == "ELM-CATALOG");
+
+        await Assert.That(tourRegistration.Identity.IsTour).IsTrue();
+        await Assert.That(tourRegistration.Identity.IsExample).IsFalse();
+        await Assert.That(regularRegistration.Identity.IsTour).IsFalse();
+    }
+
+    [Test]
     public async Task Disposing_catalog_disposes_owned_components()
     {
         ElementDiagnosticId id = CreateElementId("ELM-DISPOSE");

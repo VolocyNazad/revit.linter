@@ -13,6 +13,7 @@ The files next to this page are working example configurations stored with the d
 | [`config.yaml`](config.yaml) | [[User diagnostics\|User element diagnostics]] | Six checks: generic model instances, ducts and pipes without a system, doors and windows without a mark, mirrored doors, rooms without a meaningful name, and unplaced rooms with a **Delete** fix. |
 | [`collision.config.yaml`](collision.config.yaml) | [[Collision diagnostics]] | Nine rules, three per discipline: MEP systems (`CLSN1xx`), architecture (`CLSN2xx`) and structure (`CLSN3xx`). |
 | [`parameter-element.config.yaml`](parameter-element.config.yaml) | [[Project parameter diagnostics]] | One rule per discipline built from the ADSK shared parameter file: `PRMTR101`, `PRMTR201` and `PRMTR301`. |
+| [`practical-tour.config.yaml`](practical-tour.config.yaml) | [[Practical tour]] | The managed `TOUR001` check with the visualizations and fix menu required by the guided workflow. It is installed automatically when the tour starts. |
 
 The same files with Russian message texts are in the [`ru`](ru/config.yaml) subfolder. Formulas reference parameters by `BuiltInParameter` name, so the rules work in any Revit language.
 

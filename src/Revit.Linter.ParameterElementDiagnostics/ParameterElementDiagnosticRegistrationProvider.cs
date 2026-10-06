@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Services;
 using Toolkit.ValueStore.Abstractions;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
+using Revit.Linter.Languages.Factories;
 
 namespace Revit.Linter.ParameterElementDiagnostics;
 
@@ -18,42 +19,49 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
 {
     private const string ConfigFileName = "parameter-element.config.yaml";
     private static readonly string _configPath = Path.Combine(ConfigurationPathUtils.Directory, ConfigFileName);
-    private readonly ConfigurationFileChangeSource _changeSource = new(_configPath);
+    private static readonly string _exampleConfigPath = Path.Combine(
+        ConfigurationPathUtils.Directory, "examples", ConfigFileName);
+    private readonly ConfigurationFileChangeSource _changeSource = new([_configPath, _exampleConfigPath]);
 
     public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
     public void Dispose() => _changeSource.Dispose();
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
     {
-        List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(_configPath);
-        List<DiagnosticRule> validRules = [];
+        List<(DiagnosticRule Rule, bool IsExample, string ConfigurationPath)> validRules = [];
         List<ParameterConfigurationError> errors = [];
-        foreach (DiagnosticRule? rule in rules ?? [])
+        HashSet<string> codes = new(StringComparer.Ordinal);
+        foreach ((string path, bool isExample) in new[] { (_configPath, false), (_exampleConfigPath, true) })
         {
-            // An empty list item deserializes to null; there is nothing to register or to describe.
-            if (rule is null) continue;
+            List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(path);
+            foreach (DiagnosticRule? rule in rules ?? [])
+            {
+                // An empty list item deserializes to null; there is nothing to register or to describe.
+                if (rule is null || !codes.Add(rule.Code)) continue;
 
-            IReadOnlyList<ParameterConfigurationError> ruleErrors = ParameterRuleValidator.Validate(
-                rule, ParameterIdentifierParser.IsKnownCategory, ParameterIdentifierParser.IsKnownGroup);
-            if (ruleErrors.Count == 0)
-                validRules.Add(rule);
-            else
-                errors.AddRange(ruleErrors);
+                IReadOnlyList<ParameterConfigurationError> ruleErrors = ParameterRuleValidator.Validate(
+                    rule, ParameterIdentifierParser.IsKnownCategory, ParameterIdentifierParser.IsKnownGroup);
+                if (ruleErrors.Count == 0)
+                    validRules.Add((rule, isExample, path));
+                else
+                    errors.AddRange(ruleErrors);
+            }
         }
 
         ReportSkippedRules(errors);
 
-        foreach (DiagnosticRule rule in validRules)
+        foreach ((DiagnosticRule rule, bool isExample, string configurationPath) in validRules)
         {
             DocumentDiagnosticId identity = new(
                 rule.Code, rule.Description, rule.Message, rule.Severity, rule.IsActive,
-                rule.IsObsolete, rule.ObsoleteDescription);
+                rule.IsObsolete, rule.ObsoleteDescription, isExample);
             yield return new DocumentDiagnosticRegistration(
                 identity,
                 new DocumentDiagnostic(documentQueries) { Identity = identity, Parameters = rule.Parameters },
                 new DocumentDiagnosticFilter(documentFilterFactory) { Identity = identity, Formula = rule.Take },
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
-                [])
+                [],
+                configurationPath)
             {
                 Documentation = new("Project parameter diagnostics", "Проверки параметров проекта"),
             };

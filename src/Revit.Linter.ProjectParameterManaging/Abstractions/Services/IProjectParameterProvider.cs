@@ -29,4 +29,22 @@ public interface IProjectParameterProvider
     bool Add(
         Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
         ParameterGroupId parameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false);
+
+    /// <summary>
+    /// Checks whether the shared parameter identified by <paramref name="targetParameterId"/> is already bound as requested.
+    /// </summary>
+    /// <param name="document">The project document whose parameter binding is inspected.</param>
+    /// <param name="targetParameterId">The shared parameter GUID defined in the module's shared-parameter file.</param>
+    /// <param name="builtInCategories">The categories to which the parameter is expected to be bound.</param>
+    /// <param name="parameterGroup">
+    /// The parameter group in which the parameter is expected to be displayed: a <c>BuiltInParameterGroup</c> before Revit 2024
+    /// and a group <c>ForgeTypeId</c> from Revit 2024 on.
+    /// </param>
+    /// <param name="isInstance"><see langword="true"/> when an instance binding is expected; <see langword="false"/> for a type binding.</param>
+    /// <param name="allowVaryBetweenGroups">Whether instance values are expected to vary between elements in a group.</param>
+    /// <returns><see langword="true"/> when the parameter is present with the requested binding; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>The check is read-only and never modifies the document, so no transaction is required. The caller must still invoke it in a valid Revit API context.</remarks>
+    bool IsConfigured(
+        Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
+        ParameterGroupId parameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false);
 }

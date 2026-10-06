@@ -70,6 +70,21 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
         return false;
     }
 
+    public bool IsConfigured(
+        Document document, Guid targetParameterId, IEnumerable<BuiltInCategory> builtInCategories,
+        ParameterGroupId parameterGroup, bool isInstance = true, bool allowVaryBetweenGroups = false)
+    {
+        if (document is not { IsValidObject: true } || document.IsFamilyDocument) return false;
+
+        BindingMap bindingMap = document.ParameterBindings;
+        if (FindBoundDefinition(document, bindingMap, targetParameterId) is not InternalDefinition boundDefinition)
+            return false;
+        if (bindingMap.get_Item(boundDefinition) is not ElementBinding) return false;
+        if (boundDefinition.VariesAcrossGroups != allowVaryBetweenGroups) return false;
+
+        return !IsBoundDifferently(bindingMap, boundDefinition, builtInCategories, parameterGroup, isInstance);
+    }
+
     private static InternalDefinition? FindBoundDefinition(Document document, BindingMap bindingMap, Guid parameterId)
     {
         if (SharedParameterElement.Lookup(document, parameterId) is not { } parameter) return null;
