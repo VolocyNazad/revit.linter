@@ -17,6 +17,7 @@ internal sealed class YamlDiagnosticReportExporter : IDiagnosticReportExporter
     {
         ISerializer serializer = new SerializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .WithTypeConverter(new DateTimeOffsetYamlTypeConverter())
             .Build();
         File.WriteAllText(fileName, serializer.Serialize(document), new UTF8Encoding(false));
     }
