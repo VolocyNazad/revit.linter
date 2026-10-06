@@ -7,6 +7,7 @@ using Revit.Async;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Views;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
@@ -19,6 +20,9 @@ using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions;
+using Revit.Linter.WelcomePresenter.Abstractions.Services;
+using Revit.Linter.WelcomePresenter.Views;
+using Revit.Linter.ConfigurationPath;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
@@ -44,6 +48,7 @@ internal sealed class InitExternalApplication : ExternalApplication
     // Every ribbon button shows the same placeholder icon, so it is read once per size.
     private static BitmapImage Icon => field ??= new(new Uri(IconPath));
     private static BitmapImage SmallIcon => field ??= LoadImage(IconPath, 16);
+    private static PushButton? _tutorialSampleButton;
     private DiagnosticCatalogNotifier? _diagnosticCatalogNotifier;
     private ValueStoreNotifier? _valueStoreNotifier;
 
@@ -90,6 +95,10 @@ internal sealed class InitExternalApplication : ExternalApplication
         var app = Application.ControlledApplication;
         app.DocumentCreated += App_DocumentCreated;
         app.DocumentOpened += App_DocumentOpened;
+        app.DocumentClosing += App_DocumentClosing;
+        app.DocumentClosed += App_DocumentClosed;
+
+        GetService<ITutorialSampleCopyService>().CleanupAbandonedCopies(ConfigurationPathUtils.RevitVersion);
 
 #if !BEFORE2024
         InitializeThemeHandling();
@@ -142,6 +151,8 @@ internal sealed class InitExternalApplication : ExternalApplication
             var app = Application.ControlledApplication;
             app.DocumentCreated -= App_DocumentCreated;
             app.DocumentOpened -= App_DocumentOpened;
+            app.DocumentClosing -= App_DocumentClosing;
+            app.DocumentClosed -= App_DocumentClosed;
 
 #if !BEFORE2024
             Application.ThemeChanged -= Application_ThemeChanged;
@@ -177,11 +188,44 @@ internal sealed class InitExternalApplication : ExternalApplication
     }
 #endif
 
-    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e) =>
+    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e)
+    {
+        GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
         await AddProjectParametersSafely(e.Document);
+    }
 
-    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e) =>
+    private static void App_DocumentClosing(object? sender, DocumentClosingEventArgs e)
+    {
+        try
+        {
+            GetService<TutorialSampleOpenRequest>().TrackClosing(e.DocumentId, e.Document.PathName);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, "Failed to track a closing tutorial document");
+        }
+    }
+
+    private static void App_DocumentClosed(object? sender, DocumentClosedEventArgs e)
+    {
+        try
+        {
+            if (!GetService<TutorialSampleOpenRequest>().TryReleaseClosed(e.DocumentId, out string? path)
+                || path is null) return;
+
+            GetService<ITutorialSampleCopyService>().DeleteCopy(path, ConfigurationPathUtils.RevitVersion);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, "Failed to release a closed tutorial document");
+        }
+    }
+
+    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e)
+    {
+        GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
         await AddProjectParametersSafely(e.Document);
+    }
 
     private static async Task AddProjectParametersSafely(Document document)
     {
@@ -200,7 +244,6 @@ internal sealed class InitExternalApplication : ExternalApplication
     private static async Task AddIgnoreListParameters(Document doc)
     {
         var projectParameterProvider = GetService<IProjectParameterProvider>();
-        var dialog = GetService<IDialog>();
 
         await RevitTask.RunAsync(() =>
         {
@@ -211,23 +254,42 @@ internal sealed class InitExternalApplication : ExternalApplication
 #else
             var group = GroupTypeId.IdentityData;
 #endif
-            bool parameterChanged;
+            var ignoreInstanceId = new Guid("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b");
+            var ignoreTypeId = new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53");
+
+            // The check is read-only, so a document that is already configured
+            // leaves no transaction behind in the Revit undo stack.
+            if (projectParameterProvider.IsConfigured(doc, ignoreInstanceId, categories, group,
+                    isInstance: true, allowVaryBetweenGroups: true)
+                && projectParameterProvider.IsConfigured(doc, ignoreTypeId, categories, group,
+                    isInstance: false, allowVaryBetweenGroups: false))
+            {
+                Logger.LogDebug("Project ignore-list parameters are already configured in document {DocumentTitle}", doc.Title);
+                return;
+            }
+
+            bool configured;
             using (Transaction transaction = new(doc, "Parameter project adding"))
             {
                 transaction.Start();
 
-                parameterChanged = projectParameterProvider.Add(
-                    doc, new Guid("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b"), categories, group,
+                configured = projectParameterProvider.Add(
+                    doc, ignoreInstanceId, categories, group,
                     isInstance: true, allowVaryBetweenGroups: true);
-                parameterChanged |= projectParameterProvider.Add(
-                    doc, new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53"), categories, group,
+                configured &= projectParameterProvider.Add(
+                    doc, ignoreTypeId, categories, group,
                     isInstance: false, allowVaryBetweenGroups: false);
 
-                transaction.Commit();
+                if (configured)
+                    transaction.Commit();
+                else
+                    transaction.RollBack();
             }
 
-            if (parameterChanged)
-                _ = dialog.Show(new DialogRequest(Localizer["projectParameters_configured_message"]));
+            if (configured)
+                Logger.LogInformation("Configured project ignore-list parameters in document {DocumentTitle}", doc.Title);
+            else
+                Logger.LogWarning("Project ignore-list parameters could not be configured in document {DocumentTitle}", doc.Title);
         });
     }
 
@@ -252,6 +314,18 @@ internal sealed class InitExternalApplication : ExternalApplication
         panel.AddItem(CreateButton(
             "ShowWelcomeButton", "showWelcome", typeof(ShowWelcomeCommand),
             new("Getting started button", "Кнопка начала работы")));
+        panel.AddItem(CreateButton(
+            "ShowPracticalTourButton", "showPracticalTour", typeof(ShowPracticalTourCommand),
+            new("Practical tour", "Практическое обучение")));
+        _tutorialSampleButton = (PushButton)panel.AddItem(CreateButton(
+            "OpenTutorialSampleButton", "openTutorialSample", typeof(OpenTutorialSampleCommand),
+            new("Getting started button", "Кнопка начала работы")));
+        _tutorialSampleButton.Visible = false;
+    }
+
+    internal static void SetTutorialSampleButtonVisible(bool visible)
+    {
+        if (_tutorialSampleButton is not null) _tutorialSampleButton.Visible = visible;
     }
 
     /// <summary>
@@ -307,6 +381,10 @@ internal sealed class InitExternalApplication : ExternalApplication
             FixReportPaneUtils.PaneId, "fixReport_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
         RegisterDockablePane<DiagnosticListView>(
             DiagnosticListPaneUtils.PaneId, "diagnosticList_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
+        Application.RegisterDockablePane(
+            PracticalTourPaneUtils.PaneId,
+            Localizer["practicalTour_dockablePane_title"],
+            new DockablePaneProvider(GetService<PracticalTourView>(), dockPosition: DockPosition.Right));
     }
 
     private void RegisterDockablePane<TView>(

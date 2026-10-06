@@ -10,6 +10,7 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticListPresenter.DI;
 using Revit.Linter.DiagnosticReportPresenter.DI;
+using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportProvider.DI;
 using Revit.Linter.DialogPresenter.DI;
 using Revit.Linter.DocumentDiagnostics.DI;
@@ -29,10 +30,12 @@ using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.Presentation;
 using Revit.Linter.ProjectParameterManaging.DI;
+using Revit.Linter.RunDiagnosticPresenter.Abstractions;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.Linter.WelcomePresenter.Abstractions;
+using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.DI;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
@@ -93,7 +96,12 @@ internal sealed class Program
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
                 .AddWelcomePresenterModule()
                 .AddSingleton<IWelcomeHost, WelcomeHost>()
+                .AddSingleton<ITutorialSampleCatalog, AutodeskTutorialSampleCatalog>()
+                .AddSingleton<TutorialSampleOpenRequest>()
                 .AddSingleton<IDocumentationLauncher, DocumentationLauncher>()
+                .AddSingleton<IUserInterfaceActivityStream, UserInterfaceActivityStream>()
+                .AddSingleton<IDiagnosticReportPaneActivator, DiagnosticReportPaneActivator>()
+                .AddSingleton<IVisualizationViewActivator, VisualizationViewActivator>()
                 .AddSingleton<DiagnosticCatalogNotifier>()
                 .AddSingleton<ValueStoreNotifier>()
                 .AddSingleton<RevitIdlingScheduler>()

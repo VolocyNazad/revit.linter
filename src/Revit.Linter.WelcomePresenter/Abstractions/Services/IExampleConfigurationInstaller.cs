@@ -15,7 +15,7 @@ public interface IExampleConfigurationInstaller
     /// </summary>
     /// <param name="disciplines">The disciplines whose blocks are included; must not be empty.</param>
     /// <returns>The files that were written.</returns>
-    /// <exception cref="ArgumentException"><paramref name="disciplines"/> is empty.</exception>
+    /// <exception cref="System.ArgumentException"><paramref name="disciplines"/> is empty.</exception>
     /// <remarks>
     /// A missing or empty configuration file is replaced by the example. A non-empty file is never
     /// overwritten: the example is written to the <c>examples</c> subfolder instead, replacing an example
@@ -23,4 +23,19 @@ public interface IExampleConfigurationInstaller
     /// written in the format of the running Revit version. File-system failures are not caught.
     /// </remarks>
     ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines);
+
+    /// <summary>Installs the managed diagnostic used by the practical tour.</summary>
+    /// <returns>The full path of the installed configuration file.</returns>
+    /// <remarks>
+    /// The file is owned by Revit Linter and is refreshed on every tour start. It is stored in the
+    /// <c>tour</c> subfolder and does not overwrite the user's main configuration.
+    /// </remarks>
+    string InstallPracticalTour();
+
+    /// <summary>Removes the managed diagnostic used by the practical tour, if it is installed.</summary>
+    /// <remarks>
+    /// Called when the tour is completed or dismissed, so no training configuration is left behind.
+    /// Starting the tour again reinstalls the file.
+    /// </remarks>
+    void RemovePracticalTour();
 }

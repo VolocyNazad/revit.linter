@@ -42,7 +42,12 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
 
     /// <summary>Gets a value indicating whether the examples were installed during this wizard session.</summary>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
     public partial bool IsInstalled { get; private set; }
+
+    /// <summary>Gets the success message shown after examples have been written.</summary>
+    [ObservableProperty]
+    public partial string? InstallationFeedback { get; private set; }
 
     /// <summary>
     /// Gets the plain details of the last installation attempt: the examples placed aside or the failure.
@@ -51,7 +56,7 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
     [ObservableProperty]
     public partial string? StatusMessage { get; private set; }
 
-    private bool CanInstall() => IsMepSelected || IsArchitectureSelected || IsStructureSelected;
+    private bool CanInstall() => !IsInstalled && (IsMepSelected || IsArchitectureSelected || IsStructureSelected);
 
     [RelayCommand(CanExecute = nameof(CanInstall))]
     private void Install()
@@ -70,6 +75,8 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
                 .ToArray();
 
             IsInstalled = true;
+            InstallationFeedback = GetLocalizedString(
+                "installed_format", result.Files.Count, _installer.TargetDirectory);
             StatusMessage = placedAside.Length == 0
                 ? null
                 : GetLocalizedString("installedAside_format", string.Join(", ", placedAside));
@@ -79,6 +86,7 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
             _logger.LogError(
                 exception, "Failed to install example configurations into {Directory}", _installer.TargetDirectory);
             StatusMessage = GetLocalizedString("failed_format", exception.Message);
+            InstallationFeedback = null;
         }
     }
 }

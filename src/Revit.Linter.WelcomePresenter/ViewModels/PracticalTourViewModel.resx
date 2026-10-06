@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Practical tour</value></data>
+  <data name="stop_text" xml:space="preserve"><value>Continue later</value></data>
+  <data name="optOut_text" xml:space="preserve"><value>Do not show again</value></data>
+  <data name="openDocumentStep_text" xml:space="preserve"><value>Open a model</value></data>
+  <data name="openConfigurationFolderStep_text" xml:space="preserve"><value>Find your configurations</value></data>
+  <data name="selectDiagnosticStep_text" xml:space="preserve"><value>Enable the training check</value></data>
+  <data name="searchAndFiltersStep_text" xml:space="preserve"><value>Search and filters</value></data>
+  <data name="searchAndFilters_text" xml:space="preserve"><value>In the Diagnostics pane, type TOUR001 into the search box, narrow the list with the filter popup, and clear the “Document” checkbox.</value></data>
+  <data name="fixListStep_text" xml:space="preserve"><value>Fix list pane</value></data>
+  <data name="fixList_text" xml:space="preserve"><value>On the Diagnostics tab, press Show/Hide diagnostics to show every pane, then open the Fix list tab and select the applied fix.</value></data>
+  <data name="runDiagnosticsStep_text" xml:space="preserve"><value>Run checks</value></data>
+  <data name="inspectFindingStep_text" xml:space="preserve"><value>Review a finding</value></data>
+  <data name="showElementStep_text" xml:space="preserve"><value>Visualize</value></data>
+  <data name="selectVisualizationStep_text" xml:space="preserve"><value>Visualize differently</value></data>
+  <data name="selectVisualizationUnavailableStep_text" xml:space="preserve"><value>Visualize differently — this finding has only one option</value></data>
+  <data name="navigateFindingsStep_text" xml:space="preserve"><value>Step through findings</value></data>
+  <data name="navigateFindings_text" xml:space="preserve"><value>At the top of the Warnings pane, use the previous and next arrows to move to a neighbouring TOUR001 finding. The counter between the arrows shows the position, such as 3 / 47.</value></data>
+  <data name="inspectFixesStep_text" xml:space="preserve"><value>Apply the fix</value></data>
+  <data name="exportReportStep_text" xml:space="preserve"><value>Export a report</value></data>
+  <data name="openDocument_text" xml:space="preserve"><value>On the Revit Home page, select Open and choose a project or family.</value></data>
+  <data name="openTutorialSample_text" xml:space="preserve"><value>If the sample did not open automatically, on the Revit ribbon select Diagnostics → Open tutorial.</value></data>
+  <data name="openConfigurationFolder_text" xml:space="preserve"><value>On the Revit ribbon, open Diagnostics → Open configuration folder. This folder contains the YAML files for your own rules.</value></data>
+  <data name="selectDiagnostic_text" xml:space="preserve"><value>At the top of the Diagnostics pane, enable TOUR001 “Practical tour: review a model element”. Only actions with this check advance the tour.</value></data>
+  <data name="runDiagnostics_text" xml:space="preserve"><value>At the top of the Diagnostics pane, select Run diagnostics with TOUR001 enabled.</value></data>
+  <data name="inspectFinding_text" xml:space="preserve"><value>In the Warnings pane, select a TOUR001 finding and review its message and affected element.</value></data>
+  <data name="showElement_text" xml:space="preserve"><value>In the selected TOUR001 row, select Show to open the visualization menu and choose any option to locate the element in the model.</value></data>
+  <data name="selectVisualization_text" xml:space="preserve"><value>In the same TOUR001 row, open the Show menu again and choose “Inspect closely: color, crop, focus”.</value></data>
+  <data name="understandFix_text" xml:space="preserve"><value>In the TOUR001 row, open the lightbulb menu and apply the fix.</value></data>
+  <data name="exportReport_text" xml:space="preserve"><value>At the top right of the Warnings pane, select Export report and choose a format.</value></data>
+  <data name="cleanRunExportReport_text" xml:space="preserve"><value>No findings were found — that is a successful result. Export is at the top right of the Warnings pane.</value></data>
+  <data name="completed_text" xml:space="preserve"><value>The practical tour is complete.</value></data>
+</root>

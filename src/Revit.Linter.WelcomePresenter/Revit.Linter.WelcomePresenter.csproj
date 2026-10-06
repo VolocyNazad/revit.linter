@@ -17,15 +17,25 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Remove="ViewModels\Welcome*ViewModel*.resx" />
+		<EmbeddedResource Remove="ViewModels\PracticalTourViewModel*.resx" />
+		<None Include="ViewModels\PracticalTourViewModel.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\PracticalTourViewModel.ru.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\PracticalTourViewModel.resx" />
 		<None Include="ViewModels\WelcomeViewModel.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\WelcomeViewModel.ru.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\WelcomeViewModel.resx" />
 		<None Include="ViewModels\WelcomeIntroStepViewModel.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\WelcomeIntroStepViewModel.ru.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\WelcomeIntroStepViewModel.resx" />
+		<None Include="ViewModels\WelcomeRulesStepViewModel.resx"><DependentUpon>WelcomeRulesStepViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomeRulesStepViewModel.ru.resx"><DependentUpon>WelcomeRulesStepViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomeRulesStepViewModel.resx" />
 		<None Include="ViewModels\WelcomeExamplesStepViewModel.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\WelcomeExamplesStepViewModel.ru.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\WelcomeExamplesStepViewModel.resx" />
+		<None Include="ViewModels\WelcomePracticalStepViewModel.resx"><DependentUpon>WelcomePracticalStepViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\WelcomePracticalStepViewModel.ru.resx"><DependentUpon>WelcomePracticalStepViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\WelcomePracticalStepViewModel.resx" />
 		<None Include="ViewModels\WelcomeFinishStepViewModel.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\WelcomeFinishStepViewModel.ru.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\WelcomeFinishStepViewModel.resx" />
@@ -36,12 +46,16 @@
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.config.yaml" Link="Examples\en\config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.collision.config.yaml" Link="Examples\en\collision.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.parameter-element.config.yaml" Link="Examples\en\parameter-element.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.practical-tour.config.yaml" Link="Examples\en\practical-tour.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.config.yaml" Link="Examples\ru\config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.collision.config.yaml" Link="Examples\ru\collision.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.parameter-element.config.yaml" Link="Examples\ru\parameter-element.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.practical-tour.config.yaml" Link="Examples\ru\practical-tour.config.yaml" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 	</ItemGroup>

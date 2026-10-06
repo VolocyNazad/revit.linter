@@ -1,4 +1,3 @@
-using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Localization;
 using Revit.Linter.WelcomePresenter.Abstractions;
 
@@ -17,8 +16,4 @@ internal sealed partial class WelcomeIntroStepViewModel : WelcomeStepViewModel
 
     /// <summary>Gets the sentence that names the ribbon tab as the ribbon itself does.</summary>
     public string TabInfo => GetLocalizedString("tab_format", _host.RibbonTabName);
-
-    public string ConfigurationInfo => GetLocalizedString("configuration_format", ConfigurationPathUtils.Directory);
-
-    public string LogsInfo => GetLocalizedString("logs_format", _host.LogDirectory);
 }

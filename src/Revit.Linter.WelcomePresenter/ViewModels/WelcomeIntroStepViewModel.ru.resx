@@ -121,24 +121,21 @@
     <value>Добро пожаловать</value>
   </data>
   <data name="caption_text" xml:space="preserve">
-    <value>Три коротких шага — и можно искать ошибки. Чужие, разумеется.</value>
+    <value>Находите проблемы в моделях уже на ранних стадиях и экономьте свое время.</value>
   </data>
   <data name="about_text" xml:space="preserve">
-    <value>Revit Linter анализирует проекты и семейства, и определяет их проблемы на ранних стадиях: встроенные проверки, собственные правила на YAML, проверки на коллизии и параметров проекта.</value>
+    <value>Revit Linter проверяет проекты и семейства, собирает замечания и помогает визуализировать или исправить проблемные элементы.</value>
+  </data>
+  <data name="workflow_text" xml:space="preserve">
+    <value>Проект или семейство Revit  →  Проверки  →  Список проблем  →  Просмотр и исправление  →  Экспрот отчета  →  Анализ</value>
   </data>
   <data name="tab_format" xml:space="preserve">
-    <value>Все команды находятся на вкладке ленты «{0}».</value>
+    <value>При запуске Revit Linter добавляет на ленту Revit вкладку «{0}».</value>
   </data>
   <data name="importantHeader_text" xml:space="preserve">
     <value>Важно знать</value>
   </data>
   <data name="parameters_text" xml:space="preserve">
     <value>При открытии или создании документа плагин добавляет в него два общих параметра проекта: Linter_Ignored и Linter_IgnoredType. В них хранится список игнорируемых замечаний, поэтому модель изменяется.</value>
-  </data>
-  <data name="configuration_format" xml:space="preserve">
-    <value>Правила — это файлы YAML в папке {0}. У каждой версии Revit своя папка.</value>
-  </data>
-  <data name="logs_format" xml:space="preserve">
-    <value>Если что-то пойдёт не так, логи лежат в папке {0}.</value>
   </data>
 </root>

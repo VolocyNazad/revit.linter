@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="title_text" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Use the diagnostics included with Revit Linter or describe your own rules in YAML.</value></data>
+  <data name="builtInTitle_text" xml:space="preserve"><value>Built-in diagnostics</value></data>
+  <data name="builtInDescription_text" xml:space="preserve"><value>Ready to use without configuration. They are maintained and updated together with Revit Linter.</value></data>
+  <data name="userTitle_text" xml:space="preserve"><value>User-defined rules</value></data>
+  <data name="userDescription_text" xml:space="preserve"><value>YAML files that you can copy, edit and adapt to a project or company BIM standard.</value></data>
+  <data name="visualizerTitle_text" xml:space="preserve"><value>YAML configuration examples</value></data>
+  <data name="ruleKindsTitle_text" xml:space="preserve"><value>User rules can check:</value></data>
+  <data name="elementRuleKind_text" xml:space="preserve"><value>Element, property and parameter checks through formulas (config.yaml).</value></data>
+  <data name="collisionRuleKind_text" xml:space="preserve"><value>Model collision check (collision.config.yaml).</value></data>
+  <data name="parameterRuleKind_text" xml:space="preserve"><value>Project shared-parameter check (parameter-element.config.yaml).</value></data>
+  <data name="elementPreviewTitle_text" xml:space="preserve"><value>config.yaml — element diagnostic</value></data>
+  <data name="rulePreview_text" xml:space="preserve"><value>- code: "CSTM201"&#xA;  description: "Doors without a mark"&#xA;  message: "Door '{elementName}' ({elementId}) has no mark."&#xA;  severity: "Warning"&#xA;  takeDocument: "!property('IsFamilyDocument')"&#xA;  take: "instance and builtincategory('OST_Doors')"&#xA;  check: "!isnullorempty(parameter(me, 'ALL_MODEL_MARK'))"</value></data>
+  <data name="collisionPreviewTitle_text" xml:space="preserve"><value>collision.config.yaml — collision diagnostic</value></data>
+  <data name="collisionRulePreview_text" xml:space="preserve"><value>- code: "CLSN101"&#xA;  description: "Ducts against pipes"&#xA;  message: "'{elementName}' intersects {intersection.count} element(s)."&#xA;  severity: "Error"&#xA;  takeDocument: "!property('IsFamilyDocument')"&#xA;  take: "instance and builtincategory('OST_DuctCurves')"&#xA;  andTake: "instance and builtincategory('OST_PipeCurves')"&#xA;  groupBy: "'all'"</value></data>
+  <data name="projectParameterPreviewTitle_text" xml:space="preserve"><value>parameter-element.config.yaml — project parameter diagnostic</value></data>
+  <data name="projectParameterRuleTemplate_text" xml:space="preserve"><value>- code: "PRMTR201"&#xA;  description: "Apartment number parameter"&#xA;  message: "Project parameters are configured incorrectly:&#xA;&#xA;{details}"&#xA;  severity: "Message"&#xA;  take: "!property('IsFamilyDocument')"&#xA;  parameters:&#xA;    - guid: "10fb72de-237e-4b9c-915b-8849b8907695"&#xA;      name: "ADSK_Номер квартиры"&#xA;      group: "{parameterGroup}"&#xA;      isInstance: true&#xA;      categories: ["OST_Rooms"]&#xA;      allowVaryBetweenGroups: false</value></data>
+  <data name="codeExplanation_text" xml:space="preserve"><value>code — a stable, unique identifier</value></data>
+  <data name="descriptionExplanation_text" xml:space="preserve"><value>description — the name people see</value></data>
+  <data name="severityExplanation_text" xml:space="preserve"><value>severity — message, warning or error</value></data>
+  <data name="takeExplanation_text" xml:space="preserve"><value>take — which Revit elements to inspect</value></data>
+  <data name="checkExplanation_text" xml:space="preserve"><value>check — what a correct element must satisfy</value></data>
+  <data name="andTakeExplanation_text" xml:space="preserve"><value>andTake — which elements to test for intersections</value></data>
+  <data name="groupByExplanation_text" xml:space="preserve"><value>groupBy — how candidates share their search</value></data>
+  <data name="intersectionExplanation_text" xml:space="preserve"><value>intersection — data about the intersecting elements</value></data>
+  <data name="collisionTakeExplanation_text" xml:space="preserve"><value>take — which elements are checked for collisions</value></data>
+  <data name="parametersExplanation_text" xml:space="preserve"><value>parameters — required project parameters</value></data>
+  <data name="guidExplanation_text" xml:space="preserve"><value>guid — shared parameter identifier</value></data>
+  <data name="groupExplanation_text" xml:space="preserve"><value>group — parameter group in Revit</value></data>
+  <data name="categoriesExplanation_text" xml:space="preserve"><value>categories — categories the parameter is bound to</value></data>
+  <data name="isInstanceExplanation_text" xml:space="preserve"><value>isInstance — instance or type parameter</value></data>
+  <data name="allowVaryExplanation_text" xml:space="preserve"><value>allowVaryBetweenGroups — whether values may differ in groups</value></data>
+</root>

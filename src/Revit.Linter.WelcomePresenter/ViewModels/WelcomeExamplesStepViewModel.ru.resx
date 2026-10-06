@@ -5,15 +5,15 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="title_text" xml:space="preserve"><value>Примеры</value></data>
-  <data name="caption_text" xml:space="preserve"><value>Ещё немного. Осталось решить, с чем вы будете экспериментировать.</value></data>
-  <data name="intro_text" xml:space="preserve"><value>Загрузите примеры конфигураций, чтобы попробовать всё на практике. Выберите разделы, с которыми работаете.</value></data>
+  <data name="caption_text" xml:space="preserve"><value>Вы можете загрузить примеры конфигураций, чтобы попробовать всё на практике.</value></data>
+  <data name="intro_text" xml:space="preserve"><value>Выберите разделы, с которыми работаете.</value></data>
   <data name="mep_text" xml:space="preserve"><value>Инженерные системы (ИОС)</value></data>
   <data name="architecture_text" xml:space="preserve"><value>Архитектура (АР)</value></data>
   <data name="structure_text" xml:space="preserve"><value>Конструкции (КР)</value></data>
   <data name="contents_text" xml:space="preserve"><value>Каждый раздел добавляет три правила коллизий и правило параметров проекта на основе общих параметров ADSK. Шесть проверок элементов устанавливаются в любом случае.</value></data>
   <data name="target_format" xml:space="preserve"><value>Файлы записываются в папку {0}. Ваши непустые файлы не перезаписываются: такой пример попадает в подпапку «examples».</value></data>
   <data name="installButton_text" xml:space="preserve"><value>Загрузить примеры</value></data>
-  <data name="installed_text" xml:space="preserve"><value>Готово. Теперь есть что ломать.</value></data>
+  <data name="installed_format" xml:space="preserve"><value>Готово. Установлено файлов конфигурации: {0}. Папка: {1}. Примеры уже доступны в списке проверок.</value></data>
   <data name="installedAside_format" xml:space="preserve"><value>В этих файлах уже были ваши правила, поэтому их примеры лежат в подпапке «examples»: {0}.</value></data>
   <data name="failed_format" xml:space="preserve"><value>Не удалось записать примеры: {0}</value></data>
 </root>

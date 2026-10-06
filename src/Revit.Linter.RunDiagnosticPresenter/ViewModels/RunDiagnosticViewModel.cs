@@ -9,6 +9,7 @@ using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.ViewModels;
+using Revit.Linter.RunDiagnosticPresenter.Abstractions;
 using Toolkit.ValueStore.Abstractions;
 using System.Diagnostics;
 
@@ -24,6 +25,8 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private readonly IRevitContext _revitContext;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
+    private readonly IDiagnosticReportPaneActivator _diagnosticReportPaneActivator;
+    private readonly IUserInterfaceActivityStream _activityStream;
     private readonly IValueStore<RunDiagnosticSettings> _store;
     private readonly IDialog _dialog;
     private readonly IDisposable _changeSubscription;
@@ -36,18 +39,24 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     /// <param name="idlingScheduler">Schedules subscription work in a valid Revit API context.</param>
     /// <param name="diagnosticService">Executes registered diagnostics.</param>
     /// <param name="diagnosticReportViewModel">Presents and refreshes diagnostic results.</param>
+    /// <param name="diagnosticReportPaneActivator">Activates the pane that displays diagnostic results.</param>
+    /// <param name="activityStream">Publishes completed UI workflow facts to optional observers.</param>
     /// <param name="store">Persists diagnostic-run settings.</param>
     /// <param name="dialog">Displays diagnostic execution failures.</param>
     public RunDiagnosticViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
             IDiagnosticService diagnosticService,
             IDiagnosticReportPresenter diagnosticReportViewModel,
+            IDiagnosticReportPaneActivator diagnosticReportPaneActivator,
+            IUserInterfaceActivityStream activityStream,
             IValueStore<RunDiagnosticSettings> store,
             IDialog dialog) : base(idlingScheduler)
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;
         _diagnosticReportPresenter = diagnosticReportViewModel;
+        _diagnosticReportPaneActivator = diagnosticReportPaneActivator;
+        _activityStream = activityStream;
         _store = store;
         _dialog = dialog;
 
@@ -102,13 +111,17 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         {
             if (!targetDocument.IsValidObject) return;
 
+            _diagnosticReportPaneActivator.Activate();
+
             View? targetView = onActiveView ? targetDocument.ActiveView : null;
 
             _diagnosticReportPresenter.Clear(targetDocument.Title);
 
             diagnosticResult = _diagnosticService.Execute(targetDocument, targetView);
 
-            _diagnosticReportPresenter.Refresh();
+            int findingCount = _diagnosticReportPresenter.Refresh(targetDocument.Title);
+            _activityStream.Publish(new DiagnosticRunCompletedActivity(
+                targetDocument.Title, diagnosticResult, findingCount));
         }, cancellationToken);
 
         DiagnosticTime = GetLocalizedString("diagnosticDuration_text", stopwatch.Elapsed.TotalSeconds);

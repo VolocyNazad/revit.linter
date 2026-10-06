@@ -43,6 +43,7 @@
                 <ContentControl
                     HorizontalContentAlignment="Stretch"
                     VerticalAlignment="Center"
+                    d:Content="Apply the selected fixes to 12 elements? This operation changes the current Revit document."
                     Content="{Binding Content}" />
             </ScrollViewer>
             <StackPanel
