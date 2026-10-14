@@ -3,6 +3,7 @@ using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -40,7 +41,7 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
     public async Task Family_without_tables_has_no_findings()
     {
         await Assert.That(_familyDocument).IsNotNull();
-        var diagnostic = new UnusedSizeTablesDiagnostic();
+        var diagnostic = new UnusedSizeTablesDiagnostic(TestDocumentQueries.Create());
 
         IReadOnlyList<DiagnosticFeedback> feedback = diagnostic.Execute(_familyDocument!).ToArray();
 
@@ -75,7 +76,7 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
                     $"Size table import failed: {errorInfo.FamilySizeTableErrorType} " +
                     $"(file: '{errorInfo.FilePath}', column: {errorInfo.InvalidColumnIndex}, " +
                     $"header: '{errorInfo.InvalidHeaderText}', row: {errorInfo.InvalidRowIndex}).");
-            var diagnostic = new UnusedSizeTablesDiagnostic();
+            var diagnostic = new UnusedSizeTablesDiagnostic(TestDocumentQueries.Create());
             IReadOnlyList<DiagnosticFeedback> feedback = diagnostic.Execute(_familyDocument).ToArray();
 
             await Assert.That(feedback.Count()).IsEqualTo(1);

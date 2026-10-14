@@ -31,13 +31,13 @@ internal sealed class ReferenceLineUnusedDiagnostic(IDocumentQueryService docume
             : [];
     }
 
-    private static Dictionary<ElementId, HashSet<Dimension>> BuildReferenceMap(Document document)
+    private Dictionary<ElementId, HashSet<Dimension>> BuildReferenceMap(Document document)
     {
         Dictionary<ElementId, HashSet<Dimension>> dimensionsByElement = [];
-        IList<Element> dimensions = new FilteredElementCollector(document)
-            .OfClass(typeof(Dimension))
-            .ToElements();
-        foreach (Dimension dimension in dimensions.Cast<Dimension>())
+        // Dimensions are shared with the other diagnostics through the class query instead of
+        // a dedicated collector per map build.
+        IReadOnlyList<Dimension> dimensions = documentQueries.GetElementsOfClass<Dimension>(document);
+        foreach (Dimension dimension in dimensions)
         {
             foreach (Reference reference in dimension.References)
             {

@@ -1,6 +1,9 @@
+using Revit.Linter.DocumentQueries.Abstractions.Services;
+
 namespace Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
 
-internal sealed class UnusedSizeTablesDiagnostic : IDocumentDiagnostic
+internal sealed class UnusedSizeTablesDiagnostic(IDocumentQueryService documentQueries)
+    : IDocumentDiagnostic
 {
     public DocumentDiagnosticId Identity => DocumentDiagnosticIdCollector.UnusedSizeTables;
 
@@ -21,12 +24,12 @@ internal sealed class UnusedSizeTablesDiagnostic : IDocumentDiagnostic
                 new Dictionary<string, object> { ["tableName"] = tableName });
     }
 
-    private static HashSet<string> CollectReferencedTableNames(Document targetDocument)
+    private HashSet<string> CollectReferencedTableNames(Document targetDocument)
     {
         HashSet<string> referencedNames = new(StringComparer.OrdinalIgnoreCase);
-        IList<Element> symbols = new FilteredElementCollector(targetDocument)
-            .OfClass(typeof(FamilySymbol))
-            .ToElements();
+        // Family symbols are shared with the element diagnostics of the same run through the
+        // class query instead of a dedicated collector.
+        IReadOnlyList<FamilySymbol> symbols = documentQueries.GetElementsOfClass<FamilySymbol>(targetDocument);
         foreach (Element symbol in symbols)
         {
             string? rawName = symbol

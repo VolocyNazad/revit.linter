@@ -45,6 +45,9 @@ internal sealed class ElementDiagnostic(
 {
     private const double Epsilon = 1e-6;
 
+    // Stateless and immutable, so one instance serves every collector.
+    private static readonly ElementIsElementTypeFilter NotElementTypeFilter = new(true);
+
     // Separates the parts of a composite cache argument; it cannot occur in a formula or a group value
     // typed by a user, so two different part lists never produce the same argument.
     private const char ArgumentSeparator = '\u001F';
@@ -339,10 +342,10 @@ internal sealed class ElementDiagnostic(
         List<(RevitLinkInstance, Element, Transform, string, bool)> candidates = [];
         if (!IncludeLinks) return candidates;
 
-        List<RevitLinkInstance> instances = new FilteredElementCollector(document)
-            .OfClass(typeof(RevitLinkInstance))
-            .Cast<RevitLinkInstance>()
-            .ToList();
+        // Link instances are the same for every collision rule in the run: they come from the
+        // shared class query instead of a dedicated collector per groups miss.
+        IReadOnlyList<RevitLinkInstance> instances =
+            documentQueries.GetElementsOfClass<RevitLinkInstance>(document);
 
         foreach (RevitLinkInstance instance in instances)
         {
@@ -465,13 +468,20 @@ internal sealed class ElementDiagnostic(
             ? new FilteredElementCollector(document)
             : new FilteredElementCollector(document, view.Id);
         return collector
-            .WherePasses(new ElementIsElementTypeFilter(true))
+            .WherePasses(NotElementTypeFilter)
             .WherePasses(GetModelCategoryFilter(document))
             .WherePasses(Filter)
             .ToElements();
     }
 
-    private static LogicalOrFilter GetModelCategoryFilter(Document document)
+    // Model categories do not change during a run: the filter is built once per document
+    // instead of on every target-elements cache miss (once per unique take formula).
+    private LogicalOrFilter GetModelCategoryFilter(Document document)
+        => documentQueries.GetOrCreate(
+            DocumentQueryKey.Create(document, CollisionQueryNames.ModelCategoryFilter),
+            () => BuildModelCategoryFilter(document));
+
+    private static LogicalOrFilter BuildModelCategoryFilter(Document document)
     {
         List<ElementFilter> categoryFilters = document.Settings.Categories
             .Cast<Category>().Where(i => i.CategoryType == CategoryType.Model)
