@@ -27,13 +27,25 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
         - type: "OverrideElements"
           elementSets: ["Target"]
           style:
-            projectionLines: { color: "#E53935", weight: 6 }
-            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
+            halftone: false
+            transparency: 15
+            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
         - type: "OverrideElements"
           elementSets: ["Dependencies"]
           style:
-            projectionLines: { color: "#43A047", weight: 6 }
-            surfaceForeground: { color: "#43A047", pattern: "SolidFill", isVisible: true }
+            halftone: false
+            transparency: 35
+            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
         - type: "Cut"
@@ -53,12 +65,25 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
         - type: "OverrideFilter"
           elementSets: ["Target"]
           style:
-            surfaceForeground: { color: "#FF9800", pattern: "SolidFill", isVisible: true }
+            halftone: false
+            transparency: 15
+            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
         - type: "OverrideFilter"
           elementSets: ["Dependencies"]
           style:
             halftone: true
-            surfaceForeground: { color: "#1E88E5", pattern: "SolidFill", isVisible: true }
+            transparency: 35
+            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
     - name: "Test all graphics"
       steps:
         - type: "OverrideElements"
@@ -85,7 +110,7 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 | --------------------- | --------------- | ------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `code`                | string          | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                                                        |
 | `description`         | string          | `string`            | `-`                              | Description of the diagnostic                                                                                                                                        |
-| `message`             | string          | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{intersection.elementNames}`, `{intersection.elementIds}`, `{intersection.count}`, `{duration}`. A finding lists every element the target intersects: `{intersection.elementNames}` and `{intersection.elementIds}` are comma-separated lists in the same order, and `{intersection.count}` is their number |
+| `message`             | string          | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{intersection.elementNames}`, `{intersection.elementIds}`, `{intersection.count}`, `{duration}`. A finding lists every element the target intersects: `{intersection.elementNames}` and `{intersection.elementIds}` are comma-separated lists in the same order, and `{intersection.count}` is their number (default: the localized generic template) (optional) |
 | `severity`            | enum    | `string`            | `-`                              | [[Diagnostic severity\|Severity level]] (default: `Message`) (optional)                                                                  |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                                                              |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                                                   |
@@ -94,10 +119,23 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 | `take`                | string          | `string`            | `ElementFilter`                  | [[Formula Revit\|Formula selecting the first element group]] for collision checks                                                                   |
 | `andTake`             | string          | `string`            | `ElementFilter`                  | [[Formula Revit\|Formula selecting the second element group]] against which intersections are checked                                                      |
 | `groupBy`             | string          | `string`            | `object`                         | [[Formula Revit\|Element grouping formula]]. Collision detection runs within groups                                                         |
+| `includeLinks`          | boolean         | `bool`              | `-`                              | Whether loaded Revit links contribute read-only candidates (default: `false`) (optional)                                                      |
+| `ignoreConnectedElements` | boolean   | `bool`              | `-`                              | Whether elements joined by MEP connectors are excluded from the check (default: `false`) (optional)                                          |
 
 ---
 
+## Linked models and connected elements
+
+- Links take part only when a rule sets `includeLinks: true` (default `false`), so existing configurations behave as before.
+- All loaded links participate; there is no per-link selection. Only direct links are supported, unloaded links are skipped with a warning, and findings stay on host elements: link-versus-link pairs are never checked.
+- Linked hits are text-only in the report: they never enter the dependency list, so visualizations highlight the host target alone and fixes stay host-only. Linked element names appear as `Name [Link]` in `{intersection.elementNames}`.
+- A link whose transform is not conformal is reported by bounding boxes only, without the solids check.
+- `ignoreConnectedElements: true` skips elements joined to the target by MEP connectors: they touch by design while their family geometry overlaps at the joint. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
+
 **Notes:**
+- If the `message` field is not specified, it defaults to the localized generic template
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`
+- If the `includeLinks` field is not specified, it defaults to `false`: linked models take part only when explicitly enabled, and their hits stay text-only in the report.
+- If the `ignoreConnectedElements` field is not specified, it defaults to `false`. Set it to `true` to skip joined elements: they touch by design while their family geometry overlaps at the joint, so they would otherwise be reported as collisions. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.

@@ -24,7 +24,10 @@ var configuration = ManualConfig.Create(DefaultConfig.Instance)
 //BenchmarkRunner.Run<ElementGeometryWithSolidsBenchmarks>(configuration);
 //BenchmarkRunner.Run<ElementGeometryNoSolidsBenchmarks>(configuration);
 //BenchmarkRunner.Run<CollisionPairIntersectionBenchmarks>(configuration);
-BenchmarkRunner.Run<SpatialIndexScanBenchmarks>(configuration);
+//BenchmarkRunner.Run<LinkCandidatePartitionBenchmarks>(configuration);
+BenchmarkRunner.Run<SolidBoundingBoxPrefilterBenchmarks>(configuration);
+//BenchmarkRunner.Run<LinkSolidsTransformBenchmarks>(configuration);
+//BenchmarkRunner.Run<SpatialIndexScanBenchmarks>(configuration);
 
 static string FindBenchmarkDirectory()
 {

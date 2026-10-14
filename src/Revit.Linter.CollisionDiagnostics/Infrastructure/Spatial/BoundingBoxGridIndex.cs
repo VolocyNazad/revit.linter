@@ -79,6 +79,8 @@ internal sealed class BoundingBoxGridIndex
     /// The pre-check never rejects a pair that could collide, so callers keep their exact bounding-box
     /// and solid checks for what is returned.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S3267",
+        Justification = "Lazy iterator with dedup side effects; explicit loops avoid closure and enumerator overhead in the collision hot path.")]
     public IEnumerable<Element> Query(BoundingBoxXYZ box)
     {
         Bounds query = Bounds.From(box);
@@ -168,6 +170,8 @@ internal sealed class BoundingBoxGridIndex
     // cell size away from what fits the typical element - those outliers are instead caught by
     // MaxCellsPerEntry in TryGetCellRange and handled via the uncellable fallback. Non-finite or
     // degenerate (near-zero) boxes are excluded from the calculation entirely so they can't skew it.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S3267",
+        Justification = "Two guarded filters feed one list; the explicit loop keeps the median scan allocation-free in the collision hot path.")]
     private static double ComputeCellSize(List<Entry> entries)
     {
         List<double> extents = new(entries.Count);

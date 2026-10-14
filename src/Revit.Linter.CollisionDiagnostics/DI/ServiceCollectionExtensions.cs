@@ -21,6 +21,10 @@ public static class ServiceCollectionExtensions
             services.AddFormulaFactories()
                 .AddSingleton<IGetElementGeometryService, GetElementGeometryService>()
                 .AddSingleton<IGetElementBoundingBoxService, GetElementBoundingBoxService>()
+                .AddSingleton<IGetConnectedElementIdsService, GetConnectedElementIdsService>()
+                .AddSingleton<CollisionDiagnosticConfigurationErrorState>()
+                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
+                    provider.GetRequiredService<CollisionDiagnosticConfigurationErrorState>())
                 .AddSingleton<CollisionDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
                     provider.GetRequiredService<CollisionDiagnosticRegistrationProvider>())

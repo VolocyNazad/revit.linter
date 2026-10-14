@@ -23,6 +23,7 @@ namespace Revit.Linter.Diagnostic.RevitTests;
 public sealed class CollisionDiagnosticTests : RevitApiTest
 {
     private Document? _document;
+    private string? _linkPath;
     private DirectShape? _center;
     private DirectShape? _first;
     private DirectShape? _second;
@@ -37,17 +38,43 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
 
         using Transaction transaction = new(_document, "Seed collision diagnostic tests");
         transaction.Start();
-        _center = CreateBox(0, 0, 2, 2);
-        _first = CreateBox(1, 1, 2, 2);
-        _second = CreateBox(-1.5, -1.5, 2, 2);
-        _distant = CreateBox(20, 20, 2, 2);
-        _long = CreateBox(-500, 100, 1000, 1);
+        _center = CreateBox(_document, 0, 0, 2, 2);
+        _first = CreateBox(_document, 1, 1, 2, 2);
+        _second = CreateBox(_document, -1.5, -1.5, 2, 2);
+        _distant = CreateBox(_document, 20, 20, 2, 2);
+        _long = CreateBox(_document, -500, 100, 1000, 1);
         transaction.Commit();
+
+        // A linked document with one box overlapping _distant and nothing else. The link instance
+        // is placed at the origin, so linked coordinates coincide with host coordinates.
+        _linkPath = Path.Combine(Path.GetTempPath(), $"LinkCollisionDiagnostic{Guid.NewGuid():N}.rvt");
+        Document linkDocument = Application.NewProjectDocument(UnitSystem.Metric);
+        using (Transaction linkTransaction = new(linkDocument, "Seed linked collision box"))
+        {
+            linkTransaction.Start();
+            CreateBox(linkDocument, 20, 20, 2, 2);
+            linkTransaction.Commit();
+        }
+        linkDocument.SaveAs(_linkPath);
+        linkDocument.Close(false);
+
+        using (Transaction linkTransaction = new(_document, "Link document for collision tests"))
+        {
+            linkTransaction.Start();
+            LinkLoadResult linkResult = RevitLinkType.Create(
+                _document, ModelPathUtils.ConvertUserVisiblePathToModelPath(_linkPath), new RevitLinkOptions(false));
+            RevitLinkInstance.Create(_document, linkResult.ElementId);
+            linkTransaction.Commit();
+        }
     }
 
     [After(Test)]
     [HookExecutor<RevitThreadExecutor>]
-    public void CloseModel() => _document?.Close(false);
+    public void CloseModel()
+    {
+        _document?.Close(false);
+        if (_linkPath is not null && File.Exists(_linkPath)) File.Delete(_linkPath);
+    }
 
     [Test]
     public async Task Finding_lists_every_intersecting_element()
@@ -91,6 +118,32 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
 
         await Assert.That(distantFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(longFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Linked_collision_is_found_when_enabled()
+    {
+        // _distant collides with nothing in the host document, so the only hit is the linked box.
+        CollisionElementDiagnostic diagnostic = CreateDiagnostic(includeLinks: true);
+
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!);
+        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(count).IsEqualTo(1);
+        await Assert.That(elementNames).Contains($"[{Path.GetFileNameWithoutExtension(_linkPath)}]");
+        await Assert.That(feedback.AdditionalTargetDependencies).IsEmpty();
+    }
+
+    [Test]
+    public async Task Linked_collision_is_ignored_when_disabled()
+    {
+        CollisionElementDiagnostic diagnostic = CreateDiagnostic();
+
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!);
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
     [Test]
@@ -149,7 +202,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         [_center!, _first!, _second!, _distant!, _long!],
         element => element.get_BoundingBox(null));
 
-    private static CollisionElementDiagnostic CreateDiagnostic()
+    private static CollisionElementDiagnostic CreateDiagnostic(bool includeLinks = false)
     {
         // A new query service per diagnostic: the test cache never invalidates on transactions.
         IDocumentQueryService queries = TestDocumentQueries.Create();
@@ -159,6 +212,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
             new ElementFunctionFactory(NullLogger<ElementFunctionFactory>.Instance, notifier),
             new GetElementBoundingBoxService(queries),
             new GetElementGeometryService(queries),
+            new GetConnectedElementIdsService(queries),
             queries,
             NullLogger<CollisionElementDiagnostic>.Instance)
         {
@@ -166,11 +220,12 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
                 "CLSN-TEST", "Description", "Message", DiagnosticSeverity.Warning, true, false, ""),
             TakeFormula = "builtincategory('OST_GenericModel')",
             GroupByFormula = "property('ViewSpecific')",
+            IncludeLinks = includeLinks,
         };
     }
 
     // A direct shape keeps exactly the solid it is given, unlike walls, which Revit joins and trims.
-    private DirectShape CreateBox(double minX, double minY, double sizeX, double sizeY)
+    private static DirectShape CreateBox(Document document, double minX, double minY, double sizeX, double sizeY)
     {
         XYZ corner0 = new(minX, minY, 0);
         XYZ corner1 = new(minX + sizeX, minY, 0);
@@ -187,7 +242,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
             new List<CurveLoop> { CurveLoop.Create(edges) }, XYZ.BasisZ, 2);
 
         DirectShape shape = DirectShape.CreateElement(
-            _document!, new ElementId(BuiltInCategory.OST_GenericModel));
+            document, new ElementId(BuiltInCategory.OST_GenericModel));
         shape.SetShape(new List<GeometryObject> { solid });
         return shape;
     }

@@ -6,11 +6,12 @@ using Revit.Linter.DocumentQueries.Abstractions.Services;
 namespace Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 
 // Derived from the shared cached geometry, so solids never trigger a second geometry calculation.
+// An element without geometry yields no solids: it cannot intersect anything, so callers treat it as valid.
 internal sealed class GetElementGeometryService(IDocumentQueryService documentQueries)
     : IGetElementGeometryService
 {
     public IReadOnlyCollection<Solid> Execute(Element element, View? view)
         => documentQueries.GetOrCreate(
             DocumentQueryKey.Create(element.Document, CollisionQueryNames.Solids, view, element.Id),
-            () => documentQueries.GetRequiredGeometry(element, view).GetSolids());
+            () => documentQueries.GetGeometry(element, view)?.GetSolids() ?? (IReadOnlyCollection<Solid>)[]);
 }
