@@ -1,12 +1,19 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 
-namespace Revit.Linter.DiagnosticReportPresenter.Exporting;
+namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
 {
+    // The severity names are the stable DiagnosticSeverity enum names. They are compared as text so this
+    // module stays free of a Revit API dependency; the presenter supplies them through the export items.
+    private const string ErrorSeverity = "Error";
+    private const string WarningSeverity = "Warning";
+    private const string MessageSeverity = "Message";
+
     public string Extension => ".html";
     public string Filter => "HTML (*.html)|*.html";
 
@@ -16,9 +23,9 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
         DiagnosticReportExportDocument document)
     {
         IReadOnlyCollection<DiagnosticReportExportItem> items = document.Items;
-        int errorCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Error));
-        int warningCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Warning));
-        int messageCount = items.Count(item => item.Severity == nameof(DiagnosticSeverity.Message));
+        int errorCount = items.Count(item => item.Severity == ErrorSeverity);
+        int warningCount = items.Count(item => item.Severity == WarningSeverity);
+        int messageCount = items.Count(item => item.Severity == MessageSeverity);
 
         StringBuilder content = new();
         content.AppendLine("<!DOCTYPE html>")

@@ -3,18 +3,11 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-			<_Parameter1>Revit.Linter.DiagnosticReportPresenter.Tests</_Parameter1>
-		</AssemblyAttribute>
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Humanizer.Core" />
 		<PackageReference Include="Humanizer.Core.ru" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Localization" />
-		<PackageReference Include="System.Text.Json" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
-		<PackageReference Include="YamlDotNet" />
 		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
@@ -37,6 +30,7 @@
 		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticReportExporting\Revit.Linter.DiagnosticReportExporting.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter.Interactions\Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />

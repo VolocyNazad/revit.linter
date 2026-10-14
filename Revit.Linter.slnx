@@ -30,6 +30,9 @@
     <Project Path="src/Revit.Linter.Diagnostic/Revit.Linter.Diagnostic.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.DiagnosticReportExporting/Revit.Linter.DiagnosticReportExporting.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportPresenter.Interactions/Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" Id="82e25b80-70d3-4253-badb-6fbaf24e5721">
       <Platform Project="x64" />
     </Project>
@@ -119,7 +122,7 @@
     <Project Path="tests/Revit.Linter.Diagnostic.RevitTests/Revit.Linter.Diagnostic.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.DiagnosticReportPresenter.Tests/Revit.Linter.DiagnosticReportPresenter.Tests.csproj">
+    <Project Path="tests/Revit.Linter.DiagnosticReportExporting.Tests/Revit.Linter.DiagnosticReportExporting.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.DiagnosticReportProvider.RevitTests/Revit.Linter.DiagnosticReportProvider.RevitTests.csproj">

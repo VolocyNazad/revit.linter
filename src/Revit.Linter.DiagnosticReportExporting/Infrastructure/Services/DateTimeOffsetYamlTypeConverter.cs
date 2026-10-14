@@ -3,7 +3,7 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 
-namespace Revit.Linter.DiagnosticReportPresenter.Exporting;
+namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 /// <summary>
 /// Writes <see cref="DateTimeOffset"/> values as a mapping with the same keys YamlDotNet emits by default.

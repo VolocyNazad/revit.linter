@@ -33,6 +33,7 @@ This document records stable architectural rules. Implementation details belong 
 ## Diagnostics and reports
 
 - Diagnostic projects discover or calculate findings. Presenters render and interact with them; providers transport or retain report state. These roles remain separate.
+- `Revit.Linter.DiagnosticReportExporting` owns the report export contract and file writing. The diagnostic report presenter supplies plain finding data with cultures and labels through `IDiagnosticReportExportService` and keeps activity publishing; the save-file dialog stays behind `ISaveFileDialogService`, and the module has no Revit API dependency so the formats stay headless-testable.
 - `Revit.Linter.ReportMessaging` owns the shared message-template contract and typed message view. Feature modules supply data and element-link adapters rather than duplicating parsing or rendering.
 - Configuration is validated when it is loaded, not when a diagnostic runs. A module skips an invalid rule,
   keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;

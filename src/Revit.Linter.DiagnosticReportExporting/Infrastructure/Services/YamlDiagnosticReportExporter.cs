@@ -2,8 +2,10 @@ using System.IO;
 using System.Text;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 
-namespace Revit.Linter.DiagnosticReportPresenter.Exporting;
+namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 internal sealed class YamlDiagnosticReportExporter : IDiagnosticReportExporter
 {

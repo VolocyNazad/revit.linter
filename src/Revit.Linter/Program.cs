@@ -11,6 +11,7 @@ using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.DiagnosticListPresenter.DI;
+using Revit.Linter.DiagnosticReportExporting.DI;
 using Revit.Linter.DiagnosticReportPresenter.DI;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportProvider.DI;
@@ -96,7 +97,7 @@ internal sealed class Program
                 .AddCollisionTestModels()
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule().AddElementChangesProviderModule()
-                .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
+                .AddRunDiagnosticModule().AddDiagnosticReportExportingModule().AddDiagnosticReportPresenterModule()
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddIgnoreListPresenterModule().AddDialogModule()
                 .AddWelcomePresenterModule()
                 .AddSingleton<IWelcomeHost, WelcomeHost>()

@@ -111,6 +111,13 @@ diagnostic code or per document and code, so any element can be ignored without 
 it. `Revit.Linter.IgnoreListPresenter` shows the ignore list of the active document in its own
 dockable pane, where entries can be selected or removed, and reaches the list only through
 `IIgnoreListManager`.
+`Revit.Linter.DiagnosticReportExporting` owns the diagnostic report export: the shared export
+document contract, the CSV/JSON/YAML/HTML exporters behind `IDiagnosticReportExporter`, and the
+`IDiagnosticReportExportService` orchestration (suggested file name, export document, exporter
+choice). The presenter supplies plain finding data with cultures and labels and keeps the
+`DiagnosticReportExportedActivity` publishing; the modal save-file dialog stays behind
+`ISaveFileDialogService`, keeping `Microsoft.Win32` calls out of the presenter. The project has
+no Revit API dependency, so its snapshot-covered formats stay headless-testable.
 `Revit.Linter.CollisionTestModels` owns test tooling that builds a host document with two
 shared-coordinates links whose walls, floors and system runs overlap the host content, covering
 volumetric hits as well as touch-only and isolated no-collision controls, so collision rules
@@ -289,7 +296,7 @@ Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the
 
 `tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the in-memory transaction cache, the document query service built over it, repository-root lookup). It is a library, not a test project: it has no test framework reference and its name does not end in `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in `Revit.Linter.Diagnostic.RevitTests`.
 
-Generated report formats are pinned with snapshot tests in `Revit.Linter.DiagnosticReportPresenter.Tests`. `Snapshot.Match` from `Revit.Linter.Testing` compares the output with `Snapshots/<Class>.<Test>.verified.<ext>`; on a difference it writes a `*.received.*` file next to it (ignored by Git) and fails. To accept an intended format change, review the received file and rename it over the verified one in the same commit. Snapshot inputs use the invariant culture so the text is identical on .NET Framework and .NET.
+Generated report formats are pinned with snapshot tests in `Revit.Linter.DiagnosticReportExporting.Tests`. `Snapshot.Match` from `Revit.Linter.Testing` compares the output with `Snapshots/<Class>.<Test>.verified.<ext>`; on a difference it writes a `*.received.*` file next to it (ignored by Git) and fails. To accept an intended format change, review the received file and rename it over the verified one in the same commit. Snapshot inputs use the invariant culture so the text is identical on .NET Framework and .NET.
 
 ## Continuous integration
 

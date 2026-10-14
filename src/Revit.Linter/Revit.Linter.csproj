@@ -71,6 +71,7 @@
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticListPresenter\Revit.Linter.DiagnosticListPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DiagnosticReportExporting\Revit.Linter.DiagnosticReportExporting.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportPresenter\Revit.Linter.DiagnosticReportPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticReportProvider\Revit.Linter.DiagnosticReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />

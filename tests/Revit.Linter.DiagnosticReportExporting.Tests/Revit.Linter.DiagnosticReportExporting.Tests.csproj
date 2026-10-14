@@ -13,7 +13,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Revit.Linter.DiagnosticReportPresenter\Revit.Linter.DiagnosticReportPresenter.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.DiagnosticReportExporting\Revit.Linter.DiagnosticReportExporting.csproj" />
     <ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
   </ItemGroup>
 </Project>

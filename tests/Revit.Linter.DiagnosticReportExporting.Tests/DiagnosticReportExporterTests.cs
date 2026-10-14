@@ -1,8 +1,10 @@
 using System.Globalization;
-using Revit.Linter.DiagnosticReportPresenter.Exporting;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
+using Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 using Revit.Linter.Testing;
 
-namespace Revit.Linter.DiagnosticReportPresenter.Tests;
+namespace Revit.Linter.DiagnosticReportExporting.Tests;
 
 /// <summary>
 /// Pins the exported report formats with snapshots. JSON and YAML are a versioned contract for external
@@ -10,7 +12,7 @@ namespace Revit.Linter.DiagnosticReportPresenter.Tests;
 /// </summary>
 public sealed class DiagnosticReportExporterTests : IDisposable
 {
-    private const string SnapshotDirectory = "tests/Revit.Linter.DiagnosticReportPresenter.Tests/Snapshots";
+    private const string SnapshotDirectory = "tests/Revit.Linter.DiagnosticReportExporting.Tests/Snapshots";
 
     private readonly string _outputDirectory = Path.Combine(
         Path.GetTempPath(), nameof(DiagnosticReportExporterTests), Guid.NewGuid().ToString("N"));

@@ -7,8 +7,9 @@ using Revit.Context.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
-using Revit.Linter.DiagnosticReportPresenter.Exporting;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
+using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
@@ -23,14 +24,12 @@ using Revit.Linter.Localization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Win32;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -105,7 +104,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IVisualizationViewActivator _visualizationViewActivator;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
-    private readonly IReadOnlyList<IDiagnosticReportExporter> _reportExporters;
+    private readonly IDiagnosticReportExportService _exportService;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private IElementVisualizationPipeline? _activeVisualizationPipeline;
     private ElementId? _activeVisualizationTargetId;
@@ -130,7 +129,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
             IVisualizationViewActivator visualizationViewActivator,
-            IEnumerable<IDiagnosticReportExporter> reportExporters,
+            IDiagnosticReportExportService exportService,
             ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
@@ -147,7 +146,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _visualizationViewActivator = visualizationViewActivator;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
-        _reportExporters = reportExporters.ToArray();
+        _exportService = exportService;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
     }
@@ -224,20 +223,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     [RelayCommand]
     private void Export()
     {
-        if (_reportExporters.Count == 0) return;
-
-        SaveFileDialog dialog = new()
-        {
-            AddExtension = true,
-            DefaultExt = _reportExporters[0].Extension,
-            FileName = CreateExportFileName(),
-            Filter = string.Join("|", _reportExporters.Select(exporter => exporter.Filter)),
-            FilterIndex = 1,
-            OverwritePrompt = true
-        };
-
-        if (dialog.ShowDialog() != true) return;
-
         List<DiagnosticReportExportItem> items = (CollectionViewSource?.View
             .Cast<object>()
             .OfType<DiagnosticReportItemViewModel>() ?? [])
@@ -256,44 +241,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     .ToArray()))
             .ToList();
 
-        int exporterIndex = dialog.FilterIndex - 1;
-        IDiagnosticReportExporter exporter = exporterIndex >= 0 && exporterIndex < _reportExporters.Count
-            ? _reportExporters[exporterIndex]
-            : _reportExporters[0];
-        string fileName = Path.ChangeExtension(dialog.FileName, exporter.Extension);
-        string documentTitle = string.IsNullOrWhiteSpace(TargetDocumentTitle)
-            ? HtmlAllDocumentsText
-            : TargetDocumentTitle ?? HtmlAllDocumentsText;
         Assembly assembly = typeof(DiagnosticReportViewModel).Assembly;
-        DiagnosticReportExportDocument document = new(
-            "1.0",
-            new DiagnosticReportExportMetadata(
-                DateTimeOffset.Now,
-                _revitContext.ControlledApplication?.VersionNumber ?? string.Empty,
-                _revitContext.ControlledApplication?.VersionBuild ?? string.Empty,
-                assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-                    ?? assembly.GetName().Version?.ToString()
-                    ?? string.Empty,
-                documentTitle,
-                string.IsNullOrWhiteSpace(TargetDocumentTitle) ? "AllDocuments" : "Document",
-                new DiagnosticReportExportFilters(
-                    string.IsNullOrWhiteSpace(SearchField) ? null : SearchField,
-                    SeverityFilters
-                        .OfType<DiagnosticSeverityFilterViewModel>()
-                        .Where(filter => filter.IsActive)
-                        .Select(filter => filter.Value.ToString())
-                        .ToArray(),
-                    Filters
-                        .Where(filter => filter.IsActive)
-                        .Select(filter => filter is FilterViewModel<DiagnosticReportItemViewModel, bool> state
-                            && state.Value
-                            ? "Obsolete"
-                            : "Actual")
-                        .ToArray()),
-                Collection.Count,
-                items.Count),
-            items);
-        DiagnosticReportExportContext context = new()
+        DiagnosticReportExportLabels labels = new()
         {
             Culture = CultureInfo.CurrentCulture,
             UiCulture = CultureInfo.CurrentUICulture,
@@ -311,21 +260,36 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             NoResultsText = HtmlNoResultsText,
             ErrorText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Error.ToString()),
             WarningText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Warning.ToString()),
-            MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString())
+            MessageText = DiagnosticSeverityLocalizations.GetString(DiagnosticSeverity.Message.ToString()),
+            AllDocumentsText = HtmlAllDocumentsText
         };
-        exporter.Export(fileName, context, document);
-        _activityStream.Publish(new DiagnosticReportExportedActivity(exporter.Extension));
-    }
-
-    private string CreateExportFileName()
-    {
-        string document = string.IsNullOrWhiteSpace(TargetDocumentTitle)
-            ? "DiagnosticReport"
-            : TargetDocumentTitle ?? "DiagnosticReport";
-        char[] invalidCharacters = Path.GetInvalidFileNameChars();
-        string safeDocument = string.Concat(document.Select(character =>
-            invalidCharacters.Contains(character) ? '_' : character));
-        return $"{safeDocument}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
+        DiagnosticReportExportRequest request = new(
+            items,
+            Collection.Count,
+            string.IsNullOrWhiteSpace(TargetDocumentTitle) ? null : TargetDocumentTitle,
+            string.IsNullOrWhiteSpace(SearchField) ? null : SearchField,
+            SeverityFilters
+                .OfType<DiagnosticSeverityFilterViewModel>()
+                .Where(filter => filter.IsActive)
+                .Select(filter => filter.Value.ToString())
+                .ToArray(),
+            Filters
+                .Where(filter => filter.IsActive)
+                .Select(filter => filter is FilterViewModel<DiagnosticReportItemViewModel, bool> state
+                    && state.Value
+                    ? "Obsolete"
+                    : "Actual")
+                .ToArray(),
+            labels,
+            _revitContext.ControlledApplication?.VersionNumber ?? string.Empty,
+            _revitContext.ControlledApplication?.VersionBuild ?? string.Empty,
+            assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                ?? assembly.GetName().Version?.ToString()
+                ?? string.Empty,
+            DateTimeOffset.Now);
+        DiagnosticReportExportResult result = _exportService.Export(request);
+        if (result.Completed && result.Extension is not null)
+            _activityStream.Publish(new DiagnosticReportExportedActivity(result.Extension));
     }
 
     #endregion
