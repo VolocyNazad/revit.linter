@@ -11,7 +11,7 @@ public interface IOverrideElementGraphicsService
     /// <param name="elementIds">Elements whose graphics are overridden.</param>
     /// <param name="style">Graphics properties to merge into the existing overrides.</param>
     /// <returns>A session that restores every previous element override.</returns>
-    IElementAccentSession Apply(
+    IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds,

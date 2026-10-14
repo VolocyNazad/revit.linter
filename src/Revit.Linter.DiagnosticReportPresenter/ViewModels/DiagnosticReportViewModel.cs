@@ -12,7 +12,6 @@ using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
-using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementChangesProvider.Abstractions.Models;
 using Revit.Linter.ElementChangesProvider.Abstractions.Services;
@@ -113,6 +112,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private int _visualizationMutationDepth;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
+    private readonly object _restoreScheduleSync = new();
+    private Task? _scheduledRestore;
 
     private bool _elementChangesEnabled;
     private bool _elementRefreshScheduled;
@@ -206,74 +207,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Document? targetdocument = _revitContext.ActiveDocument;
         if (targetdocument is null) return;
 
-        _accentElementsServices
-            .First(i => i.Type == AccentElementsType.SelectElements)
-            .Execute(targetdocument, elementId);
+        _accentElementsServices.SelectElement(targetdocument, elementId);
     }
-
-    #region [IsolateElementsOnView] Command - Isolate element in the active view
-
-    /// <summary> Isolate element in the active view </summary>
-    [RelayCommand(CanExecute = nameof(CanIsolateElementsOnView))]
-    private void IsolateElementsOnView(object? parameter)
-    {
-#if BEFORE2024
-        if (parameter is not int elementId) return;
-#else
-        if (parameter is not long elementId) return;
-#endif
-
-        Document? targetdocument = _revitContext.ActiveDocument;
-        if (targetdocument is null) return;
-
-        if (targetdocument.ActiveView is not null)
-
-            _accentElementsServices
-                .First(i => i.Type == AccentElementsType.IsolateElementsOnView)
-                .Execute(targetdocument, new ElementId(elementId));
-    }
-    private bool CanIsolateElementsOnView(object? elementId)
-#if BEFORE2024
-        => elementId is int
-#else
-        => elementId is long
-#endif
-        && _revitContext.ActiveDocument is { IsFamilyDocument: false }
-        && _revitContext.ActiveDocument.ActiveView is not null;
-
-    #endregion
-
-    #region [CutViewByElement] Command - Crop the active 3D view by element
-
-    /// <summary> Crop the active 3D view by element </summary>
-    [RelayCommand(CanExecute = nameof(CanCutViewByElement))]
-    private void CutViewByElement(object? parameter)
-    {
-#if BEFORE2024
-        if (parameter is not int elementId) return;
-#else
-        if (parameter is not long elementId) return;
-#endif
-
-        Document? targetdocument = _revitContext.ActiveDocument;
-        if (targetdocument is null) return;
-
-        if (targetdocument.ActiveView is View3D) return;
-
-        _accentElementsServices
-            .First(i => i.Type == AccentElementsType.CutViewByElements)
-            .Execute(targetdocument, new ElementId(elementId));
-    }
-    private bool CanCutViewByElement(object? elementId)
-#if BEFORE2024
-        => elementId is int
-#else
-        => elementId is long
-#endif
-        && _revitContext.ActiveDocument is { IsFamilyDocument: false }
-        && _revitContext.ActiveDocument.ActiveView is View3D;
-
-    #endregion
 
     #region [CopyToClipboard] Command - Copy text to clipboard
 
@@ -496,9 +431,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
-
-        IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
-        CutViewByElementCommand.NotifyCanExecuteChanged();
     }
 
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
@@ -560,9 +492,6 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             _ = RestoreActiveVisualizationAsync();
         }
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
-
-        IsolateElementsOnViewCommand.NotifyCanExecuteChanged();
-        CutViewByElementCommand.NotifyCanExecuteChanged();
     }
 
     private void ElementChangesReceiver_ElementChangesSent(object? sender, ElementChangesSentEventArgs e)
@@ -899,10 +828,24 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
     }
 
-    private async Task RestoreActiveVisualizationAsync(CancellationToken cancellationToken = default)
+    private Task RestoreActiveVisualizationAsync(CancellationToken cancellationToken = default)
     {
-        if (_activeVisualizationPipeline is null) return;
+        if (_activeVisualizationPipeline is null) return Task.CompletedTask;
 
+        // Concurrent Revit events share one scheduled restoration instead of queuing a task per
+        // event: the in-flight run restores whatever pipeline is active when it executes, so every
+        // trigger is covered without repeating the same failure streak on every event.
+        lock (_restoreScheduleSync)
+        {
+            if (_scheduledRestore is { IsCompleted: false })
+                return _scheduledRestore;
+            _scheduledRestore = RunScheduledRestoreAsync(cancellationToken);
+            return _scheduledRestore;
+        }
+    }
+
+    private async Task RunScheduledRestoreAsync(CancellationToken cancellationToken)
+    {
         try
         {
             await _idlingScheduler.RunAsync(_ => RestoreActiveVisualization(), cancellationToken);
@@ -910,6 +853,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         catch (Exception)
         {
             // The pipeline logs the failure and retains sessions that still need restoration.
+        }
+        finally
+        {
+            lock (_restoreScheduleSync) _scheduledRestore = null;
         }
     }
 

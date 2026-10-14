@@ -11,7 +11,7 @@ public interface IOverrideFilterGraphicsService
     /// <param name="elementIds">Elements included in the temporary selection filter.</param>
     /// <param name="style">Graphics properties assigned to the filter.</param>
     /// <returns>A session that removes the temporary filter and its overrides.</returns>
-    IElementAccentSession Apply(
+    IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds,

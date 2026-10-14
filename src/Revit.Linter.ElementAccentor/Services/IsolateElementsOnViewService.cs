@@ -10,10 +10,10 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
 
     public AccentElementsType Type => AccentElementsType.IsolateElementsOnView;
 
-    public bool Execute(Document document, params ElementId[] elementIds)
+    public bool RunOnce(Document document, params ElementId[] elementIds)
         => Execute(document, document.ActiveView, elementIds);
 
-    public IElementAccentSession Apply(
+    public IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds)
@@ -23,12 +23,12 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
                 "Element isolation cannot replace an existing temporary hide/isolate state.");
 
         if (!Execute(document, view, elementIds.ToArray()))
-            return new ElementAccentSession(static () => { });
+            return new RestoreSession(static () => { });
 
-        return new ElementAccentSession(() =>
+        return new RestoreSession(() =>
         {
             if (document.IsValidObject && view.IsValidObject && view.IsTemporaryHideIsolateActive())
-                TransactionExecutor.Execute(document, "Restore visualization isolation", () =>
+                TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreIsolation_transaction"), () =>
                     view.DisableTemporaryViewMode(TemporaryViewMode.TemporaryHideIsolate));
         });
     }
@@ -53,7 +53,7 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
             _logger.LogInformation("Can't use temporary visibility modes for view type {ViewType}.", activeView.ViewType);
             return false;
         }
-        TransactionExecutor.Execute(document, "Apply visualization isolation", () =>
+        TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("applyIsolation_transaction"), () =>
         {
             activeView.DisableTemporaryViewMode(TemporaryViewMode.TemporaryHideIsolate);
             activeView.IsolateElementsTemporary(elementIds.ToArray());

@@ -27,6 +27,15 @@ public sealed record ElementVisualizationStepDefinition
 
     /// <summary>Gets graphics settings used by an override step.</summary>
     public ElementVisualizationGraphicsStyleDefinition? Style { get; init; }
+
+    /// <summary>Gets a <c>ViewDetailLevel</c> name for a detail-level step.</summary>
+    public string? DetailLevel { get; init; }
+
+    /// <summary>Gets a <c>DisplayStyle</c> name for a display-style step.</summary>
+    public string? DisplayStyle { get; init; }
+
+    /// <summary>Gets <c>BuiltInCategory</c> names that stay visible for a category-isolation step.</summary>
+    public string[] Categories { get; init; } = [];
 }
 
 /// <summary>Defines view graphics overrides in diagnostic configuration.</summary>

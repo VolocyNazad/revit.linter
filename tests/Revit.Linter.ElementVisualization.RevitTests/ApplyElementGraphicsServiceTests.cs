@@ -45,7 +45,7 @@ public sealed class ApplyElementGraphicsServiceTests : RevitApiTest
             ProjectionLines = new() { Color = new Color(12, 34, 56), Weight = 3 }
         };
 
-        using IElementAccentSession session = service.Apply(_document!, view, [_element.Id], style);
+        using IRestoreSession session = service.Apply(_document!, view, [_element.Id], style);
         using OverrideGraphicSettings applied = view.GetElementOverrides(_element.Id);
 
         await Assert.That(applied.Halftone).IsTrue();
@@ -68,7 +68,7 @@ public sealed class ApplyElementGraphicsServiceTests : RevitApiTest
         View view = GetView();
         ElementId[] originalFilters = view.GetFilters().ToArray();
 
-        using IElementAccentSession session = service.Apply(
+        using IRestoreSession session = service.Apply(
             _document!,
             view,
             [_element!.Id],

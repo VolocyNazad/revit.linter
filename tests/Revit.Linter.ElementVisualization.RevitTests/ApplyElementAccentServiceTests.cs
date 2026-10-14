@@ -55,7 +55,7 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
         using ServiceProvider services = CreateServices();
         IAccentElementsService service = GetService(services, AccentElementsType.IsolateElementsOnView);
 
-        using IElementAccentSession session = service.Apply(_document!, _view!, [_wall!.Id]);
+        using IRestoreSession session = service.Apply(_document!, _view!, [_wall!.Id]);
 
         await Assert.That(_view!.IsTemporaryHideIsolateActive()).IsTrue();
 
@@ -74,7 +74,7 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
         using BoundingBoxXYZ original = _view!.GetSectionBox();
         bool originalActive = _view.IsSectionBoxActive;
 
-        using IElementAccentSession session = service.Apply(_document!, _view, [_wall!.Id]);
+        using IRestoreSession session = service.Apply(_document!, _view, [_wall!.Id]);
         using BoundingBoxXYZ applied = _view.GetSectionBox();
 
         await Assert.That(_view.IsSectionBoxActive).IsTrue();
@@ -146,6 +146,8 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
             accentServices,
             elementGraphicsService,
             filterGraphicsService,
+            new UnusedCategoriesService(),
+            new UnusedViewSettingsService(),
             NullLogger<ElementVisualizationPipelineBase>.Instance)
     {
         protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } =
@@ -153,5 +155,21 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
             new AccentElementsStep(AccentElementsType.CutViewByElements, ["Collision"]),
             new AccentElementsStep(AccentElementsType.IsolateElementsOnView, ["Collision"])
         ];
+    }
+
+    private sealed class UnusedCategoriesService : ISetCategoryVisibilityService
+    {
+        public IRestoreSession Apply(
+            Document document, View view, IReadOnlyList<BuiltInCategory> categories) =>
+            throw new InvalidOperationException("The categories service should not be used by this test.");
+    }
+
+    private sealed class UnusedViewSettingsService : IViewSettingsService
+    {
+        public IRestoreSession ApplyDetailLevel(Document document, View view, ViewDetailLevel level) =>
+            throw new InvalidOperationException("The view settings service should not be used by this test.");
+
+        public IRestoreSession ApplyDisplayStyle(Document document, View view, DisplayStyle style) =>
+            throw new InvalidOperationException("The view settings service should not be used by this test.");
     }
 }

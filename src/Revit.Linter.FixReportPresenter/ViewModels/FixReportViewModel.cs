@@ -2,7 +2,6 @@ using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
-using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
@@ -109,9 +108,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         Document? targetdocument = _revitContext.ActiveDocument;
         if (targetdocument is null) return;
 
-        _accentElementsServices
-            .First(i => i.Type == AccentElementsType.SelectElements)
-            .Execute(targetdocument, elementId);
+        _accentElementsServices.SelectElement(targetdocument, elementId);
     }
     private bool CanSelectElement(object? elementId)
 #if BEFORE2024

@@ -5,7 +5,7 @@ namespace Revit.Linter.ElementAccentor.Services;
 
 internal sealed class OverrideElementGraphicsService : IOverrideElementGraphicsService
 {
-    public IElementAccentSession Apply(
+    public IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds,
@@ -16,7 +16,7 @@ internal sealed class OverrideElementGraphicsService : IOverrideElementGraphicsS
 
         try
         {
-            TransactionExecutor.Execute(document, "Apply diagnostic visualization", () =>
+            TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("applyElementGraphics_transaction"), () =>
             {
                 foreach (KeyValuePair<ElementId, OverrideGraphicSettings> entry in previous)
                 {
@@ -32,12 +32,12 @@ internal sealed class OverrideElementGraphicsService : IOverrideElementGraphicsS
             throw;
         }
 
-        return new ElementAccentSession(() =>
+        return new RestoreSession(() =>
         {
             try
             {
                 if (!document.IsValidObject || !view.IsValidObject) return;
-                TransactionExecutor.Execute(document, "Restore diagnostic visualization", () =>
+                TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreElementGraphics_transaction"), () =>
                 {
                     foreach (KeyValuePair<ElementId, OverrideGraphicSettings> entry in previous
                                  .Where(entry => document.GetElement(entry.Key) is not null))

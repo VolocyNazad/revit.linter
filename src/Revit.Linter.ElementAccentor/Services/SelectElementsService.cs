@@ -8,7 +8,7 @@ internal sealed class SelectElementsService(ILogger<SelectElementsService> logge
 {
     public AccentElementsType Type => AccentElementsType.SelectElements;
 
-    public bool Execute(Document document, params ElementId[] elementIds)
+    public bool RunOnce(Document document, params ElementId[] elementIds)
     {
         new UIDocument(document).Selection.SetElementIds(elementIds);
 
@@ -17,17 +17,17 @@ internal sealed class SelectElementsService(ILogger<SelectElementsService> logge
         return true;
     }
 
-    public IElementAccentSession Apply(
+    public IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds)
     {
         UIDocument uiDocument = new(document);
         ElementId[] previousSelection = uiDocument.Selection.GetElementIds().ToArray();
-        if (!Execute(document, elementIds.ToArray()))
-            return new ElementAccentSession(static () => { });
+        if (!RunOnce(document, elementIds.ToArray()))
+            return new RestoreSession(static () => { });
 
-        return new ElementAccentSession(() =>
+        return new RestoreSession(() =>
         {
             if (document.IsValidObject)
                 new UIDocument(document).Selection.SetElementIds(previousSelection);

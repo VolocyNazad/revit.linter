@@ -12,40 +12,44 @@ internal sealed class CutViewByElementsService(ILogger<CutViewByElementsService>
     public double Offset { get; set; } = 500;
     public AccentElementsType Type { get; } = AccentElementsType.CutViewByElements;
 
-    public bool Execute(Document document, params ElementId[] elementIds)
+    public bool RunOnce(Document document, params ElementId[] elementIds)
         => Execute(document, document.ActiveView, elementIds);
 
-    public IElementAccentSession Apply(
+    public IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds)
     {
         if (view is not View3D view3D)
-            return new ElementAccentSession(static () => { });
+            return new RestoreSession(static () => { });
 
         bool wasActive = view3D.IsSectionBoxActive;
-        BoundingBoxXYZ previousSectionBox = view3D.GetSectionBox();
+        BoundingBoxXYZ? previousSectionBox = view3D.GetSectionBox();
         if (!Execute(document, view, elementIds.ToArray()))
         {
-            previousSectionBox.Dispose();
-            return new ElementAccentSession(static () => { });
+            previousSectionBox?.Dispose();
+            return new RestoreSession(static () => { });
         }
 
-        return new ElementAccentSession(() =>
+        return new RestoreSession(() =>
         {
-            try
+            // A view without an active section box has nothing to put back: GetSectionBox
+            // returns null and SetSectionBox would reject it.
+            if (!document.IsValidObject || !view3D.IsValidObject)
             {
-                if (!document.IsValidObject || !view3D.IsValidObject) return;
-                TransactionExecutor.Execute(document, "Restore visualization section box", () =>
-                {
+                previousSectionBox?.Dispose();
+                previousSectionBox = null;
+                return;
+            }
+            TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreSectionBox_transaction"), () =>
+            {
+                if (previousSectionBox is not null)
                     view3D.SetSectionBox(previousSectionBox);
-                    view3D.IsSectionBoxActive = wasActive;
-                });
-            }
-            finally
-            {
-                previousSectionBox.Dispose();
-            }
+                view3D.IsSectionBoxActive = wasActive;
+            });
+            // Disposed only after a successful restore so a retained session can still retry.
+            previousSectionBox?.Dispose();
+            previousSectionBox = null;
         });
     }
 
@@ -77,7 +81,7 @@ internal sealed class CutViewByElementsService(ILogger<CutViewByElementsService>
         }
 
         bool sectionBoxApplied = false;
-        TransactionExecutor.Execute(document, "Apply visualization section box", () =>
+        TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("applySectionBox_transaction"), () =>
         {
             sectionBoxApplied = view3D.SetSectionBoxBy(elements, Offset, Offset, Offset);
             if (sectionBoxApplied)

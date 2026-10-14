@@ -5,14 +5,14 @@ namespace Revit.Linter.ElementAccentor.Services;
 
 internal sealed class OverrideFilterGraphicsService : IOverrideFilterGraphicsService
 {
-    public IElementAccentSession Apply(
+    public IRestoreSession Apply(
         Document document,
         View view,
         IReadOnlyCollection<ElementId> elementIds,
         ViewGraphicsStyle style)
     {
         ElementId filterId = ElementId.InvalidElementId;
-        TransactionExecutor.Execute(document, "Apply diagnostic visualization filter", () =>
+        TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("applyFilterGraphics_transaction"), () =>
         {
             SelectionFilterElement filter = SelectionFilterElement.Create(
                 document, $"Revit Linter visualization {Guid.NewGuid():N}");
@@ -24,12 +24,12 @@ internal sealed class OverrideFilterGraphicsService : IOverrideFilterGraphicsSer
             view.SetFilterOverrides(filterId, graphics);
         });
 
-        return new ElementAccentSession(() =>
+        return new RestoreSession(() =>
         {
             if (!document.IsValidObject || filterId == ElementId.InvalidElementId
                 || document.GetElement(filterId) is null)
                 return;
-            TransactionExecutor.Execute(document, "Restore diagnostic visualization filter", () =>
+            TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreFilterGraphics_transaction"), () =>
                 document.Delete(filterId));
         });
     }

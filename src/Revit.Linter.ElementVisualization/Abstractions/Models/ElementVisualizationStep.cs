@@ -29,3 +29,27 @@ public sealed record OverrideFilterStep(
     IReadOnlyList<string> ElementSetKeys,
     ViewGraphicsStyle Style)
     : ElementVisualizationStep(ElementSetKeys);
+
+/// <summary>Sets the view detail level for the whole visualization view.</summary>
+/// <param name="Level">The detail level to apply.</param>
+/// <param name="ElementSetKeys">Kept empty: a view step consumes no element sets.</param>
+public sealed record DetailLevelStep(
+    ViewDetailLevel Level,
+    IReadOnlyList<string> ElementSetKeys)
+    : ElementVisualizationStep(ElementSetKeys);
+
+/// <summary>Sets the view display style for the whole visualization view.</summary>
+/// <param name="Style">The display style to apply.</param>
+/// <param name="ElementSetKeys">Kept empty: a view step consumes no element sets.</param>
+public sealed record DisplayStyleStep(
+    DisplayStyle Style,
+    IReadOnlyList<string> ElementSetKeys)
+    : ElementVisualizationStep(ElementSetKeys);
+
+/// <summary>Leaves only the given categories visible through the persistent view visibility.</summary>
+/// <param name="Categories">The categories that stay visible; every other hideable category is hidden.</param>
+/// <param name="ElementSetKeys">Kept empty: a category step consumes no element sets.</param>
+public sealed record SetCategoryVisibilityStep(
+    IReadOnlyList<BuiltInCategory> Categories,
+    IReadOnlyList<string> ElementSetKeys)
+    : ElementVisualizationStep(ElementSetKeys);

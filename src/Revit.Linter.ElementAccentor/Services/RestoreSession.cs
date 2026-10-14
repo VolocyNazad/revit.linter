@@ -2,7 +2,7 @@ using Revit.Linter.ElementAccentor.Abstractions.Services;
 
 namespace Revit.Linter.ElementAccentor.Services;
 
-internal sealed class ElementAccentSession(Action restore) : IElementAccentSession
+internal sealed class RestoreSession(Action restore) : IRestoreSession
 {
     private readonly object _lock = new();
     private Action? _restore = restore;

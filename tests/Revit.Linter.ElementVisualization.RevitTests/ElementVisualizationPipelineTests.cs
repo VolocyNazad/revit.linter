@@ -1,4 +1,5 @@
 using Autodesk.Revit.DB;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
@@ -69,6 +70,35 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
         await Assert.That(accentService.Events.SequenceEqual(["apply:First", "restore:First"])).IsTrue();
     }
 
+    [Test]
+    public async Task Restore_failure_throws_and_retains_sessions_for_retry()
+    {
+        // Locks the failure-containment contract the report presenter relies on when a restore
+        // runs outside a valid API context: the failure is reported to the caller, the sessions
+        // are retained for the next retry, and the streak is logged once as an error and then
+        // as warnings rather than spamming the log on every trigger.
+        CapturingLogger logger = new();
+        using TestPipeline pipeline = new(
+            CreateIdentity(),
+            new RecordingGraphicsService(),
+            [new AccentElementsStep(AccentElementsType.IsolateElementsOnView, ["First"])],
+            [new RecordingAccentService(restoreThrows: true)],
+            logger);
+
+        bool applied = pipeline.Apply(CreateContext());
+        Exception? firstRestore = CaptureException(pipeline.Restore);
+        Exception? secondRestore = CaptureException(pipeline.Restore);
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(firstRestore).IsTypeOf<InvalidOperationException>();
+        await Assert.That(secondRestore).IsTypeOf<InvalidOperationException>();
+        await Assert.That(logger.Levels.Count(level => level == LogLevel.Error)).IsEqualTo(1);
+        await Assert.That(logger.Levels.Count(level => level == LogLevel.Warning)).IsEqualTo(1);
+        await Assert.That(logger.Levels
+            .Where(level => level is LogLevel.Error or LogLevel.Warning)
+            .SequenceEqual([LogLevel.Error, LogLevel.Warning])).IsTrue();
+    }
+
     private static TestPipeline CreatePipeline(IOverrideElementGraphicsService graphicsService) => new(
         CreateIdentity(),
         graphicsService,
@@ -118,30 +148,34 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
         ElementDiagnosticId identity,
         IOverrideElementGraphicsService graphicsService,
         IReadOnlyList<ElementVisualizationStep> steps,
-        IEnumerable<IAccentElementsService>? accentServices = null)
+        IEnumerable<IAccentElementsService>? accentServices = null,
+        ILogger? logger = null)
         : ElementVisualizationPipelineBase(
             identity, "Test", accentServices ?? [], graphicsService, new UnusedFilterService(),
-            NullLogger<ElementVisualizationPipelineBase>.Instance)
+            new UnusedCategoriesService(), new UnusedViewSettingsService(),
+            logger ?? NullLogger<ElementVisualizationPipelineBase>.Instance)
     {
         protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } = steps;
     }
 
-    private sealed class RecordingAccentService : IAccentElementsService
+    private sealed class RecordingAccentService(bool restoreThrows = false) : IAccentElementsService
     {
         public AccentElementsType Type => AccentElementsType.IsolateElementsOnView;
         public List<string> Events { get; } = [];
 
-        public bool Execute(Document document, params ElementId[] elementIds) =>
-            throw new InvalidOperationException("Execute should not be used by the pipeline.");
+        public bool RunOnce(Document document, params ElementId[] elementIds) =>
+            throw new InvalidOperationException("RunOnce should not be used by the pipeline.");
 
-        public IElementAccentSession Apply(
+        public IRestoreSession Apply(
             Document document,
             View view,
             IReadOnlyCollection<ElementId> elementIds)
         {
             string key = elementIds.Single() == CreateElementId(1) ? "First" : "Second";
             Events.Add($"apply:{key}");
-            return new TestSession(() => Events.Add($"restore:{key}"));
+            return restoreThrows
+                ? new ThrowingSession()
+                : new TestSession(() => Events.Add($"restore:{key}"));
         }
     }
 
@@ -151,7 +185,7 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
 
         public List<string> Events { get; } = [];
 
-        public IElementAccentSession Apply(
+        public IRestoreSession Apply(
             Document document,
             View view,
             IReadOnlyCollection<ElementId> elementIds,
@@ -169,15 +203,55 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
 
     private sealed class UnusedFilterService : IOverrideFilterGraphicsService
     {
-        public IElementAccentSession Apply(
+        public IRestoreSession Apply(
             Document document, View view, IReadOnlyCollection<ElementId> elementIds, ViewGraphicsStyle style) =>
             throw new InvalidOperationException("The filter service should not be used by this test.");
     }
 
-    private sealed class TestSession(Action restore) : IElementAccentSession
+    private sealed class UnusedCategoriesService : ISetCategoryVisibilityService
+    {
+        public IRestoreSession Apply(
+            Document document, View view, IReadOnlyList<BuiltInCategory> categories) =>
+            throw new InvalidOperationException("The categories service should not be used by this test.");
+    }
+
+    private sealed class UnusedViewSettingsService : IViewSettingsService
+    {
+        public IRestoreSession ApplyDetailLevel(Document document, View view, ViewDetailLevel level) =>
+            throw new InvalidOperationException("The view settings service should not be used by this test.");
+
+        public IRestoreSession ApplyDisplayStyle(Document document, View view, DisplayStyle style) =>
+            throw new InvalidOperationException("The view settings service should not be used by this test.");
+    }
+
+    private sealed class TestSession(Action restore) : IRestoreSession
     {
         private Action? _restore = restore;
         public void Restore() => Interlocked.Exchange(ref _restore, null)?.Invoke();
         public void Dispose() => Restore();
+    }
+
+    private sealed class ThrowingSession : IRestoreSession
+    {
+        public void Restore() => throw new InvalidOperationException("Restore failed.");
+        public void Dispose() { }
+    }
+
+    private sealed class CapturingLogger : ILogger
+    {
+        public List<LogLevel> Levels { get; } = [];
+
+        IDisposable ILogger.BeginScope<TState>(TState state) => new NullScope();
+
+        bool ILogger.IsEnabled(LogLevel logLevel) => true;
+
+        void ILogger.Log<TState>(
+            LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string> formatter) => Levels.Add(logLevel);
+
+        private sealed class NullScope : IDisposable
+        {
+            public void Dispose() { }
+        }
     }
 }

@@ -18,6 +18,8 @@ public static class ServiceCollectionExtensions
            .AddSingleton<IAccentElementsService, CutViewByElementsService>()
            .AddSingleton<IOverrideElementGraphicsService, OverrideElementGraphicsService>()
            .AddSingleton<IOverrideFilterGraphicsService, OverrideFilterGraphicsService>()
+           .AddSingleton<ISetCategoryVisibilityService, SetCategoryVisibilityService>()
+           .AddSingleton<IViewSettingsService, ViewSettingsService>()
        ;
     }
 }

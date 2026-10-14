@@ -12,6 +12,8 @@ internal sealed class ElementVisualizationPipelineFactory(
     IEnumerable<IAccentElementsService> services,
     IOverrideElementGraphicsService overrideElementGraphicsService,
     IOverrideFilterGraphicsService overrideFilterGraphicsService,
+    ISetCategoryVisibilityService setCategoryVisibilityService,
+    IViewSettingsService viewSettingsService,
     ILogger<ElementVisualizationPipelineFactory> logger)
     : IElementVisualizationPipelineFactory
 {
@@ -32,7 +34,7 @@ internal sealed class ElementVisualizationPipelineFactory(
             .ToArray();
         return new ConfiguredElementVisualizationPipeline(
             identity, name.Trim(), _services, overrideElementGraphicsService,
-            overrideFilterGraphicsService, logger, parsedSteps);
+            overrideFilterGraphicsService, setCategoryVisibilityService, viewSettingsService, logger, parsedSteps);
     }
 
     private static ElementVisualizationStep Parse(ElementVisualizationStepDefinition step)
@@ -53,9 +55,12 @@ internal sealed class ElementVisualizationPipelineFactory(
             "CUT" or "CUTVIEWBYELEMENTS" => Accent(AccentElementsType.CutViewByElements),
             "OVERRIDEELEMENTS" => new OverrideElementsStep(elementSets, ParseStyle(step)),
             "OVERRIDEFILTER" => new OverrideFilterStep(elementSets, ParseStyle(step)),
+            "DETAILLEVEL" or "SETDETAILLEVEL" => new DetailLevelStep(ParseDetailLevel(step, elementSets), []),
+            "DISPLAYSTYLE" or "SETDISPLAYSTYLE" => new DisplayStyleStep(ParseDisplayStyle(step, elementSets), []),
+            "SETCATEGORYVISIBILITY" => new SetCategoryVisibilityStep(ParseCategories(step, elementSets), []),
             _ => throw new ArgumentException(
                 $"Unknown visualization step '{step.Type}'. Supported values: Show, Select, Isolate, " +
-                "Cut, OverrideElements, OverrideFilter.")
+                "Cut, OverrideElements, OverrideFilter, DetailLevel, DisplayStyle, SetCategoryVisibility.")
         };
 
         AccentElementsStep Accent(AccentElementsType type)
@@ -93,6 +98,68 @@ internal sealed class ElementVisualizationPipelineFactory(
             CutForeground = ParsePattern(source.CutForeground),
             CutBackground = ParsePattern(source.CutBackground)
         };
+    }
+
+    private static ViewDetailLevel ParseDetailLevel(
+        ElementVisualizationStepDefinition step, string[] elementSets)
+    {
+        RejectViewStepExtras(step, elementSets);
+        if (string.IsNullOrWhiteSpace(step.DetailLevel))
+            throw new ArgumentException($"Visualization step '{step.Type}' requires detailLevel.");
+        if (!Enum.TryParse(step.DetailLevel, true, out ViewDetailLevel level))
+            throw new ArgumentException($"Unknown view detail level '{step.DetailLevel}'.");
+        if (level == ViewDetailLevel.Undefined)
+            throw new ArgumentException("View detail level cannot be Undefined.");
+        return level;
+    }
+
+    private static DisplayStyle ParseDisplayStyle(
+        ElementVisualizationStepDefinition step, string[] elementSets)
+    {
+        RejectViewStepExtras(step, elementSets);
+        if (string.IsNullOrWhiteSpace(step.DisplayStyle))
+            throw new ArgumentException($"Visualization step '{step.Type}' requires displayStyle.");
+        if (!Enum.TryParse(step.DisplayStyle, true, out DisplayStyle style))
+            throw new ArgumentException($"Unknown display style '{step.DisplayStyle}'.");
+        if (style == DisplayStyle.Undefined)
+            throw new ArgumentException("Display style cannot be Undefined.");
+        return style;
+    }
+
+    private static void RejectViewStepExtras(ElementVisualizationStepDefinition step, string[] elementSets)
+    {
+        if (step.Style is not null)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support style.");
+        if (elementSets.Length != 0)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support element sets.");
+        if (step.Categories.Length != 0)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support categories.");
+    }
+
+    private static IReadOnlyList<BuiltInCategory> ParseCategories(
+        ElementVisualizationStepDefinition step, string[] elementSets)
+    {
+        if (step.Style is not null)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support style.");
+        if (elementSets.Length != 0)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support element sets.");
+        string[] categories = step.Categories
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => value.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (categories.Length == 0)
+            throw new ArgumentException($"Visualization step '{step.Type}' requires categories.");
+        return categories
+            .Select(name =>
+            {
+                if (!Enum.TryParse(name, true, out BuiltInCategory category)
+                    || category == BuiltInCategory.INVALID)
+                    throw new ArgumentException(
+                        $"Unknown category '{name}'. Use a BuiltInCategory name such as 'OST_Walls'.");
+                return category;
+            })
+            .ToArray();
     }
 
     private static LineGraphicsStyle? ParseLines(ElementVisualizationLineStyleDefinition? source)
@@ -143,10 +210,13 @@ internal sealed class ElementVisualizationPipelineFactory(
         IEnumerable<IAccentElementsService> services,
         IOverrideElementGraphicsService overrideElementGraphicsService,
         IOverrideFilterGraphicsService overrideFilterGraphicsService,
+ISetCategoryVisibilityService setCategoryVisibilityService,
+        IViewSettingsService viewSettingsService,
         ILogger logger,
         IReadOnlyList<ElementVisualizationStep> steps)
         : ElementVisualizationPipelineBase(
-            identity, value, services, overrideElementGraphicsService, overrideFilterGraphicsService, logger)
+            identity, value, services, overrideElementGraphicsService, overrideFilterGraphicsService,
+            setCategoryVisibilityService, viewSettingsService, logger)
     {
         protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } = steps;
     }
