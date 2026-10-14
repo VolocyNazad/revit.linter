@@ -173,18 +173,12 @@ internal static class Utils
         {
             StorageType.String => parameter.AsString(),
             StorageType.Integer => Convert.ToDouble(parameter.AsInteger()),
-            StorageType.Double => UnitUtils.ConvertFromInternalUnits(parameter.AsDouble(), GetUnitTypeId(parameter)),
+            StorageType.Double => UnitUtils.ConvertFromInternalUnits(parameter.AsDouble(), parameter.GetUnitTypeId()),
             StorageType.ElementId => parameter.AsElementId(),
             StorageType.None => throw new InvalidOperationException(),
             _ => throw new NotImplementedException(),
         };
         return value;
-    }
-    private static ForgeTypeId GetUnitTypeId(Parameter parameter)
-    {
-        FormatOptions formatOptions = parameter.Element.Document.GetUnits().GetFormatOptions(SpecTypeId.Length);
-        ForgeTypeId unitTypeId = formatOptions.GetUnitTypeId();
-        return unitTypeId;
     }
 }
 

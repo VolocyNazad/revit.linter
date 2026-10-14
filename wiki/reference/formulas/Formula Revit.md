@@ -79,10 +79,13 @@ A missing parameter returns `null`. Currently, `Double` values are converted usi
 
 Filters are combined with the words `and` and `or`; `and` has higher precedence. Parentheses are supported.
 
+Leaf filters are negated with a `!` prefix, using the inverted native overloads: `!type`, `!instance`, `!all`, `!empty`, `!builtincategory(name)` and `!class(name)`. Compound negation such as `!(A and B)` is not supported — rewrite it through De Morgan (`!A or !B`).
+
 ```text
 instance and builtincategory('OST_Walls')
 builtincategory('OST_Walls') or builtincategory('OST_Levels')
 instance and (class('Wall') or class('Floor'))
+instance and !builtincategory('OST_CurtainWallMullions')
 ```
 
 > [!warning]

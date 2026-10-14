@@ -76,10 +76,13 @@ hasparametervalue('Марка', me)
 
 Фильтры объединяются словами `and` и `or`; `and` имеет более высокий приоритет. Круглые скобки поддерживаются.
 
+Листовые фильтры отрицаются префиксом `!` через инвертированные нативные перегрузки: `!type`, `!instance`, `!all`, `!empty`, `!builtincategory(name)` и `!class(name)`. Составное отрицание вида `!(A and B)` не поддерживается — перепишите его через Де Моргана (`!A or !B`).
+
 ```text
 instance and builtincategory('OST_Walls')
 builtincategory('OST_Walls') or builtincategory('OST_Levels')
 instance and (class('Wall') or class('Floor'))
+instance and !builtincategory('OST_CurtainWallMullions')
 ```
 
 > [!warning]

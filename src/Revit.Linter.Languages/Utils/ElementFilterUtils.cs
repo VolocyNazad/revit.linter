@@ -8,6 +8,12 @@ internal static class ElementFilterUtils
         ElementClassFilter filter = new(type);
         return filter;
     }
+    public static ElementFilter GetInvertedElementClassFilter(string className)
+    {
+        Type type = RevitClassUtils.GetType(className);
+        ElementClassFilter filter = new(type, true);
+        return filter;
+    }
     public static ElementFilter GetElementCategoryFilter(string builtInCategoryName)
     {
 #if AFTER2025
@@ -18,6 +24,16 @@ internal static class ElementFilterUtils
         ElementCategoryFilter filter = new(builtInCategory);
         return filter;
     }
+    public static ElementFilter GetInvertedElementCategoryFilter(string builtInCategoryName)
+    {
+#if AFTER2025
+        BuiltInCategory builtInCategory = Enum.Parse<BuiltInCategory>(builtInCategoryName);
+#else
+        BuiltInCategory builtInCategory = (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), builtInCategoryName);
+#endif
+        ElementCategoryFilter filter = new(builtInCategory, true);
+        return filter;
+    }
     public static ElementFilter GetElementWorksetFilter(Document document, string worksetName)
     {
         Workset workset = new FilteredWorksetCollector(document).ToWorksets().First(i => i.Name == worksetName);
@@ -25,4 +41,3 @@ internal static class ElementFilterUtils
         return filter;
     }
 }
-

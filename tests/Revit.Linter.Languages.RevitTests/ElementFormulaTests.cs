@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
+using System.Globalization;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Languages.RevitTests;
@@ -117,6 +118,61 @@ public sealed class ElementFormulaTests : RevitApiTest
     }
 
     [Test]
+    public async Task Non_length_double_parameter_is_converted_with_own_unit()
+    {
+        // HOST_AREA_COMPUTED carries an area unit: converting it with the length unit
+        // (as GetParameterValue did before per-parameter units) yields a different number,
+        // so this fails on the old code and passes with the parameter's own unit.
+        Parameter areaParameter = _wall!.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED);
+        await Assert.That(areaParameter.AsDouble()).IsGreaterThan(0);
+
+        ForgeTypeId areaUnit = _document!.GetUnits().GetFormatOptions(SpecTypeId.Area).GetUnitTypeId();
+        double expected = UnitUtils.ConvertFromInternalUnits(areaParameter.AsDouble(), areaUnit);
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            $"parameter(me, 'HOST_AREA_COMPUTED') == {expected.ToString("R", CultureInfo.InvariantCulture)}");
+
+        bool result = formula.Invoke(_wall);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Volume_double_parameter_is_converted_with_own_unit()
+    {
+        // Same as above for the volume spec: fails on the length-unit code, passes with own unit.
+        Parameter volumeParameter = _wall!.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED);
+        await Assert.That(volumeParameter.AsDouble()).IsGreaterThan(0);
+
+        ForgeTypeId volumeUnit = _document!.GetUnits().GetFormatOptions(SpecTypeId.Volume).GetUnitTypeId();
+        double expected = UnitUtils.ConvertFromInternalUnits(volumeParameter.AsDouble(), volumeUnit);
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            $"parameter(me, 'HOST_VOLUME_COMPUTED') == {expected.ToString("R", CultureInfo.InvariantCulture)}");
+
+        bool result = formula.Invoke(_wall);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task Non_zero_length_double_parameter_keeps_length_unit()
+    {
+        // Locks the unchanged behavior: length-spec parameters were already converted
+        // correctly, so this passes both before and after the per-parameter unit change.
+        // The seeded wall is 10 feet long, hence the value is never zero.
+        Parameter lengthParameter = _wall!.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH);
+        await Assert.That(lengthParameter.AsDouble()).IsGreaterThan(0);
+
+        ForgeTypeId lengthUnit = _document!.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
+        double expected = UnitUtils.ConvertFromInternalUnits(lengthParameter.AsDouble(), lengthUnit);
+        Func<Element, bool> formula = PropertyFormulaCompiler.CompileElement<bool>(
+            $"parameter(me, 'CURVE_ELEM_LENGTH') == {expected.ToString("R", CultureInfo.InvariantCulture)}");
+
+        bool result = formula.Invoke(_wall);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
     public async Task ElementId_parameter_is_returned_as_value()
     {
         Func<Element, bool> formula =
@@ -226,5 +282,56 @@ public sealed class ElementFormulaTests : RevitApiTest
 
         await Assert.That(allFilter.PassesFilter(_wall!)).IsTrue();
         await Assert.That(emptyFilter.PassesFilter(_wall!)).IsFalse();
+    }
+
+    [Test]
+    public async Task Negated_type_and_instance_filters_swap_results()
+    {
+        Element wallType = _document!.GetElement(_wall!.GetTypeId());
+        ElementFilter notTypeFilter = PropertyFormulaCompiler.CompileElementFilter("!type");
+        ElementFilter notInstanceFilter = PropertyFormulaCompiler.CompileElementFilter("!instance");
+
+        await Assert.That(notTypeFilter.PassesFilter(_wall)).IsTrue();
+        await Assert.That(notTypeFilter.PassesFilter(wallType)).IsFalse();
+        await Assert.That(notInstanceFilter.PassesFilter(_wall)).IsFalse();
+        await Assert.That(notInstanceFilter.PassesFilter(wallType)).IsTrue();
+    }
+
+    [Test]
+    public async Task Negated_category_filter_excludes_matching_elements()
+    {
+        ElementFilter filter = PropertyFormulaCompiler.CompileElementFilter("!builtincategory('OST_Walls')");
+
+        await Assert.That(filter.PassesFilter(_wall!)).IsFalse();
+        await Assert.That(filter.PassesFilter(_level!)).IsTrue();
+    }
+
+    [Test]
+    public async Task Negated_class_filter_excludes_matching_elements()
+    {
+        ElementFilter filter = PropertyFormulaCompiler.CompileElementFilter("!class('Wall')");
+
+        await Assert.That(filter.PassesFilter(_wall!)).IsFalse();
+        await Assert.That(filter.PassesFilter(_level!)).IsTrue();
+    }
+
+    [Test]
+    public async Task Negation_combines_with_and()
+    {
+        ElementFilter filter = PropertyFormulaCompiler.CompileElementFilter(
+            "instance and !builtincategory('OST_Walls')");
+
+        await Assert.That(filter.PassesFilter(_wall!)).IsFalse();
+        await Assert.That(filter.PassesFilter(_level!)).IsTrue();
+    }
+
+    [Test]
+    public async Task Negated_all_and_empty_filters_have_opposite_results()
+    {
+        ElementFilter notAllFilter = PropertyFormulaCompiler.CompileElementFilter("!all");
+        ElementFilter notEmptyFilter = PropertyFormulaCompiler.CompileElementFilter("!empty");
+
+        await Assert.That(notAllFilter.PassesFilter(_wall!)).IsFalse();
+        await Assert.That(notEmptyFilter.PassesFilter(_wall!)).IsTrue();
     }
 }

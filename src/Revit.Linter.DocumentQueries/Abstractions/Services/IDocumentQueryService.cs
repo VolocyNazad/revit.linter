@@ -52,7 +52,7 @@ public interface IDocumentQueryService
     /// <param name="key">The query key.</param>
     /// <param name="factory">Creates the value when the cache has none.</param>
     /// <returns>The cached or newly created value.</returns>
-    /// <exception cref="InvalidOperationException">The cache produced no value.</exception>
+    /// <exception cref="T:System.InvalidOperationException">The cache produced no value.</exception>
     TItem GetOrCreate<TItem>(DocumentQueryKey key, Func<TItem> factory);
 
     /// <summary>
