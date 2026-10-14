@@ -12,6 +12,11 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
     private readonly Dictionary<string, QueryCounter> _counters = new(StringComparer.Ordinal);
     private ElementFilter? _allElementsFilter;
 
+    // Options is only an input to get_Geometry and is never mutated afterwards,
+    // so one instance serves every default-geometry request. All queries run on
+    // the Revit API thread, where the shared instance is never accessed concurrently.
+    private static readonly Options DefaultGeometryOptions = new();
+
     public IReadOnlyList<Element> GetElements(Document document, View? view = null)
         => GetOrCreate(
             DocumentQueryKey.Create(document, DocumentQueryNames.Elements, view),
@@ -42,7 +47,7 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
     public GeometryElement? GetGeometry(Element element, View? view = null)
         => GetOrCreateCounted(
             DocumentQueryKey.Create(element.Document, DocumentQueryNames.Geometry, view, element.Id),
-            () => element.get_Geometry(view is null ? new Options() : new Options { View = view }));
+            () => element.get_Geometry(view is null ? DefaultGeometryOptions : new Options { View = view }));
 
     public TItem GetOrCreate<TItem>(DocumentQueryKey key, Func<TItem> factory)
     {

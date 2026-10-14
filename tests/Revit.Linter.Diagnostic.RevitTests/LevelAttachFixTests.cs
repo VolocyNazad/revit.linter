@@ -2,6 +2,7 @@ using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -36,7 +37,7 @@ public sealed class LevelAttachFixTests : RevitApiTest
             instance.get_Parameter(BuiltInParameter.INSTANCE_ELEVATION_PARAM).Set(-3000 * MmInFeet);
             transaction.Commit();
         }
-        var fix = new AttachToNearestLevel();
+        var fix = new AttachToNearestLevel(TestDocumentQueries.Create());
 
         bool result;
         using (Transaction transaction = new(document, "Attach test instance to nearest level"))
@@ -62,7 +63,7 @@ public sealed class LevelAttachFixTests : RevitApiTest
         Level lower = CreateLevel(document, 5000);
         CreateLevel(document, 8000);
         FamilyInstance instance = PlaceInstance(Application, document, lower);
-        var fix = new AttachToNearestLevel();
+        var fix = new AttachToNearestLevel(TestDocumentQueries.Create());
 
         bool result;
         using (Transaction transaction = new(document, "Attach test instance to nearest level"))

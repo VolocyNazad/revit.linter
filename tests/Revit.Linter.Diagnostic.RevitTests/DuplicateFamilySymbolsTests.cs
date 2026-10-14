@@ -3,6 +3,8 @@ using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.ElementDiagnostics.Diagnostics.DuplicateFamilySymbols;
+using Revit.Linter.Testing;
+using Revit.TransactionMemoryCache.Services;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -26,7 +28,7 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
         LoadFamilyWithTypes(document, "Note", "A", "B");
         FamilySymbol first = FindSymbol(document, "A");
         FamilySymbol second = FindSymbol(document, "B");
-        var diagnostic = new DuplicateFamilySymbolsDiagnostic();
+        var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
         DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
         DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
@@ -52,13 +54,42 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
             transaction.Commit();
         }
         FamilySymbol first = FindSymbol(document, "A");
-        var diagnostic = new DuplicateFamilySymbolsDiagnostic();
+        var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
         DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
         DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Mutated_symbols_are_reevaluated_with_shared_queries()
+    {
+        // Signatures live in the transaction cache: with a null cache every Execute
+        // recomputes them, so a mutation between two runs with one shared service must be
+        // visible at once. This guards the diagnostic against holding stale state of its
+        // own; production freshness after a change is the cache invalidation contract.
+        Document document = _document!;
+        LoadFamilyWithTypes(document, "Note", "A", "B");
+        var diagnostic = new DuplicateFamilySymbolsDiagnostic(
+            TestDocumentQueries.Create(NullRevitTransactionMemoryCache.Instance));
+
+        DiagnosticFeedback before = diagnostic.Execute(document, null, FindSymbol(document, "A"));
+
+        FamilySymbol second = FindSymbol(document, "B");
+        using (Transaction transaction = new(document, "Diverge test family symbols"))
+        {
+            transaction.Start();
+            second.LookupParameter("Note").Set("other");
+            transaction.Commit();
+        }
+        DiagnosticFeedback firstAfter = diagnostic.Execute(document, null, FindSymbol(document, "A"));
+        DiagnosticFeedback secondAfter = diagnostic.Execute(document, null, FindSymbol(document, "B"));
+
+        await Assert.That(before.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(firstAfter.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+        await Assert.That(secondAfter.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
     [Test]
@@ -74,7 +105,7 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
             .Cast<FamilySymbol>()
             .Where(candidate => candidate.Name == "LinterT1")
             .ToList();
-        var diagnostic = new DuplicateFamilySymbolsDiagnostic();
+        var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
         await Assert.That(symbols.Count).IsGreaterThan(0);
         foreach (FamilySymbol symbol in symbols)
@@ -112,7 +143,7 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
             }
             FamilySymbol first = FindSymbol(host, "LinterNestedA");
             FamilySymbol second = FindSymbol(host, "LinterNestedB");
-            var diagnostic = new DuplicateFamilySymbolsDiagnostic();
+            var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
             DiagnosticFeedback firstFeedback = diagnostic.Execute(host, null, first);
             DiagnosticFeedback secondFeedback = diagnostic.Execute(host, null, second);

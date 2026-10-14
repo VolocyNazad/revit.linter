@@ -6,6 +6,7 @@ using Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceElevationIsToler
 using Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
 using Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceMirrored;
 using Revit.Linter.Testing;
+using Revit.TransactionMemoryCache.Services;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -91,6 +92,43 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+    }
+
+    [Test]
+    public async Task Moved_level_is_reevaluated_with_shared_queries()
+    {
+        // Level elevations are cached per run: with a null cache every Execute rereads them,
+        // so moving a level between two runs with one shared service must flip the verdict.
+        // This guards the diagnostic against pinning stale elevations; production freshness
+        // after a change is the cache invalidation contract.
+        // Test levels sit far above the default zero-elevation levels of a new document,
+        // so the nearest level is unambiguous with a wide margin in both states.
+        Document document = _document!;
+        Level lower = CreateLevel(document, 50000);
+        Level upper = CreateLevel(document, 53000);
+        FamilyInstance instance = PlaceInstance(Application, document, lower);
+        using (Transaction transaction = new(document, "Move test instance association"))
+        {
+            transaction.Start();
+            instance.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM).Set(upper.Id);
+            instance.get_Parameter(BuiltInParameter.INSTANCE_ELEVATION_PARAM).Set(-2900 * MmInFeet);
+            transaction.Commit();
+        }
+        var diagnostic = new FamilyInstanceLevelIsNearestDiagnostic(
+            TestDocumentQueries.Create(NullRevitTransactionMemoryCache.Instance));
+
+        DiagnosticFeedback before = diagnostic.Execute(document, null, instance);
+
+        using (Transaction transaction = new(document, "Move test level elevation"))
+        {
+            transaction.Start();
+            lower.Elevation = 70000 * MmInFeet;
+            transaction.Commit();
+        }
+        DiagnosticFeedback after = diagnostic.Execute(document, null, instance);
+
+        await Assert.That(before.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(after.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
     [Test]

@@ -1,6 +1,8 @@
+using Revit.Linter.DocumentQueries.Abstractions.Services;
+
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
 
-internal sealed class AttachToNearestLevel : IElementFix
+internal sealed class AttachToNearestLevel(IDocumentQueryService documentQueries) : IElementFix
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceLevelIsNearest;
 
@@ -24,15 +26,23 @@ internal sealed class AttachToNearestLevel : IElementFix
             : 0;
         double targetElevation = elevationParameter.AsDouble() + offset;
 
-        ElementId? nearestLevelId = new FilteredElementCollector(targetElement.Document)
-            .OfClass(typeof(Level))
-            .Cast<Level>()
-            .Select(level => (level, elevation: level.get_Parameter(BuiltInParameter.LEVEL_ELEV)))
-            .Where(candidate => candidate.elevation is not null
-                && candidate.elevation.StorageType == StorageType.Double)
-            .OrderBy(candidate => Math.Abs(candidate.elevation.AsDouble() - targetElevation))
-            .Select(candidate => candidate.level.Id)
-            .FirstOrDefault();
+        // Levels are shared through the transaction cache instead of a dedicated
+        // collector per fix, and the minimum is a single linear pass: sorting is
+        // O(L log L) with delegate and comparer allocations, while the minimum is O(L).
+        // Manual loop rather than Enumerable.MinBy: MinBy is unavailable on net48 (Revit 2021-2023).
+        ElementId? nearestLevelId = null;
+        double nearestDistance = double.MaxValue;
+        foreach (Level level in documentQueries.GetElementsOfClass<Level>(targetElement.Document))
+        {
+            Parameter? candidateElevation = level.get_Parameter(BuiltInParameter.LEVEL_ELEV);
+            if (candidateElevation is null || candidateElevation.StorageType != StorageType.Double)
+                continue;
+            double distance = Math.Abs(candidateElevation.AsDouble() - targetElevation);
+            if (distance >= nearestDistance)
+                continue;
+            nearestDistance = distance;
+            nearestLevelId = level.Id;
+        }
         if (nearestLevelId is null || nearestLevelId.Equals(ElementId.InvalidElementId)
             || nearestLevelId.Equals(currentLevelId)) return false;
 
