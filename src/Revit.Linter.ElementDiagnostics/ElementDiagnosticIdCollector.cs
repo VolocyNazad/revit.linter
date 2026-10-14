@@ -34,6 +34,11 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId GroupNested = Create("SHRD0021", DiagnosticSeverity.Warning);
     public static readonly ElementDiagnosticId MaterialUnused = Create("SHRD0022", DiagnosticSeverity.Message);
     public static readonly ElementDiagnosticId ProfileFamilySymbolUnused = Create("SHRD0023", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId ReferencePlaneUnused = Create("SHRD0024", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId DuplicateFamilyTypes = Create("SHRD0026", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId DuplicateFamilySymbols = Create("SHRD0028", DiagnosticSeverity.Warning);
+    public static readonly ElementDiagnosticId ReferenceLineUnused = Create("SHRD0029", DiagnosticSeverity.Message);
+    public static readonly ElementDiagnosticId PurgeableElementUnused = Create("SHRD0030", DiagnosticSeverity.Message);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)

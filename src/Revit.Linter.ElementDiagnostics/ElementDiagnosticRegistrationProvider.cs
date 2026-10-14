@@ -33,7 +33,10 @@ internal sealed class ElementDiagnosticRegistrationProvider(
             if (diagnosticVisualizationPipelines.Length == 0)
                 diagnosticVisualizationPipelines =
                     [visualizationPipelineFactory.Create(
-                        identity, "Show", [new ElementVisualizationStepDefinition { Type = "Show" }])];
+                        identity,
+                        ElementDiagnosticLocalizations.GetString("show_and_select_visualization"),
+                        [new ElementVisualizationStepDefinition { Type = "Show" },
+                            new ElementVisualizationStepDefinition { Type = "Select" }])];
 
             yield return new ElementDiagnosticRegistration(
                 identity,

@@ -4,5 +4,5 @@ internal sealed class MaterialUnusedDiagnosticDocumentFilter : IElementDiagnosti
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.MaterialUnused;
 
-    public bool IsRelevantFor(Document document) => !document.IsFamilyDocument;
+    public bool IsRelevantFor(Document document) => true;
 }

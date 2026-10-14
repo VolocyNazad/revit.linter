@@ -7,11 +7,17 @@
   <data name="deleteUnusedFamily_fix" xml:space="preserve"><value>Удалить неиспользуемое семейство</value></data>
   <data name="deleteImportInstance_fix" xml:space="preserve"><value>Удалить импортированный объект</value></data>
   <data name="deleteUnusedMaterial_fix" xml:space="preserve"><value>Удалить неиспользуемый материал</value></data>
+  <data name="deletePurgeableElement_fix" xml:space="preserve"><value>Удалить неиспользуемый элемент</value></data>
   <data name="deleteModelCurve_fix" xml:space="preserve"><value>Удалить линию модели</value></data>
   <data name="deleteRedundantRoom_fix" xml:space="preserve"><value>Удалить избыточное помещение</value></data>
   <data name="deleteNotEnclosedRoom_fix" xml:space="preserve"><value>Удалить неокружённое помещение</value></data>
   <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Удалить неразмещённое помещение</value></data>
   <data name="deleteTextNote_fix" xml:space="preserve"><value>Удалить текстовое примечание</value></data>
+  <data name="deleteUnusedProfileSymbol_fix" xml:space="preserve"><value>Удалить неиспользуемый типоразмер профиля</value></data>
+  <data name="deleteUnusedReferencePlane_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную плоскость</value></data>
+  <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную линию</value></data>
+  <data name="select_visualization" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="show_and_select_visualization" xml:space="preserve"><value>Показать и выбрать</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Проверяет экземпляры труб, воздуховодов, коробов, лотков и семейств на наличие неприсоединённых коннекторов.</value></data>
   <data name="SYST001_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) имеет неприсоединённые коннекторы. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD001_description" xml:space="preserve"><value>Проверяет использование семейств в документе.</value></data>
@@ -68,4 +74,14 @@
   <data name="SHRD0022_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0023_description" xml:space="preserve"><value>Проверяет использование типоразмеров семейств профилей в документе.</value></data>
   <data name="SHRD0023_message" xml:space="preserve"><value>Типоразмер профиля «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0024_description" xml:space="preserve"><value>Проверяет, зафиксированы ли опорные плоскости заблокированными размерами или связью равенства EQ в документах семейств.</value></data>
+  <data name="SHRD0024_message" xml:space="preserve"><value>Опорная плоскость «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0026_description" xml:space="preserve"><value>Проверяет типоразмеры на полное совпадение значений параметров в документах семейств.</value></data>
+  <data name="SHRD0026_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) есть типоразмеры-дубликаты: {duplicateNames}. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0028_description" xml:space="preserve"><value>Проверяет типоразмеры семейств на полное совпадение значений в пределах одного семейства.</value></data>
+  <data name="SHRD0028_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) полностью совпадает с «{duplicateNames}». Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0029_description" xml:space="preserve"><value>Проверяет, зафиксированы ли опорные линии заблокированными размерами или связью равенства EQ в документах семейств.</value></data>
+  <data name="SHRD0029_message" xml:space="preserve"><value>Опорная линия «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0030_description" xml:space="preserve"><value>Проверяет наличие неиспользуемых элементов, которые можно удалить командой «Удалить неиспользуемое».</value></data>
+  <data name="SHRD0030_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке. Время выполнения: {duration} мс.</value></data>
 </root>
