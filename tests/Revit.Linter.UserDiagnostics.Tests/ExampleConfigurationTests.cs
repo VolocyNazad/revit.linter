@@ -1,4 +1,5 @@
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Testing;
 using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
 using ParameterRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
@@ -8,19 +9,23 @@ namespace Revit.Linter.UserDiagnostics.Tests;
 
 public sealed class ExampleConfigurationTests
 {
-    [Fact]
-    public void All_example_configuration_files_deserialize()
+    [Theory]
+    [InlineData("")]
+    [InlineData("ru")]
+    public void All_example_configuration_files_deserialize_with_supported_version(string languageFolder)
     {
-        List<UserRule>? userRules = Read<List<UserRule>>("config.yaml");
-        List<CollisionRule>? collisionRules = Read<List<CollisionRule>>("collision.config.yaml");
-        List<ParameterRule>? parameterRules = Read<List<ParameterRule>>("parameter-element.config.yaml");
+        ConfigurationFile<UserRule>? userFile = Read<UserRule>(languageFolder, "config.yaml");
+        ConfigurationFile<CollisionRule>? collisionFile =
+            Read<CollisionRule>(languageFolder, "collision.config.yaml");
+        ConfigurationFile<ParameterRule>? parameterFile =
+            Read<ParameterRule>(languageFolder, "parameter-element.config.yaml");
 
-        Assert.NotNull(userRules);
-        Assert.NotEmpty(userRules);
-        Assert.NotNull(collisionRules);
-        Assert.NotEmpty(collisionRules);
-        Assert.NotNull(parameterRules);
-        Assert.NotEmpty(parameterRules);
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, userFile?.Version);
+        Assert.NotEmpty(userFile?.Rules ?? []);
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, collisionFile?.Version);
+        Assert.NotEmpty(collisionFile?.Rules ?? []);
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, parameterFile?.Version);
+        Assert.NotEmpty(parameterFile?.Rules ?? []);
     }
 
     [Theory]
@@ -28,14 +33,16 @@ public sealed class ExampleConfigurationTests
     [InlineData("ru")]
     public void Practical_tour_configuration_deserializes_with_two_visualizations(string languageFolder)
     {
-        List<UserRule>? tourRules = Read<List<UserRule>>(
-            Path.Combine(languageFolder, "practical-tour.config.yaml"));
+        ConfigurationFile<CollisionRule>? tourFile = Read<CollisionRule>(
+            languageFolder, "practical-tour.config.yaml");
 
-        UserRule tourRule = Assert.Single(tourRules ?? [], rule => rule.Code == "TOUR001");
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, tourFile?.Version);
+        CollisionRule tourRule = Assert.Single(tourFile?.Rules ?? [], rule => rule.Code == "TOUR001");
         Assert.Equal(2, tourRule.Visualizations.Length);
     }
 
-    private static T? Read<T>(string fileName) where T : class =>
-        ConfigurationPathUtils.GetConfigurations<T>(Path.Combine(RepositoryRoot.Find(),
-            "wiki", "examples", "configuration", fileName));
+    private static ConfigurationFile<TRule>? Read<TRule>(string languageFolder, string fileName)
+        where TRule : class =>
+        ConfigurationPathUtils.GetVersionedConfigurations<TRule>(Path.Combine(RepositoryRoot.Find(),
+            "wiki", "examples", "configuration", languageFolder, fileName));
 }

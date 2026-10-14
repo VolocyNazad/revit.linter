@@ -1,5 +1,5 @@
 using Nice3point.TUnit.Revit;
-using Revit.Linter.ProjectParameterManaging.Infrastructure.Extensions;
+using Revit.Linter.Core.Abstractions;
 
 namespace Revit.Linter.ProjectParameterManaging.RevitTests;
 

@@ -14,4 +14,5 @@
   <data name="configurationInvalidGuid_message" xml:space="preserve"><value>«{0}» не является корректным GUID.</value></data>
   <data name="configurationUnknownGroup_message" xml:space="preserve"><value>группа «{0}» недопустима для этой версии Revit.</value></data>
   <data name="configurationUnknownCategory_message" xml:space="preserve"><value>категория «{0}» неизвестна.</value></data>
+  <data name="Default_message" xml:space="preserve"><value>Документ '{documentTitle}' не соответствует стандарту параметров проекта:&#xA;&#xA;{details}</value></data>
 </root>

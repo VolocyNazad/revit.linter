@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
-using Revit.Linter.ProjectParameterManaging.Infrastructure.Extensions;
 using System.Reflection;
 #if BEFORE2024
 using Revit.Sugar;

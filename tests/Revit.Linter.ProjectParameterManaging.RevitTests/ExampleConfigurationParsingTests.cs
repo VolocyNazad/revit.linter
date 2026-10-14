@@ -1,5 +1,6 @@
 using Autodesk.Revit.DB;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
@@ -130,13 +131,17 @@ public sealed class ExampleConfigurationParsingTests
     }
 
     [Test]
+#if BEFORE2024
+    [Skip("Example configurations use Revit 2024+ parameter groups; Revit 2021-2023 installs converted copies.")]
+#endif
     public async Task Parameter_identifiers_in_example_configuration_are_convertible()
     {
-        List<DiagnosticRule>? rules = ConfigurationPathUtils.GetConfigurations<List<DiagnosticRule>>(
-            Path.Combine(RepositoryRoot.Find(), "wiki", "examples", "configuration", "parameter-element.config.yaml"));
+        ConfigurationFile<DiagnosticRule>? file =
+            ConfigurationPathUtils.GetVersionedConfigurations<DiagnosticRule>(
+                Path.Combine(RepositoryRoot.Find(), "wiki", "examples", "configuration", "parameter-element.config.yaml"));
 
-        await Assert.That(rules).IsNotNull();
-        foreach (DiagnosticRule rule in rules!)
+        await Assert.That(file?.Rules).IsNotNull();
+        foreach (DiagnosticRule rule in file!.Rules)
         {
             if (!Enum.IsDefined(typeof(DiagnosticSeverity), rule.Severity))
                 throw new InvalidOperationException(

@@ -41,7 +41,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 | --------------------- | ---------------- | ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `code`                | string           | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                     |
 | `description`         | string           | `string`            | `-`                              | Description of the diagnostic                                                                                                     |
-| `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{duration}`                        |
+| `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{duration}` (default: the localized generic template) (optional) |
 | `severity`            | enum     | `string`            | `-`                              | [[Diagnostic severity\|Severity level]] <br>(default: `Message`) (optional)                           |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
@@ -55,6 +55,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 ---
 
 **Notes:**
+- If the `message` field is not specified, it defaults to the localized generic template
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`

@@ -5,10 +5,12 @@
 # (мастер приветствия заменяет её автоматически).
 # Строки-комментарии "section" отмечают блоки разделов для мастера приветствия; сохраняйте их парами.
 
+# Версия формата файла для проверок совместимости.
+version: 1
+rules:
 # >>> section: mep — Инженерные системы (ИОС)
 - code: "PRMTR101"
   description: "Параметры ADSK системных семейств ИОС (воздуховоды, трубы, лотки)"
-  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -71,7 +73,6 @@
 # >>> section: architecture — Архитектура (АР)
 - code: "PRMTR201"
   description: "Параметры квартирографии ADSK у помещений"
-  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -104,7 +105,6 @@
 # >>> section: structure — Конструкции (КР)
 - code: "PRMTR301"
   description: "Марка конструкции ADSK у колонн, каркаса и фундаментов"
-  message: "Документ '{documentTitle}' не соответствует стандарту параметров проекта:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

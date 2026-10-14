@@ -5,10 +5,12 @@
 # (the welcome wizard converts it automatically).
 # The "section" comment lines mark the discipline blocks used by the welcome wizard; keep them in pairs.
 
+# File format version for compatibility checks.
+version: 1
+rules:
 # >>> section: mep — MEP systems
 - code: "PRMTR101"
   description: "ADSK parameters of MEP system families (ducts, pipes, cable trays)"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -71,7 +73,6 @@
 # >>> section: architecture — Architecture
 - code: "PRMTR201"
   description: "ADSK apartment parameters of rooms"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -104,7 +105,6 @@
 # >>> section: structure — Structure
 - code: "PRMTR301"
   description: "ADSK structural mark of columns, framing and foundations"
-  message: "Document '{documentTitle}' does not follow the project parameter standard:\n\n{details}"
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

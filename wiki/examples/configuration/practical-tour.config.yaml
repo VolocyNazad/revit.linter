@@ -1,14 +1,20 @@
 # Practical-tour diagnostic. Revit Linter installs and manages this file automatically.
-# It deliberately reports common model elements so every tour has findings to work with.
+# It checks collisions between walls, floors, roofs, pipes, ducts, cable trays, conduits
+# and their fittings (CLSN101 pipelines), so tour findings always have visible geometry
+# to work with instead of junk elements with small or invisible geometry.
 
+# File format version for compatibility checks.
+version: 1
+rules:
 - code: "TOUR001"
-  description: "Practical tour: review a model element"
-  message: "Training finding for '{elementName}' ({elementId}). Use it to try the report controls."
+  description: "Practical tour: review a model collision"
+  message: "Сollision: element '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Message"
   isActive: false
   takeDocument: "!property('IsFamilyDocument')"
-  take: "instance and (builtincategory('OST_Walls') or builtincategory('OST_StructuralFraming') or builtincategory('OST_DuctCurves') or builtincategory('OST_PipeCurves'))"
-  check: "isnull(property('Id'))"
+  take: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Floors') or builtincategory('OST_Roofs') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting'))"
+  andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Floors') or builtincategory('OST_Roofs') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting'))"
+  groupBy: "'all'"
   fixes:
     - name: "Delete the training element"
       steps:
@@ -19,21 +25,71 @@
         - type: "Delete"
           elementSets: ["Dependencies"]
   visualizations:
-    - name: "Inspect: Focus and select"
+    - name: "Isolate and inspect"
       steps:
-        - type: "Show"
-          elementSets: ["Target"]
-        - type: "Select"
-          elementSets: ["Target"]
-    - name: "Inspect closely: color, crop, focus"
-      steps:
+        - type: "DetailLevel"
+          detailLevel: "Fine"
+        - type: "DisplayStyle"
+          displayStyle: "Shading"
+        - type: "Isolate"
+          elementSets: ["Target", "Dependencies"]
         - type: "OverrideElements"
           elementSets: ["Target"]
           style:
-            transparency: 10
-            projectionLines: { color: "#E53935", pattern: "Solid", weight: 6 }
-            surfaceForeground: { color: "#E53935", pattern: "SolidFill", isVisible: true }
-        - type: "Cut"
-          elementSets: ["Target"]
+            halftone: false
+            transparency: 15
+            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
+        - type: "OverrideElements"
+          elementSets: ["Dependencies"]
+          style:
+            halftone: false
+            transparency: 35
+            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
+          elementSets: ["Target", "Dependencies"]
+    - name: "Cut and inspect"
+      steps:
+        - type: "DetailLevel"
+          detailLevel: "Fine"
+        - type: "DisplayStyle"
+          displayStyle: "Shading"
+        # No SetCategoryVisibility step: the tour checks the whole model,
+        # so hiding every category except ducts and pipes would hide the finding itself.
+        - type: "Cut"
+          elementSets: ["Target", "Dependencies"]
+        - type: "OverrideFilter"
           elementSets: ["Target"]
+          style:
+            halftone: false
+            transparency: 15
+            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
+        - type: "OverrideFilter"
+          elementSets: ["Dependencies"]
+          style:
+            halftone: true
+            transparency: 35
+            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
+            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
+            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
+            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
+            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
+            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
+        - type: "Select"
+          elementSets: ["Target", "Dependencies"]
+        - type: "Show"
+          elementSets: ["Target", "Dependencies"]

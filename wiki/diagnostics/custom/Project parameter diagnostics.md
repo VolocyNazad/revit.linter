@@ -49,7 +49,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 | --------------------- | ---------------- | ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `code`                | string           | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                     |
 | `description`         | string           | `string`            | `-`                              | Description of the diagnostic                                                                                                     |
-| `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{documentTitle}`, `{details}`, `{duration}`                        |
+| `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{documentTitle}`, `{details}`, `{duration}` (default: the localized generic template) (optional) |
 | `severity`            | enum     | `string`            | `-`                              | [[Diagnostic severity\|Severity level]] <br>(default: `Message`) (optional)                           |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
 | `obsoleteDescription` | string           | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
@@ -84,6 +84,7 @@ The formats are intentionally version-specific. Store each configuration in the 
 ---
 
 **Notes:**
+- If the `message` field is not specified, it defaults to the localized generic template
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`

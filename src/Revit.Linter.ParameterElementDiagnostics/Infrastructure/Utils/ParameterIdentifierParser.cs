@@ -55,6 +55,8 @@ internal static class ParameterIdentifierParser
     /// group without an identifier, and a legacy <c>PG_*</c> name or number is rejected because it would
     /// never match a parameter.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S2692",
+        Justification = "Index 0 is intentionally not a match: a valid identifier never starts with a colon, and the empty value is handled separately.")]
     public static bool IsKnownGroup(string value)
     {
 #if BEFORE2024

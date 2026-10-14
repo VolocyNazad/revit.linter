@@ -11,7 +11,7 @@ The files next to this page are working example configurations stored with the d
 | File | Module | Contents |
 | --- | --- | --- |
 | [`config.yaml`](config.yaml) | [[User diagnostics\|User element diagnostics]] | Six checks: generic model instances, ducts and pipes without a system, doors and windows without a mark, mirrored doors, rooms without a meaningful name, and unplaced rooms with a **Delete** fix. |
-| [`collision.config.yaml`](collision.config.yaml) | [[Collision diagnostics]] | Nine rules, three per discipline: MEP systems (`CLSN1xx`), architecture (`CLSN2xx`) and structure (`CLSN3xx`). |
+| [`collision.config.yaml`](collision.config.yaml) | [[Collision diagnostics]] | Eleven rules: MEP (`CLSN1xx`) with host-only, linked-model (`CLSN104`) and connected-run (`CLSN105`) variants, architecture (`CLSN2xx`) and structure (`CLSN3xx`). |
 | [`parameter-element.config.yaml`](parameter-element.config.yaml) | [[Project parameter diagnostics]] | One rule per discipline built from the ADSK shared parameter file: `PRMTR101`, `PRMTR201` and `PRMTR301`. |
 | [`practical-tour.config.yaml`](practical-tour.config.yaml) | [[Practical tour]] | The managed `TOUR001` check with the visualizations and fix menu required by the guided workflow. It is installed automatically when the tour starts. |
 
@@ -44,3 +44,5 @@ Revit Linter reads the working YAML files in the [[Diagnostic configuration path
 `C:\Users\{UserName}\Documents\Revit Linter\2025\`
 
 The easiest way to open this folder is the [[Diagnostic configuration path button|configuration folder button]] on the Diagnostics pane. To use an example by hand, copy it to that folder and keep its required filename.
+
+Every file starts with the `version` file format version and the `rules` list. Files without them are legacy and read as version 0. A file with a newer version than the running product is ignored.

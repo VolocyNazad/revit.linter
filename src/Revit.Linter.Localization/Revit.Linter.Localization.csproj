@@ -59,6 +59,8 @@
 		<EmbeddedResource Include="..\Revit.Linter.Diagnostic\DiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.Diagnostic.DiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.CollisionDiagnostics\CollisionDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.CollisionDiagnostics.CollisionDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.CollisionDiagnostics\CollisionDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.CollisionDiagnostics.CollisionDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.UserDiagnostics\UserDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.UserDiagnostics.UserDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.UserDiagnostics\UserDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.UserDiagnostics.UserDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementAccentor\ElementAccentorLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementAccentor.ElementAccentorLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementAccentor\ElementAccentorLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ElementAccentor.ElementAccentorLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementVisualization\ElementVisualizationLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementVisualization.ElementVisualizationLocalizations.resources" />

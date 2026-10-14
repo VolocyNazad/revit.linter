@@ -1,4 +1,5 @@
 using Revit.Sugar;
+using Revit.Linter.Core.Abstractions;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Models;
@@ -41,13 +42,15 @@ internal sealed class DocumentDiagnostic(
             {
                 // Shared parameters are a subset of the parameter elements, so they are taken from
                 // that cached list instead of a second document-wide collector.
+                // The guid is parsed once per rule instead of once per compared element below.
+                Guid targetGuid = Guid.Parse(parameterData.Guid);
                 IReadOnlyList<SharedParameterElement> parameterElement = documentQueries.GetOrCreate(
                     DocumentQueryKey.Create(targetDocument, SharedParameterElementsQuery),
                     () => documentQueries.GetElementsOfClass<ParameterElement>(targetDocument)
                         .OfType<SharedParameterElement>()
                         .ToArray());
 
-                target = parameterElement.FirstOrDefault(i => i.GuidValue == Guid.Parse(parameterData.Guid));
+                target = parameterElement.FirstOrDefault(i => i.GuidValue == targetGuid);
                 if (target is null) {
                     messages.Add(ParameterElementDiagnosticLocalizations.GetString(
                         "sharedParameterNotFound_message", parameterData.Name, parameterData.Guid));

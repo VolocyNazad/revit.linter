@@ -72,11 +72,11 @@ internal static class ParameterRuleValidator
             return;
         }
 
-        foreach (string? category in parameter.Categories)
+        foreach (string? category in parameter.Categories.Where(category =>
+            category is null || IsBlank(category) || !isKnownCategory(category)))
         {
-            if (IsBlank(category) || !isKnownCategory(category!))
-                errors.Add(new(
-                    ParameterConfigurationErrorKind.UnknownCategory, ruleCode, name, category ?? string.Empty));
+            errors.Add(new(
+                ParameterConfigurationErrorKind.UnknownCategory, ruleCode, name, category ?? string.Empty));
         }
     }
 

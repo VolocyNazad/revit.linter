@@ -22,6 +22,9 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<UserDiagnosticConfigurationErrorState>()
                 .AddSingleton<IUserDiagnosticConfigurationErrorSource>(provider =>
                     provider.GetRequiredService<UserDiagnosticConfigurationErrorState>())
+                .AddSingleton<UserDiagnosticSkippedRuleState>()
+                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
+                    provider.GetRequiredService<UserDiagnosticSkippedRuleState>())
                 .AddSingleton<UserDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
                     provider.GetRequiredService<UserDiagnosticRegistrationProvider>())
