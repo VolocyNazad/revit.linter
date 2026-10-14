@@ -7,6 +7,7 @@
   <data name="message_header" xml:space="preserve"><value>Message</value></data><data name="document_header" xml:space="preserve"><value>Document</value></data>
   <data name="created_header" xml:space="preserve"><value>Created</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Documentation</value></data><data name="openHelp_description" xml:space="preserve"><value>Opens the documentation in the default browser. Hovering any control and pressing F1 while its tooltip is shown does the same.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows.</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows only the fix results of the selected open document.</value></data>

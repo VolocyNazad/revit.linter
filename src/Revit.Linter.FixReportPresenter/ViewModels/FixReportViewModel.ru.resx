@@ -7,6 +7,7 @@
   <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
   <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Документация</value></data><data name="openHelp_description" xml:space="preserve"><value>Открывает документацию в браузере. То же делает наведение на любой элемент и F1 при видимой подсказке.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице.</value></data>
   <data name="document_description" xml:space="preserve"><value>Показывает результаты исправлений только выбранного открытого документа.</value></data>

@@ -40,6 +40,13 @@
                     Style="{StaticResource LinterToolBarContextLabel}"
                     Text="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}"
                     ToolTip="{Binding SelectedItem.DisplayName, ElementName=DocumentFilterList}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding OpenHelpDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding OpenHelpText, Mode=OneWay}"
+                    Command="{Binding OpenHelpCommand}"
+                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
                 <ToggleButton
                     x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"

@@ -79,9 +79,11 @@ public sealed class DataGridRowNavigationBehavior : Behavior<DataGrid>
         int count = grid.Items.Count;
         if (count == 0) return;
 
-        int index = grid.SelectedIndex < 0
-            ? (step > 0 ? 0 : count - 1)
-            : Math.Max(0, Math.Min(count - 1, grid.SelectedIndex + step));
+        int index;
+        if (grid.SelectedIndex < 0)
+            index = step > 0 ? 0 : count - 1;
+        else
+            index = Math.Max(0, Math.Min(count - 1, grid.SelectedIndex + step));
         grid.SelectedIndex = index;
 
         // Keep the keyboard in the grid: the cell that had the focus may belong to a row that has just

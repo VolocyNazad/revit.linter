@@ -22,6 +22,8 @@ internal static class HelpKeyHook
     private static IntPtr _hook;
 
     // Kept in a field so the delegate handed to Windows is not collected while the hook is installed.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S1450",
+        Justification = "Must stay a field: a local delegate could be collected while Windows still calls it back.")]
     private static HookProcedure? _procedure;
     private static Action? _helpRequested;
 
