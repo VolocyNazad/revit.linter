@@ -26,8 +26,11 @@ internal sealed class MaterialUnusedDiagnostic(IDocumentQueryService documentQue
 
     private HashSet<ElementId> BuildUsedMaterialIds(Document document)
     {
-        var usedMaterialIds = new HashSet<ElementId>();
-        foreach (Element element in documentQueries.GetElements(document))
+        // GetMaterialIds(false) returns geometry/compound materials while GetMaterialIds(true)
+        // returns painted face materials: the sets are disjoint, so both calls stay.
+        IReadOnlyList<Element> elements = documentQueries.GetElements(document);
+        var usedMaterialIds = new HashSet<ElementId>(elements.Count);
+        foreach (Element element in elements)
         {
             foreach (ElementId materialId in element.GetMaterialIds(returnPaintMaterials: false))
                 usedMaterialIds.Add(materialId);

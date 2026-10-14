@@ -102,6 +102,12 @@ public static class ConfigurationPathUtils
     /// </remarks>
     public const int SupportedConfigurationVersion = 1;
 
+    // DeserializerBuilder builds the type graph via reflection: build once and reuse.
+    // The built deserializer is used only for reading configuration files.
+    private static readonly IDeserializer ConfigurationDeserializer = new DeserializerBuilder()
+        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+        .Build();
+
     /// <summary>
     /// Creates the parent directory and an empty file when the specified configuration file does not exist.
     /// </summary>
@@ -126,13 +132,10 @@ public static class ConfigurationPathUtils
     /// <remarks>A missing file is created before it is read.</remarks>
     public static T? GetConfigurations<T>(string configPath) where T : class
     {
-        IDeserializer deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
         EnsureFileExists(configPath);
         string configContent = File.ReadAllText(configPath);
         if (string.IsNullOrEmpty(configContent)) return null;
-        T? rules = deserializer.Deserialize<T>(configContent);
+        T? rules = ConfigurationDeserializer.Deserialize<T>(configContent);
         return rules;
     }
 
@@ -149,20 +152,17 @@ public static class ConfigurationPathUtils
     public static ConfigurationFile<TRule>? GetVersionedConfigurations<TRule>(string configPath)
         where TRule : class
     {
-        IDeserializer deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
         EnsureFileExists(configPath);
         string configContent = File.ReadAllText(configPath);
         if (string.IsNullOrEmpty(configContent)) return null;
         try
         {
-            return deserializer.Deserialize<ConfigurationFile<TRule>>(configContent);
+            return ConfigurationDeserializer.Deserialize<ConfigurationFile<TRule>>(configContent);
         }
         catch (YamlException)
         {
             // Legacy files predate the envelope and carry a bare rule list.
-            List<TRule>? rules = deserializer.Deserialize<List<TRule>>(configContent);
+            List<TRule>? rules = ConfigurationDeserializer.Deserialize<List<TRule>>(configContent);
             if (rules is null) return null;
             return new ConfigurationFile<TRule> { Version = 0, Rules = rules };
         }

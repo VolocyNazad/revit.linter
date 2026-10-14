@@ -9,6 +9,13 @@ namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 internal sealed class YamlDiagnosticReportExporter : IDiagnosticReportExporter
 {
+    // SerializerBuilder builds the type graph via reflection: build once and reuse.
+    // The built serializer carries only the stateless DateTimeOffset converter.
+    private static readonly ISerializer Serializer = new SerializerBuilder()
+        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+        .WithTypeConverter(new DateTimeOffsetYamlTypeConverter())
+        .Build();
+
     public string Extension => ".yaml";
     public string Filter => "YAML (*.yaml)|*.yaml";
 
@@ -17,10 +24,6 @@ internal sealed class YamlDiagnosticReportExporter : IDiagnosticReportExporter
         DiagnosticReportExportContext context,
         DiagnosticReportExportDocument document)
     {
-        ISerializer serializer = new SerializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .WithTypeConverter(new DateTimeOffsetYamlTypeConverter())
-            .Build();
-        File.WriteAllText(fileName, serializer.Serialize(document), new UTF8Encoding(false));
+        File.WriteAllText(fileName, Serializer.Serialize(document), new UTF8Encoding(false));
     }
 }

@@ -4,21 +4,36 @@ internal sealed class UnfilledFamilyParametersDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.UnfilledFamilyParameters;
 
+    // Explicit loops avoid per-type Cast/Where/Select iterator and ToArray allocations in the family hot path.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S3267",
+        Justification = "Explicit loops avoid per-type LINQ iterator and array allocations.")]
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         // Family types are not elements in a family document: the finding attaches to the
         // family itself and lists every type with unfilled text cells. Only text cells have
         // a recognizable "unfilled" state: a zero number is a legitimate value.
+        // Text parameters are hoisted out of the per-type loop: the parameter scan below
+        // runs once instead of once per family type.
         FamilyManager manager = document.FamilyManager;
-        List<string> unfilled = [];
-        foreach (FamilyType type in manager.Types.Cast<FamilyType>().Where(type => !IsDefault(type)))
+        List<FamilyParameter> textParameters = [];
+        foreach (FamilyParameter parameter in manager.Parameters)
         {
-            string[] names = manager.Parameters
-                .Cast<FamilyParameter>()
-                .Where(parameter => IsUnfilledText(type, parameter))
-                .Select(parameter => parameter.Definition.Name)
-                .ToArray();
-            if (names.Length > 0)
+            if (parameter.StorageType == StorageType.String)
+                textParameters.Add(parameter);
+        }
+
+        List<string> unfilled = [];
+        foreach (FamilyType type in manager.Types)
+        {
+            if (IsDefault(type)) continue;
+            List<string> names = new(textParameters.Count);
+            foreach (FamilyParameter parameter in textParameters)
+            {
+                if (IsUnfilledText(type, parameter))
+                    names.Add(parameter.Definition.Name);
+            }
+
+            if (names.Count > 0)
                 unfilled.Add($"{type.Name}: {string.Join(", ", names)}");
         }
         return unfilled.Count == 0

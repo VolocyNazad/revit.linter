@@ -8,6 +8,13 @@ namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 internal sealed class JsonDiagnosticReportExporter : IDiagnosticReportExporter
 {
+    // JsonSerializerOptions is intended for reuse: it caches serialization metadata.
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true
+    };
+
     public string Extension => ".json";
     public string Filter => "JSON (*.json)|*.json";
 
@@ -16,11 +23,6 @@ internal sealed class JsonDiagnosticReportExporter : IDiagnosticReportExporter
         DiagnosticReportExportContext context,
         DiagnosticReportExportDocument document)
     {
-        JsonSerializerOptions options = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-        File.WriteAllText(fileName, JsonSerializer.Serialize(document, options), new UTF8Encoding(false));
+        File.WriteAllText(fileName, JsonSerializer.Serialize(document, Options), new UTF8Encoding(false));
     }
 }

@@ -131,7 +131,8 @@ internal sealed class DiagnosticService(
         if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
 
         (DiagnosticFeedback[] feedbacks, double duration) = Measure(
-            () => registration.Diagnostic.Execute(document).ToArray());
+            (registration, document),
+            static state => state.registration.Diagnostic.Execute(state.document).ToArray());
 
         foreach (DiagnosticFeedback feedback in feedbacks)
         {
@@ -273,7 +274,8 @@ internal sealed class DiagnosticService(
 
             statistics.CheckedCount++;
             (DiagnosticFeedback feedback, double duration) = Measure(
-                () => registration.Diagnostic.Execute(document, view, element));
+                (registration, document, view, element),
+                static state => state.registration.Diagnostic.Execute(state.document, state.view, state.element));
             statistics.CheckMilliseconds += duration;
             if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
 
@@ -335,11 +337,13 @@ internal sealed class DiagnosticService(
             document));
     }
 
-    private static (T Result, double Duration) Measure<T>(Func<T> execute)
+    // The state tuple keeps the lambdas above static: no display-class allocation per
+    // element and no Stopwatch allocation per measurement, only two timestamps.
+    private static (T Result, double Duration) Measure<TState, T>(TState state, Func<TState, T> execute)
     {
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        T result = execute();
-        return (result, stopwatch.Elapsed.TotalMilliseconds);
+        long started = Stopwatch.GetTimestamp();
+        T result = execute(state);
+        return (result, ToMilliseconds(Stopwatch.GetTimestamp() - started));
     }
 
     private static (string, object)[] CreateMessageArguments(
