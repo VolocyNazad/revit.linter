@@ -24,6 +24,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 {
     private readonly IRevitContext _revitContext;
     private readonly IDiagnosticService _diagnosticService;
+    private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
     private readonly IDiagnosticReportPaneActivator _diagnosticReportPaneActivator;
     private readonly IUserInterfaceActivityStream _activityStream;
@@ -38,6 +39,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     /// <param name="revitContext">Provides the current Revit document and application.</param>
     /// <param name="idlingScheduler">Schedules subscription work in a valid Revit API context.</param>
     /// <param name="diagnosticService">Executes registered diagnostics.</param>
+    /// <param name="diagnosticCatalog">Provides the catalog snapshot that lists the enabled diagnostics.</param>
     /// <param name="diagnosticReportViewModel">Presents and refreshes diagnostic results.</param>
     /// <param name="diagnosticReportPaneActivator">Activates the pane that displays diagnostic results.</param>
     /// <param name="activityStream">Publishes completed UI workflow facts to optional observers.</param>
@@ -46,6 +48,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     public RunDiagnosticViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
             IDiagnosticService diagnosticService,
+            IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticReportPresenter diagnosticReportViewModel,
             IDiagnosticReportPaneActivator diagnosticReportPaneActivator,
             IUserInterfaceActivityStream activityStream,
@@ -54,6 +57,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     {
         _revitContext = revitContext;
         _diagnosticService = diagnosticService;
+        _diagnosticCatalog = diagnosticCatalog;
         _diagnosticReportPresenter = diagnosticReportViewModel;
         _diagnosticReportPaneActivator = diagnosticReportPaneActivator;
         _activityStream = activityStream;
@@ -117,11 +121,12 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
 
             _diagnosticReportPresenter.Clear(targetDocument.Title);
 
+            string[] enabledDiagnosticCodes = GetEnabledDiagnosticCodes();
             diagnosticResult = _diagnosticService.Execute(targetDocument, targetView);
 
             int findingCount = _diagnosticReportPresenter.Refresh(targetDocument.Title);
             _activityStream.Publish(new DiagnosticRunCompletedActivity(
-                targetDocument.Title, diagnosticResult, findingCount));
+                targetDocument.Title, diagnosticResult, findingCount, enabledDiagnosticCodes));
         }, cancellationToken);
 
         DiagnosticTime = GetLocalizedString("diagnosticDuration_text", stopwatch.Elapsed.TotalSeconds);
@@ -132,6 +137,21 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     }
 
     private bool CanRunDiagnostic() => _revitContext.ActiveDocument is { IsFamilyDocument: false };
+
+    // The published run fact carries the enabled codes in catalog order so observers
+    // can tell which diagnostics the run covered.
+    private string[] GetEnabledDiagnosticCodes()
+    {
+        using IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
+        DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
+        return snapshot.ElementDiagnostics
+            .Where(registration => registration.Override.IsActive)
+            .Select(registration => registration.Identity.Code)
+            .Concat(snapshot.DocumentDiagnostics
+                .Where(registration => registration.Override.IsActive)
+                .Select(registration => registration.Identity.Code))
+            .ToArray();
+    }
 
     #endregion
 

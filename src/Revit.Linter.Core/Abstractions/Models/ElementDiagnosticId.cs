@@ -10,7 +10,8 @@
 /// <param name="obsoleteDescription">Guidance for replacing an obsolete diagnostic.</param>
 /// <param name="isExample">Whether the diagnostic came from an installed example configuration.</param>
 /// <param name="isTour">Whether the diagnostic belongs to the managed practical-tour configuration.</param>
-public sealed class ElementDiagnosticId(string code, string description, string messageFormat, DiagnosticSeverity defaultSeverity, bool isActive, bool isObsolete, string obsoleteDescription, bool isExample = false, bool isTour = false)
+/// <param name="isDebug">Whether the diagnostic came from a debug configuration.</param>
+public sealed class ElementDiagnosticId(string code, string description, string messageFormat, DiagnosticSeverity defaultSeverity, bool isActive, bool isObsolete, string obsoleteDescription, bool isExample = false, bool isTour = false, bool isDebug = false)
 {
     /// <summary>Gets the stable diagnostic code.</summary>
     public string Code { get; } = code;
@@ -30,4 +31,6 @@ public sealed class ElementDiagnosticId(string code, string description, string 
     public bool IsExample { get; } = isExample;
     /// <summary>Gets whether the diagnostic belongs to the managed practical-tour configuration.</summary>
     public bool IsTour { get; } = isTour;
+    /// <summary>Gets whether the diagnostic came from a debug configuration.</summary>
+    public bool IsDebug { get; } = isDebug;
 }
