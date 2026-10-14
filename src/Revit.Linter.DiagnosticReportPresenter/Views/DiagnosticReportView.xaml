@@ -63,6 +63,13 @@
                     DockPanel.Dock="Left"
                     Style="{StaticResource LinterToolBarIconButton}" />
                 <Button
+                    behaviors:HelpToolTip.Description="{Binding OpenHelpDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding OpenHelpText, Mode=OneWay}"
+                    Command="{Binding OpenHelpCommand}"
+                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <Button
                     behaviors:HelpToolTip.Description="{Binding ExportReportDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ExportReportText, Mode=OneWay}"
                     d:Command="{x:Null}"
@@ -115,6 +122,7 @@
                 <UIElement />
             </DockPanel>
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
+            <!-- The fix and visualization columns stay frozen so row refreshes on a narrow pane never scroll them partially out of view. -->
             <DataGrid
                 x:Name="FindingsGrid"
                 d:ItemsSource="{d:SampleData ItemCount=2}"
@@ -122,6 +130,7 @@
                 UnloadingRow="FindingsGrid_UnloadingRow"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
+                FrozenColumnCount="2"
                 IsReadOnly="True"
                 IsSynchronizedWithCurrentItem="True"
                 ItemsSource="{Binding CollectionViewSource.View}"
@@ -203,6 +212,10 @@
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
                                             <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasActiveVisualization}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
                                                     <Setter Property="behaviors:OnboardingHighlight.Key" Value="ShowElement" />
                                                 </DataTrigger>
@@ -217,6 +230,7 @@
                                                 <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
                                                     <Setter Property="Command" Value="{Binding ShowFromMenuCommand}" />
+                                                    <Setter Property="IsChecked" Value="{Binding IsActive, Mode=OneWay}" />
                                                 </Style>
                                             </ContextMenu.ItemContainerStyle>
                                         </ContextMenu>
@@ -290,10 +304,20 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
+                                    behaviors:HelpToolTip.HelpCommand="{Binding OpenDocumentationCommand}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}, Mode=OneWay}"
                                     Command="{Binding OpenDocumentationCommand}"
-                                    Content="{controls:Icon Kind=HelpCircleOutline}"
-                                    Style="{StaticResource LinterGridIconButton}"
-                                    ToolTip="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}}" />
+                                    Content="{controls:Icon Kind=HelpCircleOutline}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                                                    <Setter Property="behaviors:OnboardingHighlight.Key" Value="OpenHelp" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

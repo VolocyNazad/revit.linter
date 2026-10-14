@@ -620,6 +620,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private DiagnosticReportItemViewModel CreateItem(DiagnosticReport report, string documentTitle)
     {
+        // Reports can outlive their targets: an element deleted or undone after the diagnostic ran
+        // leaves a stale reference whose Id getter throws InvalidObjectException, so ids are read
+        // defensively. A row with an unknown id stays visible, just without fixes or visualization.
         DiagnosticReportItemViewModel item = new() {
             Created = report.Created,
             ShowElementToolTipFormat = ShowElementToolTip,
@@ -627,10 +630,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             Template = report.Message.Format,
             Target = report.Target,
             TargetDependencies = report.TargetDependencies,
-            TargetElementId = (report.Target as Element)?.Id,
+            TargetElementId = (report.Target as Element) is { } targetElement
+                ? TryGetElementId(targetElement)
+                : null,
             TargetDependencyElementIds = report.TargetDependencies?
                 .OfType<Element>()
-                .Select(element => element.Id)
+                .Select(TryGetElementId)
+                .OfType<ElementId>()
                 .ToArray() ?? [],
             FixesFactory = () => CreateFixes(report),
             VisualizationPipelinesFactory = () => CreateVisualizationPipelines(report),
@@ -645,6 +651,23 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return item;
     }
 
+    // Reads the id of an element that may already be deleted or undone. The Id getter of a stale
+    // element throws InvalidObjectException instead of returning a value, even when IsValidObject
+    // was true a moment earlier: rows are built lazily on the UI thread while the model can change
+    // on the Revit thread in between.
+    private static ElementId? TryGetElementId(Element element)
+    {
+        try
+        {
+            if (!element.IsValidObject) return null;
+            return element.Id;
+        }
+        catch (Autodesk.Revit.Exceptions.InvalidObjectException)
+        {
+            return null;
+        }
+    }
+
     private IReadOnlyList<VisualizationPipelineViewModel> CreateVisualizationPipelines(DiagnosticReport report)
     {
         if (report.Target is not Element target)
@@ -654,6 +677,18 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 report.Code);
             return [];
         }
+
+        // Pipelines are built lazily when the UI first shows the row, by which time the target
+        // may have been deleted or undone.
+        ElementId? maybeTargetId = TryGetElementId(target);
+        if (maybeTargetId is null)
+        {
+            _logger.LogWarning(
+                "Visualization is unavailable for diagnostic {DiagnosticCode}: target element is no longer valid",
+                report.Code);
+            return [];
+        }
+        ElementId visualizationTargetId = maybeTargetId;
 
         ElementDiagnosticRegistration? registration = GetCatalogSnapshot().ElementDiagnostics
             .SingleOrDefault(item => string.Equals(
@@ -674,12 +709,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         return registration.VisualizationPipelines.Select(pipeline => new VisualizationPipelineViewModel
         {
             Title = pipeline.Value,
+            Pipeline = pipeline,
             ShowDelegate = async (selectedFromMenu, cancellationToken) =>
             {
                 _preferredVisualizationName = pipeline.Value;
-                _logger.LogInformation(
-                    "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
-                    pipeline.Value, report.Code, target.Id);
                 Document document = report.Document;
                 if (document is not { IsValidObject: true })
                 {
@@ -697,6 +730,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         pipeline.Value, report.Code);
                     return;
                 }
+                _logger.LogInformation(
+                    "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
+                    pipeline.Value, report.Code, visualizationTargetId);
                 Document? activeDocument = _revitContext.ActiveDocument;
                 if (activeDocument is null || !activeDocument.Equals(document))
                 {
@@ -719,7 +755,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                             throw new InvalidOperationException("The visualization target is no longer valid.");
 
                         if (ReferenceEquals(_activeVisualizationPipeline, pipeline)
-                            && _activeVisualizationTargetId?.Equals(target.Id) == true)
+                            && _activeVisualizationTargetId?.Equals(visualizationTargetId) == true)
                         {
                             _logger.LogInformation(
                                 "Visualization {VisualizationName} for diagnostic {DiagnosticCode} is already active; " +
@@ -730,17 +766,28 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         }
 
                         RestoreActiveVisualization();
+
                         ElementId[] dependencyIds = dependencies
-                            .Where(element => element.IsValidObject)
-                            .Select(element => element.Id)
+                            .Select(TryGetElementId)
+                            .OfType<ElementId>()
                             .ToArray();
                         var elementSets = new Dictionary<string, IReadOnlyCollection<ElementId>>
                         {
-                            [ElementVisualizationSetKeys.Target] = [target.Id],
+                            [ElementVisualizationSetKeys.Target] = [visualizationTargetId],
                             [ElementVisualizationSetKeys.Dependencies] = dependencyIds
                         };
                         bool applied = ExecuteVisualizationMutation(() =>
                         {
+                            // Visualization views cannot be created in family documents,
+                            // so the pipeline applies to the active view as-is.
+                            if (document.IsFamilyDocument)
+                            {
+                                if (document.ActiveView is not { } activeView)
+                                    throw new InvalidOperationException(
+                                        "The family document has no active view.");
+                                return pipeline.Apply(new(document, activeView, elementSets));
+                            }
+
                             _visualizationViewActivator.Activate();
                             if (document.ActiveView is not View3D visualizationView)
                                 throw new InvalidOperationException(
@@ -750,7 +797,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         if (applied)
                         {
                             _activeVisualizationPipeline = pipeline;
-                            _activeVisualizationTargetId = target.Id;
+                            _activeVisualizationTargetId = visualizationTargetId;
+                            RefreshVisualizationStates();
                         }
                         return (applied, false);
                     });
@@ -768,7 +816,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     _logger.LogError(
                         exception,
                         "Visualization {VisualizationName} failed for diagnostic {DiagnosticCode}, target {TargetId}",
-                        pipeline.Value, report.Code, target.Id);
+                        pipeline.Value, report.Code, visualizationTargetId);
                     throw new InvalidOperationException(
                         $"Visualization '{pipeline.Value}' failed for diagnostic '{report.Code}'.",
                         exception);
@@ -788,6 +836,25 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             ExecuteVisualizationMutation(pipeline.Restore);
         _activeVisualizationPipeline = null;
         _activeVisualizationTargetId = null;
+        RefreshVisualizationStates();
+    }
+
+    // Marks the rows whose pipeline matches the applied visualization. Mutations happen on the
+    // Revit thread, the Idling scheduler and WPF handlers, so the refresh marshals to the view.
+    private void RefreshVisualizationStates()
+    {
+        IElementVisualizationPipeline? pipeline = _activeVisualizationPipeline;
+        ElementId? targetId = _activeVisualizationTargetId;
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(RefreshVisualizationStates);
+            return;
+        }
+
+        foreach (DiagnosticReportItemViewModel item in Collection.ToArray())
+            item.RefreshVisualizationState(pipeline, targetId);
     }
 
     private T ExecuteVisualizationMutation<T>(Func<T> action)
@@ -884,8 +951,19 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         if (report.Target is Element element)
         {
             var doc = report.Document;
+            if (doc is not { IsValidObject: true }) return [];
 
-            var elementId = element.Id;
+            // Fixes are built lazily when the UI first shows the row, by which time the target
+            // may have been deleted or undone; reading Id on such an element throws.
+            ElementId? maybeElementId = TryGetElementId(element);
+            if (maybeElementId is null)
+            {
+                _logger.LogDebug(
+                    "Fixes are unavailable for diagnostic {DiagnosticCode}: target element is no longer valid",
+                    report.Code);
+                return [];
+            }
+            ElementId elementId = maybeElementId;
 
             var iconColor = System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D);
             PathIcon icon = new()
@@ -917,7 +995,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         : IgnoreElementSucceededMessage;
                     _fixReportSender.Send(new FixReport(
                         report.Code, report.Document.Title, new(message, ("elementId", elementId))));
-                    if (success) ReportFixApplied(report.Code);
+                    if (success)
+                    {
+                        ReportIgnoreApplied(report.Code);
+                        // The ignore guarantees the next run will not report this finding, and the
+                        // ignored element itself is untouched, so no change event removes the stale row.
+                        RemoveIgnoredRows(report.Code, doc.Title, [elementId]);
+                    }
 
                     if (!success)
                     {
@@ -943,31 +1027,38 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 bool hasErrors = false;
                 string transactionName = GetLocalizedString("ignoreElements_transaction");
 
-                // The transaction is always committed (we return true) so that successfully ignored
-                // elements are not rolled back just because some elements could not be ignored.
+                // The targets are collected before the transaction: the provider call is atomic, so
+                // a failure rolls nothing back, and a success makes every collected row stale at once.
+                List<(Element Element, ElementId Id)> targets = [];
+                foreach (DiagnosticReportItemViewModel reportItem in Collection)
+                {
+                    if (reportItem.Code != report.Code) continue;
+                    if (reportItem.Target is not Element targetElement) continue;
+                    if (TryGetElementId(targetElement) is not { } rowId) continue;
+                    targets.Add((targetElement, rowId));
+                }
+
                 await ExecuteTransaction(doc, transactionName, () => {
-                        foreach (var reportItem in Collection)
+                        try
                         {
-                            if (reportItem.Code != report.Code) continue;
-                            if (reportItem.Target is null) continue;
-
-                            Element element = (Element)reportItem.Target;
-
-                            if (!element.IsValidObject) continue;
-
-                            try
+                            var feedback = _ignoreElementProvider.IgnoreMany(
+                                report.Code, targets.Select(target => target.Element));
+                            if (!string.IsNullOrEmpty(feedback.Message))
                             {
-                                var feedback = _ignoreElementProvider.Ignore(report.Code, element);
-                                feedbackMessage.Append($"id {element.Id}: ").Append(feedback.Message);
-                                feedbackMessage.Append(Environment.NewLine);
-                                if (feedback.Result == IgnoreElementResult.Failed) hasErrors = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                hasErrors = true;
-                                feedbackMessage.Append($"id {element.Id}: {ex.Message}");
+                                feedbackMessage.Append(feedback.Message);
                                 feedbackMessage.Append(Environment.NewLine);
                             }
+                            if (feedback.Result == IgnoreElementResult.Failed) hasErrors = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            hasErrors = true;
+                            _logger.LogDebug(
+                                ex,
+                                "Failed to ignore elements for diagnostic {DiagnosticCode}",
+                                report.Code);
+                            feedbackMessage.Append(ex.Message);
+                            feedbackMessage.Append(Environment.NewLine);
                         }
                         return true;
                     }, cancellationToken);
@@ -977,7 +1068,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                     : "ignoreElementsSucceeded_message");
                 _fixReportSender.Send(new FixReport(
                     report.Code, report.Document.Title, new(message, ("elementId", elementId))));
-                if (!hasErrors) ReportFixApplied(report.Code);
+                if (!hasErrors)
+                {
+                    ReportIgnoreApplied(report.Code);
+                    RemoveIgnoredRows(
+                        report.Code, doc.Title, targets.Select(target => target.Id));
+                }
 
                 if (hasErrors)
                 {
@@ -1066,11 +1162,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                 foreach (var reportItem in Collection)
                                 {
                                     if (reportItem.Code != report.Code) continue;
-                                    if (reportItem.Target is null) continue;
+                                    if (reportItem.Target is not Element element) continue;
 
-                                    Element element = (Element)reportItem.Target;
-
-                                    if (!element.IsValidObject) continue;
+                                    ElementId? rowElementId = TryGetElementId(element);
+                                    if (rowElementId is null) continue;
 
                                     try
                                     {
@@ -1080,13 +1175,19 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                                         {
                                             hasErrors = true;
                                             errors.AppendLine(GetLocalizedString(
-                                                "fixElementFailed_message") + $" (id: {element.Id})");
+                                                "fixElementFailed_message") + $" (id: {rowElementId})");
                                         }
                                     }
                                     catch (Exception ex)
                                     {
                                         hasErrors = true;
-                                        errors.AppendLine($"id {element.Id}: {ex.Message}");
+                                        _logger.LogDebug(
+                                            ex,
+                                            "Bulk fix {FixCode} failed for element {ElementId} of diagnostic {DiagnosticCode}",
+                                            i.Identity.Code,
+                                            rowElementId,
+                                            report.Code);
+                                        errors.AppendLine($"id {rowElementId}: {ex.Message}");
                                     }
                                 }
                                 return true;
@@ -1124,6 +1225,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         }
         else if (report.Target is Document document)
         {
+            if (document is not { IsValidObject: true }) return [];
             string documentTitle = document.Title;
             return GetCatalogSnapshot().DocumentDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
@@ -1165,13 +1267,104 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         }
                     };
                     return fix;
-                }).ToList();
+                }).Append(CreateDocumentIgnoreFix(report, document, documentTitle)).ToList();
         }
         return [];
     }
 
+    private FixViewModel CreateDocumentIgnoreFix(DiagnosticReport report, Document document, string documentTitle)
+    {
+        PathIcon icon = new()
+        {
+            Kind = IconKind.Lightbulb,
+            Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0xB7, 0x4D))
+        };
+        return new()
+        {
+            Icon = icon,
+            Title = IgnoreFixTitle,
+            FixDelegate = async (cancellationToken) =>
+            {
+                if (document is not { IsValidObject: true }) return;
+
+                string? feedbackMessage = null;
+                string transactionName = GetLocalizedString("ignoreDocument_transaction");
+                bool success = await ExecuteTransaction(document, transactionName, () => {
+                        var feedback = _ignoreElementProvider.IgnoreDocument(report.Code, document);
+                        feedbackMessage = feedback.Message;
+                        return feedback.Result == IgnoreElementResult.Success;
+                    }, cancellationToken);
+
+                string message = !success
+                    ? IgnoreDocumentFailedMessage + Environment.NewLine
+                        + GetLocalizedString("details_message", feedbackMessage ?? string.Empty)
+                    : IgnoreDocumentSucceededMessage;
+                _fixReportSender.Send(new FixReport(
+                    report.Code, report.Document.Title, new(message, ("documentTitle", documentTitle))));
+                if (success)
+                {
+                    ReportIgnoreApplied(report.Code);
+                    // A document-level ignore suppresses every finding of the code in this document,
+                    // so all of its rows are stale, and no change event removes them.
+                    RemoveIgnoredDocumentRows(report.Code, documentTitle);
+                }
+
+                if (!success)
+                {
+                    string resolvedMessage = message.Replace("{documentTitle}", documentTitle);
+                    await _dialog.Show(new DialogRequest(resolvedMessage), cancellationToken);
+                }
+            }
+        };
+    }
+
     private void ReportFixApplied(string diagnosticCode)
         => _activityStream.Publish(new FixAppliedActivity(diagnosticCode));
+
+    private void ReportIgnoreApplied(string diagnosticCode)
+        => _activityStream.Publish(new IgnoreAppliedActivity(diagnosticCode));
+
+    /// <summary>
+    /// Removes the report rows the ignore just made stale: their findings will no longer be produced.
+    /// </summary>
+    /// <param name="code">The ignored diagnostic code.</param>
+    /// <param name="documentTitle">The title of the document the ignore was written to.</param>
+    /// <param name="ignoredIds">The ignored element identifiers.</param>
+    private void RemoveIgnoredRows(string code, string documentTitle, IEnumerable<ElementId> ignoredIds)
+    {
+        HashSet<ElementId> ids = [.. ignoredIds];
+        List<DiagnosticReportItemViewModel> stale = Collection
+            .Where(item => string.Equals(item.Code, code, StringComparison.Ordinal)
+                && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal)
+                && item.TargetElementId is { } targetId
+                && ids.Contains(targetId))
+            .ToList();
+        foreach (DiagnosticReportItemViewModel row in stale)
+            Collection.Remove(row);
+        if (stale.Count > 0)
+            _logger.LogDebug(
+                "Removed {RowCount} ignored rows of diagnostic {DiagnosticCode}",
+                stale.Count, code);
+    }
+
+    /// <summary>
+    /// Removes every report row of a document-level ignore: the whole code is suppressed in the document.
+    /// </summary>
+    /// <param name="code">The ignored diagnostic code.</param>
+    /// <param name="documentTitle">The title of the ignored document.</param>
+    private void RemoveIgnoredDocumentRows(string code, string documentTitle)
+    {
+        List<DiagnosticReportItemViewModel> stale = Collection
+            .Where(item => string.Equals(item.Code, code, StringComparison.Ordinal)
+                && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal))
+            .ToList();
+        foreach (DiagnosticReportItemViewModel row in stale)
+            Collection.Remove(row);
+        if (stale.Count > 0)
+            _logger.LogDebug(
+                "Removed {RowCount} ignored rows of diagnostic {DiagnosticCode}",
+                stale.Count, code);
+    }
 
     private static ElementFixContext CreateFixContext(
         Document document,

@@ -1,12 +1,14 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ReportMessaging;
 using Revit.Linter.Localization;
 using System.Globalization;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
-internal sealed partial class DiagnosticReportItemViewModel
+internal sealed partial class DiagnosticReportItemViewModel : ObservableObject
 {
     public required DiagnosticSeverity Severity { get; init; }
     public string SeverityText => DiagnosticSeverityLocalizations.GetString(Severity.ToString());
@@ -38,7 +40,16 @@ internal sealed partial class DiagnosticReportItemViewModel
         {
             if (!_fixesCreated)
             {
-                _fixes = FixesFactory();
+                try
+                {
+                    _fixes = FixesFactory();
+                }
+                catch (Autodesk.Revit.Exceptions.InvalidObjectException)
+                {
+                    // The report target was deleted or undone after the row was created. A row
+                    // without fixes stays visible instead of breaking the bound list.
+                    _fixes = [];
+                }
                 _fixesCreated = true;
             }
 
@@ -47,13 +58,55 @@ internal sealed partial class DiagnosticReportItemViewModel
     }
 
     public IReadOnlyList<VisualizationPipelineViewModel> VisualizationPipelines
-        => _visualizationPipelines ??= VisualizationPipelinesFactory();
+        => _visualizationPipelines ??= CreateVisualizationPipelinesSafe();
+
+    private IReadOnlyList<VisualizationPipelineViewModel> CreateVisualizationPipelinesSafe()
+    {
+        try
+        {
+            return VisualizationPipelinesFactory();
+        }
+        catch (Autodesk.Revit.Exceptions.InvalidObjectException)
+        {
+            // Same stale-target race as for fixes: the row stays visible without visualizations.
+            return [];
+        }
+    }
     public required DateTime Created { get; init; }
     public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
     public required string ShowElementToolTipFormat { get; init; }
 
     public bool HasFixes => Fixes?.Any() == true;
     public bool HasVisualizationPipelines => VisualizationPipelines.Count > 0;
+
+    [ObservableProperty]
+    private bool _hasActiveVisualization;
+
+    /// <summary>
+    /// Marks the pipelines matching the currently applied visualization, if any.
+    /// </summary>
+    /// <remarks>
+    /// The report view-model calls this for every row after the active visualization changes;
+    /// rows whose pipelines were never built keep no state.
+    /// </remarks>
+    public void RefreshVisualizationState(
+        IElementVisualizationPipeline? activePipeline, ElementId? activeTargetId)
+    {
+        bool hasActive = false;
+        if (_visualizationPipelines is not null)
+        {
+            foreach (VisualizationPipelineViewModel pipeline in _visualizationPipelines)
+            {
+                bool isActive = activePipeline is not null
+                    && ReferenceEquals(activePipeline, pipeline.Pipeline)
+                    && activeTargetId?.Equals(TargetElementId) == true;
+                pipeline.IsActive = isActive;
+                hasActive |= isActive;
+            }
+        }
+
+        HasActiveVisualization = hasActive;
+    }
 
     private ReportMessage? _message;
     private ReportMessage Message => _message ??= ReportMessageParser.Parse(
@@ -82,10 +135,14 @@ internal sealed partial class DiagnosticReportItemViewModel
     }
 }
 
-internal sealed partial class VisualizationPipelineViewModel
+internal sealed partial class VisualizationPipelineViewModel : ObservableObject
 {
     public required string Title { get; init; }
+    public required IElementVisualizationPipeline Pipeline { get; init; }
     public required Func<bool, CancellationToken, Task> ShowDelegate { get; init; }
+
+    [ObservableProperty]
+    private bool _isActive;
 
     [RelayCommand]
     public async Task Show(CancellationToken cancellationToken)

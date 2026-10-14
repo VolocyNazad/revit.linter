@@ -19,18 +19,21 @@
   <data name="fixElementFailed_message" xml:space="preserve"><value>Failed to fix element '{elementId}'.</value></data><data name="fixElementSucceeded_message" xml:space="preserve"><value>Element '{elementId}' was fixed successfully.</value></data>
   <data name="fixElementsFailed_message" xml:space="preserve"><value>Some elements could not be fixed.</value></data><data name="fixElementsSucceeded_message" xml:space="preserve"><value>Elements were fixed successfully.</value></data>
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Failed to fix document '{documentTitle}'.</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was fixed successfully.</value></data>
+  <data name="ignoreDocumentFailed_message" xml:space="preserve"><value>Failed to ignore document '{documentTitle}'.</value></data><data name="ignoreDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was ignored successfully.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
   <data name="showVisualization_text" xml:space="preserve"><value>Show</value></data>
   <data name="visualizationFailed_message" xml:space="preserve"><value>The selected visualization could not be applied.</value></data>
   <data name="retry_title" xml:space="preserve"><value>Retry</value></data>
   <data name="ignoreElement_transaction" xml:space="preserve"><value>Ignore diagnostic for element</value></data>
   <data name="ignoreElements_transaction" xml:space="preserve"><value>Ignore diagnostic for elements</value></data>
+  <data name="ignoreDocument_transaction" xml:space="preserve"><value>Ignore diagnostic for document</value></data>
   <data name="transactionStartFailed_message" xml:space="preserve"><value>Failed to start the transaction.</value></data>
   <data name="operationFailed_message" xml:space="preserve"><value>The operation returned a negative result: the element cannot be modified. It may be used as a default type, in a schedule, in a view template, or in another family.</value></data>
   <data name="openDocumentation_text" xml:space="preserve"><value>Rule documentation</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Documentation</value></data><data name="openHelp_description" xml:space="preserve"><value>Opens the documentation in the default browser. Hovering any control and pressing F1 while its tooltip is shown does the same.</value></data>
   <data name="exportReport_description" xml:space="preserve"><value>Saves the displayed rows as CSV, JSON, YAML or a self-contained HTML report. The search and the filters apply.</value></data>
-  <data name="fix_title" xml:space="preserve"><value>Fix</value></data>
-  <data name="fix_description" xml:space="preserve"><value>Runs the only available fix. If the finding has several fixes, opens their menu.</value></data>
+  <data name="fix_title" xml:space="preserve"><value>Fix or ignore</value></data>
+  <data name="fix_description" xml:space="preserve"><value>Opens the fixes and ignore actions available for the finding.</value></data>
   <data name="showVisualization_description" xml:space="preserve"><value>Shows the finding in the active view. If several visualizations are available, opens their menu. Click again to restore the view.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows. The number next to a filter is the number of rows it matches.</value></data>

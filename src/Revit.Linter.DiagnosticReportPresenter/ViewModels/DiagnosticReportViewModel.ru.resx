@@ -19,18 +19,21 @@
   <data name="fixElementFailed_message" xml:space="preserve"><value>Не удалось исправить элемент «{elementId}».</value></data><data name="fixElementSucceeded_message" xml:space="preserve"><value>Элемент «{elementId}» успешно исправлен.</value></data>
   <data name="fixElementsFailed_message" xml:space="preserve"><value>Не удалось исправить некоторые элементы.</value></data><data name="fixElementsSucceeded_message" xml:space="preserve"><value>Элементы успешно исправлены.</value></data>
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Не удалось исправить документ «{documentTitle}».</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Документ «{documentTitle}» успешно исправлен.</value></data>
+  <data name="ignoreDocumentFailed_message" xml:space="preserve"><value>Не удалось игнорировать документ «{documentTitle}».</value></data><data name="ignoreDocumentSucceeded_message" xml:space="preserve"><value>Документ «{documentTitle}» успешно проигнорирован.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
   <data name="showVisualization_text" xml:space="preserve"><value>Показать</value></data>
   <data name="visualizationFailed_message" xml:space="preserve"><value>Не удалось применить выбранную визуализацию.</value></data>
   <data name="retry_title" xml:space="preserve"><value>Повторить</value></data>
   <data name="ignoreElement_transaction" xml:space="preserve"><value>Игнорирование проверки для элемента</value></data>
   <data name="ignoreElements_transaction" xml:space="preserve"><value>Игнорирование проверки для элементов</value></data>
+  <data name="ignoreDocument_transaction" xml:space="preserve"><value>Игнорирование проверки для документа</value></data>
   <data name="transactionStartFailed_message" xml:space="preserve"><value>Не удалось начать транзакцию.</value></data>
   <data name="operationFailed_message" xml:space="preserve"><value>Операция вернула отрицательный результат: элемент не может быть изменён. Возможно, он используется как тип по умолчанию, в спецификации, шаблоне вида или другом семействе.</value></data>
   <data name="openDocumentation_text" xml:space="preserve"><value>Документация по проверке</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Документация</value></data><data name="openHelp_description" xml:space="preserve"><value>Открывает документацию в браузере. То же делает наведение на любой элемент и F1 при видимой подсказке.</value></data>
   <data name="exportReport_description" xml:space="preserve"><value>Сохраняет отображаемые строки в CSV, JSON, YAML или самодостаточный HTML-отчёт. Поиск и фильтры учитываются.</value></data>
-  <data name="fix_title" xml:space="preserve"><value>Исправить</value></data>
-  <data name="fix_description" xml:space="preserve"><value>Запускает единственное доступное исправление. Если исправлений несколько, открывает меню выбора.</value></data>
+  <data name="fix_title" xml:space="preserve"><value>Исправить или игнорировать</value></data>
+  <data name="fix_description" xml:space="preserve"><value>Открывает исправления и действия игнорирования, доступные для замечания.</value></data>
   <data name="showVisualization_description" xml:space="preserve"><value>Показывает замечание на активном виде. Если визуализаций несколько, открывает меню выбора. Повторный щелчок возвращает вид.</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице. Число рядом с фильтром — сколько строк ему соответствует.</value></data>
