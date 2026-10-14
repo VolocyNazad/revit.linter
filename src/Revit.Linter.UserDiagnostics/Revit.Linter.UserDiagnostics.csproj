@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.UserDiagnostics.Tests</_Parameter1>
@@ -19,17 +19,13 @@
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
+		<EmbeddedResource Remove="UserDiagnosticLocalizations*.resx" />
+		<None Include="UserDiagnosticLocalizations.resx" />
+		<None Include="UserDiagnosticLocalizations.ru.resx" />
 	</ItemGroup>
 
 </Project>

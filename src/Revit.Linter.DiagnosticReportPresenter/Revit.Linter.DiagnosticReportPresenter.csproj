@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
@@ -51,14 +51,5 @@
 		<ProjectReference Include="..\Revit.Linter.ReportMessaging\Revit.Linter.ReportMessaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 </Project>

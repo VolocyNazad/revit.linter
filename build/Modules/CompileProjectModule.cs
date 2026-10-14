@@ -31,6 +31,7 @@ public sealed class CompileProjectModule : Module<CompiledRevitTarget[]>
                             "--nologo",
                             "--consoleLoggerParameters:ErrorsOnly;Summary",
                             "-p:Platform=x64",
+                            "-p:TreatWarningsAsErrors=true",
                             $"-p:Version={versioning.Version}"
                         ]
                     }, cancellationToken: cancellationToken));

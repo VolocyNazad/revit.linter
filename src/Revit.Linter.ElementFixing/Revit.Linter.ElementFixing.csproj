@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.ElementFixing.Tests</_Parameter1>
@@ -13,14 +13,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
-		<PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Update="SonarAnalyzer.CSharp">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 </Project>

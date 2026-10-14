@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -14,13 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="SonarAnalyzer.CSharp">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    <PackageReference Update="Polyfill">
+      <VersionOverride>11.4.5</VersionOverride>
     </PackageReference>
   </ItemGroup>
 </Project>

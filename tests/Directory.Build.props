@@ -1,0 +1,8 @@
+<Project>
+  <!-- MSBuild auto-imports only the nearest Directory.Build.props, so the root settings are chained explicitly. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <!-- One shared TUnit executor registration, compiled into each Revit test assembly. -->
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('.RevitTests'))">
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\TestsConfiguration.cs" Link="TestsConfiguration.cs" />
+  </ItemGroup>
+</Project>

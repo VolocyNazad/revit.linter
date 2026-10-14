@@ -10,7 +10,7 @@ public static class RepositoryRoot
     /// contains the root solution.
     /// </summary>
     /// <returns>The absolute path of the repository root.</returns>
-    /// <exception cref="DirectoryNotFoundException">No parent directory contains the root solution.</exception>
+    /// <exception cref="T:System.IO.DirectoryNotFoundException">No parent directory contains the root solution.</exception>
     public static string Find()
     {
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
