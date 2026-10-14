@@ -17,5 +17,6 @@
   <data name="tutorialSampleFailed_text" xml:space="preserve"><value>The tutorial copy could not be prepared. Continue by opening a project or family yourself.</value></data>
   <data name="startPracticalTour_text" xml:space="preserve"><value>Start or continue the practical tour</value></data>
   <data name="resetPracticalTour_text" xml:space="preserve"><value>Reset practical tour</value></data>
-  <data name="practicalTourReset_text" xml:space="preserve"><value>Practical tour progress was reset.</value></data>
+  <data name="practicalTourReset_text" xml:space="preserve"><value>Practical tour was reset and restarted.</value></data>
+  <data name="practicalTourResetFailed_text" xml:space="preserve"><value>Practical tour reset failed; see the application log for details.</value></data>
 </root>

@@ -9,14 +9,19 @@ namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 internal static class ExampleConfigurationComposer
 {
     private static readonly Regex SectionStart = new(
-        @"^#\s*>>>\s*section:\s*(?<name>[A-Za-z]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        @"^#\s*>>>\s*section:\s*(?<name>[A-Za-z]+)",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant,
+        TimeSpan.FromSeconds(1));
 
     private static readonly Regex SectionEnd = new(
-        @"^#\s*<<<\s*section:", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        @"^#\s*<<<\s*section:",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant,
+        TimeSpan.FromSeconds(1));
 
     private static readonly Regex ParameterGroup = new(
         @"autodesk\.parameter\.group:(?<name>[A-Za-z]+)-\d+\.\d+\.\d+",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        RegexOptions.Compiled | RegexOptions.CultureInvariant,
+        TimeSpan.FromSeconds(1));
 
     // Revit 2021-2023 identify a parameter group by its BuiltInParameterGroup name.
     private static readonly Dictionary<string, string> LegacyParameterGroups = new(StringComparer.Ordinal)

@@ -23,15 +23,21 @@
   <data name="navigateFindingsStep_text" xml:space="preserve"><value>Листать замечания</value></data>
   <data name="navigateFindings_text" xml:space="preserve"><value>Вверху панели «Предупреждения» стрелками переходите к соседним замечаниям TOUR001. Счётчик между стрелками показывает позицию, например 3 / 47.</value></data>
   <data name="inspectFixesStep_text" xml:space="preserve"><value>Выполнить исправление</value></data>
+  <data name="understandIgnoreStep_text" xml:space="preserve"><value>Проигнорировать замечание</value></data>
+  <data name="understandIgnore_text" xml:space="preserve"><value>В другой строке TOUR001 откройте меню с лампочкой и выберите «Игнорировать». Замечание пропадёт из предупреждений; оно хранится на панели «Игнорирования».</value></data>
+  <data name="ignoreListStep_text" xml:space="preserve"><value>Панель игнорирований</value></data>
+  <data name="ignoreList_text" xml:space="preserve"><value>На вкладке «Диагностика» нажмите «Показать/Скрыть проверки», чтобы показать все панели, затем откройте вкладку «Игнорирования» и выберите проигнорированную запись.</value></data>
+  <data name="openHelpStep_text" xml:space="preserve"><value>Открыть справку</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>На панели «Предупреждения» в выбранной строке TOUR001 нажмите кнопку «?» — или наведите указатель на любой элемент и нажмите F1, пока видна подсказка, — чтобы открыть документацию.</value></data>
   <data name="exportReportStep_text" xml:space="preserve"><value>Экспортировать отчёт</value></data>
   <data name="openDocument_text" xml:space="preserve"><value>На главной странице Revit нажмите «Открыть» и выберите проект или семейство.</value></data>
   <data name="openTutorialSample_text" xml:space="preserve"><value>Если пример не открылся автоматически: на ленте Revit откройте «Диагностика» → «Открыть учебный проект».</value></data>
-  <data name="openConfigurationFolder_text" xml:space="preserve"><value>Каждая проверка — это YAML-файл, который можно скопировать и изменить под себя. В строке TOUR001 нажмите кнопку с документом, чтобы увидеть её правило.</value></data>
-  <data name="selectDiagnostic_text" xml:space="preserve"><value>Вверху панели «Проверки» включите TOUR001 «Практическое обучение: изучение элемента модели». Обучение учитывает действия только с этой проверкой.</value></data>
-  <data name="runDiagnostics_text" xml:space="preserve"><value>В верхней части панели «Проверки» нажмите «Запустить проверки», оставив TOUR001 включённой.</value></data>
+  <data name="openConfigurationFolder_text" xml:space="preserve"><value>Каждая пользовательская проверка — это запись в YAML, которую можно скопировать и изменить под себя. На панели «Проверки» в строке TOUR001 нажмите кнопку с документом, чтобы увидеть её правило.</value></data>
+  <data name="selectDiagnostic_text" xml:space="preserve"><value>Вверху панели «Проверки» нажмите «Снять выбор со всех» и включите только TOUR001 «Практическое обучение: изучение коллизии модели». Обучение учитывает действия только с этой проверкой.</value></data>
+  <data name="runDiagnostics_text" xml:space="preserve"><value>В верхней части панели «Проверки» нажмите «Запустить проверки», оставив включённой только TOUR001.</value></data>
   <data name="inspectFinding_text" xml:space="preserve"><value>На панели «Предупреждения» выберите одно из замечаний TOUR001 и изучите его.</value></data>
-  <data name="showElement_text" xml:space="preserve"><value>В выбранной строке TOUR001 нажмите «Показать», чтобы открыть меню визуализации, и выберите любой вариант, чтобы найти элемент в модели.</value></data>
-  <data name="selectVisualization_text" xml:space="preserve"><value>В той же строке TOUR001 снова раскройте меню «Показать» и выберите «Изучить подробно: окрасить, подрезать, сфокусироваться».</value></data>
+  <data name="showElement_text" xml:space="preserve"><value>В выбранной строке TOUR001 нажмите «Показать», чтобы открыть меню визуализации, и выберите «Изолировать и осмотреть», чтобы найти элемент в модели.</value></data>
+  <data name="selectVisualization_text" xml:space="preserve"><value>В той же строке TOUR001 снова раскройте меню «Показать» и выберите «Подрезать и осмотреть».</value></data>
   <data name="understandFix_text" xml:space="preserve"><value>В строке TOUR001 откройте меню с лампочкой и примените исправление.</value></data>
   <data name="exportReport_text" xml:space="preserve"><value>В правом верхнем углу панели «Предупреждения» нажмите «Экспортировать отчет» и выберите формат.</value></data>
   <data name="exportReportAnotherFormatStep_text" xml:space="preserve"><value>Экспорт в другом формате</value></data>

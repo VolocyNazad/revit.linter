@@ -34,19 +34,25 @@ internal sealed class PracticalTour(
     {
         try
         {
-            exampleConfigurationInstaller.InstallPracticalTour();
             if (_viewModel is not null) EndSession(hidePane: false);
             int revitVersion = ConfigurationPathUtils.RevitVersion;
             PracticalTourProgress? savedProgress = GetProgress(revitVersion);
-            if (restart)
+            if (restart || savedProgress is { IsCompleted: true } or { IsOptedOut: true })
             {
+                // Every Start call carries an explicit user intent to tour again, so a
+                // finished or refused tour starts over instead of hiding the pane: the
+                // saved state is forgotten and the managed configuration is reinstalled
+                // below. Pane visibility without a session is handled by HidePaneIfInactive.
+                if (!restart)
+                    logger.LogInformation(
+                        "Restarting the practical tour after its saved {SavedState} state for Revit {RevitVersion}",
+                        savedProgress is { IsCompleted: true } ? "completed" : "opted-out",
+                        revitVersion);
                 ResetProgress();
                 savedProgress = null;
             }
-            else if (savedProgress is { IsCompleted: true } or { IsOptedOut: true })
-            {
-                return;
-            }
+
+            exampleConfigurationInstaller.InstallPracticalTour();
 
             if (savedProgress is null)
             {
@@ -62,7 +68,6 @@ internal sealed class PracticalTour(
             viewModel.StopRequested += ViewModel_StopRequested;
             viewModel.OptOutRequested += ViewModel_OptOutRequested;
             viewModel.RestartRequested += ViewModel_RestartRequested;
-            view.PaneHidden += View_PaneHidden;
             _viewModel = viewModel;
             _highlightSession = OnboardingHighlight.StartSession();
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -87,7 +92,12 @@ internal sealed class PracticalTour(
         {
             if (activity is DiagnosticRunCompletedActivity run)
             {
-                if (run.Result != DiagnosticServiceResult.Failed)
+                // A run counts only with the single training check selected: mixed runs
+                // would credit findings from unrelated rules. (A list pattern would need
+                // System.Index, which the net48 WPF markup compilation lacks.)
+                if (run.Result != DiagnosticServiceResult.Failed
+                    && run.EnabledDiagnosticCodes.Length == 1
+                    && string.Equals(run.EnabledDiagnosticCodes[0], DiagnosticCode, StringComparison.Ordinal))
                     _viewModel?.ObserveDiagnosticRun(run.FindingCount > 0);
                 return;
             }
@@ -104,6 +114,12 @@ internal sealed class PracticalTour(
             if (activity is DiagnosticListFilteredActivity)
             {
                 _viewModel?.Observe(PracticalTourStep.SearchAndFilters);
+                return;
+            }
+
+            if (activity is DiagnosticSearchChangedActivity search)
+            {
+                _viewModel?.ObserveSearchText(search.SearchText);
                 return;
             }
 
@@ -141,6 +157,32 @@ internal sealed class PracticalTour(
                 return;
             }
 
+            if (activity is IgnoreAppliedActivity ignored)
+            {
+                if (IsPracticalTourDiagnostic(ignored.DiagnosticCode))
+                    _viewModel?.Observe(PracticalTourStep.UnderstandIgnore);
+                return;
+            }
+
+            if (activity is IgnoreListPaneShownActivity)
+            {
+                _viewModel?.Observe(PracticalTourStep.IgnoreList);
+                return;
+            }
+
+            if (activity is IgnoreSelectedActivity selectedEntry)
+            {
+                if (IsPracticalTourDiagnostic(selectedEntry.DiagnosticCode))
+                    _viewModel?.Observe(PracticalTourStep.IgnoreList);
+                return;
+            }
+
+            if (activity is DocumentationOpenedActivity)
+            {
+                _viewModel?.Observe(PracticalTourStep.OpenHelp);
+                return;
+            }
+
             if (activity is FindingNavigationUsedActivity navigation)
             {
                 if (IsPracticalTourDiagnostic(navigation.DiagnosticCode))
@@ -161,12 +203,33 @@ internal sealed class PracticalTour(
                 return;
             }
 
+            if (activity is DocumentFocusChangedActivity)
+            {
+                if (EndOnDocumentChange())
+                {
+                    logger.LogInformation(
+                        "Practical tour ended on document change at step {Step}", _viewModel?.CurrentStep);
+                    EndSession(hidePane: true);
+                }
+                return;
+            }
+
             PracticalTourStep step = activity switch
             {
                 DocumentOpenedActivity => PracticalTourStep.OpenDocument,
                 _ => PracticalTourStep.Completed,
             };
-            if (activity is DocumentOpenedActivity) welcomeHost.ShowPanes();
+            if (activity is DocumentOpenedActivity)
+            {
+                welcomeHost.ShowPanes();
+                if (EndOnDocumentChange())
+                {
+                    logger.LogInformation(
+                        "Practical tour ended on document change at step {Step}", _viewModel?.CurrentStep);
+                    EndSession(hidePane: true);
+                    return;
+                }
+            }
             _viewModel?.Observe(step);
         }
         catch (Exception exception)
@@ -178,6 +241,16 @@ internal sealed class PracticalTour(
 
     private static bool IsPracticalTourDiagnostic(string diagnosticCode)
         => string.Equals(diagnosticCode, DiagnosticCode, StringComparison.Ordinal);
+
+    // Findings, visualizations and fixes observed so far belong to the previous document, and the
+    // shared TOUR001 check exists in every document, so continuing would advance the tour on
+    // unrelated findings. Only waiting for a document survives a document change: opening one
+    // is the awaited action itself.
+    private bool EndOnDocumentChange()
+    {
+        if (_viewModel is null) return false;
+        return _viewModel.CurrentStep != PracticalTourStep.OpenDocument;
+    }
 
     private void ViewModel_StopRequested(object? sender, EventArgs args)
     {
@@ -237,9 +310,6 @@ internal sealed class PracticalTour(
         }
     }
 
-    private void View_PaneHidden(object? sender, EventArgs args)
-        => EndSession(hidePane: false);
-
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != nameof(PracticalTourViewModel.CurrentStep)
@@ -267,10 +337,13 @@ internal sealed class PracticalTour(
         PracticalTourStep.SelectDiagnostic => "SelectDiagnostic",
             PracticalTourStep.RunDiagnostics => "RunDiagnostics",
             PracticalTourStep.InspectFinding => "InspectFinding",
+            PracticalTourStep.OpenHelp => "OpenHelp",
             PracticalTourStep.ShowElement => "ShowElement",
             PracticalTourStep.SelectVisualization => "ShowElement",
         PracticalTourStep.NavigateFindings => "NavigateFindings",
         PracticalTourStep.UnderstandFix => "UnderstandFix",
+        PracticalTourStep.UnderstandIgnore => "UnderstandFix",
+        PracticalTourStep.IgnoreList => "IgnoreList",
         PracticalTourStep.FixList => "FixList",
             PracticalTourStep.ExportReport => "ExportReport",
             PracticalTourStep.ExportReportAnotherFormat => "ExportReport",
@@ -283,9 +356,20 @@ internal sealed class PracticalTour(
         UpdateHighlight(step);
     }
 
+    /// <summary>Brings forward the pane where the current step happens.</summary>
+    /// <remarks>
+    /// Step-to-pane map: opening, configuration, search, selection and run steps show Diagnostics;
+    /// finding, help, visualization, navigation and fix-or-ignore steps show Warnings; FixList shows
+    /// the fix list; IgnoreList shows the ignore list. Export steps keep the current pane so the user
+    /// is not yanked away right after selecting a fix row, and completion hides the tour pane itself.
+    /// </remarks>
     private void ShowTargetPane(PracticalTourStep step)
     {
-        if (step is PracticalTourStep.SearchAndFilters
+        // The tour starts on the diagnostics list and returns to it for the early steps:
+        // opening steps carry no target of their own, so they keep the starting pane.
+        if (step is PracticalTourStep.OpenDocument
+            or PracticalTourStep.OpenConfigurationFolder
+            or PracticalTourStep.SearchAndFilters
             or PracticalTourStep.SelectDiagnostic
             or PracticalTourStep.RunDiagnostics)
         {
@@ -299,13 +383,21 @@ internal sealed class PracticalTour(
             return;
         }
 
+        if (step is PracticalTourStep.IgnoreList)
+        {
+            welcomeHost.ShowPane(WelcomePane.IgnoreList);
+            return;
+        }
+
         // ExportReport keeps the current pane: yanking the user away right after
         // they selected a fix row hides what they came to look at.
         if (step is PracticalTourStep.InspectFinding
+            or PracticalTourStep.OpenHelp
             or PracticalTourStep.ShowElement
             or PracticalTourStep.SelectVisualization
             or PracticalTourStep.NavigateFindings
-            or PracticalTourStep.UnderstandFix)
+            or PracticalTourStep.UnderstandFix
+            or PracticalTourStep.UnderstandIgnore)
             welcomeHost.ShowPane(WelcomePane.Warnings);
     }
 
@@ -319,6 +411,20 @@ internal sealed class PracticalTour(
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to reset practical-tour progress");
+        }
+    }
+
+    public void HidePaneIfInactive()
+    {
+        if (_viewModel is not null) return;
+
+        try
+        {
+            welcomeHost.HidePracticalTourPane();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to hide the inactive practical-tour pane");
         }
     }
 
@@ -360,7 +466,6 @@ internal sealed class PracticalTour(
             viewModel.StopRequested -= ViewModel_StopRequested;
             viewModel.OptOutRequested -= ViewModel_OptOutRequested;
             viewModel.RestartRequested -= ViewModel_RestartRequested;
-            view.PaneHidden -= View_PaneHidden;
             _highlightSession?.Dispose();
             _highlightSession = null;
             _viewModel = null;

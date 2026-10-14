@@ -129,6 +129,16 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
                 _practicalTour.Start(hasOpenDocument: false, restart: true, tutorialSampleQueued: true);
             else if (_practicalStep.StartPracticalTour)
                 _practicalTour.Start(_host.HasOpenDocument);
+            else
+                // The user refused the tour: no session starts, so a restored pane would stay
+                // visible with no content. Hide it; the ribbon command resumes the tour later.
+                _host.HidePracticalTourPane();
+        }
+        else
+        {
+            // The wizard was cancelled without starting the tour: same as a refusal, there is
+            // no session to fill a restored pane.
+            _host.HidePracticalTourPane();
         }
     }
 

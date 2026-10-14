@@ -10,7 +10,7 @@ namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
 internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInstaller
 {
-    internal const string AsideFolderName = ConfigurationPathUtils.ExamplesFolderName;
+    internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
     internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
     internal const string PracticalTourFileName = ConfigurationPathUtils.PracticalTourFileName;
 
@@ -44,7 +44,7 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
     public string InstallPracticalTour()
     {
         string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
-        string stalePath = Path.Combine(TargetDirectory, AsideFolderName, PracticalTourFileName);
+        string stalePath = Path.Combine(TargetDirectory, ExamplesFolderName, PracticalTourFileName);
         bool hadStaleConfiguration = File.Exists(stalePath);
         string path = InstallPracticalTour(TargetDirectory, fileName => ReadTemplate(language, fileName));
         if (hadStaleConfiguration)
@@ -83,13 +83,14 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
         string path = Path.Combine(tourDirectory, PracticalTourFileName);
         UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
         File.WriteAllText(path, readTemplate(PracticalTourFileName), encoding);
-        string stalePath = Path.Combine(targetDirectory, AsideFolderName, PracticalTourFileName);
+        string stalePath = Path.Combine(targetDirectory, ExamplesFolderName, PracticalTourFileName);
         if (File.Exists(stalePath)) File.Delete(stalePath);
         return path;
     }
 
     /// <summary>
-    /// Installs the examples into an explicit directory from an explicit template source.
+    /// Installs the examples into the examples subfolder of an explicit directory
+    /// from an explicit template source. User files are never touched.
     /// </summary>
     /// <remarks>Separated from the Revit-version and culture lookup so it can be exercised headlessly.</remarks>
     internal static ExampleInstallationResult Install(
@@ -105,23 +106,16 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
         UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
         List<InstalledExampleFile> files = new(FileNames.Length);
 
-        Directory.CreateDirectory(targetDirectory);
+        string examplesDirectory = Path.Combine(targetDirectory, ExamplesFolderName);
+        Directory.CreateDirectory(examplesDirectory);
         foreach (string fileName in FileNames)
         {
             string content = ExampleConfigurationComposer.Compose(
                 readTemplate(fileName), sections, useLegacyParameterGroups);
 
-            string path = Path.Combine(targetDirectory, fileName);
-            bool placedAside = File.Exists(path) && !string.IsNullOrWhiteSpace(File.ReadAllText(path));
-            if (placedAside)
-            {
-                string asideDirectory = Path.Combine(targetDirectory, AsideFolderName);
-                Directory.CreateDirectory(asideDirectory);
-                path = Path.Combine(asideDirectory, fileName);
-            }
-
+            string path = Path.Combine(examplesDirectory, fileName);
             File.WriteAllText(path, content, encoding);
-            files.Add(new InstalledExampleFile(fileName, path, placedAside));
+            files.Add(new InstalledExampleFile(fileName, path));
         }
 
         return new ExampleInstallationResult(files);

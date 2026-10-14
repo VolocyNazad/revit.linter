@@ -10,9 +10,9 @@ The practical tour guides you through the real workflow without taking control o
 
 `Model → Diagnostics → Findings → Show or fix → Export report`
 
-It runs in a dockable pane on the right and presents the workflow as a compact checklist. The active task is highlighted, completed tasks have check marks, and the required panel is brought forward. A spotlight dims the surrounding panel and outlines and labels the next control without blocking it. Closing the tour never runs a diagnostic, modifies a model, or applies a fix.
+It runs in a dockable pane on the right and presents the workflow as a compact checklist. The active task is highlighted, completed tasks have check marks, and the required panel is brought forward. A spotlight dims the surrounding panel and outlines and labels the next control without blocking it. When that control is a button, the button itself also gets an accent border, so a flat icon button stays visible on the dimmed panel. Closing the tour never runs a diagnostic, modifies a model, or applies a fix.
 
-When the tour starts, Revit Linter installs and refreshes the managed `TOUR001` training check in the `tour` configuration subfolder. The check is pinned at the top of the Diagnostics pane with a tour badge and its selection cleared. Narrow the list with the search box or filters and clear the Document checkbox, then enable this exact check and use only its findings for the guided actions. It provides the visualizations and fix menu required by every task, independently of the user's own rules. Applying its fix completes the task and shows the result in the Fix list pane.
+When the tour starts, the Diagnostics pane is brought forward and Revit Linter installs and refreshes the managed `TOUR001` training collision check in the `tour` configuration subfolder. The check is pinned at the top of the Diagnostics pane with a tour badge and its selection cleared. Type TOUR001 into the search box, narrow the list with the filters and clear the Document checkbox, then press Uncheck all, enable only this exact check, and use only its findings for the guided actions. Diagnostics run only with this single check enabled. It provides the visualizations and fix menu required by every task, independently of the user's own rules. Applying its fix completes the task and shows the result in the Fix list pane.
 
 ## If a document is already open
 
@@ -33,8 +33,10 @@ Progress is kept separately for each Revit version.
 
 - **Continue later** hides the tour pane and remembers the current step.
 - **Do not show again** opts out for the running Revit version.
-- Use **Practical tour** on the **Diagnostics** tab to return to a saved step. Open [[Getting started button|Getting started]] to configure the tour or reset its progress.
+- **Start over** in the pane discards the saved step and restarts the tour from the first task.
+- Opening or switching documents ends the tour, except while it waits for you to open a project or family. The pane hides and the step is remembered: use **Practical tour** on the **Diagnostics** tab to return.
+- Use **Practical tour** on the **Diagnostics** tab to return to a saved step, or to start over after completion or opt-out. Open [[Getting started button|Getting started]] to configure the tour or reset its progress.
 
-After running `TOUR001`, select one of its findings. The tour asks you to open the **Show** menu and choose a visualization, then open it again and choose “Inspect closely: color, crop, focus”, then step to neighbouring findings with the previous and next arrows at the top of the report, and then open the lightbulb menu and apply the fix. Then open the Fix list pane to see the applied fix, and select its row. Actions performed on findings from other checks do not advance these tasks.
+After running `TOUR001`, select one of its findings. The tour asks you to open the **Show** menu and choose “Isolate and inspect”, then open it again and choose “Cut and inspect”, then step to neighbouring findings with the previous and next arrows at the top of the report. Hover any control and press **F1** while its tooltip is shown, or press the question-mark button in the selected report row, to open the documentation, then open the lightbulb menu and apply the fix. Then open the Fix list pane to see the applied fix, and select its row. Then ignore another finding from the same menu and open the Ignore list pane to see the ignored entry. Finally export the report and then export it once more, choosing a different format. Actions performed on findings from other checks do not advance these tasks.
 
 [[Quick start|← Quick start]]

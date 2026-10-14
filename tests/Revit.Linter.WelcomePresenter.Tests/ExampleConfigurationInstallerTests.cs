@@ -1,4 +1,5 @@
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Testing;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
@@ -18,72 +19,63 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
 
     public static TheoryData<string, ExampleDiscipline[], int, int> RealExampleCases => new()
     {
-        { "", [ExampleDiscipline.Mep], 3, 1 },
+        { "", [ExampleDiscipline.Mep], 5, 1 },
         { "", [ExampleDiscipline.Architecture], 3, 1 },
         { "", [ExampleDiscipline.Structure], 3, 1 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Structure], 6, 2 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 9, 3 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Structure], 8, 2 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 11, 3 },
         { "ru", [ExampleDiscipline.Architecture], 3, 1 },
-        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 9, 3 },
+        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 11, 3 },
     };
 
     [Fact]
-    public void Installs_every_file_into_a_missing_directory()
+    public void Installs_every_file_into_the_examples_subfolder()
     {
         ExampleInstallationResult result = Install([ExampleDiscipline.Mep]);
 
         Assert.Equal(FileNames, result.Files.Select(file => file.FileName));
         Assert.All(result.Files, file =>
         {
-            Assert.False(file.PlacedAside);
-            Assert.Equal(Path.Combine(_tempDirectory, file.FileName), file.Path);
+            Assert.Equal(
+                Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, file.FileName),
+                file.Path);
             Assert.Equal(FakeTemplate(file.FileName) + Environment.NewLine, File.ReadAllText(file.Path));
         });
     }
 
     [Fact]
-    public void Replaces_an_empty_or_whitespace_file()
+    public void Existing_user_files_are_never_touched()
     {
         Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(Path.Combine(_tempDirectory, "config.yaml"), string.Empty);
-        File.WriteAllText(Path.Combine(_tempDirectory, "collision.config.yaml"), " \r\n\t");
+        string rulesFile = Path.Combine(_tempDirectory, "config.yaml");
+        string emptyFile = Path.Combine(_tempDirectory, "collision.config.yaml");
+        File.WriteAllText(rulesFile, "- code: \"MINE\"");
+        File.WriteAllText(emptyFile, string.Empty);
 
         ExampleInstallationResult result = Install([ExampleDiscipline.Mep]);
 
-        Assert.All(result.Files, file => Assert.False(file.PlacedAside));
-        Assert.StartsWith("# config.yaml", File.ReadAllText(Path.Combine(_tempDirectory, "config.yaml")));
-        Assert.StartsWith("# collision.config.yaml", File.ReadAllText(Path.Combine(_tempDirectory, "collision.config.yaml")));
+        Assert.Equal("- code: \"MINE\"", File.ReadAllText(rulesFile));
+        Assert.Empty(File.ReadAllText(emptyFile));
+        Assert.All(result.Files, file => Assert.StartsWith(
+            $"# {file.FileName}",
+            File.ReadAllText(Path.Combine(
+                _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, file.FileName))));
     }
 
     [Fact]
-    public void Never_overwrites_a_file_that_contains_rules()
-    {
-        Directory.CreateDirectory(_tempDirectory);
-        string userFile = Path.Combine(_tempDirectory, "config.yaml");
-        File.WriteAllText(userFile, "- code: \"MINE\"");
-
-        ExampleInstallationResult result = Install([ExampleDiscipline.Mep]);
-
-        Assert.Equal("- code: \"MINE\"", File.ReadAllText(userFile));
-        InstalledExampleFile aside = Assert.Single(result.Files, file => file.PlacedAside);
-        Assert.Equal("config.yaml", aside.FileName);
-        Assert.Equal(
-            Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName, "config.yaml"), aside.Path);
-        Assert.StartsWith("# config.yaml", File.ReadAllText(aside.Path));
-    }
-
-    [Fact]
-    public void Replaces_an_example_placed_aside_earlier()
+    public void Reinstalling_overwrites_the_examples()
     {
         Directory.CreateDirectory(_tempDirectory);
         File.WriteAllText(Path.Combine(_tempDirectory, "config.yaml"), "- code: \"MINE\"");
         Install([ExampleDiscipline.Mep]);
-        string asidePath = Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName, "config.yaml");
-        File.WriteAllText(asidePath, "stale");
+        string examplesPath = Path.Combine(
+            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml");
+        File.WriteAllText(examplesPath, "stale");
 
         Install([ExampleDiscipline.Mep]);
 
-        Assert.StartsWith("# config.yaml", File.ReadAllText(asidePath));
+        Assert.Equal("- code: \"MINE\"", File.ReadAllText(Path.Combine(_tempDirectory, "config.yaml")));
+        Assert.StartsWith("# config.yaml", File.ReadAllText(examplesPath));
     }
 
     [Fact]
@@ -91,7 +83,8 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
     {
         Install([ExampleDiscipline.Mep]);
 
-        byte[] bytes = File.ReadAllBytes(Path.Combine(_tempDirectory, "config.yaml"));
+        byte[] bytes = File.ReadAllBytes(Path.Combine(
+            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml"));
         Assert.False(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF);
     }
 
@@ -127,7 +120,8 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
             fileName => ReadWikiExample(languageFolder, fileName),
             useLegacyParameterGroups: true);
 
-        string content = File.ReadAllText(Path.Combine(_tempDirectory, "parameter-element.config.yaml"));
+        string content = File.ReadAllText(Path.Combine(
+            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "parameter-element.config.yaml"));
         Assert.Contains("group: \"PG_DATA\"", content);
         Assert.DoesNotContain("group: \"autodesk.parameter.group:", content);
     }
@@ -151,12 +145,12 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
     [Fact]
     public void Practical_tour_install_removes_the_stale_examples_configuration()
     {
-        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName));
+        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
         string stalePath = Path.Combine(
             _tempDirectory,
-            ExampleConfigurationInstaller.AsideFolderName,
+            ExampleConfigurationInstaller.ExamplesFolderName,
             ExampleConfigurationInstaller.PracticalTourFileName);
-        string siblingPath = Path.Combine(_tempDirectory, ExampleConfigurationInstaller.AsideFolderName, "config.yaml");
+        string siblingPath = Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml");
         File.WriteAllText(stalePath, "stale");
         File.WriteAllText(siblingPath, "- code: \"MINE\"");
 
@@ -235,7 +229,7 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
             RepositoryRoot.Find(), "wiki", "examples", "configuration", languageFolder, fileName));
 
     private List<Dictionary<string, object>> ReadRules(string fileName) =>
-        ConfigurationPathUtils.GetConfigurations<List<Dictionary<string, object>>>(
-            Path.Combine(_tempDirectory, fileName))
+        ConfigurationPathUtils.GetVersionedConfigurations<Dictionary<string, object>>(
+            Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, fileName))?.Rules
         ?? [];
 }

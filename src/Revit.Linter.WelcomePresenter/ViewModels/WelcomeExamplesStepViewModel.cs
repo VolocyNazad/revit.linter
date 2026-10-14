@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Localization;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
+using Revit.Linter.WelcomePresenter.Infrastructure.Services;
 using System.IO;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
@@ -50,8 +51,8 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
     public partial string? InstallationFeedback { get; private set; }
 
     /// <summary>
-    /// Gets the plain details of the last installation attempt: the examples placed aside or the failure.
-    /// <see langword="null"/> before the first attempt and after an installation with nothing to report.
+    /// Gets the plain details of the last installation attempt: the failure, if any.
+    /// <see langword="null"/> before the first attempt and after a successful installation.
     /// </summary>
     [ObservableProperty]
     public partial string? StatusMessage { get; private set; }
@@ -69,17 +70,13 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
         try
         {
             ExampleInstallationResult result = _installer.Install(disciplines);
-            string[] placedAside = result.Files
-                .Where(file => file.PlacedAside)
-                .Select(file => file.FileName)
-                .ToArray();
 
             IsInstalled = true;
             InstallationFeedback = GetLocalizedString(
-                "installed_format", result.Files.Count, _installer.TargetDirectory);
-            StatusMessage = placedAside.Length == 0
-                ? null
-                : GetLocalizedString("installedAside_format", string.Join(", ", placedAside));
+                "installed_format",
+                result.Files.Count,
+                Path.Combine(_installer.TargetDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
+            StatusMessage = null;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {

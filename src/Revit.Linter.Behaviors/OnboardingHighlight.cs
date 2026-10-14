@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -15,6 +16,8 @@ namespace Revit.Linter.Behaviors;
 /// </remarks>
 public static class OnboardingHighlight
 {
+    // Matches the spotlight fallback, so the button frame and the glow stay one color outside the theme dictionaries.
+    private static readonly Color AccentFallback = Color.FromRgb(43, 123, 179);
     private static readonly List<WeakReference<FrameworkElement>> Elements = [];
     private static readonly List<SpotlightAdorner> Spotlights = [];
     private static OnboardingHighlightSession? _activeSession;
@@ -33,6 +36,9 @@ public static class OnboardingHighlight
     private static readonly DependencyProperty PreviousTransformOriginProperty = DependencyProperty.RegisterAttached(
         "PreviousTransformOrigin", typeof(Point), typeof(OnboardingHighlight));
 
+    private static readonly DependencyProperty PreviousBorderProperty = DependencyProperty.RegisterAttached(
+        "PreviousBorder", typeof(BorderSnapshot), typeof(OnboardingHighlight));
+
     /// <summary>Gets the onboarding key attached to an element.</summary>
     public static string? GetKey(DependencyObject element) => (string?)element.GetValue(KeyProperty);
 
@@ -40,7 +46,7 @@ public static class OnboardingHighlight
     public static void SetKey(DependencyObject element, string? value) => element.SetValue(KeyProperty, value);
 
     /// <summary>Identifies whether a highlighted element also breathes with a scale pulse.</summary>
-    /// <remarks>Large surfaces keep the glow only: scaling them looks jumpy and costs a full re-render.</remarks>
+    /// <remarks>Only genuine buttons take an element glow: other surfaces pulse in scale and halo only.</remarks>
     public static readonly DependencyProperty ScalePulseProperty = DependencyProperty.RegisterAttached(
         "ScalePulse", typeof(bool), typeof(OnboardingHighlight), new PropertyMetadata(true, OnScalePulseChanged));
 
@@ -138,15 +144,29 @@ public static class OnboardingHighlight
             return;
         }
 
+        UpdateButtonFrame(element);
+        if (!IsButton(element))
+        {
+            // Rows, text boxes, check boxes and other non-button surfaces must not take an element
+            // effect: on their transparent backgrounds a DropShadowEffect samples the inner text
+            // itself and draws accent shadows around every glyph. They keep the scale pulse and the
+            // spotlight halo, which is pure geometry in the adorner, so the text never casts a glow.
+            RestoreEffectAndTransform(element);
+            if (SystemParameters.ClientAreaAnimation && GetScalePulse(element))
+                StartScalePulse(element);
+            return;
+        }
+
         if (element.ReadLocalValue(PreviousEffectProperty) == DependencyProperty.UnsetValue)
             element.SetValue(PreviousEffectProperty, element.Effect);
 
         // A small radius keeps the per-frame software render cheap: large blurs stutter,
         // most visibly on buttons inside virtualized grid rows.
+        // Icon-only buttons stay on the element effect: their silhouette is the icon itself.
         DropShadowEffect effect = new()
         {
             BlurRadius = 12,
-            Color = Color.FromRgb(43, 123, 179),
+            Color = AccentFallback,
             Direction = 0,
             Opacity = 1,
             ShadowDepth = 0
@@ -167,23 +187,28 @@ public static class OnboardingHighlight
                 return;
             }
 
-            if (element.ReadLocalValue(PreviousTransformProperty) == DependencyProperty.UnsetValue)
-            {
-                element.SetValue(PreviousTransformProperty, element.RenderTransform);
-                element.SetValue(PreviousTransformOriginProperty, element.RenderTransformOrigin);
-            }
-
-            element.RenderTransformOrigin = new(0.5, 0.5);
-            ScaleTransform scale = new(1, 1);
-            element.RenderTransform = scale;
-            DoubleAnimation grow = new(1, 1.12, TimeSpan.FromMilliseconds(800))
-            {
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            scale.BeginAnimation(ScaleTransform.ScaleXProperty, grow);
-            scale.BeginAnimation(ScaleTransform.ScaleYProperty, grow);
+            StartScalePulse(element);
         }
+    }
+
+    private static void StartScalePulse(FrameworkElement element)
+    {
+        if (element.ReadLocalValue(PreviousTransformProperty) == DependencyProperty.UnsetValue)
+        {
+            element.SetValue(PreviousTransformProperty, element.RenderTransform);
+            element.SetValue(PreviousTransformOriginProperty, element.RenderTransformOrigin);
+        }
+
+        element.RenderTransformOrigin = new(0.5, 0.5);
+        ScaleTransform scale = new(1, 1);
+        element.RenderTransform = scale;
+        DoubleAnimation grow = new(1, 1.12, TimeSpan.FromMilliseconds(800))
+        {
+            AutoReverse = true,
+            RepeatBehavior = RepeatBehavior.Forever
+        };
+        scale.BeginAnimation(ScaleTransform.ScaleXProperty, grow);
+        scale.BeginAnimation(ScaleTransform.ScaleYProperty, grow);
     }
 
     private static bool IsActive(FrameworkElement element)
@@ -229,6 +254,12 @@ public static class OnboardingHighlight
 
     private static void Restore(FrameworkElement element)
     {
+        RestoreEffectAndTransform(element);
+        RestoreButtonFrame(element);
+    }
+
+    private static void RestoreEffectAndTransform(FrameworkElement element)
+    {
         if (element.ReadLocalValue(PreviousEffectProperty) != DependencyProperty.UnsetValue)
         {
             element.Effect = (Effect?)element.GetValue(PreviousEffectProperty);
@@ -247,12 +278,76 @@ public static class OnboardingHighlight
         element.ClearValue(PreviousTransformProperty);
         element.ClearValue(PreviousTransformOriginProperty);
     }
+
+    // The icon buttons are flat and transparent until they are pointed at, so a highlighted button takes an
+    // accent frame of its own: inside the dimmed pane the spotlight outline alone leaves the icon floating.
+    private static void UpdateButtonFrame(FrameworkElement element)
+    {
+        if (element is not Control control || !IsButton(element)) return;
+
+        if (control.ReadLocalValue(PreviousBorderProperty) == DependencyProperty.UnsetValue)
+        {
+            control.SetValue(PreviousBorderProperty, new BorderSnapshot(
+                control.BorderBrush,
+                control.BorderThickness,
+                control.ReadLocalValue(Control.BorderBrushProperty) != DependencyProperty.UnsetValue,
+                control.ReadLocalValue(Control.BorderThicknessProperty) != DependencyProperty.UnsetValue));
+        }
+
+        control.BorderBrush = element.TryFindResource("LinterAccentBrush") as Brush
+            ?? new SolidColorBrush(AccentFallback);
+        control.BorderThickness = new(1);
+    }
+
+    private static void RestoreButtonFrame(FrameworkElement element)
+    {
+        if (element is not Control control) return;
+        if (control.ReadLocalValue(PreviousBorderProperty) is not BorderSnapshot snapshot) return;
+
+        if (snapshot.HasLocalBorderBrush) control.SetValue(Control.BorderBrushProperty, snapshot.BorderBrush);
+        else control.ClearValue(Control.BorderBrushProperty);
+
+        if (snapshot.HasLocalBorderThickness) control.SetValue(Control.BorderThicknessProperty, snapshot.BorderThickness);
+        else control.ClearValue(Control.BorderThicknessProperty);
+
+        control.ClearValue(PreviousBorderProperty);
+    }
+
+    // Check boxes and radio buttons derive from ToggleButton: the element glow is only for genuine buttons.
+    private static bool IsButton(FrameworkElement element)
+        => (element is Button or ToggleButton) && element is not CheckBox and not RadioButton;
+
+    // Remembers the border a highlighted button carried before the onboarding frame replaced it.
+    private sealed record BorderSnapshot(
+        Brush? BorderBrush,
+        Thickness BorderThickness,
+        bool HasLocalBorderBrush,
+        bool HasLocalBorderThickness);
 }
 
 internal sealed class SpotlightAdorner : Adorner, IDisposable
 {
     private const double TargetPadding = 7;
     private const double LabelGap = 12;
+
+    /// <summary>Identifies the pulsing opacity of the halo drawn around the targets.</summary>
+    /// <remarks>
+    /// The halo is pure geometry around the target rectangles, so unlike an element
+    /// <see cref="System.Windows.Media.Effects.DropShadowEffect"/> it never samples the inner text.
+    /// </remarks>
+    public static readonly DependencyProperty GlowOpacityProperty = DependencyProperty.Register(
+        nameof(GlowOpacity),
+        typeof(double),
+        typeof(SpotlightAdorner),
+        new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    /// <summary>Gets or sets the pulsing opacity of the halo drawn around the targets.</summary>
+    public double GlowOpacity
+    {
+        get => (double)GetValue(GlowOpacityProperty);
+        set => SetValue(GlowOpacityProperty, value);
+    }
+
     private readonly IReadOnlyList<FrameworkElement> _targets;
     private readonly Border _label;
     private Rect _labelRect;
@@ -281,6 +376,15 @@ internal sealed class SpotlightAdorner : Adorner, IDisposable
         AddVisualChild(_label);
         scope.LayoutUpdated += Scope_LayoutUpdated;
         scope.Unloaded += Scope_Unloaded;
+        if (SystemParameters.ClientAreaAnimation)
+        {
+            DoubleAnimation glowPulse = new(0.45, 1, TimeSpan.FromMilliseconds(800))
+            {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+            };
+            BeginAnimation(GlowOpacityProperty, glowPulse);
+        }
     }
 
     protected override int VisualChildrenCount => 1;
@@ -318,6 +422,15 @@ internal sealed class SpotlightAdorner : Adorner, IDisposable
             null,
             mask);
         Brush accent = GetBrush((FrameworkElement)AdornedElement, "LinterAccentBrush", Color.FromRgb(43, 123, 179));
+        // Soft halo around each target: geometry only, so the text inside a transparent
+        // row or box never casts accent shadows the way an element effect would.
+        double glow = GlowOpacity;
+        foreach (Rect targetRect in targetRects)
+        {
+            drawingContext.DrawRoundedRectangle(null, HaloPen(accent, 9, 0.14 * glow), targetRect, 4, 4);
+            drawingContext.DrawRoundedRectangle(null, HaloPen(accent, 6, 0.22 * glow), targetRect, 4, 4);
+        }
+
         Pen outline = new(accent, 4);
         foreach (Rect targetRect in targetRects)
             drawingContext.DrawRoundedRectangle(null, outline, targetRect, 4, 4);
@@ -325,10 +438,21 @@ internal sealed class SpotlightAdorner : Adorner, IDisposable
         DrawConnector(drawingContext, accent);
     }
 
+    private static Pen HaloPen(Brush accent, double thickness, double opacity)
+    {
+        Brush halo = accent.Clone();
+        halo.Opacity *= opacity;
+        halo.Freeze();
+        Pen pen = new(halo, thickness);
+        pen.Freeze();
+        return pen;
+    }
+
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
+        BeginAnimation(GlowOpacityProperty, null);
         FrameworkElement scope = (FrameworkElement)AdornedElement;
         scope.LayoutUpdated -= Scope_LayoutUpdated;
         scope.Unloaded -= Scope_Unloaded;

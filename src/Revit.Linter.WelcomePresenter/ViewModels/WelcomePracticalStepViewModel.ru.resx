@@ -17,5 +17,6 @@
   <data name="tutorialSampleFailed_text" xml:space="preserve"><value>Не удалось подготовить учебную копию. Продолжите, самостоятельно открыв проект или семейство.</value></data>
   <data name="startPracticalTour_text" xml:space="preserve"><value>Начать или продолжить практическое обучение</value></data>
   <data name="resetPracticalTour_text" xml:space="preserve"><value>Сбросить практическое обучение</value></data>
-  <data name="practicalTourReset_text" xml:space="preserve"><value>Прогресс практического обучения сброшен.</value></data>
+  <data name="practicalTourReset_text" xml:space="preserve"><value>Практическое обучение сброшено и запущено заново.</value></data>
+  <data name="practicalTourResetFailed_text" xml:space="preserve"><value>Не удалось сбросить практическое обучение; подробности — в журнале приложения.</value></data>
 </root>

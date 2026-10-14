@@ -39,6 +39,7 @@ lang: en
 - [[Diagnostics pane|Diagnostics list]]
 - [[Diagnostic reports pane|Diagnostic results]]
 - [[Fix reports pane|Fix results]]
+- [[Ignoring pane|Ignore list]]
 
 ## Related reference
 

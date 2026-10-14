@@ -11,4 +11,7 @@ public enum WelcomePane
 
     /// <summary>The pane that presents applied fixes.</summary>
     FixList,
+
+    /// <summary>The pane that presents ignored findings.</summary>
+    IgnoreList,
 }

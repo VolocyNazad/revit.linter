@@ -19,11 +19,14 @@ internal sealed class PracticalTourStateMachine
         PracticalTourStep.SelectDiagnostic,
         PracticalTourStep.RunDiagnostics,
         PracticalTourStep.InspectFinding,
+        PracticalTourStep.OpenHelp,
         PracticalTourStep.ShowElement,
         PracticalTourStep.SelectVisualization,
         PracticalTourStep.NavigateFindings,
         PracticalTourStep.UnderstandFix,
         PracticalTourStep.FixList,
+        PracticalTourStep.UnderstandIgnore,
+        PracticalTourStep.IgnoreList,
         PracticalTourStep.ExportReport,
         PracticalTourStep.ExportReportAnotherFormat,
         PracticalTourStep.Completed,
@@ -43,6 +46,9 @@ internal sealed class PracticalTourStateMachine
 
     /// <summary>Gets the export format of the first tour report export, if any.</summary>
     public string? FirstExportFormat { get; private set; }
+
+    private bool _hasSearchText;
+    private bool _hasFilterUse;
 
     /// <summary>Starts a new session at the action appropriate to the current document state.</summary>
     public void Start(
@@ -77,15 +83,41 @@ internal sealed class PracticalTourStateMachine
     /// <returns><see langword="true"/> when the state advanced; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
     /// Export steps carry a format and advance only through <see cref="ObserveReportExport"/>;
-    /// a generic observation of either export step is ignored.
+    /// a generic observation of either export step is ignored. The search-and-filters step advances
+    /// only through the combination of typed text (see <see cref="ObserveSearchText"/>) and a filter
+    /// change, in any order and armed from any earlier step: either half on its own only arms its side
+    /// of the combination.
     /// </remarks>
     public bool Observe(PracticalTourStep completedAction)
     {
-        if (!IsActive
-            || completedAction != CurrentStep
+        if (!IsActive) return false;
+
+        if (completedAction == PracticalTourStep.SearchAndFilters)
+            _hasFilterUse = true;
+
+        if (completedAction != CurrentStep
             || completedAction is PracticalTourStep.ExportReport
                 or PracticalTourStep.ExportReportAnotherFormat)
             return false;
+
+        if (completedAction == PracticalTourStep.SearchAndFilters && !_hasSearchText) return false;
+
+        Advance();
+        return true;
+    }
+
+    /// <summary>
+    /// Records the current diagnostics search text and completes the search-and-filters step
+    /// when the filters were already used.
+    /// </summary>
+    /// <param name="searchText">The current text of the diagnostics search box.</param>
+    /// <returns><see langword="true"/> when the state advanced; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>Clearing the box disarms the text half of the combination without advancing.</remarks>
+    public bool ObserveSearchText(string searchText)
+    {
+        if (IsActive) _hasSearchText = !string.IsNullOrWhiteSpace(searchText);
+        if (!IsActive || CurrentStep != PracticalTourStep.SearchAndFilters) return false;
+        if (!_hasSearchText || !_hasFilterUse) return false;
 
         Advance();
         return true;

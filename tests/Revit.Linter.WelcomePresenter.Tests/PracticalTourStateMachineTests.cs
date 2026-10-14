@@ -44,6 +44,9 @@ public sealed class PracticalTourStateMachineTests
         PracticalTourStateMachine tour = new();
         tour.Start(hasOpenDocument: true);
 
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
+
         foreach (PracticalTourStep step in new[]
                  {
                      PracticalTourStep.OpenConfigurationFolder,
@@ -51,10 +54,13 @@ public sealed class PracticalTourStateMachineTests
                      PracticalTourStep.SelectDiagnostic,
                      PracticalTourStep.RunDiagnostics,
                      PracticalTourStep.InspectFinding,
+                     PracticalTourStep.OpenHelp,
                      PracticalTourStep.ShowElement,
                      PracticalTourStep.NavigateFindings,
                      PracticalTourStep.UnderstandFix,
                      PracticalTourStep.FixList,
+                     PracticalTourStep.UnderstandIgnore,
+                     PracticalTourStep.IgnoreList,
                  })
         {
             if (step == PracticalTourStep.ShowElement)
@@ -119,10 +125,13 @@ public sealed class PracticalTourStateMachineTests
         PracticalTourStateMachine tour = new();
         tour.Start(hasOpenDocument: true);
         Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
         Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
         Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
         Assert.True(tour.Observe(PracticalTourStep.RunDiagnostics));
         Assert.True(tour.Observe(PracticalTourStep.InspectFinding));
+        Assert.True(tour.Observe(PracticalTourStep.OpenHelp));
 
         Assert.True(tour.ObserveVisualization(selectedFromMenu: false, availableOptionCount: 1));
 
@@ -136,10 +145,13 @@ public sealed class PracticalTourStateMachineTests
         PracticalTourStateMachine tour = new();
         tour.Start(hasOpenDocument: true);
         Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
         Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
         Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
         Assert.True(tour.Observe(PracticalTourStep.RunDiagnostics));
         Assert.True(tour.Observe(PracticalTourStep.InspectFinding));
+        Assert.True(tour.Observe(PracticalTourStep.OpenHelp));
         Assert.True(tour.ObserveVisualization(selectedFromMenu: false, availableOptionCount: 2));
         Assert.True(tour.ObserveVisualization(selectedFromMenu: true, availableOptionCount: 2));
 
@@ -157,6 +169,8 @@ public sealed class PracticalTourStateMachineTests
         Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
 
         Assert.False(tour.Observe(PracticalTourStep.SelectDiagnostic));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
         Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
 
         Assert.Equal(PracticalTourStep.SelectDiagnostic, tour.CurrentStep);
@@ -168,17 +182,78 @@ public sealed class PracticalTourStateMachineTests
         PracticalTourStateMachine tour = new();
         tour.Start(hasOpenDocument: true);
         Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
         Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
         Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
         Assert.True(tour.Observe(PracticalTourStep.RunDiagnostics));
         Assert.True(tour.Observe(PracticalTourStep.InspectFinding));
+        Assert.True(tour.Observe(PracticalTourStep.OpenHelp));
         Assert.True(tour.ObserveVisualization(selectedFromMenu: false, availableOptionCount: 2));
         Assert.True(tour.ObserveVisualization(selectedFromMenu: true, availableOptionCount: 2));
         Assert.True(tour.Observe(PracticalTourStep.NavigateFindings));
         Assert.True(tour.Observe(PracticalTourStep.UnderstandFix));
 
+        Assert.False(tour.Observe(PracticalTourStep.UnderstandIgnore));
         Assert.False(tour.Observe(PracticalTourStep.ExportReport));
         Assert.True(tour.Observe(PracticalTourStep.FixList));
+
+        Assert.False(tour.Observe(PracticalTourStep.IgnoreList));
+        Assert.False(tour.Observe(PracticalTourStep.ExportReport));
+        Assert.True(tour.Observe(PracticalTourStep.UnderstandIgnore));
+
+        Assert.Equal(PracticalTourStep.IgnoreList, tour.CurrentStep);
+    }
+
+    [Fact]
+    public void Advances_through_help_only_on_the_expected_step()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true);
+        Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
+        Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
+        Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
+        Assert.True(tour.Observe(PracticalTourStep.RunDiagnostics));
+
+        Assert.False(tour.Observe(PracticalTourStep.OpenHelp));
+        Assert.True(tour.Observe(PracticalTourStep.InspectFinding));
+
+        Assert.False(tour.Observe(PracticalTourStep.ShowElement));
+        Assert.True(tour.Observe(PracticalTourStep.OpenHelp));
+
+        Assert.Equal(PracticalTourStep.ShowElement, tour.CurrentStep);
+    }
+
+    [Fact]
+    public void Advances_through_ignore_steps_only_on_the_expected_step()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true);
+        Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+        // The search-and-filters step needs typed text as well as a filter change.
+        Assert.False(tour.ObserveSearchText("TOUR001"));
+        Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
+        Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
+        Assert.True(tour.Observe(PracticalTourStep.RunDiagnostics));
+        Assert.True(tour.Observe(PracticalTourStep.InspectFinding));
+        Assert.True(tour.Observe(PracticalTourStep.OpenHelp));
+        Assert.True(tour.ObserveVisualization(selectedFromMenu: false, availableOptionCount: 2));
+        Assert.True(tour.ObserveVisualization(selectedFromMenu: true, availableOptionCount: 2));
+        Assert.True(tour.Observe(PracticalTourStep.NavigateFindings));
+
+        Assert.False(tour.Observe(PracticalTourStep.UnderstandIgnore));
+        Assert.True(tour.Observe(PracticalTourStep.UnderstandFix));
+
+        Assert.False(tour.Observe(PracticalTourStep.UnderstandIgnore));
+        Assert.True(tour.Observe(PracticalTourStep.FixList));
+
+        Assert.False(tour.Observe(PracticalTourStep.IgnoreList));
+        Assert.True(tour.Observe(PracticalTourStep.UnderstandIgnore));
+
+        Assert.False(tour.Observe(PracticalTourStep.ExportReport));
+        Assert.True(tour.Observe(PracticalTourStep.IgnoreList));
 
         Assert.Equal(PracticalTourStep.ExportReport, tour.CurrentStep);
     }
@@ -193,5 +268,44 @@ public sealed class PracticalTourStateMachineTests
 
         Assert.False(tour.IsActive);
         Assert.Equal(PracticalTourStep.Completed, tour.CurrentStep);
+    }
+
+    [Fact]
+    public void Requires_typed_text_and_a_filter_change_for_search_and_filters()
+    {
+        PracticalTourStateMachine filterFirst = new();
+        filterFirst.Start(hasOpenDocument: true);
+        Assert.True(filterFirst.Observe(PracticalTourStep.OpenConfigurationFolder));
+
+        Assert.False(filterFirst.Observe(PracticalTourStep.SearchAndFilters));
+        Assert.False(filterFirst.ObserveSearchText(string.Empty));
+        Assert.True(filterFirst.ObserveSearchText("TOUR001"));
+
+        Assert.Equal(PracticalTourStep.SelectDiagnostic, filterFirst.CurrentStep);
+
+        PracticalTourStateMachine textFirst = new();
+        textFirst.Start(hasOpenDocument: true);
+
+        // Typing already on the previous step arms the text half in advance.
+        Assert.False(textFirst.ObserveSearchText("TOUR001"));
+        Assert.True(textFirst.Observe(PracticalTourStep.OpenConfigurationFolder));
+        Assert.True(textFirst.Observe(PracticalTourStep.SearchAndFilters));
+
+        Assert.Equal(PracticalTourStep.SelectDiagnostic, textFirst.CurrentStep);
+    }
+
+    [Fact]
+    public void Clearing_the_search_box_disarms_the_text_half()
+    {
+        PracticalTourStateMachine tour = new();
+        tour.Start(hasOpenDocument: true);
+        Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
+
+        Assert.False(tour.ObserveSearchText("TOUR001"));
+        Assert.False(tour.ObserveSearchText("  "));
+        Assert.False(tour.Observe(PracticalTourStep.SearchAndFilters));
+        Assert.True(tour.ObserveSearchText("TOUR001"));
+
+        Assert.Equal(PracticalTourStep.SelectDiagnostic, tour.CurrentStep);
     }
 }

@@ -10,5 +10,4 @@
   <data name="workflow_text" xml:space="preserve"><value>Revit model  →  Diagnostics  →  Findings  →  Show or fix  →  Export report</value></data>
   <data name="tab_format" xml:space="preserve"><value>Revit Linter adds the "{0}" tab to the Revit ribbon at startup.</value></data>
   <data name="importantHeader_text" xml:space="preserve"><value>Good to know</value></data>
-  <data name="parameters_text" xml:space="preserve"><value>When a document is opened or created, the add-in adds two shared project parameters to it: Linter_Ignored and Linter_IgnoredType. They store the list of ignored findings, so the model is modified.</value></data>
 </root>

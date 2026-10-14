@@ -10,14 +10,14 @@ The **Getting started** button opens the welcome window. The same window appears
 
 The window has five steps:
 
-1. **Welcome** — what the add-in does, the name of its ribbon tab, and what to keep in mind: the add-in adds the `Linter_Ignored` and `Linter_IgnoredType` project parameters to every document that is opened or created, and where the configuration and log folders are.
+1. **Welcome** — what the add-in does, the workflow **Revit model → Diagnostics → Findings → Show or fix → Export report**, and the name of its ribbon tab.
 2. **Diagnostics** — compares built-in diagnostics with user-defined YAML rules and shows the main fields of a rule in a read-only example.
 3. **Examples** — pick the disciplines you work with (MEP systems, architecture, structure) and press **Load examples**. The [[Configuration examples|example configurations]] are written to the [[Diagnostic configuration path convention|configuration folder]] of the running Revit version.
 4. **Practical tour** — starts or continues the [[Practical tour]]. If no document is open, this step can prepare a disposable copy of an official Autodesk sample found for the running Revit version, or let you continue with your own document.
 5. **Done** — a short completion summary with links to the quick start, documentation, and support.
 
 > [!note]
-> Loading examples never overwrites a configuration file that already contains rules. Such an example is written to the `examples` subfolder of the configuration folder instead; copy the rules you need from there.
+> Loading examples always writes to the `examples` subfolder of the configuration folder; your own files are never touched. Copy the rules you need from there into your own configuration files.
 
 The window is shown automatically once per user. The **Examples** step is offered once for every Revit version, because each version has its own configuration folder. Closing the window in any way counts as shown; the button always opens the complete introduction.
 

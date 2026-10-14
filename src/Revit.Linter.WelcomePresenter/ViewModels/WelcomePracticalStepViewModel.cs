@@ -58,9 +58,15 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
 
     public bool CanSelectTutorialSample => StartPracticalTour && UseTutorialSample;
 
-    public string TutorialSampleStatusText => _host.HasOpenDocument
-        ? OpenDocumentHintText
-        : CanUseTutorialSample ? TutorialSampleHintText : TutorialSampleUnavailableText;
+    public string TutorialSampleStatusText
+    {
+        get
+        {
+            if (_host.HasOpenDocument)
+                return OpenDocumentHintText;
+            return CanUseTutorialSample ? TutorialSampleHintText : TutorialSampleUnavailableText;
+        }
+    }
 
     [ObservableProperty]
     public partial TutorialSampleCandidate? SelectedTutorialSample { get; set; }
@@ -126,8 +132,20 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
     [RelayCommand]
     private void ResetPracticalTour()
     {
-        _practicalTour.ResetProgress();
-        StartPracticalTour = true;
-        Note = PracticalTourResetText;
+        try
+        {
+            // Reset restarts the tour from scratch through the same path as the in-pane
+            // Start over command: the saved progress is forgotten, the managed configuration
+            // is reinstalled and the training check selection is cleared. Resetting only the
+            // saved progress would leave a live session running with no visible effect.
+            _practicalTour.Start(_host.HasOpenDocument, restart: true);
+            StartPracticalTour = true;
+            Note = PracticalTourResetText;
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Failed to reset the practical tour");
+            Note = PracticalTourResetFailedText;
+        }
     }
 }

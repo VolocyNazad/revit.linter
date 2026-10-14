@@ -231,10 +231,12 @@
     <File Path="wiki/English.md" />
     <File Path="wiki/Home.md" />
   </Folder>
+  <Folder Name="/wiki/assets/" />
   <Folder Name="/wiki/assets/diagrams/">
     <File Path="wiki/assets/diagrams/interaction-scheme.svg" />
   </Folder>
   <Folder Name="/wiki/diagnostics/">
+    <File Path="wiki/diagnostics/Built-in diagnostics and user rules.md" />
     <File Path="wiki/diagnostics/Diagnostic modules.md" />
     <File Path="wiki/diagnostics/Diagnostics overview.md" />
   </Folder>
@@ -247,20 +249,25 @@
     <File Path="wiki/diagnostics/custom/Project parameter diagnostics.md" />
     <File Path="wiki/diagnostics/custom/User diagnostics.md" />
   </Folder>
+  <Folder Name="/wiki/examples/" />
   <Folder Name="/wiki/examples/configuration/">
     <File Path="wiki/examples/configuration/collision.config.yaml" />
     <File Path="wiki/examples/configuration/config.yaml" />
     <File Path="wiki/examples/configuration/Configuration examples.md" />
     <File Path="wiki/examples/configuration/parameter-element.config.yaml" />
+    <File Path="wiki/examples/configuration/practical-tour.config.yaml" />
   </Folder>
   <Folder Name="/wiki/examples/configuration/ru/">
     <File Path="wiki/examples/configuration/ru/collision.config.yaml" />
     <File Path="wiki/examples/configuration/ru/config.yaml" />
     <File Path="wiki/examples/configuration/ru/parameter-element.config.yaml" />
+    <File Path="wiki/examples/configuration/ru/practical-tour.config.yaml" />
   </Folder>
   <Folder Name="/wiki/getting-started/">
     <File Path="wiki/getting-started/Configuration setup.md" />
+    <File Path="wiki/getting-started/Create your first rule.md" />
     <File Path="wiki/getting-started/Installation.md" />
+    <File Path="wiki/getting-started/Practical tour.md" />
     <File Path="wiki/getting-started/Quick start.md" />
     <File Path="wiki/getting-started/Troubleshooting.md" />
   </Folder>
@@ -277,6 +284,7 @@
     <File Path="wiki/interface/dockable-panes/Diagnostic reports pane.md" />
     <File Path="wiki/interface/dockable-panes/Diagnostics pane.md" />
     <File Path="wiki/interface/dockable-panes/Fix reports pane.md" />
+    <File Path="wiki/interface/dockable-panes/Ignoring pane.md" />
   </Folder>
   <Folder Name="/wiki/interface/ribbon-buttons/">
     <File Path="wiki/interface/ribbon-buttons/Check for updates button.md" />
@@ -308,6 +316,7 @@
     <File Path="wiki/ru/Русский.md" />
   </Folder>
   <Folder Name="/wiki/ru/Диагностика/">
+    <File Path="wiki/ru/Диагностика/Встроенные проверки и пользовательские правила.md" />
     <File Path="wiki/ru/Диагностика/Модули диагностики.md" />
     <File Path="wiki/ru/Диагностика/Обзор диагностики.md" />
   </Folder>
@@ -339,10 +348,13 @@
     <File Path="wiki/ru/Интерфейс/Панели/Панель диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Панели/Панель результатов диагностики.md" />
     <File Path="wiki/ru/Интерфейс/Панели/Панель результатов исправлений.md" />
+    <File Path="wiki/ru/Интерфейс/Панели/Панель игнорирования.md" />
   </Folder>
   <Folder Name="/wiki/ru/Начало работы/">
     <File Path="wiki/ru/Начало работы/Быстрый старт.md" />
     <File Path="wiki/ru/Начало работы/Настройка конфигурации.md" />
+    <File Path="wiki/ru/Начало работы/Практическое обучение.md" />
+    <File Path="wiki/ru/Начало работы/Создание первого правила.md" />
     <File Path="wiki/ru/Начало работы/Установка.md" />
     <File Path="wiki/ru/Начало работы/Устранение неполадок.md" />
   </Folder>

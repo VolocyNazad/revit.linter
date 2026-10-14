@@ -18,11 +18,14 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.SelectDiagnostic,
         PracticalTourStep.RunDiagnostics,
         PracticalTourStep.InspectFinding,
+        PracticalTourStep.OpenHelp,
         PracticalTourStep.ShowElement,
         PracticalTourStep.SelectVisualization,
         PracticalTourStep.NavigateFindings,
         PracticalTourStep.UnderstandFix,
         PracticalTourStep.FixList,
+        PracticalTourStep.UnderstandIgnore,
+        PracticalTourStep.IgnoreList,
         PracticalTourStep.ExportReport,
         PracticalTourStep.ExportReportAnotherFormat,
     ];
@@ -45,10 +48,13 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.SelectDiagnostic => SelectDiagnosticText,
         PracticalTourStep.RunDiagnostics => RunDiagnosticsText,
         PracticalTourStep.InspectFinding => InspectFindingText,
+        PracticalTourStep.OpenHelp => OpenHelpText,
         PracticalTourStep.ShowElement => ShowElementText,
         PracticalTourStep.SelectVisualization => SelectVisualizationText,
         PracticalTourStep.NavigateFindings => NavigateFindingsText,
         PracticalTourStep.UnderstandFix => UnderstandFixText,
+        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreText,
+        PracticalTourStep.IgnoreList => IgnoreListText,
         PracticalTourStep.FixList => FixListText,
         PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
         PracticalTourStep.ExportReport => ExportReportText,
@@ -81,6 +87,14 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         OnPropertyChanged(nameof(CurrentStep));
         OnPropertyChanged(nameof(Instruction));
         if (!stateMachine.IsActive) StopRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ObserveSearchText(string searchText)
+    {
+        if (!stateMachine.ObserveSearchText(searchText)) return;
+        RefreshSteps();
+        OnPropertyChanged(nameof(CurrentStep));
+        OnPropertyChanged(nameof(Instruction));
     }
 
     public void ObserveDiagnosticRun(bool hasFindings)
@@ -119,10 +133,13 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     {
         bool isUnavailable = stateMachine.HasCleanRun
                              && step is PracticalTourStep.InspectFinding
+                                 or PracticalTourStep.OpenHelp
                                  or PracticalTourStep.ShowElement
                                  or PracticalTourStep.SelectVisualization
                                  or PracticalTourStep.NavigateFindings
-                                 or PracticalTourStep.UnderstandFix;
+                                 or PracticalTourStep.UnderstandFix
+                                 or PracticalTourStep.UnderstandIgnore
+                                 or PracticalTourStep.IgnoreList;
         isUnavailable |= stateMachine.HasSingleVisualization
                          && step == PracticalTourStep.SelectVisualization;
         int currentIndex = Array.IndexOf(VisibleSteps, CurrentStep);
@@ -143,12 +160,15 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.SelectDiagnostic => SelectDiagnosticStepText,
         PracticalTourStep.RunDiagnostics => RunDiagnosticsStepText,
         PracticalTourStep.InspectFinding => InspectFindingStepText,
+        PracticalTourStep.OpenHelp => OpenHelpStepText,
         PracticalTourStep.ShowElement => ShowElementStepText,
         PracticalTourStep.SelectVisualization when stateMachine.HasSingleVisualization
             => SelectVisualizationUnavailableStepText,
         PracticalTourStep.SelectVisualization => SelectVisualizationStepText,
         PracticalTourStep.NavigateFindings => NavigateFindingsStepText,
         PracticalTourStep.UnderstandFix => InspectFixesStepText,
+        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreStepText,
+        PracticalTourStep.IgnoreList => IgnoreListStepText,
         PracticalTourStep.FixList => FixListStepText,
         PracticalTourStep.ExportReport => ExportReportStepText,
         PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatStepText,
@@ -164,10 +184,13 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStep.SelectDiagnostic => SelectDiagnosticText,
         PracticalTourStep.RunDiagnostics => RunDiagnosticsText,
         PracticalTourStep.InspectFinding => InspectFindingText,
+        PracticalTourStep.OpenHelp => OpenHelpText,
         PracticalTourStep.ShowElement => ShowElementText,
         PracticalTourStep.SelectVisualization => SelectVisualizationText,
         PracticalTourStep.NavigateFindings => NavigateFindingsText,
         PracticalTourStep.UnderstandFix => UnderstandFixText,
+        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreText,
+        PracticalTourStep.IgnoreList => IgnoreListText,
         PracticalTourStep.FixList => FixListText,
         PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
         PracticalTourStep.ExportReport => ExportReportText,

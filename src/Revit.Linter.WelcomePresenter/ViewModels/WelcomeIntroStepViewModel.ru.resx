@@ -135,7 +135,4 @@
   <data name="importantHeader_text" xml:space="preserve">
     <value>Важно знать</value>
   </data>
-  <data name="parameters_text" xml:space="preserve">
-    <value>При открытии или создании документа плагин добавляет в него два общих параметра проекта: Linter_Ignored и Linter_IgnoredType. В них хранится список игнорируемых замечаний, поэтому модель изменяется.</value>
-  </data>
 </root>
