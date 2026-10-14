@@ -60,7 +60,7 @@ Keep the root `.editorconfig` in the solution and apply its repository-wide enco
 
 ## Warnings
 
-Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why.
+Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why. The release publish enforces this: the build pipeline compiles the add-in with `TreatWarningsAsErrors=true`, so any warning in a release configuration fails the publish. Keep every release configuration warning-free; verify with a plain `dotnet build` before tagging.
 
 ## Updater build unit
 
@@ -70,11 +70,16 @@ Everything under `updater/` builds independently of the root solution. Add updat
 
 Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in global.json. CI invokes each headless test project explicitly and treats a run with no discovered tests as a failure. Tests that require a running Revit process use the .RevitTests suffix and are excluded from hosted headless test runs.
 
+Testing rules scoped to one area live with that area: see [adding a built-in diagnostic](../diagnostics/adding.md).
+
 The post-publish localization artifact project is an intentional exception: the build pipeline invokes its xUnit v3 executable through `dotnet run` after producing each ILRepack output. Microsoft.Testing.Platform does not discover this executable's test through `dotnet test`, while the in-process xUnit runner does. Do not replace this command with `dotnet test` unless discovery is verified for every supported target framework and configuration.
 
 ## Roslyn compatibility
 
-Distributed analyzers and source generators target Microsoft.CodeAnalysis 4.14, matching Visual Studio 2022 version 17.14. Keep Roslyn references private implementation dependencies and verify analyzer or generator tests before changing this compatibility baseline.
+Distributed analyzers and source generators target the Microsoft.CodeAnalysis.CSharp version pinned
+centrally in `Directory.Packages.props` (currently 5.9.0), which is the analyzer API of the Visual
+Studio version the repository builds against. Keep Roslyn references private implementation
+dependencies and verify analyzer or generator tests before changing this compatibility baseline.
 
 ## Logging
 

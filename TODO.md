@@ -3,7 +3,7 @@
 ## Unified per-user installer and updates
 
 - [x] Replace the separate user-facing Revit-version installers with one per-user Revit Linter MSI, migrate legacy per-version products, and leave one Programs and Features entry.
-- [x] Install application files under `%LOCALAPPDATA%\Programs\Volocy\Revit.Linter\` and version-specific `.addin` manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\` without requiring elevation.
+- [x] Install application files under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\` and version-specific `.addin` manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\` without requiring elevation.
 - [x] Detect installed supported Revit versions, preselect them, and let the user change the selected components before installation.
 - [x] Package every selectable Revit build and one shared updater in the same MSI so installation and removal cannot orphan shared infrastructure.
 - [x] Keep one stable MSI `UpgradeCode`, upgrade the updater and selected plugin components in one transaction, and migrate feature selection on unified upgrades.
@@ -43,7 +43,7 @@
 #### Product flow
 
 - [x] Restructure the common welcome flow around four short steps: what Revit Linter does; built-in diagnostics versus user-defined YAML rules; optional example configuration installation; and the next action appropriate to the current Revit state.
-- [x] Present the product workflow as **Revit model → Diagnostics → Findings → Show or fix → Export report** and keep paths, logs and the `Linter_Ignored` parameters in a secondary **Good to know** disclosure instead of competing with the primary explanation.
+- [x] Present the product workflow as **Revit model → Diagnostics → Findings → Show or fix → Export report** and keep paths and logs in a secondary **Good to know** disclosure instead of competing with the primary explanation.
 - [x] Add a read-only rule visualizer that pairs a small real YAML example with plain-language explanations of `code`, `description`, `severity`, `take` and `check`. Link detailed syntax to the Wiki rather than turning the welcome window into an editor or reference manual.
 - [x] Branch only at the practical part of the experience. If a document is already open, offer the practical tour immediately. If no document is open, finish the short introduction and offer either an Autodesk sample or continuation after the user opens a document.
 - [x] Keep example configuration installation optional. The practical tour remains usable with built-in diagnostics when the user does not install the YAML examples.
@@ -84,6 +84,29 @@
 - [x] Update the quick start and **Getting started** button pages for the document-present/document-absent branches, Autodesk sample selection, disposable copies, resuming and resetting the tour.
 - [ ] Before adding or changing tests, agree the coverage scope as required by the development policy. At minimum, plan headless coverage for the onboarding state machine, branching, sample filtering/ranking, unique copy-path planning, progress persistence and failure fallbacks; keep thin Revit UI adapters outside headless tests.
 - [ ] Deliver in stages: content and information architecture; pure onboarding state machine; host adapters and Autodesk sample discovery; modeless coach marks; then optional animation polish. Each stage must leave onboarding safely disableable and the existing diagnostics workflow unchanged.
+
+## Collision diagnostics
+
+- [ ] Show the user a visible warning when a collision rule skips selected elements without geometry (today this is only a `Warning` in the log from `ElementDiagnostic.BuildGroups`): after the run, report the skipped count per rule and advise narrowing the `take`/`andTake` filters, since skipped elements cannot collide but still cost a geometry read each.
+
+## Document diagnostics
+
+- [x] DOC004 (preview view not found) removed: deleting the view set as preview re-triggers DOC003 instead — Revit resets `PreviewViewId` to invalid on view deletion and rejects dangling ids in the setter, so the check could not fire.
+
+## Ignore list
+
+- [ ] Migrate ignores that version 2.0.0 stored in the `Linter_Ignored`/`Linter_IgnoredType` project parameters into the in-document ignore list when a model is opened. The current implementation reads only the Extensible Storage list, so those ignores are not honored, and the obsolete parameters stay bound in models that already have them.
+
+## Diagnostic tags (idea, needs a consumer first)
+
+- [ ] Add an optional `tags` field to diagnostic rules only together with a concrete consumer (filter chips in the Diagnostics pane, tour selection by tag, or discipline packs replacing `section` comments). Without a consumer, a curated dictionary, validation, UI, and localization, freeform tags rot and duplicate the existing substring search.
+
+## Asset-based RevitTests for built-in diagnostics
+
+- [ ] Cover SYST001 with the code-built `ConnectorDiagnosticsTests` (cube families carrying pipe/duct/cable-tray/conduit/electrical connectors, the full connector-type matrix and the project-only filter — so far only compiled, needs a live Revit run) and SHRD0016 (imported CAD file) with a checked-in binary test asset. The `MEPCurve` branch still needs a project asset or a way to build MEP types in code. SHRD0020 title blocks are built in code (`FamilyTestDocuments.LoadTitleblockSymbol`: an annotation template reassigned to `OST_TitleBlocks`).
+- [ ] SHRD003 has no fix: `FamilyInstance.Mirrored` is get-only, and no in-place API mirror clears the flag (verified live: re-mirroring a mirrored instance about the same plane and about an orthogonal plane through its origin leaves `Mirrored` set); any odd-mirror alternative displaces the element, so there is no safe automatic unmirror.
+- [ ] Cover ARCH003 (zero-area room with boundaries) and SHRD0022 (materials cannot be created through the Revit API and empty documents have none to duplicate): no deterministic API construction is known; revisit if one is found.
+- [ ] Cover SHRD0009 when floor types become available in empty test documents.
 
 ## Branching diagnostic report history
 

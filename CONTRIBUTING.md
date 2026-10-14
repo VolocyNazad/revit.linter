@@ -4,12 +4,15 @@ Before making a change, read the [development policy](docs/policies/development.
 and the [repository guide](docs/repository.md). They define the repository-specific
 stack, testing expectations and maintenance rules.
 
-Keep changes focused and update [CHANGELOG.md](CHANGELOG.md) under `Unreleased`
-when the development policy requires it. Before submitting a pull request, check
-the items that apply to the change:
+Keep changes focused. Regular development leaves `## [Unreleased]` in
+[CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
+since the previous stable tag when a release is prepared. See the
+[release changelog policy](docs/policies/development.md#release-changelog).
+Before submitting a pull request, check the items that apply to the change:
 
 - Assess whether automated tests or a manual Revit check are needed; add or update
   tests when appropriate. Follow the test approval rule in the development policy.
+  Built-in diagnostics follow [docs/diagnostics/adding.md](docs/diagnostics/adding.md).
 - Build the affected projects and configurations. Resolve new compiler and
   analyzer warnings in touched code.
 - Confirm relevant CI checks pass before merging.
@@ -31,8 +34,8 @@ the items that apply to the change:
 ## Before publishing a release
 
 - Verify the release tag and version against the release commit.
-- Move the user-facing entries from `Unreleased` into the versioned changelog
-  section and leave `Unreleased` empty, as described in the
+- Compose the new `MAJOR.MINOR.PATCH` section from the changes since the previous
+  stable tag and leave `Unreleased` empty, as described in the
   [release changelog policy](docs/policies/development.md#release-changelog).
 - Confirm CI succeeds and inspect the release build, installer and published
   artifacts when the release pipeline completes.

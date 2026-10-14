@@ -26,7 +26,7 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 
 `src/` contains dozens of small, single-responsibility-per-project
 projects (diagnostics, presenters, state managers, etc.) — most are
- named `Revit.Linter.<Area>`. `Toolkit.Revit.Extensions` is Revit API
+ named `Revit.Linter.<Area>`. `VolocyNazad.Revit.Sugar` is Revit API
  extensions, separate from `Revit.Linter.*`.
 `Revit.Linter.DocumentQueries` owns the document queries shared by diagnostics (all elements, elements of a
 class, element types, element geometry) and the typed `DocumentQueryKey` under which their results are kept
@@ -62,7 +62,7 @@ attached property for the text shown in an empty text box. The dictionaries are 
 views reference by type rather than by a pack URI, which survives ILRepack.
 `DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
 address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
-it for F1 help, and the report row opens it; a renamed Wiki page must be renamed in the code that refers to it.
+it for F1 help, and the report and diagnostics rows open it; a renamed Wiki page must be renamed in the code that refers to it.
 `HelpToolTip` in `Revit.Linter.Behaviors` gives a pane control a ribbon-like tooltip through attached properties
 (title, description, note). Its inherited `HelpCommand`, set once on the root of a view, is executed when F1 is
 pressed while a tooltip is open; the key is caught by a thread keyboard hook that exists only while the tooltip is
@@ -80,9 +80,13 @@ Revit start; release builds show only the steps the user has not seen.
 The optional practical tour observes neutral completed UI facts published through `IUserInterfaceActivityStream`;
 diagnostic presenters do not reference welcome or onboarding types. Its WPF emphasis is owned by a disposable
 highlight session, so closing or restarting the tour restores every affected control. A non-blocking spotlight dims
-the surrounding pane, outlines the active target and labels it as the next step; the target glow pulses while Windows
-client-area animations are enabled. The host also brings the required pane to the foreground. The tour is hosted in a
-right-side Revit dockable pane; its registration and visibility remain host actions behind `IWelcomeHost`.
+the surrounding pane, outlines the active target with a soft pulsing halo and labels it as the next step; both
+pulse while Windows client-area animations are enabled. A target that is a button
+(not a check box, a radio button or another control) additionally glows through its own element effect and
+takes an accent frame on the button itself, while rows, text and other surfaces take no element effect,
+so their inner text never casts accent shadows. The host also brings the required pane to the foreground.
+The tour is hosted in a right-side Revit dockable pane; its registration and visibility remain host actions
+behind `IWelcomeHost`.
 Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file and clears the persisted
 `TOUR001` selection, so the user enables the check as the guided step asks. Completing the tour or
 opting out removes the managed file, so no training configuration is left behind; starting the tour
@@ -99,12 +103,26 @@ applying any pipeline. The host owns creation and activation behind `IVisualizat
 `RevitAPIUI` calls out of the presenter while allowing crop and combined visualizations to use a predictable 3D view.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
 consumed by the diagnostic report presenter; the initial supported step deletes the target element.
+`Revit.Linter.ElementIgnoring` owns the ignore list. `IIgnoreElementDetector` answers whether a
+finding is ignored and `IIgnoreElementProvider` writes ignores, while `IIgnoreListManager` lists,
+removes and clears the entries; storage details never leave the module. The entries live inside the
+document as one Extensible Storage entity on a single `DataStorage`, with one entry per element and
+diagnostic code or per document and code, so any element can be ignored without adding parameters to
+it. `Revit.Linter.IgnoreListPresenter` shows the ignore list of the active document in its own
+dockable pane, where entries can be selected or removed, and reaches the list only through
+`IIgnoreListManager`.
+`Revit.Linter.CollisionTestModels` owns test tooling that builds a host document with two
+shared-coordinates links whose walls, floors and system runs overlap the host content, covering
+volumetric hits as well as touch-only and isolated no-collision controls, so collision rules
+with link checks enabled can be verified; its ribbon button is added to its own panel on the diagnostics tab by the host when
+`CollisionTestRibbon.IsEnabled` allows it (development builds, or `REVIT_LINTER_TEST_TOOLS=1`).
 The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`
 replaces the root central package versions for everything under `updater/` (MSBuild uses the nearest file and it
 does not import the root one), so updater dependencies can be versioned independently of the Revit add-in.
 `updater/Directory.Build.props` likewise replaces the root one: the updater projects use `Microsoft.NET.Sdk` instead of
-`VolocyNazad.Revit.Sdk`, target `net8.0-windows` explicitly and have plain `Debug`/`Release` configurations because
-the updater runs outside Revit. Nothing in the root solution references the updater projects; the add-in only starts
+`VolocyNazad.Revit.Sdk` and target `net8.0-windows` explicitly, except the notification executable,
+which adds the Windows 10 version to that target framework; all of them have plain `Debug`/`Release`
+configurations because the updater runs outside Revit. Nothing in the root solution references the updater projects; the add-in only starts
 `Revit.Linter.Updater.exe` by path, and the release build publishes the updater project directly.
 `Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
 check scheduling, per-user state persistence, and single-instance coordination.
@@ -162,7 +180,8 @@ location, updater synchronization name) is owned by `ProductIdentity` in `Revit.
 (`src/Revit.Linter.Core/Abstractions/ProductIdentity.cs`). The updater and the installer compile the
 same file as a source link, so they stay independent build units without a project reference to the
 Revit API. Path composition stays with the owning module: `ConfigurationPathUtils` for user
-configurations (`Documents\Revit Linter\<year>\`, `config.yaml`, `examples/`, `tour/`), `UpdaterPaths`
+configurations (`Documents\Revit Linter\<year>\`, `config.yaml`, `collision.config.yaml`,
+`parameter-element.config.yaml`, `examples/`, `debug/`, `tour/`), `UpdaterPaths`
 in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\` (`logs/`, `state.json`,
 `downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the composition root for
 add-in logs (`...\\logs\\`) and the ValueStore settings directory (`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`).
@@ -176,8 +195,10 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 - WPF with the add-in's own control styles, CommunityToolkit.Mvvm, Microsoft.Xaml.Behaviors.Wpf
 - `VolocyNazad.Revit.Async`, `VolocyNazad.Revit.Context`,
   `VolocyNazad.Revit.Events`, `VolocyNazad.Revit.TransactionMemoryCache`,
-  `VolocyNazad.MVVM.DependencyInjection`, `VolocyNazad.AssemblyResolver` —
+  `VolocyNazad.Revit.Sugar`, `VolocyNazad.MVVM.DependencyInjection`,
+  `VolocyNazad.AssemblyResolver` —
   packages from the `toolkit.revit.*` family of repositories
+- `VolocyNazad.ValueStore` — the per-user settings value store
 - `Nice3point.TUnit.Revit` — testing inside the Revit environment
 - Microsoft.Extensions.* (DependencyInjection, Logging, Localization,
   Options, Hosting) and System.Text.Json
@@ -185,7 +206,8 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
   parent-culture `ru` satellite assemblies. Global, view-model, and feature-owned user-facing
   strings are resolved by `LocalizationResourceReader` from the localization assembly excluded
   from ILRepack
-- Microsoft.CodeAnalysis.CSharp (Roslyn — presumably for code analysis/parsing)
+- Microsoft.CodeAnalysis.CSharp (Roslyn) — the analyzer API of the in-repo source generator
+  `Revit.Linter.Localization.Generator`, which generates the typed localized properties of view models
 - YamlDotNet, StringToExpression, Humanizer.Core(.ru)
 - Serilog + Serilog.Sinks.* (Console and Debug in development, File in all builds); add-in logs
   are stored under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\`, roll daily and at 20 MB,
@@ -199,7 +221,7 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 - `VolocyNazad.ResxAnalyzer` runs during regular builds of `Revit.Linter.Localization` and reports
   missing, extra or duplicate keys, mismatched composite-format placeholders, empty translations,
   missing culture files, and satellites without a neutral resource (`RESX001`-`RESX007`)
-- Central package management via `Directory.Packages.props` (`installer/`, `build/` and `updater/` have their own);
+- Central package management via `Directory.Packages.props` (`installer/`, `build/`, `benchmark/`, `sandbox/` and `updater/` have their own);
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
   via `GlobalPackageReference` for all projects
 
@@ -208,6 +230,7 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 - `AGENTS.md` links to the required repository guidance.
 - `TODO.md` records agreed future work that is not yet implemented.
 - `docs/policies/development.md` contains the development policy.
+- `docs/diagnostics/adding.md` describes the end-to-end workflow for adding a built-in diagnostic.
 - `docs/repository.md` describes the project, repository structure, and technology stack.
 - `docs/architecture.md` records stable module boundaries and design decisions.
 - `docs/FEATURES.md` summarizes the current product scope and compatibility contract.
@@ -223,7 +246,9 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 - Page names must remain unique across both languages because GitHub Wiki addresses pages by name rather than by language folder.
 - Wiki sources use Obsidian's `[[Target|Label]]` alias order. Inside Markdown tables, escape the alias separator as `\|`. The publication workflow runs `scripts/Prepare-Wiki.ps1` to reject malformed brackets, missing pages and incorrect explicit paths, then convert aliased links to GitHub Wiki's `[[Label|Target]]` order in a staging directory without changing the Obsidian sources.
 
-Local Obsidian settings under `wiki/.obsidian/` are ignored. Keep shared content and navigation in Markdown so the same files work in Obsidian and GitHub Wiki.
+Local Obsidian settings under `wiki/.obsidian/` are ignored; the contributor vault under
+`docs/.obsidian/` is committed, so its shared settings travel with the repository. Keep shared content
+and navigation in Markdown so the same files work in Obsidian and GitHub Wiki.
 
 The root solution exposes contributor documentation under `docs` and user documentation under `wiki`, preserving their subfolder structure. When adding documentation files, also add them as solution items; solution folders do not automatically include new files.
 

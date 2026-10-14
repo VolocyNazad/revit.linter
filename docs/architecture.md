@@ -45,6 +45,7 @@ This document records stable architectural rules. Implementation details belong 
   the document, and the view when the result depends on it; a key never relies on an element identifier or a
   document title alone.
 - Diagnostic codes and serialized configuration contracts are stable user-facing identifiers. Change them only with an explicit migration or compatibility decision.
+- Diagnostic configuration files carry a `version` file format envelope around the rule list (`version` plus `rules`); files without it read as legacy version 0. A file with a newer version than the running product is refused when it is loaded, so compatibility checks have a reliable signal.
 
 ## Element highlighting
 
@@ -57,6 +58,21 @@ This document records stable architectural rules. Implementation details belong 
 - `Revit.Linter.ElementFixing` owns configuration-driven element fix pipeline composition.
 - Fix pipelines execute ordered destructive steps inside the transaction supplied by the fix presenter.
 - Step implementations remain independent of user-diagnostic configuration parsing and presentation.
+
+## Element ignoring
+
+- `Revit.Linter.ElementIgnoring` owns the ignore list behind `IIgnoreElementDetector`,
+  `IIgnoreElementProvider` and `IIgnoreListManager`; storage details never leave the module.
+- Ignores are stored in one `DataStorage` with Extensible Storage per document, one entry per
+  ignored element and diagnostic code or per ignored document and code — never as parameters on
+  the elements themselves, so any element can be ignored. A document-level entry suppresses every
+  finding of its diagnostic in that document.
+- The cached ignore state is dropped (never patched) after a write, so checks inside the writing
+  transaction and after a rollback both reload the current storage. Missing entries are dropped on
+  every write and on settled pane loads, never inside detector runs or change storms an undo may
+  still revert.
+- `Revit.Linter.IgnoreListPresenter` shows the ignore list of the active document in its own dockable
+  pane and edits it only through `IIgnoreListManager`; it knows nothing about the storage.
 
 ## Localization
 
@@ -74,7 +90,7 @@ This document records stable architectural rules. Implementation details belong 
 
 ## Packaging and releases
 
-- The root solution builds the add-in and tests. `installer/`, `build/`, `updater/` and `sandbox/` remain separate solutions with their own responsibilities.
+- The root solution builds the add-in and tests. `installer/`, `build/`, `benchmark/`, `updater/` and `sandbox/` remain separate solutions with their own responsibilities.
 - The updater is an independent build unit: `updater/` owns its MSBuild settings and central package versions, uses
   plain `Debug`/`Release` configurations and is not referenced by the root solution. The add-in couples to it only by
   launching `Revit.Linter.Updater.exe`, and the release pipeline publishes it directly for the MSI.
