@@ -1,4 +1,5 @@
-﻿using Revit.Linter.Core.Abstractions;
+﻿using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.Core.Abstractions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Core;
@@ -27,6 +28,13 @@ public static class ConfigurationPathUtils
 
     /// <summary>Gets the subfolder that holds the managed practical-tour configuration.</summary>
     public const string TourFolderName = "tour";
+
+    /// <summary>Gets the subfolder that holds debug configurations.</summary>
+    /// <remarks>
+    /// Debug rules are user-owned like the top-level files and outrank installed examples;
+    /// unlike the examples folder, its files are never installed by the product.
+    /// </remarks>
+    public const string DebugFolderName = "debug";
     private static int _revitVersion =
 #if IS2021
     2021;
@@ -58,6 +66,9 @@ public static class ConfigurationPathUtils
     /// <summary>Gets the example user configuration file path for the current Revit version.</summary>
     public static string ExampleConfigPath => Path.Combine(Directory, ExamplesFolderName, ConfigFileName);
 
+    /// <summary>Gets the debug user configuration file path for the current Revit version.</summary>
+    public static string DebugConfigPath => Path.Combine(Directory, DebugFolderName, ConfigFileName);
+
     /// <summary>Gets the managed practical-tour configuration file path.</summary>
     public static string PracticalTourConfigPath =>
         Path.Combine(Directory, TourFolderName, PracticalTourFileName);
@@ -69,6 +80,10 @@ public static class ConfigurationPathUtils
     public static string ExampleCollisionConfigPath =>
         Path.Combine(Directory, ExamplesFolderName, CollisionConfigFileName);
 
+    /// <summary>Gets the debug collision configuration file path.</summary>
+    public static string DebugCollisionConfigPath =>
+        Path.Combine(Directory, DebugFolderName, CollisionConfigFileName);
+
     /// <summary>Gets the project-parameter configuration file path.</summary>
     public static string ParameterElementConfigPath => Path.Combine(Directory, ParameterElementConfigFileName);
 
@@ -76,11 +91,22 @@ public static class ConfigurationPathUtils
     public static string ExampleParameterElementConfigPath =>
         Path.Combine(Directory, ExamplesFolderName, ParameterElementConfigFileName);
 
+    /// <summary>Gets the debug project-parameter configuration file path.</summary>
+    public static string DebugParameterElementConfigPath =>
+        Path.Combine(Directory, DebugFolderName, ParameterElementConfigFileName);
+
+    /// <summary>Gets the diagnostic configuration file format version this product reads.</summary>
+    /// <remarks>
+    /// Diagnostic registration providers refuse files with a newer version: such a file was written
+    /// for a newer product whose rule schema this product may not understand.
+    /// </remarks>
+    public const int SupportedConfigurationVersion = 1;
+
     /// <summary>
     /// Creates the parent directory and an empty file when the specified configuration file does not exist.
     /// </summary>
     /// <param name="path">The configuration file path.</param>
-    /// <exception cref="InvalidOperationException"><paramref name="path"/> does not contain a directory.</exception>
+    /// <exception cref="T:System.InvalidOperationException"><paramref name="path"/> does not contain a directory.</exception>
     public static void EnsureFileExists(string path)
     {
         string? directoryPath = Path.GetDirectoryName(path)
@@ -108,6 +134,65 @@ public static class ConfigurationPathUtils
         if (string.IsNullOrEmpty(configContent)) return null;
         T? rules = deserializer.Deserialize<T>(configContent);
         return rules;
+    }
+
+    /// <summary>
+    /// Reads a diagnostic configuration file with its format metadata.
+    /// </summary>
+    /// <typeparam name="TRule">The rule type of one diagnostic module.</typeparam>
+    /// <param name="configPath">The configuration file path.</param>
+    /// <returns>
+    /// The enveloped file, or a version 0 file when the content is a legacy bare rule list;
+    /// <see langword="null"/> when the file is empty.
+    /// </returns>
+    /// <remarks>A missing file is created before it is read.</remarks>
+    public static ConfigurationFile<TRule>? GetVersionedConfigurations<TRule>(string configPath)
+        where TRule : class
+    {
+        IDeserializer deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
+        EnsureFileExists(configPath);
+        string configContent = File.ReadAllText(configPath);
+        if (string.IsNullOrEmpty(configContent)) return null;
+        try
+        {
+            return deserializer.Deserialize<ConfigurationFile<TRule>>(configContent);
+        }
+        catch (YamlException)
+        {
+            // Legacy files predate the envelope and carry a bare rule list.
+            List<TRule>? rules = deserializer.Deserialize<List<TRule>>(configContent);
+            if (rules is null) return null;
+            return new ConfigurationFile<TRule> { Version = 0, Rules = rules };
+        }
+    }
+
+    /// <summary>
+    /// Attempts to read a diagnostic configuration file with its format metadata
+    /// and converts YAML parsing failures into a failed result.
+    /// </summary>
+    /// <typeparam name="TRule">The rule type of one diagnostic module.</typeparam>
+    /// <param name="configPath">The configuration file path.</param>
+    /// <param name="configuration">The enveloped configuration, or <see langword="null"/> when the file is empty or invalid.</param>
+    /// <param name="error">The YAML parsing error when reading failed; otherwise <see langword="null"/>.</param>
+    /// <returns><see langword="true"/> when the file was read successfully; otherwise <see langword="false"/>.</returns>
+    public static bool TryGetVersionedConfigurations<TRule>(
+        string configPath, out ConfigurationFile<TRule>? configuration, out Exception? error)
+        where TRule : class
+    {
+        try
+        {
+            configuration = GetVersionedConfigurations<TRule>(configPath);
+            error = null;
+            return true;
+        }
+        catch (YamlException exception)
+        {
+            configuration = null;
+            error = exception;
+            return false;
+        }
     }
 
     /// <summary>

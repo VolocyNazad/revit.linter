@@ -14,7 +14,7 @@ public sealed class ConfigurationFileChangeSource : IDisposable
     /// Initializes a change source for a single configuration file and creates its parent directory when necessary.
     /// </summary>
     /// <param name="filePath">The path of the configuration file to watch.</param>
-    /// <exception cref="ArgumentException"><paramref name="filePath"/> does not contain a directory.</exception>
+    /// <exception cref="T:System.ArgumentException"><paramref name="filePath"/> does not contain a directory.</exception>
     public ConfigurationFileChangeSource(string filePath) : this([filePath])
     {
     }
@@ -23,7 +23,7 @@ public sealed class ConfigurationFileChangeSource : IDisposable
     /// Initializes a change source for several configuration files and creates their parent directories when necessary.
     /// </summary>
     /// <param name="filePaths">The configuration files to watch.</param>
-    /// <exception cref="ArgumentException">A path does not contain a directory, or no paths were supplied.</exception>
+    /// <exception cref="T:System.ArgumentException">A path does not contain a directory, or no paths were supplied.</exception>
     public ConfigurationFileChangeSource(IEnumerable<string> filePaths)
     {
         string[] paths = filePaths.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
