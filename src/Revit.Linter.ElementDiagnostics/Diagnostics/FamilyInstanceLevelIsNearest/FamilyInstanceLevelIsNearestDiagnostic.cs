@@ -17,10 +17,21 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
 
         IReadOnlyList<Level> levels = documentQueries.GetElementsOfClass<Level>(document);
 
-        ElementId nearedsLevelId = levels.OrderBy(level
-            => Math.Abs(level.get_Parameter(BuiltInParameter.LEVEL_ELEV).AsDouble() - (elevation + elevationOffset))).First().Id;
+        // Single linear pass instead of OrderBy(...).First(): sorting is O(L log L) with
+        // delegate and comparer allocations per instance, while the minimum is O(L).
+        // Manual loop rather than Enumerable.MinBy: MinBy is unavailable on net48 (Revit 2021-2023).
+        double targetElevation = elevation + elevationOffset;
+        ElementId nearestLevelId = levels[0].Id;
+        double nearestDistance = double.MaxValue;
+        foreach (Level level in levels)
+        {
+            double distance = Math.Abs(level.get_Parameter(BuiltInParameter.LEVEL_ELEV).AsDouble() - targetElevation);
+            if (distance >= nearestDistance) continue;
+            nearestDistance = distance;
+            nearestLevelId = level.Id;
+        }
 
-        return nearedsLevelId != levelId
+        return nearestLevelId != levelId
             ? new(DiagnosticVerdict.NotValid)
             : new(DiagnosticVerdict.Valid);
     }

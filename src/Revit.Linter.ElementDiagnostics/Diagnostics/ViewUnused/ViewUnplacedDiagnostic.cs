@@ -9,7 +9,13 @@ internal sealed class ViewUnplacedDiagnostic : IElementDiagnostic
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         var targetView = (View)targetElement;
-        var viewports = targetView.GetDependentElements(_viewportFilter);
-        return viewports.Any() ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        // Every view keeps a placeholder viewport that references the view itself
+        // instead of a sheet: only a viewport on a real sheet means the view is placed.
+        bool isPlaced = targetView.GetDependentElements(_viewportFilter)
+            .Select(document.GetElement)
+            .OfType<Viewport>()
+            .Any(viewport => viewport.ViewId == targetView.Id
+                && viewport.SheetId != ElementId.InvalidElementId);
+        return isPlaced ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
     }
 }

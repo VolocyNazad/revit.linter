@@ -13,11 +13,17 @@
   <data name="deleteNotEnclosedRoom_fix" xml:space="preserve"><value>Delete unenclosed room</value></data>
   <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Delete unplaced room</value></data>
   <data name="deleteTextNote_fix" xml:space="preserve"><value>Delete text note</value></data>
+  <data name="deleteEmptySheet_fix" xml:space="preserve"><value>Delete empty sheet</value></data>
   <data name="deleteUnusedProfileSymbol_fix" xml:space="preserve"><value>Delete unused profile type</value></data>
   <data name="deleteUnusedReferencePlane_fix" xml:space="preserve"><value>Delete unused reference plane</value></data>
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Delete unused reference line</value></data>
+  <data name="attachToNearestLevel_fix" xml:space="preserve"><value>Attach to nearest level</value></data>
+  <data name="keepFirstTitleBlock_fix" xml:space="preserve"><value>Delete extra title blocks</value></data>
+  <data name="ungroupGroup_fix" xml:space="preserve"><value>Ungroup</value></data>
+  <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Ungroup nested group</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Select</value></data>
   <data name="show_and_select_visualization" xml:space="preserve"><value>Show and select</value></data>
+  <data name="cut_show_and_select_visualization" xml:space="preserve"><value>Cut, show and select</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Checks pipes, ducts, conduits, cable trays, and family instances for unconnected connectors.</value></data>
   <data name="SYST001_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) has unconnected connectors. Duration: {duration} ms.</value></data>
   <data name="SHRD001_description" xml:space="preserve"><value>Checks whether families are used in the document.</value></data>
@@ -76,8 +82,12 @@
   <data name="SHRD0023_message" xml:space="preserve"><value>Profile type '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
   <data name="SHRD0024_description" xml:space="preserve"><value>Checks whether reference planes are constrained by locked or equalized (EQ) dimensions in family documents.</value></data>
   <data name="SHRD0024_message" xml:space="preserve"><value>Reference plane '{elementName}' ({elementId}) has no locked or EQ dimensions. Duration: {duration} ms.</value></data>
+  <data name="SHRD0025_description" xml:space="preserve"><value>Checks whether family type text parameters are filled in family documents.</value></data>
+  <data name="SHRD0025_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has unfilled type parameters: {details}. Duration: {duration} ms.</value></data>
   <data name="SHRD0026_description" xml:space="preserve"><value>Checks whether family types duplicate each other in family documents.</value></data>
   <data name="SHRD0026_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has duplicate types: {duplicateNames}. Duration: {duration} ms.</value></data>
+  <data name="SHRD0027_description" xml:space="preserve"><value>Checks whether groups exist in the document.</value></data>
+  <data name="SHRD0027_message" xml:space="preserve"><value>Group '{elementName}' ({elementId}) exists in the document. Duration: {duration} ms.</value></data>
   <data name="SHRD0028_description" xml:space="preserve"><value>Checks whether family symbols duplicate each other in the same family.</value></data>
   <data name="SHRD0028_message" xml:space="preserve"><value>Family symbol '{elementName}' ({elementId}) has identical parameter values with '{duplicateNames}'. Duration: {duration} ms.</value></data>
   <data name="SHRD0029_description" xml:space="preserve"><value>Checks whether reference lines are constrained by locked or equalized (EQ) dimensions in family documents.</value></data>

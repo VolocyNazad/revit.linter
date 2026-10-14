@@ -11,6 +11,6 @@ internal sealed class ModelCurveExistsDiagnosticFilter : IElementDiagnosticFilte
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ModelCurveExists;
 
     public bool IsRelevantFor(Document document, Element element)
-        => element is ModelCurve && element.Category != null 
+        => element is ModelCurve modelCurve && !modelCurve.IsReferenceLine && element.Category != null 
         && element.Category.IsBuiltInCategory(BuiltInCategory.OST_Lines);
 }
