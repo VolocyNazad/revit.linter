@@ -84,6 +84,8 @@ public sealed class DocumentQueryServiceTests : RevitApiTest
     }
 
     [Test]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S1764",
+        Justification = "Identical factory calls are the assertion subject: two separately created equal keys must match.")]
     public async Task Queries_differing_by_name_argument_or_element_do_not_share_an_entry()
     {
         DocumentQueryKey baseKey = DocumentQueryKey.Create(_document!, "test:query");
@@ -107,14 +109,15 @@ public sealed class DocumentQueryServiceTests : RevitApiTest
     [Test]
     public async Task Queries_against_different_documents_do_not_share_an_entry()
     {
+        var queries = _queries!;
         bool keysDiffer =
             DocumentQueryKey.Create(_document!, "test:query")
             != DocumentQueryKey.Create(_otherDocument!, "test:query");
         ElementId levelId = _level!.Id;
 
-        ElementId[] levelIds = [.. _queries!.GetElementsOfClass<Level>(_document!).Select(level => level.Id)];
+        ElementId[] levelIds = [.. queries.GetElementsOfClass<Level>(_document!).Select(level => level.Id)];
         ElementId[] otherWallIds =
-            [.. _queries.GetElementsOfClass<Wall>(_otherDocument!).Select(wall => wall.Id)];
+            [.. queries.GetElementsOfClass<Wall>(_otherDocument!).Select(wall => wall.Id)];
 
         await Assert.That(keysDiffer).IsTrue();
         await Assert.That(levelIds).Contains(levelId);
@@ -122,6 +125,8 @@ public sealed class DocumentQueryServiceTests : RevitApiTest
     }
 
     [Test]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S1764",
+        Justification = "Identical factory calls are the assertion subject: two separately created equal keys must match.")]
     public async Task View_scoped_query_does_not_share_an_entry_with_the_document_query()
     {
         View view = new FilteredElementCollector(_document!)
