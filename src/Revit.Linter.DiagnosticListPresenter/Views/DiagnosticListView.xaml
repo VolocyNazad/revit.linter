@@ -48,10 +48,24 @@
             <DockPanel DockPanel.Dock="Top" Style="{StaticResource LinterToolBarPanel}">
                 <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
                 <Button
+                    behaviors:HelpToolTip.Description="{Binding OpenHelpDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding OpenHelpText, Mode=OneWay}"
+                    Command="{Binding OpenHelpCommand}"
+                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <Button
                     behaviors:HelpToolTip.Description="{Binding OpenConfigurationFolderDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding OpenConfigurationFolderTitle, Mode=OneWay}"
                     Command="{Binding OpenConfigurationFolderCommand}"
                     Content="{controls:Icon Kind=FolderOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding ResetSettingsDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ResetSettingsText, Mode=OneWay}"
+                    Command="{Binding ResetSettingsCommand}"
+                    Content="{controls:Icon Kind=Refresh}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarIconButton}" />
                 <ToggleButton
@@ -85,10 +99,12 @@
                 <UIElement />
             </DockPanel>
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
+            <!-- The configuration button column stays frozen so row refreshes on a narrow pane never scroll it partially out of view. -->
             <DataGrid
                 d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
+                FrozenColumnCount="1"
                 ItemsSource="{Binding CollectionViewSource.View}">
                 <DataGrid.Resources>
                     <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
@@ -133,6 +149,7 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
+                    <!-- Button columns keep fixed widths: accidental header drags must not collapse them. -->
                     <DataGridTemplateColumn
                         Width="{StaticResource LinterGridActionColumnWidth}"
                         CanUserResize="False"
@@ -161,6 +178,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridToggleColumnMinWidth}"
+                        CanUserResize="False"
                         Header="{Binding DataContext.IsActiveHeader, Source={StaticResource proxy}}"
                         SortMemberPath="IsActive">
                         <DataGridTemplateColumn.HeaderStyle>
@@ -188,6 +206,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridExampleCodeColumnMinWidth}"
+                        CanUserResize="False"
                         Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
@@ -222,6 +241,20 @@
                                             Foreground="{DynamicResource LinterAccentBrush}"
                                             Text="{Binding DataContext.TourText, ElementName=Root, Mode=OneWay}" />
                                     </Border>
+                                    <Border
+                                        Margin="6,0,0,0"
+                                        Padding="5,1"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource LinterSelectionBrush}"
+                                        BorderBrush="{DynamicResource LinterAccentBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="2"
+                                        Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}}">
+                                        <TextBlock
+                                            FontSize="10"
+                                            Foreground="{DynamicResource LinterAccentBrush}"
+                                            Text="{Binding DataContext.DebugText, ElementName=Root, Mode=OneWay}" />
+                                    </Border>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -229,6 +262,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridSeverityColumnMinWidth}"
+                        CanUserResize="False"
                         Header="{Binding DataContext.SeverityHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Severity">
                         <DataGridTemplateColumn.HeaderStyle>
@@ -262,6 +296,20 @@
                                     Style="{StaticResource LinterObsoleteAwareCellTextBox}"
                                     Text="{Binding Description, Mode=OneWay}"
                                     TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    behaviors:HelpToolTip.HelpCommand="{Binding OpenDocumentationCommand}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.OpenDocumentationText, Source={StaticResource proxy}, Mode=OneWay}"
+                                    Command="{Binding OpenDocumentationCommand}"
+                                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                                    Style="{StaticResource LinterGridIconButton}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

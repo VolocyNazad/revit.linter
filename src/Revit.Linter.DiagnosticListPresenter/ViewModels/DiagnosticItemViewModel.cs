@@ -20,8 +20,10 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
     public bool IsObsolete { get; private set; }
     public bool IsExample { get; private set; }
     public bool IsTour { get; private set; }
+    public bool IsDebug { get; private set; }
     public string? ConfigurationPath { get; private set; }
     public bool HasConfiguration => ConfigurationPath is not null;
+    public Action? OpenDocumentationDelegate { get; private set; }
     public string ObsoleteDescription { get; private set; } = string.Empty;
     public TargetType TargetType { get; private set; }
 
@@ -49,23 +51,25 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
         }
     }
 
-    public void Initialize(ElementDiagnosticIdOverride item, string? configurationPath = null)
+    public void Initialize(ElementDiagnosticIdOverride item, string? configurationPath = null, Action? openDocumentation = null)
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         _elementOverride = item;
         TargetType = TargetType.Element;
         Initialize(item.Identity);
         ConfigurationPath = configurationPath;
+        OpenDocumentationDelegate = openDocumentation;
         item.Changed += Override_Changed;
     }
 
-    public void Initialize(DocumentDiagnosticIdOverride item, string? configurationPath = null)
+    public void Initialize(DocumentDiagnosticIdOverride item, string? configurationPath = null, Action? openDocumentation = null)
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         _documentOverride = item;
         TargetType = TargetType.Document;
         Initialize(item.Identity);
         ConfigurationPath = configurationPath;
+        OpenDocumentationDelegate = openDocumentation;
         item.Changed += Override_Changed;
     }
 
@@ -84,6 +88,10 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
         }
     }
 
+    /// <summary>Opens the documentation page of the module that registered this diagnostic.</summary>
+    [RelayCommand]
+    private void OpenDocumentation() => OpenDocumentationDelegate?.Invoke();
+
     private void Initialize(ElementDiagnosticId identity)
     {
         Code = identity.Code;
@@ -91,6 +99,7 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
         IsObsolete = identity.IsObsolete;
         IsExample = identity.IsExample;
         IsTour = identity.IsTour;
+        IsDebug = identity.IsDebug;
         ObsoleteDescription = identity.ObsoleteDescription;
     }
 
@@ -101,6 +110,7 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
         IsObsolete = identity.IsObsolete;
         IsExample = identity.IsExample;
         IsTour = identity.IsTour;
+        IsDebug = identity.IsDebug;
         ObsoleteDescription = identity.ObsoleteDescription;
     }
 

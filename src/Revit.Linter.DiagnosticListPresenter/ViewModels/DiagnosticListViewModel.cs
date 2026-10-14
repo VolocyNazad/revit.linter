@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
@@ -26,6 +27,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
     private readonly IDialog _dialog;
+    private readonly IConfirmationDialog _confirmationDialog;
+    private readonly ILogger<DiagnosticListViewModel> _logger;
     private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
     private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
@@ -48,9 +51,10 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value)
     {
+        // Search typing refreshes the list immediately; the tour observes the typed text
+        // separately, so typing alone never completes a step that also asks for filter actions.
         RefreshCollectionView();
-        if (!string.IsNullOrWhiteSpace(value))
-            _activityStream.Publish(new DiagnosticListFilteredActivity());
+        _activityStream.Publish(new DiagnosticSearchChangedActivity(value));
     }
 
     [ObservableProperty]
@@ -98,6 +102,19 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
     [RelayCommand]
     private void OpenHelp() => _documentationLauncher.Open(PanePage);
+
+    private static readonly DocumentationPage DiagnosticsOverviewPage = new("Diagnostics overview", "Обзор диагностики");
+
+    /// <summary>
+    /// Opens the documentation page of the module that registered the diagnostic.
+    /// </summary>
+    /// <remarks>
+    /// The page is resolved when the user asks for it, not when the row is created. A code that is no longer
+    /// in the catalog, for example after its rule was removed from a configuration file, opens the
+    /// diagnostics overview instead.
+    /// </remarks>
+    private void OpenDocumentation(string code) => _documentationLauncher.Open(
+        _catalogLease?.Snapshot.FindDocumentation(code) ?? DiagnosticsOverviewPage);
 
     [RelayCommand]
     private void CheckAll()
@@ -179,6 +196,40 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     #endregion
 
+    #region [ResetSettings] Command - Reset settings
+
+    /// <summary>Clears saved check settings and restores the values from the rules.</summary>
+    /// <remarks>
+    /// Clearing the persisted overrides falls back to the configuration defaults through the
+    /// override subscriptions and publishes no selection activity, so an active practical tour
+    /// cannot advance spuriously.
+    /// </remarks>
+    [RelayCommand]
+    private async Task ResetSettings(CancellationToken cancellationToken)
+    {
+        bool confirmed = await _confirmationDialog.Show(
+            new ConfirmationDialogRequest(
+                GetLocalizedString("resetConfirm_message"), ResetSettingsText),
+            cancellationToken);
+        if (!confirmed) return;
+
+        try
+        {
+            _elementOverrideStore.Update(settings => settings.Overrides.Clear());
+            _documentOverrideStore.Update(settings => settings.Overrides.Clear());
+            _logger.LogInformation("Diagnostic settings were reset to rule defaults");
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Failed to reset diagnostic settings");
+            await _dialog.Show(
+                new DialogRequest(GetLocalizedString("resetFailed_message", exception.Message)),
+                cancellationToken);
+        }
+    }
+
+    #endregion
+
     private void UpdateIsActive(
         IEnumerable<DiagnosticItemViewModel> source,
         Func<bool, bool> transform)
@@ -228,6 +279,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         CollectionViewSource.SortDescriptions.Clear();
         CollectionViewSource.SortDescriptions.Add(
             new SortDescription(nameof(DiagnosticItemViewModel.IsTour), ListSortDirection.Descending));
+        CollectionViewSource.SortDescriptions.Add(
+            new SortDescription(nameof(DiagnosticItemViewModel.IsDebug), ListSortDirection.Descending));
         CollectionViewSource.SortDescriptions.Add(
             new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending));
 
@@ -297,13 +350,19 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
             {
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-                viewModel.Initialize(registration.Override, registration.ConfigurationPath);
+                viewModel.Initialize(
+                    registration.Override,
+                    registration.ConfigurationPath,
+                    () => OpenDocumentation(registration.Override.Identity.Code));
                 items.Add(viewModel);
             }
             foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
             {
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
-                viewModel.Initialize(registration.Override, registration.ConfigurationPath);
+                viewModel.Initialize(
+                    registration.Override,
+                    registration.ConfigurationPath,
+                    () => OpenDocumentation(registration.Override.Identity.Code));
                 items.Add(viewModel);
             }
 

@@ -16,11 +16,14 @@
   <data name="code_header" xml:space="preserve"><value>Код</value></data>
   <data name="example_text" xml:space="preserve"><value>Пример</value></data>
   <data name="tour_text" xml:space="preserve"><value>Обучение</value></data>
+  <data name="debug_text" xml:space="preserve"><value>Отладка</value></data>
   <data name="openConfigurationFolder_title" xml:space="preserve"><value>Открыть папку конфигураций</value></data>
   <data name="openConfigurationFolder_description" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
   <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value></data>
   <data name="openConfigurationTitle_text" xml:space="preserve"><value>Открыть конфигурацию правила</value></data>
   <data name="openConfigurationDescription_text" xml:space="preserve"><value>Открывает YAML-файл, которым задано это правило.</value></data>
+  <data name="openDocumentation_text" xml:space="preserve"><value>Документация по проверке</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Документация</value></data><data name="openHelp_description" xml:space="preserve"><value>Открывает документацию в браузере. То же делает наведение на любой элемент и F1 при видимой подсказке.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data>
   <data name="description_header" xml:space="preserve"><value>Описание</value></data>
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
@@ -34,4 +37,8 @@
   <data name="uncheckVisible_description" xml:space="preserve"><value>Отключает только проверки, которые сейчас показаны в списке — после поиска и фильтров.</value></data>
   <data name="invertAll_description" xml:space="preserve"><value>Переключает каждую проверку в противоположное состояние, в том числе скрытые поиском и фильтрами.</value></data>
   <data name="invertVisible_description" xml:space="preserve"><value>Переключает в противоположное состояние только проверки, которые сейчас показаны в списке.</value></data>
+  <data name="resetSettings_text" xml:space="preserve"><value>Сбросить настройки</value></data>
+  <data name="resetSettings_description" xml:space="preserve"><value>Убирает ваши сохранённые настройки проверок и возвращает значения из правил.</value></data>
+  <data name="resetConfirm_message" xml:space="preserve"><value>Убрать ваши сохранённые настройки проверок и вернуть значения из правил?</value></data>
+  <data name="resetFailed_message" xml:space="preserve"><value>Не удалось сбросить настройки проверок.&#xA;&#xA;{0}</value></data>
 </root>
