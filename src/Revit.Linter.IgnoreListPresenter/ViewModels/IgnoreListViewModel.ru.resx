@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="entries_text" xml:space="preserve"><value>Игнорирования:</value></data>
+  <data name="code_header" xml:space="preserve"><value>Код</value></data>
+  <data name="scope_header" xml:space="preserve"><value>Область</value></data>
+  <data name="id_header" xml:space="preserve"><value>Id</value></data>
+  <data name="target_header" xml:space="preserve"><value>Объект</value></data>
+  <data name="scopeElement_text" xml:space="preserve"><value>Элемент</value></data>
+  <data name="scopeDocument_text" xml:space="preserve"><value>Документ</value></data>
+  <data name="deletedTarget_text" xml:space="preserve"><value>Удаленный элемент</value></data>
+  <data name="search_text" xml:space="preserve"><value>Поиск</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и объекту без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="document_text" xml:space="preserve"><value>Документ</value></data>
+  <data name="document_description" xml:space="preserve"><value>Показывает список активного документа. Переключите документы, чтобы увидеть другой список.</value></data>
+  <data name="showSelected_text" xml:space="preserve"><value>Показать</value></data>
+  <data name="showSelected_description" xml:space="preserve"><value>Выбирает объект указанной записи в модели.</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Документация</value></data><data name="openHelp_description" xml:space="preserve"><value>Открывает документацию в браузере. То же делает наведение на любой элемент и F1 при видимой подсказке.</value></data>
+  <data name="removeSelected_text" xml:space="preserve"><value>Убрать</value></data>
+  <data name="removeSelected_description" xml:space="preserve"><value>Перестаёт игнорировать выбранную запись. При следующем запуске её проверка снова сработает.</value></data>
+  <data name="clearAll_text" xml:space="preserve"><value>Очистить всё</value></data>
+  <data name="clearAll_description" xml:space="preserve"><value>Убирает все записи активного документа.</value></data>
+  <data name="refresh_text" xml:space="preserve"><value>Обновить</value></data>
+  <data name="refresh_description" xml:space="preserve"><value>Перезагружает список активного документа.</value></data>
+  <data name="clearConfirm_title" xml:space="preserve"><value>Очистить список</value></data>
+  <data name="clearConfirm_message" xml:space="preserve"><value>Убрать все записи «{0}»?</value></data>
+  <data name="operationFailed_message" xml:space="preserve"><value>Операция не удалась.</value></data>
+  <data name="details_message" xml:space="preserve"><value>Подробности: {0}</value></data>
+  <data name="removeEntries_transaction" xml:space="preserve"><value>Удаление записей игнорирования</value></data>
+  <data name="clearEntries_transaction" xml:space="preserve"><value>Очистка записей игнорирования</value></data>
+</root>

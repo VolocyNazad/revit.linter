@@ -222,8 +222,10 @@ public abstract class DiagnosticTestBase : RevitApiTest
     private protected sealed class IgnoreElementDetector(bool result) : IIgnoreElementDetector, IIgnoredElements
     {
         public bool IsElementIgnored(string code, Element element) => result;
+        public bool IsDocumentIgnored(string code, Document document) => result;
         public IIgnoredElements GetIgnoredElements(Document document) => this;
         public bool IsIgnored(string code, Element element) => result;
+        public bool IsDocumentIgnored(string code) => result;
     }
 
     private protected sealed class TestRegistrationProvider(

@@ -183,4 +183,23 @@ public sealed class DiagnosticServiceTests : DiagnosticTestBase
         await Assert.That(diagnostic.ExecutionCount).IsEqualTo(0);
         await Assert.That(sender.Reports).IsEmpty();
     }
+
+    [Test]
+    public async Task Ignored_document_is_not_diagnosed()
+    {
+        DocumentDiagnosticId id = CreateDocumentId("DOC004");
+        DocumentDiagnostic diagnostic = new(id, new DiagnosticFeedback(DiagnosticVerdict.NotValid));
+        ReportSender sender = new();
+        using ServiceProvider services = CreateServices(
+            sender,
+            collection => collection.AddSingleton<IIgnoreElementDetector>(new IgnoreElementDetector(true)),
+            documentDiagnostics: [CreateDocumentRegistration(id, diagnostic)]);
+
+        DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>()
+            .Execute(_document!);
+
+        await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
+        await Assert.That(diagnostic.ExecutionCount).IsEqualTo(0);
+        await Assert.That(sender.Reports).IsEmpty();
+    }
 }

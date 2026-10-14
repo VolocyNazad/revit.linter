@@ -20,6 +20,9 @@ public enum IconKind
     /// <summary>A chevron pointing up: previous.</summary>
     ChevronUp,
 
+    /// <summary>A trash can: remove.</summary>
+    Delete,
+
     /// <summary>An arrow leaving a frame: export.</summary>
     Export,
 
@@ -49,6 +52,9 @@ public enum IconKind
 
     /// <summary>A triangle pointing right: run.</summary>
     Play,
+
+    /// <summary>A circular arrow: reload.</summary>
+    Refresh,
 
     /// <summary>Two opposite arrows: invert.</summary>
     SwapHorizontal,

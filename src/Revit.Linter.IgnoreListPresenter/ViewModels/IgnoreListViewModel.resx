@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="entries_text" xml:space="preserve"><value>Ignores:</value></data>
+  <data name="code_header" xml:space="preserve"><value>Code</value></data>
+  <data name="scope_header" xml:space="preserve"><value>Scope</value></data>
+  <data name="id_header" xml:space="preserve"><value>Id</value></data>
+  <data name="target_header" xml:space="preserve"><value>Target</value></data>
+  <data name="scopeElement_text" xml:space="preserve"><value>Element</value></data>
+  <data name="scopeDocument_text" xml:space="preserve"><value>Document</value></data>
+  <data name="deletedTarget_text" xml:space="preserve"><value>Deleted element</value></data>
+  <data name="search_text" xml:space="preserve"><value>Search</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the target, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="document_text" xml:space="preserve"><value>Document</value></data>
+  <data name="document_description" xml:space="preserve"><value>Shows the ignore list of the active document. Switch documents to see another list.</value></data>
+  <data name="showSelected_text" xml:space="preserve"><value>Show</value></data>
+  <data name="showSelected_description" xml:space="preserve"><value>Selects the target of the selected entry in the model.</value></data>
+  <data name="openHelp_text" xml:space="preserve"><value>Documentation</value></data><data name="openHelp_description" xml:space="preserve"><value>Opens the documentation in the default browser. Hovering any control and pressing F1 while its tooltip is shown does the same.</value></data>
+  <data name="removeSelected_text" xml:space="preserve"><value>Remove</value></data>
+  <data name="removeSelected_description" xml:space="preserve"><value>Stops ignoring the selected entry. Its diagnostic will be reported again on the next run.</value></data>
+  <data name="clearAll_text" xml:space="preserve"><value>Clear all</value></data>
+  <data name="clearAll_description" xml:space="preserve"><value>Removes every ignore entry of the active document.</value></data>
+  <data name="refresh_text" xml:space="preserve"><value>Refresh</value></data>
+  <data name="refresh_description" xml:space="preserve"><value>Reloads the ignore list of the active document.</value></data>
+  <data name="clearConfirm_title" xml:space="preserve"><value>Clear ignore list</value></data>
+  <data name="clearConfirm_message" xml:space="preserve"><value>Remove every ignore entry of '{0}'?</value></data>
+  <data name="operationFailed_message" xml:space="preserve"><value>The operation failed.</value></data>
+  <data name="details_message" xml:space="preserve"><value>Details: {0}</value></data>
+  <data name="removeEntries_transaction" xml:space="preserve"><value>Remove ignore entries</value></data>
+  <data name="clearEntries_transaction" xml:space="preserve"><value>Clear ignore entries</value></data>
+</root>

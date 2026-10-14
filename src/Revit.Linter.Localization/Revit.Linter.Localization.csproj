@@ -43,6 +43,8 @@
 		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeFinishStepViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeFinishStepViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.FixReportPresenter\ViewModels\FixReportViewModel.ru.resx" LogicalName="Revit.Linter.Localization.FixReportPresenter.ViewModels.FixReportViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.IgnoreListPresenter\ViewModels\IgnoreListViewModel.resx" LogicalName="Revit.Linter.Localization.IgnoreListPresenter.ViewModels.IgnoreListViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.IgnoreListPresenter\ViewModels\IgnoreListViewModel.ru.resx" LogicalName="Revit.Linter.Localization.IgnoreListPresenter.ViewModels.IgnoreListViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.RunDiagnosticPresenter\ViewModels\RunDiagnosticViewModel.ru.resx" LogicalName="Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.OpenedDocuments\ViewModels\OpenedDocumentsViewModel.resx" LogicalName="Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel.resources" />

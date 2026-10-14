@@ -12,13 +12,14 @@ public static class ServiceCollectionExtensions
     extension(IServiceCollection services)
     {
         /// <summary>
-        /// Adds the shared element-ignore manager as both a provider and a detector.
+        /// Adds the shared element-ignore manager as a provider, a detector and a list manager.
         /// </summary>
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddElementIgnoringModule() => services
             .AddSingleton<IgnoreElementManager>()
             .AddSingleton<IIgnoreElementDetector>(i => i.GetRequiredService<IgnoreElementManager>())
             .AddSingleton<IIgnoreElementProvider>(i => i.GetRequiredService<IgnoreElementManager>())
+            .AddSingleton<IIgnoreListManager>(i => i.GetRequiredService<IgnoreElementManager>())
         ;
     }
 }

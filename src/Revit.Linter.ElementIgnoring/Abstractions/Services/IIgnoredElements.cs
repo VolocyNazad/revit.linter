@@ -18,4 +18,11 @@ public interface IIgnoredElements
     /// <param name="element">An element of the document this instance was obtained for.</param>
     /// <returns><see langword="true"/> when the element is ignored; otherwise, <see langword="false"/>.</returns>
     bool IsIgnored(string code, Element element);
+
+    /// <summary>
+    /// Determines whether the document itself is ignored for the specified diagnostic.
+    /// </summary>
+    /// <param name="code">The diagnostic code.</param>
+    /// <returns><see langword="true"/> when every finding of the diagnostic is suppressed; otherwise, <see langword="false"/>.</returns>
+    bool IsDocumentIgnored(string code);
 }

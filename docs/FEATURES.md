@@ -7,9 +7,8 @@ This document is the concise contract for the product's current scope. Detailed 
 - Run built-in and YAML-configured diagnostics against Revit projects and families.
 - Present findings by severity, diagnostic code and target type, with typed element links and localized messages.
 - Apply supported fixes through Revit-safe transactions and report their results.
-- Ignore supported findings and react to relevant element and document changes.
+- Ignore a finding for the element it affects or for the whole document, review and remove the entries in the built-in **Ignore list** pane, and keep the list inside the model itself.
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
-- Export the displayed findings as a self-contained HTML report.
 - Configure paths, diagnostic rules, formulas, filters and visualization behavior.
 - Introduce the add-in on first start with a welcome wizard that can install example configurations by discipline.
 - Provide English and Russian UI resources, theme-aware WPF presentation and structured diagnostic logs.
@@ -18,6 +17,7 @@ This document is the concise contract for the product's current scope. Detailed 
 ## Compatibility contract
 
 - Serialized diagnostic codes, configuration keys and message placeholders are user-facing contracts.
+- The in-document ignore list is persisted user data with its own schema version; a list written by a newer product version is read as empty instead of being reinterpreted.
 - Revit-version-specific API differences stay behind compatibility boundaries.
 - Headless logic must remain usable without a running Revit process; operations on live Revit objects use the dedicated Revit test infrastructure.
 

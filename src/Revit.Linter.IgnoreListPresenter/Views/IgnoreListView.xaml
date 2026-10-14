@@ -1,0 +1,167 @@
+<UserControl
+    x:Class="Revit.Linter.IgnoreListPresenter.Views.IgnoreListView"
+    x:Name="Root"
+    behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
+    xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
+    xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
+    xmlns:viewModels="clr-namespace:Revit.Linter.IgnoreListPresenter.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type viewModels:IgnoreListViewModel}}"
+    d:DesignHeight="400"
+    d:DesignWidth="800"
+    Style="{DynamicResource LinterViewRoot}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <theme:SharedThemeResources />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding InitializeCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Border Style="{StaticResource LinterViewPanel}">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Top" Style="{StaticResource LinterToolBarPanel}">
+                <ContentControl Content="{composition:ViewLocatorExtension {x:Type runDiagnostic:RunDiagnosticViewModel}}" />
+                <Rectangle DockPanel.Dock="Left" Style="{StaticResource LinterVerticalDivider}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding RefreshDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding RefreshText, Mode=OneWay}"
+                    Command="{Binding RefreshCommand}"
+                    Content="{controls:Icon Kind=Refresh}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding ClearAllDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ClearAllText, Mode=OneWay}"
+                    Command="{Binding ClearAllCommand}"
+                    Content="{controls:Icon Kind=CheckboxMultipleBlankOutline}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource LinterToolBarContextLabel}"
+                    Text="{Binding ActiveDocumentTitle}"
+                    ToolTip="{Binding ActiveDocumentTitle}" />
+                <Button
+                    behaviors:HelpToolTip.Description="{Binding OpenHelpDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding OpenHelpText, Mode=OneWay}"
+                    Command="{Binding OpenHelpCommand}"
+                    Content="{controls:Icon Kind=HelpCircleOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarIconButton}" />
+                <TextBox
+                    behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
+                    controls:Hint.Text="{Binding SearchText}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterSearchTextBox}"
+                    Text="{Binding SearchField, UpdateSourceTrigger=LostFocus}" />
+                <TextBlock
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarLabel}"
+                    Text="{Binding EntriesText}" />
+                <UIElement />
+            </DockPanel>
+            <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
+            <DataGrid
+                x:Name="EntriesGrid"
+                d:ItemsSource="{d:SampleData ItemCount=2}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                ItemsSource="{Binding CollectionViewSource.View}"
+                SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
+                LoadingRow="EntriesGrid_LoadingRow"
+                UnloadingRow="EntriesGrid_UnloadingRow">
+                <DataGrid.Resources>
+                    <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="Code">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding Code}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        Header="{Binding DataContext.ScopeHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="ScopeText">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding ScopeText}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        Header="{Binding DataContext.IdHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="ElementIdValue">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding ElementIdValue}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        MinWidth="{StaticResource LinterStretchColumnMinWidth}"
+                        Header="{Binding DataContext.TargetHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="TargetText">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding TargetText}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Command="{Binding DataContext.ShowSelectedCommand, Source={StaticResource proxy}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{controls:Icon Kind=Eye}"
+                                    Style="{StaticResource LinterGridIconButton}"
+                                    ToolTip="{Binding DataContext.ShowSelectedText, Source={StaticResource proxy}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Command="{Binding DataContext.RemoveSelectedCommand, Source={StaticResource proxy}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{controls:Icon Kind=Delete}"
+                                    Style="{StaticResource LinterGridIconButton}"
+                                    ToolTip="{Binding DataContext.RemoveSelectedText, Source={StaticResource proxy}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Border>
+</UserControl>
