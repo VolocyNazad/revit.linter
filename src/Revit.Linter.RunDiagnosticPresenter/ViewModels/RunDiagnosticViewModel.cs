@@ -136,7 +136,9 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
             await _dialog.Show(new DialogRequest(GetLocalizedString("diagnosticsFailed_message")), cancellationToken);
     }
 
-    private bool CanRunDiagnostic() => _revitContext.ActiveDocument is { IsFamilyDocument: false };
+    // Family documents are allowed: per-diagnostic document filters already encode applicability
+    // (DOC002 runs only in families, most element diagnostics only in projects).
+    private bool CanRunDiagnostic() => _revitContext.ActiveDocument is not null;
 
     // The published run fact carries the enabled codes in catalog order so observers
     // can tell which diagnostics the run covered.

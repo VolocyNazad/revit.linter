@@ -6,6 +6,8 @@ internal static class DocumentDiagnosticIdCollector
 {
     public static readonly DocumentDiagnosticId StartingViewNotSet = Create("DOC001", DiagnosticSeverity.Message);
     public static readonly DocumentDiagnosticId RevitWarnings = Create("RVT", DiagnosticSeverity.Warning);
+    public static readonly DocumentDiagnosticId UnusedSizeTables = Create("DOC002", DiagnosticSeverity.Message);
+    public static readonly DocumentDiagnosticId PreviewNotSet = Create("DOC003", DiagnosticSeverity.Message);
 
     private static readonly Lazy<IReadOnlyList<DocumentDiagnosticId>> _allDiagnosticIds =
         new(typeof(DocumentDiagnosticIdCollector)

@@ -16,6 +16,7 @@ internal sealed class DocumentDiagnosticRegistrationProvider(
 
         IDocumentDiagnostic[] diagnostics = CreateImplementations<IDocumentDiagnostic>(assembly, namespacePrefix);
         IDocumentDiagnosticFilter[] filters = CreateImplementations<IDocumentDiagnosticFilter>(assembly, namespacePrefix);
+        IDocumentFix[] fixes = CreateImplementations<IDocumentFix>(assembly, namespacePrefix);
 
         foreach (IDocumentDiagnostic diagnostic in diagnostics)
         {
@@ -26,7 +27,8 @@ internal sealed class DocumentDiagnosticRegistrationProvider(
                 filters.Single(filter => string.Equals(
                     filter.Identity.Code, identity.Code, StringComparison.Ordinal)),
                 new DocumentDiagnosticIdOverride(identity, overrideStore),
-                [])
+                fixes.Where(fix => string.Equals(
+                    fix.Identity.Code, identity.Code, StringComparison.Ordinal)).ToArray())
             {
                 Documentation = new("Built-in document diagnostics", "Встроенные проверки документа"),
             };

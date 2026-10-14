@@ -6,4 +6,9 @@
   <data name="DOC001_message" xml:space="preserve"><value>Document '{documentTitle}' has no starting view. Duration: {duration} ms.</value></data>
   <data name="RVT_description" xml:space="preserve"><value>Checks for Revit warnings.</value></data>
   <data name="RVT_message" xml:space="preserve"><value>Warnings were found in document '{documentTitle}'.&#xA;Elements: {elementIds}&#xA;Details: {details}&#xA;Duration: {duration} ms.</value></data>
+  <data name="DOC002_description" xml:space="preserve"><value>Checks whether family size lookup tables are referenced by family types.</value></data>
+  <data name="DOC002_message" xml:space="preserve"><value>Size lookup table '{tableName}' in family '{documentTitle}' is not referenced by any family type. Duration: {duration} ms.</value></data>
+  <data name="DOC003_description" xml:space="preserve"><value>Checks whether a preview view is set for the document.</value></data>
+  <data name="DOC003_message" xml:space="preserve"><value>Document '{documentTitle}' has no preview view. Duration: {duration} ms.</value></data>
+  <data name="setActiveViewAsPreview_fix" xml:space="preserve"><value>Set active view as preview</value></data>
 </root>
