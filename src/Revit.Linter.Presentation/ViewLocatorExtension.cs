@@ -23,7 +23,7 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
     /// Initializes the process-wide service provider used by view-locator markup extensions.
     /// </summary>
     /// <param name="serviceProvider">The application service provider that contains registered views.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     /// <remarks>The first successful initialization wins; subsequent calls do not replace the provider.</remarks>
     public static void Initialize(IServiceProvider serviceProvider)
     {
@@ -37,7 +37,7 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
     /// </summary>
     /// <param name="serviceProvider">The XAML service provider for the current markup-extension invocation.</param>
     /// <returns>The registered view corresponding to <see cref="ViewModelType"/>.</returns>
-    /// <exception cref="InvalidOperationException">
+    /// <exception cref="T:System.InvalidOperationException">
     /// The locator is not initialized, the view-model type does not follow the naming convention,
     /// or the corresponding view type cannot be found.
     /// </exception>

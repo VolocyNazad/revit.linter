@@ -1,26 +1,12 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-
 using Revit.Linter.Localization;
+using Revit.Linter.Presentation.ViewModels;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
-internal sealed partial class DiagnosticTargetTypeFilterViewModel : ObservableObject, IDiagnosticListFilter
-{
-    public DiagnosticTargetTypeFilterViewModel(TargetType value, int count)
-    {
-        Value = value;
-        Count = count;
-        IsActive = true;
-    }
-
-    [ObservableProperty]
-    public partial bool IsActive { get; set; }
-
-    public TargetType Value { get; }
-    public int Count { get; }
-
-    public bool IsValid(DiagnosticItemViewModel item) => item.TargetType == Value;
-
-    public override string ToString()
-        => $"{Count} {DiagnosticTargetTypeLocalizations.GetString(Value.ToString())}";
-}
+internal sealed partial class DiagnosticTargetTypeFilterViewModel(TargetType value, int count)
+    : FilterViewModel<DiagnosticItemViewModel, TargetType>(
+        isActive: true,
+        value,
+        count,
+        item => item.TargetType == value,
+        () => DiagnosticTargetTypeLocalizations.GetString(value.ToString()));

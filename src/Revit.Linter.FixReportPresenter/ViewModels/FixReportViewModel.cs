@@ -65,9 +65,10 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
 
     [ObservableProperty]
-    public partial IEnumerable<IFixListFilter> Filters { get; private set; } = [];
+    public partial IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IFixListFilter> oldValue, IEnumerable<IFixListFilter> newValue)
+        IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> oldValue,
+        IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)

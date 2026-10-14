@@ -164,19 +164,22 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
 
     [ObservableProperty]
-    public partial IEnumerable<IDiagnosticReportFilter> SeverityFilters { get; set; } = [];
+    public partial IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> SeverityFilters { get; set; } = [];
     partial void OnSeverityFiltersChanged(
-        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> oldValue,
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> newValue)
         => UpdateFilterSubscriptions(oldValue, newValue);
 
     [ObservableProperty]
-    public partial IEnumerable<IDiagnosticReportFilter> Filters { get; set; } = [];
+    public partial IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> Filters { get; set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> oldValue,
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> newValue)
         => UpdateFilterSubscriptions(oldValue, newValue);
 
     private void UpdateFilterSubscriptions(
-        IEnumerable<IDiagnosticReportFilter> oldValue, IEnumerable<IDiagnosticReportFilter> newValue)
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> oldValue,
+        IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)
@@ -347,7 +350,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                         .ToArray(),
                     Filters
                         .Where(filter => filter.IsActive)
-                        .Select(filter => filter is DiagnosticReportObsoleteFilterViewModel
+                        .Select(filter => filter is FilterViewModel<DiagnosticReportItemViewModel, bool> state
+                            && state.Value
                             ? "Obsolete"
                             : "Actual")
                         .ToArray()),
@@ -428,21 +432,50 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void RefreshFilters()
     {
-        List<IDiagnosticReportFilter> severityFilters = [];
+        // One pass instead of five Collection.Count(predicate) scans; the predicates passed
+        // to the filters below stay unchanged, so matching behavior is identical.
+        int messageCount = 0;
+        int warningCount = 0;
+        int errorCount = 0;
+        int obsoleteCount = 0;
+        int actualCount = 0;
+        foreach (DiagnosticReportItemViewModel item in Collection)
+        {
+            switch (item.Severity)
+            {
+                case DiagnosticSeverity.Message: messageCount++; break;
+                case DiagnosticSeverity.Warning: warningCount++; break;
+                case DiagnosticSeverity.Error: errorCount++; break;
+            }
+            if (item.IsObsolete) obsoleteCount++;
+            else actualCount++;
+        }
+
+        List<IDiagnosticFilter<DiagnosticReportItemViewModel>> severityFilters = [];
 
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Message, Collection.Count(i => i.Severity == DiagnosticSeverity.Message)));
+            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Message, messageCount));
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Warning, Collection.Count(i => i.Severity == DiagnosticSeverity.Warning)));
+            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Warning, warningCount));
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Error, Collection.Count(i => i.Severity == DiagnosticSeverity.Error)));
+            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Error, errorCount));
 
         SeverityFilters = severityFilters;
 
-        List<IDiagnosticReportFilter> filters = [];
+        List<IDiagnosticFilter<DiagnosticReportItemViewModel>> filters = [];
 
-        filters.Add(new DiagnosticReportObsoleteFilterViewModel(true, Collection.Count(i => i.IsObsolete)));
-        filters.Add(new DiagnosticReportActualFilterViewModel(true, Collection.Count(i => !i.IsObsolete)));
+        filters.Add(new FilterViewModel<DiagnosticReportItemViewModel, bool>(
+            true,
+            true,
+            obsoleteCount,
+            item => item.IsObsolete,
+            () => DiagnosticReportFilterLocalizations.GetString("Obsolete")));
+        filters.Add(new FilterViewModel<DiagnosticReportItemViewModel, bool>(
+            true,
+            false,
+            actualCount,
+            item => !item.IsObsolete,
+            () => DiagnosticReportFilterLocalizations.GetString("Actual")));
 
         Filters = filters;
     }

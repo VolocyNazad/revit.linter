@@ -54,9 +54,10 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     }
 
     [ObservableProperty]
-    public partial IEnumerable<IDiagnosticListFilter> Filters { get; private set; } = [];
+    public partial IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticListFilter> oldValue, IEnumerable<IDiagnosticListFilter> newValue)
+        IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> oldValue,
+        IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> newValue)
     {
         if (oldValue != null)
             foreach (var filter in oldValue)
@@ -243,7 +244,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     {
         Filters = Enum.GetValues(typeof(TargetType))
             .Cast<TargetType>()
-            .Select(targetType => (IDiagnosticListFilter)new DiagnosticTargetTypeFilterViewModel(
+            .Select(targetType => new DiagnosticTargetTypeFilterViewModel(
                 targetType,
                 Collection.Count(item => item.TargetType == targetType)))
             .Where(filter => filter is DiagnosticTargetTypeFilterViewModel { Count: > 0 })
