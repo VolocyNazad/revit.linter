@@ -35,6 +35,15 @@ public sealed class ExampleConfigurationFormulaTests
             _ = elementFunctionFactory.Create<object>(rule.GroupBy, string.Empty);
         }
 
+        // The managed practical-tour configuration is a collision rule as well.
+        foreach (CollisionRule rule in Read<CollisionRule>("practical-tour.config.yaml")!.Rules)
+        {
+            _ = documentFilterFactory.Create(rule.TakeDocument);
+            _ = elementFilterFactory.Create(rule.Take);
+            _ = elementFilterFactory.Create(rule.AndTake);
+            _ = elementFunctionFactory.Create<object>(rule.GroupBy, string.Empty);
+        }
+
         foreach (ParameterRule rule in Read<ParameterRule>("parameter-element.config.yaml")!.Rules)
             _ = documentFilterFactory.Create(rule.Take);
 

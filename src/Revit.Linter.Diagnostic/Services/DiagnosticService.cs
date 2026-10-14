@@ -99,12 +99,14 @@ internal sealed class DiagnosticService(
     private bool RunDocumentDiagnostics(DiagnosticCatalogSnapshot snapshot, Document document, bool logDurations)
     {
         bool completed = true;
+        // Resolved once for the run, like the element path below.
+        IIgnoredElements ignoredElements = ignoreElementDetector.GetIgnoredElements(document);
         foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             try
             {
-                RunDocumentDiagnostic(registration, document);
+                RunDocumentDiagnostic(registration, document, ignoredElements);
             }
             catch (Exception exception)
             {
@@ -122,9 +124,11 @@ internal sealed class DiagnosticService(
         return completed;
     }
 
-    private void RunDocumentDiagnostic(DocumentDiagnosticRegistration registration, Document document)
+    private void RunDocumentDiagnostic(
+        DocumentDiagnosticRegistration registration, Document document, IIgnoredElements ignoredElements)
     {
         if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) return;
+        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
 
         (DiagnosticFeedback[] feedbacks, double duration) = Measure(
             () => registration.Diagnostic.Execute(document).ToArray());
@@ -243,6 +247,10 @@ internal sealed class DiagnosticService(
         List<DiagnosticReport>? batch)
     {
         if (!registration.Override.IsActive || !registration.DocumentFilter.IsRelevantFor(document)) return;
+
+        // A document-level ignore suppresses the whole diagnostic in this document, so its elements
+        // are not even visited.
+        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
 
         foreach (Element element in elements)
         {
