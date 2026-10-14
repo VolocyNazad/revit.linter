@@ -4,7 +4,11 @@ using Revit.Linter.Infrastructure.Utils;
 
 namespace Revit.Linter.Infrastructure.Services;
 
-internal sealed class DocumentationLauncher : IDocumentationLauncher
+internal sealed class DocumentationLauncher(IUserInterfaceActivityStream activityStream) : IDocumentationLauncher
 {
-    public void Open(DocumentationPage page) => ExternalPageLauncher.Open<DocumentationLauncher>(page.GetUrl());
+    public void Open(DocumentationPage page)
+    {
+        ExternalPageLauncher.Open<DocumentationLauncher>(page.GetUrl());
+        activityStream.Publish(new DocumentationOpenedActivity());
+    }
 }

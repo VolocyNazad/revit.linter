@@ -74,6 +74,7 @@ internal sealed class WelcomeHost : IWelcomeHost
             foreach (DockablePaneId paneId in new[]
                      {
                          DiagnosticReportPaneUtils.PaneId, FixReportPaneUtils.PaneId, DiagnosticListPaneUtils.PaneId,
+                         IgnoreListPaneUtils.PaneId,
                      })
             {
                 DockablePane pane = application.GetDockablePane(paneId);
@@ -110,6 +111,7 @@ internal sealed class WelcomeHost : IWelcomeHost
             WelcomePane.Diagnostics => DiagnosticListPaneUtils.PaneId,
             WelcomePane.Warnings => DiagnosticReportPaneUtils.PaneId,
             WelcomePane.FixList => FixReportPaneUtils.PaneId,
+            WelcomePane.IgnoreList => IgnoreListPaneUtils.PaneId,
             _ => throw new ArgumentOutOfRangeException(nameof(pane), pane, null),
         };
 
@@ -131,6 +133,12 @@ internal sealed class WelcomeHost : IWelcomeHost
             DockablePane pane = application.GetDockablePane(PracticalTourPaneUtils.PaneId);
             if (visible && !pane.IsShown()) pane.Show();
             if (!visible && pane.IsShown()) pane.Hide();
+        }
+        catch (Autodesk.Revit.Exceptions.ArgumentException exception)
+        {
+            // The pane registers on first use: hiding it before that is a no-op, not a failure.
+            // Note this is the Revit exception type, unrelated to System.ArgumentException.
+            _logger.LogDebug(exception, "Practical-tour pane is not created yet; nothing to hide");
         }
         catch (Exception exception)
         {

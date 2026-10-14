@@ -18,11 +18,14 @@ public class ShowAllPanesCommand : ExternalCommand
         [
             Application.GetDockablePane(DiagnosticReportPaneUtils.PaneId),
             Application.GetDockablePane(FixReportPaneUtils.PaneId),
-            Application.GetDockablePane(DiagnosticListPaneUtils.PaneId)
+            Application.GetDockablePane(DiagnosticListPaneUtils.PaneId),
+            Application.GetDockablePane(IgnoreListPaneUtils.PaneId)
         ];
 
         DockablePane fixPane = Application.GetDockablePane(FixReportPaneUtils.PaneId);
+        DockablePane ignorePane = Application.GetDockablePane(IgnoreListPaneUtils.PaneId);
         bool fixPaneWasShown = fixPane.IsShown();
+        bool ignorePaneWasShown = ignorePane.IsShown();
         bool hidePanes = panes.All(pane => pane.IsShown());
         foreach (DockablePane pane in panes)
         {
@@ -33,5 +36,8 @@ public class ShowAllPanesCommand : ExternalCommand
         if (!fixPaneWasShown && fixPane.IsShown())
             Program.Provider.GetRequiredService<IUserInterfaceActivityStream>()
                 .Publish(new FixListPaneShownActivity());
+        if (!ignorePaneWasShown && ignorePane.IsShown())
+            Program.Provider.GetRequiredService<IUserInterfaceActivityStream>()
+                .Publish(new IgnoreListPaneShownActivity());
     }
 }

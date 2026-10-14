@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
+using Revit.Linter.CollisionTestModels.DI;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
@@ -25,6 +26,7 @@ using Revit.Linter.ElementIgnoring.DI;
 using Revit.Linter.ElementVisualization.DI;
 using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
+using Revit.Linter.IgnoreListPresenter.DI;
 using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.OpenedDocuments.DI;
@@ -91,10 +93,11 @@ internal sealed class Program
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
                 .AddCollisionDiagnostics()
+                .AddCollisionTestModels()
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule().AddElementChangesProviderModule()
                 .AddRunDiagnosticModule().AddDiagnosticReportPresenterModule()
-                .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddDialogModule()
+                .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddIgnoreListPresenterModule().AddDialogModule()
                 .AddWelcomePresenterModule()
                 .AddSingleton<IWelcomeHost, WelcomeHost>()
                 .AddSingleton<ITutorialSampleCatalog, AutodeskTutorialSampleCatalog>()

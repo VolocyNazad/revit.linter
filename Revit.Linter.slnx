@@ -290,12 +290,11 @@
     <File Path="wiki/interface/ribbon-buttons/Check for updates button.md" />
     <File Path="wiki/interface/ribbon-buttons/Diagnostic configuration path button.md" />
     <File Path="wiki/interface/ribbon-buttons/Getting started button.md" />
-    <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostic report button.md" />
-    <File Path="wiki/interface/ribbon-buttons/Show or hide diagnostics button.md" />
-    <File Path="wiki/interface/ribbon-buttons/Show or hide fix reports button.md" />
+    <File Path="wiki/interface/ribbon-buttons/Show or hide panes button.md" />
     <File Path="wiki/interface/ribbon-buttons/Sponsor button.md" />
     <File Path="wiki/interface/ribbon-buttons/Support button.md" />
   </Folder>
+  <Folder Name="/wiki/reference/" />
   <Folder Name="/wiki/reference/diagnostics/">
     <File Path="wiki/reference/diagnostics/Diagnostic conventions.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic message placeholders.md" />
@@ -337,9 +336,7 @@
   <Folder Name="/wiki/ru/Интерфейс/Кнопки/">
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка начала работы.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка поддержки.md" />
-    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели диагностики.md" />
-    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов диагностики.md" />
-    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка панели результатов исправлений.md" />
+    <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка показа панелей.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка папки конфигурации.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка проверки обновлений.md" />
     <File Path="wiki/ru/Интерфейс/Кнопки/Кнопка спонсорства.md" />

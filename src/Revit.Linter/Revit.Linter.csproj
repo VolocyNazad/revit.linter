@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -67,6 +67,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.CollisionTestModels\Revit.Linter.CollisionTestModels.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticListPresenter\Revit.Linter.DiagnosticListPresenter.csproj" />
@@ -85,6 +86,7 @@
 		<ProjectReference Include="..\Revit.Linter.ElementDependencyDefiners\Revit.Linter.ElementDependencyDefiners.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementIgnoring\Revit.Linter.ElementIgnoring.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportPresenter\Revit.Linter.FixReportPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.IgnoreListPresenter\Revit.Linter.IgnoreListPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
@@ -96,17 +98,6 @@
 		<ProjectReference Include="..\Revit.Linter.UserDiagnostics\Revit.Linter.UserDiagnostics.csproj" />
 		<ProjectReference Include="..\Revit.Linter.WelcomePresenter\Revit.Linter.WelcomePresenter.csproj" />
 		<PackageReference Include="VolocyNazad.Revit.Sugar" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageVersion Update="SonarAnalyzer.CSharp" Version="10.34.0.3385" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -129,8 +129,8 @@
   <data name="fixReport_dockablePane_title" xml:space="preserve">
     <value>Fix list</value>
   </data>
-  <data name="projectParameters_configurationFailed_message" xml:space="preserve">
-    <value>Project parameters could not be configured.&#xA;&#xA;{0}</value>
+  <data name="ignoreList_dockablePane_title" xml:space="preserve">
+    <value>Ignore list</value>
   </data>
   <data name="settingsFile_loadFailed_message" xml:space="preserve">
     <value>Changes to the settings file '{0}' were not applied. The previous valid values are still in use.&#xA;&#xA;{1}</value>
@@ -154,20 +154,8 @@
   <data name="ribbonTab_name" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="showAllPanes_buttonText" xml:space="preserve"><value>Show/Hide
 diagnostics</value></data>
-  <data name="showAllPanes_toolTip" xml:space="preserve"><value>Show or hide all diagnostic panels</value></data>
-  <data name="showAllPanes_longDescription" xml:space="preserve"><value>Shows or hides the diagnostic reports, fix history, and available diagnostics panels.</value></data>
-  <data name="showHideErrors_buttonText" xml:space="preserve"><value>Show/Hide
-reports</value></data>
-  <data name="showHideErrors_toolTip" xml:space="preserve"><value>Show or hide the report panel</value></data>
-  <data name="showHideErrors_longDescription" xml:space="preserve"><value>Shows or hides the panel containing diagnostic reports.</value></data>
-  <data name="showHideFixes_buttonText" xml:space="preserve"><value>Show/Hide
-fixes</value></data>
-  <data name="showHideFixes_toolTip" xml:space="preserve"><value>Show or hide the fix history</value></data>
-  <data name="showHideFixes_longDescription" xml:space="preserve"><value>Shows or hides the panel containing the fix history.</value></data>
-  <data name="showHideDiagnostics_buttonText" xml:space="preserve"><value>Show/Hide
-diagnostics</value></data>
-  <data name="showHideDiagnostics_toolTip" xml:space="preserve"><value>Show or hide the diagnostic list</value></data>
-  <data name="showHideDiagnostics_longDescription" xml:space="preserve"><value>Shows or hides the panel containing available diagnostics.</value></data>
+  <data name="showAllPanes_toolTip" xml:space="preserve"><value>Show or hide all Revit Linter panes</value></data>
+  <data name="showAllPanes_longDescription" xml:space="preserve"><value>Shows or hides the diagnostic reports, fix list, diagnostics list and ignore list panes at once.</value></data>
   <data name="support_buttonText" xml:space="preserve"><value>Support</value></data>
   <data name="support_toolTip" xml:space="preserve"><value>Get support</value></data>
   <data name="support_longDescription" xml:space="preserve"><value>Opens the Revit Linter issue tracker to report a problem or request help.</value></data>
@@ -194,4 +182,5 @@ tour</value></data>
   <data name="welcome_showFailed_message" xml:space="preserve"><value>Failed to show the welcome window.
 
 {0}</value></data>
+  <data name="visualizationView_create_transaction" xml:space="preserve"><value>Create Revit Linter visualization view</value></data>
 </root>

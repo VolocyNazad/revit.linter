@@ -9,5 +9,6 @@ In Revit, **"Dockable panes"** are interface elements that can be freely moved, 
 - [[Fix reports pane|Fix reports pane]]
 - [[Diagnostic reports pane|Diagnostic reports pane]]
 - [[Diagnostics pane|Diagnostic list pane]]
+- [[Ignoring pane|Ignoring pane]]
 
 [[User interface|← User interface]]

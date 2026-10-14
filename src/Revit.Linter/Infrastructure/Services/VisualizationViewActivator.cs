@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
@@ -6,6 +7,7 @@ namespace Revit.Linter.Infrastructure.Services;
 
 internal sealed class VisualizationViewActivator(
     IRevitContext revitContext,
+    IStringLocalizer<GlobalLocalizations> localizer,
     ILogger<VisualizationViewActivator> logger) : IVisualizationViewActivator
 {
     private const string VisualizationViewName = "Revit Linter — Visualization";
@@ -44,7 +46,7 @@ internal sealed class VisualizationViewActivator(
                 !view.IsTemplate &&
                 view.Name.StartsWith(VisualizationViewName, StringComparison.Ordinal));
 
-    private static View3D CreateVisualizationView(Document document)
+    private View3D CreateVisualizationView(Document document)
     {
         ViewFamilyType? viewFamilyType = new FilteredElementCollector(document)
             .OfClass(typeof(ViewFamilyType))
@@ -53,7 +55,7 @@ internal sealed class VisualizationViewActivator(
         if (viewFamilyType is null)
             throw new InvalidOperationException("The document does not contain a three-dimensional view type.");
 
-        using var transaction = new Transaction(document, "Create Revit Linter visualization view");
+        using var transaction = new Transaction(document, localizer["visualizationView_create_transaction"]);
         transaction.Start();
         View3D view = View3D.CreateIsometric(document, viewFamilyType.Id);
         view.Name = FindAvailableName(document);

@@ -1,5 +1,6 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.UI.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -9,20 +10,20 @@ using Revit.Linter.DiagnosticListPresenter.Views;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Views;
-using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.ElementChangesMonitor.Abstractions.Services;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 using Revit.Linter.FixReportPresenter.Views;
+using Revit.Linter.IgnoreListPresenter.Views;
 using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.Infrastructure.Utils;
-using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Views;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.CollisionTestModels.Infrastructure.Ribbon;
 using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
@@ -78,6 +79,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         _diagnosticCatalogNotifier = GetService<DiagnosticCatalogNotifier>();
         _valueStoreNotifier = GetService<ValueStoreNotifier>();
         RegisterDockablePanes();
+        HidePracticalTourPaneWithoutSession();
 
         string tabName = Localizer["ribbonTab_name"];
         try
@@ -89,6 +91,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 
         AddRibbonButtons(panel);
+        AddTestToolingButtons(tabName);
 
         GetService<IElementChangesMonitor>().Run();
 
@@ -97,6 +100,7 @@ internal sealed class InitExternalApplication : ExternalApplication
         app.DocumentOpened += App_DocumentOpened;
         app.DocumentClosing += App_DocumentClosing;
         app.DocumentClosed += App_DocumentClosed;
+        Application.ViewActivated += App_ViewActivated;
 
         GetService<ITutorialSampleCopyService>().CleanupAbandonedCopies(ConfigurationPathUtils.RevitVersion);
 
@@ -135,6 +139,27 @@ internal sealed class InitExternalApplication : ExternalApplication
             }
         });
 
+    /// <summary>
+    /// Hides the practical-tour pane that Revit may have restored visible from the previous session.
+    /// </summary>
+    /// <remarks>
+    /// A fresh session has no tour view-model, so a restored pane would show no content (for example
+    /// after the user refused the tour in the wizard or opted out of it). The pane is queued hidden
+    /// before the wizard runs, so starting the tour afterwards shows it again. A failure is logged
+    /// and never affects add-in startup.
+    /// </remarks>
+    private static void HidePracticalTourPaneWithoutSession()
+    {
+        try
+        {
+            GetService<IWelcomeHost>().HidePracticalTourPane();
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, "Failed to hide the practical-tour pane on startup");
+        }
+    }
+
     public override void OnShutdown()
     {
         ILogger logger = Logger;
@@ -153,6 +178,7 @@ internal sealed class InitExternalApplication : ExternalApplication
             app.DocumentOpened -= App_DocumentOpened;
             app.DocumentClosing -= App_DocumentClosing;
             app.DocumentClosed -= App_DocumentClosed;
+            Application.ViewActivated -= App_ViewActivated;
 
 #if !BEFORE2024
             Application.ThemeChanged -= Application_ThemeChanged;
@@ -188,10 +214,13 @@ internal sealed class InitExternalApplication : ExternalApplication
     }
 #endif
 
-    private static async void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e)
+    private static void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e)
     {
         GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
-        await AddProjectParametersSafely(e.Document);
+        // Revit restores the previous pane layout when a document opens: hide the tour pane
+        // here, after the tour observed the document, when no session fills it. An active
+        // session (for example waiting for a document) keeps its pane.
+        GetService<IPracticalTour>().HidePaneIfInactive();
     }
 
     private static void App_DocumentClosing(object? sender, DocumentClosingEventArgs e)
@@ -221,76 +250,18 @@ internal sealed class InitExternalApplication : ExternalApplication
         }
     }
 
-    private static async void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e)
+    private static void App_ViewActivated(object? sender, ViewActivatedEventArgs e)
+    {
+        if (e.CurrentActiveView is null || e.PreviousActiveView is null) return;
+        if (e.CurrentActiveView.Document.Equals(e.PreviousActiveView.Document)) return;
+        GetService<IUserInterfaceActivityStream>().Publish(new DocumentFocusChangedActivity());
+    }
+
+    private static void App_DocumentCreated(object? sender, DocumentCreatedEventArgs e)
     {
         GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
-        await AddProjectParametersSafely(e.Document);
-    }
-
-    private static async Task AddProjectParametersSafely(Document document)
-    {
-        try
-        {
-            await AddIgnoreListParameters(document);
-        }
-        catch (Exception exception)
-        {
-            Logger.LogError(exception, "Failed to configure project parameters");
-            await GetService<IDialog>().Show(new DialogRequest(
-                Localizer["projectParameters_configurationFailed_message", exception.Message]));
-        }
-    }
-
-    private static async Task AddIgnoreListParameters(Document doc)
-    {
-        var projectParameterProvider = GetService<IProjectParameterProvider>();
-
-        await RevitTask.RunAsync(() =>
-        {
-            var categories = doc.Settings.Categories.Cast<Category>()
-                .Where(i => i.AllowsBoundParameters).Select(i => i.BuiltInCategory).ToList();
-#if BEFORE2024
-            var group = BuiltInParameterGroup.PG_IDENTITY_DATA;
-#else
-            var group = GroupTypeId.IdentityData;
-#endif
-            var ignoreInstanceId = new Guid("666a739a-ae5d-48d1-b146-fc0b2d7f5a4b");
-            var ignoreTypeId = new Guid("e1c4d22f-9147-49d5-b7cc-6f13b35e4d53");
-
-            // The check is read-only, so a document that is already configured
-            // leaves no transaction behind in the Revit undo stack.
-            if (projectParameterProvider.IsConfigured(doc, ignoreInstanceId, categories, group,
-                    isInstance: true, allowVaryBetweenGroups: true)
-                && projectParameterProvider.IsConfigured(doc, ignoreTypeId, categories, group,
-                    isInstance: false, allowVaryBetweenGroups: false))
-            {
-                Logger.LogDebug("Project ignore-list parameters are already configured in document {DocumentTitle}", doc.Title);
-                return;
-            }
-
-            bool configured;
-            using (Transaction transaction = new(doc, "Parameter project adding"))
-            {
-                transaction.Start();
-
-                configured = projectParameterProvider.Add(
-                    doc, ignoreInstanceId, categories, group,
-                    isInstance: true, allowVaryBetweenGroups: true);
-                configured &= projectParameterProvider.Add(
-                    doc, ignoreTypeId, categories, group,
-                    isInstance: false, allowVaryBetweenGroups: false);
-
-                if (configured)
-                    transaction.Commit();
-                else
-                    transaction.RollBack();
-            }
-
-            if (configured)
-                Logger.LogInformation("Configured project ignore-list parameters in document {DocumentTitle}", doc.Title);
-            else
-                Logger.LogWarning("Project ignore-list parameters could not be configured in document {DocumentTitle}", doc.Title);
-        });
+        // Same restored-layout case as for an opened document: see App_DocumentOpened.
+        GetService<IPracticalTour>().HidePaneIfInactive();
     }
 
     private static void AddRibbonButtons(RibbonPanel panel)
@@ -318,6 +289,28 @@ internal sealed class InitExternalApplication : ExternalApplication
             "OpenTutorialSampleButton", "openTutorialSample", typeof(OpenTutorialSampleCommand),
             new("Getting started button", "Кнопка начала работы")));
         _tutorialSampleButton.Visible = false;
+    }
+
+    /// <summary>
+    /// Creates the test-tooling panel on the diagnostics tab.
+    /// </summary>
+    /// <remarks>
+    /// Test tooling lives on the same diagnostics tab as product commands but in its own panel,
+    /// so it never crowds the product diagnostics panel. Visible in development builds or with
+    /// <c>REVIT_LINTER_TEST_TOOLS=1</c>. The button uses the same shared icon as product buttons;
+    /// the icon is applied here because the image resource belongs to the host.
+    /// </remarks>
+    private void AddTestToolingButtons(string tabName)
+    {
+        if (!CollisionTestRibbon.IsEnabled)
+            return;
+
+        RibbonPanel testPanel = Application.CreateRibbonPanel(tabName, CollisionTestRibbon.PanelName);
+        PushButtonData buttonData = CollisionTestRibbon.CreateButtonData(AssemblyPath);
+        buttonData.Image = Icon;
+        buttonData.LargeImage = Icon;
+        buttonData.ToolTipImage = Icon;
+        testPanel.AddItem(buttonData);
     }
 
     internal static void SetTutorialSampleButtonVisible(bool visible)
@@ -378,6 +371,8 @@ internal sealed class InitExternalApplication : ExternalApplication
             FixReportPaneUtils.PaneId, "fixReport_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
         RegisterDockablePane<DiagnosticListView>(
             DiagnosticListPaneUtils.PaneId, "diagnosticList_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
+        RegisterDockablePane<IgnoreListView>(
+            IgnoreListPaneUtils.PaneId, "ignoreList_dockablePane_title", DiagnosticReportPaneUtils.PaneId);
         Application.RegisterDockablePane(
             PracticalTourPaneUtils.PaneId,
             Localizer["practicalTour_dockablePane_title"],

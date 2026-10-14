@@ -4,12 +4,11 @@ lang: en
 
 > Language: **English** · [[Кнопки ленты|Русский]]
 
-The **Diagnostics** ribbon tab contains commands for showing Revit Linter panels, opening its configuration, and reaching the project community pages.
+The **Diagnostics** ribbon tab contains commands for showing Revit Linter panels and reaching the project community pages.
 
-- [[Show or hide diagnostic report button|Show/Hide diagnostic report button]]
-- [[Show or hide fix reports button|Show/Hide fix report button]]
-- [[Show or hide diagnostics button|Show/Hide diagnostic list button]]
+- [[Show or hide panes button|Show/Hide panes button]]
 - [[Getting started button|Getting started button]]
+- [[Practical tour|Practical tour button]]
 - [[Check for updates button|Check for updates button]]
 - [[Support button|Support button]]
 - [[Sponsor button|Sponsor button]]
