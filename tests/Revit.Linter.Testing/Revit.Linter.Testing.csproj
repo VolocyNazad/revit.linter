@@ -1,12 +1,14 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Revit_All_Main_Versions_API_x64" />
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
     <PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
   </ItemGroup>
 </Project>
+

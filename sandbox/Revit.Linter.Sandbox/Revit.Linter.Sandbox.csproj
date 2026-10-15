@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.0.44">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 
     <PropertyGroup>
 		<Nullable>enable</Nullable>
@@ -6,13 +6,14 @@
 		<LangVersion>14.0</LangVersion>
 		<Platforms>x64;Any CPU</Platforms>
 		<Configurations>
-			Debug_2021.1.9;Debug_2023.0.0;Debug_2025.0.0;
-			Release_2021.1.9;Release_2023.0.0;Release_2025.0.0;
+			Debug_2021.1.100;Debug_2022.1.80;Debug_2023.1.90;Debug_2024.3.60;Debug_2025.4.60;Debug_2026.4.10;Debug_2027.3.0;
+			Release_2021.1.100;Release_2022.1.80;Release_2023.1.90;Release_2024.3.60;Release_2025.4.60;Release_2026.4.10;Release_2027.3.0;
 		</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Revit_All_Main_Versions_API_x64" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
     </ItemGroup>
 
 </Project>

@@ -198,7 +198,8 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 ## Technology stack
 
 - `VolocyNazad.Revit.Sdk` (a custom MSBuild SDK, source in a separate
-  repository `toolkit.revit.sdk`) + `Revit_All_Main_Versions_API_x64`
+  repository `toolkit.revit.sdk`) + `Nice3point.Revit.Api.RevitAPI` /
+  `Nice3point.Revit.Api.RevitAPIUI` (floating `$(MajorRevitVersion).*`)
 - WPF with the add-in's own control styles, CommunityToolkit.Mvvm, Microsoft.Xaml.Behaviors.Wpf
 - `VolocyNazad.Revit.Async`, `VolocyNazad.Revit.Context`,
   `VolocyNazad.Revit.Events`, `VolocyNazad.Revit.TransactionMemoryCache`,
@@ -300,7 +301,7 @@ Generated report formats are pinned with snapshot tests in `Revit.Linter.Diagnos
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.9, Release_2023.0.0, and Release_2025.0.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 ## Versioning and release tags
 

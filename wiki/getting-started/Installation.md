@@ -12,7 +12,7 @@ lang: en
 4. Run the installer, review the detected Revit versions, and adjust the selected components if needed.
 5. Start Revit and find the commands on the **Diagnostics** ribbon tab.
 
-The single per-user installer includes Revit 2021, 2023, and 2025 builds and the shared updater. It
+The single per-user installer includes Revit 2021 through 2027 builds and the shared updater. It
 does not require elevation. Application files are installed under the current user's local application
 data, while Revit manifests are registered separately for each supported year.
 

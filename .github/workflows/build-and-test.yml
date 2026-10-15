@@ -17,9 +17,13 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Release_2021.1.9
-          - Release_2023.0.0
-          - Release_2025.0.0
+          - Release_2021.1.100
+          - Release_2022.1.80
+          - Release_2023.1.90
+          - Release_2024.3.60
+          - Release_2025.4.60
+          - Release_2026.4.10
+          - Release_2027.3.0
 
     steps:
       - name: Checkout

@@ -1,7 +1,8 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 
 	<ItemGroup>
-		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -13,3 +14,4 @@
 	</ItemGroup>
 
 </Project>
+

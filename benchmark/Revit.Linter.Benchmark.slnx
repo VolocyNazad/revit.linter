@@ -1,6 +1,6 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Release_2025.0.0" />
+    <BuildType Name="Release_2025.4.60" />
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/solutionItems/">

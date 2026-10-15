@@ -1,7 +1,19 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Debug_2025.0.0" />
-    <BuildType Name="Release_2025.0.0" />
+    <BuildType Name="Debug_2021.1.100" />
+    <BuildType Name="Debug_2022.1.80" />
+    <BuildType Name="Debug_2023.1.90" />
+    <BuildType Name="Debug_2024.3.60" />
+    <BuildType Name="Debug_2025.4.60" />
+    <BuildType Name="Debug_2026.4.10" />
+    <BuildType Name="Debug_2027.3.0" />
+    <BuildType Name="Release_2021.1.100" />
+    <BuildType Name="Release_2022.1.80" />
+    <BuildType Name="Release_2023.1.90" />
+    <BuildType Name="Release_2024.3.60" />
+    <BuildType Name="Release_2025.4.60" />
+    <BuildType Name="Release_2026.4.10" />
+    <BuildType Name="Release_2027.3.0" />
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/solutionItems/">

@@ -1,9 +1,11 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion)" />
-    <PackageVersion Include="Nice3point.BenchmarkDotNet.Revit" Version="$(MajorRevitVersion).1.0" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPI" Version="$(MajorRevitVersion).*" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(MajorRevitVersion).*" />
+    <PackageVersion Include="Nice3point.BenchmarkDotNet.Revit" Version="$(MajorRevitVersion).*" />
   </ItemGroup>
 </Project>

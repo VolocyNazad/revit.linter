@@ -38,10 +38,18 @@ public static class ConfigurationPathUtils
     private static int _revitVersion =
 #if IS2021
     2021;
+#elif IS2022
+    2022;
 #elif IS2023
     2023;
+#elif IS2024
+    2024;
 #elif IS2025
     2025;
+#elif IS2026
+    2026;
+#elif IS2027
+    2027;
 #else
     throw new InvalidOperationException("Unsupported Revit version");
 #endif

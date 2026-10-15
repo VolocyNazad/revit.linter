@@ -1,4 +1,4 @@
-<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
@@ -6,7 +6,8 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-		<PackageReference Include="Revit_All_Main_Versions_API_x64" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
@@ -37,3 +38,4 @@
 	</ItemGroup>
 
 </Project>
+
