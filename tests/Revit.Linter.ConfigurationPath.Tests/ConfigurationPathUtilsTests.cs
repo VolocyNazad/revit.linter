@@ -8,6 +8,31 @@ public sealed class ConfigurationPathUtilsTests : IDisposable
         Guid.NewGuid().ToString("N"));
 
     [Fact]
+    public void RevitVersion_matches_the_year_of_the_build_configuration()
+    {
+#if IS2021
+        const int expected = 2021;
+#elif IS2022
+        const int expected = 2022;
+#elif IS2023
+        const int expected = 2023;
+#elif IS2024
+        const int expected = 2024;
+#elif IS2025
+        const int expected = 2025;
+#elif IS2026
+        const int expected = 2026;
+#elif IS2027
+        const int expected = 2027;
+#else
+        Assert.Fail("The test build targets an unknown Revit year.");
+        return;
+#endif
+
+        Assert.Equal(expected, ConfigurationPathUtils.RevitVersion);
+    }
+
+    [Fact]
     public void EnsureFileExists_creates_parent_directories_and_file()
     {
         string path = GetPath("nested", "configuration.yaml");
