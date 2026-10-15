@@ -63,8 +63,10 @@ rules:
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
-        # No SetCategoryVisibility step: the tour checks the whole model,
-        # so hiding every category except ducts and pipes would hide the finding itself.
+        # The tour checks the whole model, so every checked category stays visible:
+        # hiding anything except scope boxes (OST_VolumeOfInterest) and levels (OST_Levels).
+        - type: "SetCategoryVisibility"
+          categories: ["OST_Walls", "OST_Floors", "OST_Roofs", "OST_PipeCurves", "OST_FlexPipeCurves", "OST_PipeFitting", "OST_PipeAccessory", "OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_CableTray", "OST_CableTrayFitting", "OST_Conduit", "OST_ConduitFitting", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -90,6 +92,10 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]

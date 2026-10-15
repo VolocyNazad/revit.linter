@@ -18,71 +18,7 @@ rules:
   andTake: "instance and (builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -114,14 +50,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_DuctCurves", "OST_PipeCurves", "OST_SectionBox"]
+          categories: ["OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_PipeCurves", "OST_FlexPipeCurves", "OST_PipeFitting", "OST_PipeAccessory", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -147,9 +83,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN102"
   description: "Trays+Conduits;Ducts+Pipes"
   severity: "Error"
@@ -158,71 +98,7 @@ rules:
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -254,14 +130,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_CableTray", "OST_Conduit", "OST_DuctCurves", "OST_PipeCurves", "OST_SectionBox"]
+          categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_Conduit", "OST_ConduitFitting", "OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_PipeCurves", "OST_FlexPipeCurves", "OST_PipeFitting", "OST_PipeAccessory", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -287,9 +163,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN103"
   description: "Equipment;Ducts+Pipes+Trays"
   severity: "Warning"
@@ -298,71 +178,7 @@ rules:
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory') or builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -394,14 +210,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_MechanicalEquipment", "OST_PlumbingFixtures", "OST_DuctCurves", "OST_PipeCurves", "OST_SectionBox"]
+          categories: ["OST_MechanicalEquipment", "OST_DuctTerminal", "OST_PlumbingFixtures", "OST_ElectricalEquipment", "OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_PipeCurves", "OST_FlexPipeCurves", "OST_PipeFitting", "OST_PipeAccessory", "OST_CableTray", "OST_CableTrayFitting", "OST_Conduit", "OST_ConduitFitting", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -427,9 +243,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN104"
   description: "Ducts;Pipes;With links"
   severity: "Error"
@@ -439,71 +259,7 @@ rules:
   groupBy: "'all'"
   includeLinks: true
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -535,14 +291,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_DuctCurves", "OST_PipeCurves", "OST_SectionBox"]
+          categories: ["OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_PipeCurves", "OST_FlexPipeCurves", "OST_PipeFitting", "OST_PipeAccessory", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -568,9 +324,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN105"
   description: "Ducts;Fittings;Ignore connector-joined"
   severity: "Error"
@@ -580,71 +340,7 @@ rules:
   groupBy: "'all'"
   ignoreConnectedElements: true
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -676,14 +372,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_DuctCurves", "OST_DuctFitting", "OST_SectionBox"]
+          categories: ["OST_DuctCurves", "OST_FlexDuctCurves", "OST_DuctFitting", "OST_DuctAccessory", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -709,9 +405,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 # <<< section: mep
 
 # >>> section: architecture — Architecture
@@ -723,71 +423,7 @@ rules:
   andTake: "instance and (builtincategory('OST_Walls'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -819,7 +455,7 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -852,9 +488,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN202"
   description: "Furniture+Fixtures;Walls+Columns"
   severity: "Warning"
@@ -863,71 +503,7 @@ rules:
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Columns'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -959,14 +535,14 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
         - type: "DisplayStyle"
           displayStyle: "Shading"
         - type: "SetCategoryVisibility"
-          categories: ["OST_Furniture", "OST_Casework", "OST_Walls", "OST_Columns", "OST_SectionBox"]
+          categories: ["OST_Furniture", "OST_FurnitureSystems", "OST_Casework", "OST_PlumbingFixtures", "OST_SpecialityEquipment", "OST_Walls", "OST_Columns", "OST_SectionBox"]
         - type: "Cut"
           elementSets: ["Target", "Dependencies"]
         - type: "OverrideFilter"
@@ -992,9 +568,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN203"
   description: "Stairs+Railings;Walls+Floors"
   severity: "Message"
@@ -1003,71 +583,7 @@ rules:
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Floors'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1099,7 +615,7 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1132,9 +648,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 # <<< section: architecture
 
 # >>> section: structure — Structure
@@ -1146,71 +666,7 @@ rules:
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1242,7 +698,7 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1275,9 +731,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN302"
   description: "Framing;Framing"
   severity: "Warning"
@@ -1286,71 +746,7 @@ rules:
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1382,7 +778,7 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1415,9 +811,13 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 - code: "CLSN303"
   description: "Foundations;Foundations+Columns"
   severity: "Warning"
@@ -1426,71 +826,7 @@ rules:
   andTake: "instance and (builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralColumns'))"
   groupBy: "'all'"
   visualizations:
-    - name: "Show finding"
-      steps:
-        - type: "Show"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Select finding"
-      steps:
-        - type: "Select"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Isolate finding"
-      steps:
-        - type: "Isolate"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Cut around finding"
-      steps:
-        - type: "Cut"
-          elementSets: ["Target", "Dependencies"]
-    - name: "Paint finding"
-      steps:
-        - type: "OverrideElements"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A63D40", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#7C2D30", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A63D40", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E3BFB9", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#7C2D30", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#EFD5D1", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideElements"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: false
-            transparency: 35
-            projectionLines: { color: "#5E8261", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#425C43", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5E8261", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C6D6C6", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#425C43", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
-    - name: "Filter finding"
-      steps:
-        - type: "OverrideFilter"
-          elementSets: ["Target"]
-          style:
-            halftone: false
-            transparency: 15
-            projectionLines: { color: "#A07C2C", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#6E5620", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#A07C2C", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#E6D3AC", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#6E5620", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#F0E4C8", pattern: "SolidFill", isVisible: true }
-        - type: "OverrideFilter"
-          elementSets: ["Dependencies"]
-          style:
-            halftone: true
-            transparency: 35
-            projectionLines: { color: "#5B7FA6", pattern: "Solid", weight: 6 }
-            cutLines: { color: "#3E5A78", pattern: "Solid", weight: 8 }
-            surfaceForeground: { color: "#5B7FA6", pattern: "SolidFill", isVisible: true }
-            surfaceBackground: { color: "#C3D2E2", pattern: "SolidFill", isVisible: true }
-            cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
-            cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
-    - name: "Inspect in detail"
+    - name: "Isolate and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1522,7 +858,7 @@ rules:
             cutBackground: { color: "#DCE6DC", pattern: "SolidFill", isVisible: true }
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
-    - name: "Cutaway with filters"
+    - name: "Cut and inspect"
       steps:
         - type: "DetailLevel"
           detailLevel: "Fine"
@@ -1555,7 +891,11 @@ rules:
             cutForeground: { color: "#3E5A78", pattern: "SolidFill", isVisible: true }
             cutBackground: { color: "#DDE6F0", pattern: "SolidFill", isVisible: true }
         - type: "Select"
-          elementSets: ["Target", "Dependencies"]
+          elementSets: ["Target"]
         - type: "Show"
           elementSets: ["Target", "Dependencies"]
+    - name: "Select"
+      steps:
+        - type: "Select"
+          elementSets: ["Target"]
 # <<< section: structure

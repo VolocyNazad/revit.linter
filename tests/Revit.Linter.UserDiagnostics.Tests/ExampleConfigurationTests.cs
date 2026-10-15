@@ -31,14 +31,14 @@ public sealed class ExampleConfigurationTests
     [Theory]
     [InlineData("")]
     [InlineData("ru")]
-    public void Practical_tour_configuration_deserializes_with_two_visualizations(string languageFolder)
+    public void Practical_tour_configuration_deserializes_with_three_visualizations(string languageFolder)
     {
         ConfigurationFile<CollisionRule>? tourFile = Read<CollisionRule>(
             languageFolder, "practical-tour.config.yaml");
 
         Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, tourFile?.Version);
         CollisionRule tourRule = Assert.Single(tourFile?.Rules ?? [], rule => rule.Code == "TOUR001");
-        Assert.Equal(2, tourRule.Visualizations.Length);
+        Assert.Equal(3, tourRule.Visualizations.Length);
     }
 
     private static ConfigurationFile<TRule>? Read<TRule>(string languageFolder, string fileName)
