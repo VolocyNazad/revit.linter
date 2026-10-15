@@ -2,10 +2,15 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
+    <!-- The plain-SDK host has no Revit configuration, so MajorRevitVersion is empty there:
+         fall back to a valid year to keep the floating API versions well-formed (the host
+         does not reference Revit API packages at all). -->
+    <SandboxMajorRevitVersion Condition="'$(MajorRevitVersion)' != ''">$(MajorRevitVersion)</SandboxMajorRevitVersion>
+    <SandboxMajorRevitVersion Condition="'$(MajorRevitVersion)' == ''">2025</SandboxMajorRevitVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Nice3point.Revit.Api.RevitAPI" Version="$(MajorRevitVersion).*" />
-    <PackageVersion Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(MajorRevitVersion).*" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPI" Version="$(SandboxMajorRevitVersion).*" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(SandboxMajorRevitVersion).*" />
     <PackageVersion Include="ModularPipelines" Version="3.2.8" />
     <PackageVersion Include="ModularPipelines.DotNet" Version="3.2.8" />
     <PackageVersion Include="ModularPipelines.Git" Version="3.2.8" />

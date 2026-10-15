@@ -3,7 +3,7 @@
   "profiles": {
     "Sandbox (Debug 2025)": {
       "commandName": "Project",
-      "commandLineArgs": "--configuration Debug_2025.0.0"
+      "commandLineArgs": "--configuration Debug_2025.4.60"
     }
   }
 }

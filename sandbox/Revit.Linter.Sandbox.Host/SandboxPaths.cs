@@ -4,7 +4,7 @@ namespace Revit.Linter.Sandbox.Host;
 
 internal static class SandboxPaths
 {
-    private const string DefaultConfiguration = "Debug_2025.0.0";
+    private const string DefaultConfiguration = "Debug_2025.4.60";
 
     public static string ParseConfiguration(string[] args)
     {
