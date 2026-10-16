@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:Revit.Linter.DialogPresenter.ViewModels"
@@ -31,6 +33,9 @@
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
+    <i:Interaction.Behaviors>
+        <behaviors:WindowDialogResultBehavior DialogResult="{Binding DialogResult}" />
+    </i:Interaction.Behaviors>
     <Border Style="{StaticResource LinterWindowPanel}">
         <Grid Style="{StaticResource LinterDialogContent}">
             <Grid.RowDefinitions>
@@ -54,17 +59,19 @@
                 <Button
                     d:Content="Close"
                     Content="{Binding CloseButtonText}"
+                    Command="{Binding CloseWithResultCommand}"
+                    CommandParameter="False"
                     IsCancel="True"
-                    Style="{StaticResource LinterDialogButton}"
-                    Click="CloseButton_Click" />
+                    Style="{StaticResource LinterDialogButton}" />
                 <Button
                     x:Name="ConfirmButton"
                     Margin="8,0,0,0"
                     d:Content="Retry"
                     Content="{Binding ConfirmButtonText}"
+                    Command="{Binding CloseWithResultCommand}"
+                    CommandParameter="True"
                     IsDefault="True"
-                    Style="{StaticResource LinterDialogButton}"
-                    Click="ConfirmButton_Click" />
+                    Style="{StaticResource LinterDialogButton}" />
             </StackPanel>
         </Grid>
     </Border>

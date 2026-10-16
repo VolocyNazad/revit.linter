@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
@@ -29,12 +30,23 @@ internal sealed partial class ConfirmationDialogViewModel : ObservableObject, IC
     [ObservableProperty]
     public partial string? ConfirmButtonText { get; private set; }
 
+    /// <summary>
+    /// Gets the dialog result requested by the close commands; the window behavior applies it.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool? DialogResult { get; private set; }
+
+    /// <summary>Closes the dialog with the given result.</summary>
+    [RelayCommand]
+    private void CloseWithResult(bool result) => DialogResult = result;
+
     public Task<bool> Show(ConfirmationDialogRequest request, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         Content = request.Content;
         ConfirmButtonText = request.ConfirmButtonText;
+        DialogResult = null;
 
         ConfirmationDialogView window = new() {
             DataContext = this,
@@ -52,6 +64,7 @@ internal sealed partial class ConfirmationDialogViewModel : ObservableObject, IC
 
         Content = null;
         ConfirmButtonText = null;
+        DialogResult = null;
 
         return Task.FromResult(result == true);
     }

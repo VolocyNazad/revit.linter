@@ -69,6 +69,16 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     [ObservableProperty]
     public partial WelcomeStepViewModel? CurrentStep { get; private set; }
 
+    /// <summary>
+    /// Gets the dialog result requested by the finish command; the window behavior applies it.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool? DialogResult { get; private set; }
+
+    /// <summary>Closes the wizard with the given result.</summary>
+    [RelayCommand]
+    private void CloseWithResult(bool result) => DialogResult = result;
+
     public bool IsLastStep => _currentIndex == Steps.Count - 1;
 
     public bool HasNextStep => _currentIndex < Steps.Count - 1;
@@ -104,6 +114,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
 
         WelcomeView window = new() { DataContext = this };
         _themeService.Register(window);
+        DialogResult = null;
 
         IntPtr owner = _revitContext.UIApplication?.MainWindowHandle ?? IntPtr.Zero;
         if (owner == IntPtr.Zero)
@@ -112,6 +123,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
             _ = new WindowInteropHelper(window) { Owner = owner };
 
         bool finished = window.ShowDialog() == true;
+        DialogResult = null;
 
         // Closing the window in any way counts as shown; the ribbon command reopens the wizard.
         _settingsStore.Update(settings => WelcomeWizardState.MarkShown(

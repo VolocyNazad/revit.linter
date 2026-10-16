@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:designData="clr-namespace:Revit.Linter.WelcomePresenter.DesignData"
+    xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:views="clr-namespace:Revit.Linter.WelcomePresenter.Views"
@@ -342,6 +344,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <!--  Enter presses the default button (Next, or Finish on the last step) and Esc the cancel button.  -->
+    <i:Interaction.Behaviors>
+        <behaviors:WindowDialogResultBehavior DialogResult="{Binding DialogResult}" />
+    </i:Interaction.Behaviors>
     <Window.InputBindings>
         <KeyBinding
             Key="Left"
@@ -449,7 +454,8 @@
                         Visibility="{Binding HasNextStep, Converter={StaticResource BooleanToVisibility}}" />
                     <Button
                         Margin="8,0,0,0"
-                        Click="FinishButton_Click"
+                        Command="{Binding CloseWithResultCommand}"
+                        CommandParameter="True"
                         Content="{Binding FinishButtonText, Mode=OneWay}"
                         IsDefault="{Binding IsLastStep}"
                         Style="{StaticResource LinterDialogButton}"
