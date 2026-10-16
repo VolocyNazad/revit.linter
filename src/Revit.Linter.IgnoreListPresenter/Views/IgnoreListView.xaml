@@ -81,9 +81,10 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}"
-                SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
-                LoadingRow="EntriesGrid_LoadingRow"
-                UnloadingRow="EntriesGrid_UnloadingRow">
+                SelectedItem="{Binding SelectedEntry, Mode=TwoWay}">
+                <i:Interaction.Behaviors>
+                    <behaviors:FirstMatchRowHighlightBehavior HighlightKey="IgnoreList" TargetCode="TOUR001" />
+                </i:Interaction.Behaviors>
                 <DataGrid.Resources>
                     <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>

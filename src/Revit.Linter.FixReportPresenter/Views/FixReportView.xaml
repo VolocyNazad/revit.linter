@@ -90,9 +90,10 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}"
-                SelectedItem="{Binding SelectedFixReport, Mode=TwoWay}"
-                LoadingRow="FixesGrid_LoadingRow"
-                UnloadingRow="FixesGrid_UnloadingRow">
+                SelectedItem="{Binding SelectedFixReport, Mode=TwoWay}">
+                <i:Interaction.Behaviors>
+                    <behaviors:FirstMatchRowHighlightBehavior HighlightKey="FixList" TargetCode="TOUR001" />
+                </i:Interaction.Behaviors>
                 <DataGrid.Resources>
                     <composition:BindingProxy x:Key="proxy" DataContext="{Binding}" />
                 </DataGrid.Resources>

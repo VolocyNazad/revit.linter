@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
+using Revit.Linter.Behaviors;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ReportMessaging;
 using Revit.Linter.Localization;
@@ -8,7 +9,7 @@ using System.Globalization;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
-internal sealed partial class DiagnosticReportItemViewModel : ObservableObject
+internal sealed partial class DiagnosticReportItemViewModel : ObservableObject, IHasDiagnosticCode
 {
     public required DiagnosticSeverity Severity { get; init; }
     public string SeverityText => DiagnosticSeverityLocalizations.GetString(Severity.ToString());
@@ -77,7 +78,21 @@ internal sealed partial class DiagnosticReportItemViewModel : ObservableObject
     public required string ShowElementToolTipFormat { get; init; }
 
     public bool HasFixes => Fixes?.Any() == true;
+
+    /// <summary>
+    /// Gets whether the finding offers more than one fix, so the fix button opens a menu instead of running a fix.
+    /// </summary>
+    /// <remarks>
+    /// Evaluating this property builds the fix list on first use, same as <see cref="HasFixes"/>;
+    /// the list is created once and then kept.
+    /// </remarks>
+    public bool HasMultipleFixes => (Fixes?.Skip(1).Any() == true);
     public bool HasVisualizationPipelines => VisualizationPipelines.Count > 0;
+
+    /// <summary>
+    /// Gets whether the finding offers more than one visualization, so the show button opens a menu instead of showing directly.
+    /// </summary>
+    public bool HasMultipleVisualizationPipelines => VisualizationPipelines.Count > 1;
 
     [ObservableProperty]
     private bool _hasActiveVisualization;
@@ -126,6 +141,21 @@ internal sealed partial class DiagnosticReportItemViewModel : ObservableObject
 
     [RelayCommand]
     private void OpenDocumentation() => OpenDocumentationDelegate();
+
+    /// <summary>
+    /// Runs the only fix of the finding; when several fixes exist the button opens their menu instead.
+    /// </summary>
+    /// <remarks>
+    /// The menu itself is opened by a button behavior bound to <see cref="HasMultipleFixes"/>,
+    /// so this command stays a no-op for several fixes and never touches view state.
+    /// </remarks>
+    [RelayCommand]
+    private async Task ShowPrimaryFix(CancellationToken cancellationToken)
+    {
+        FixViewModel[] fixes = Fixes?.ToArray() ?? [];
+        if (fixes.Length == 1)
+            await fixes[0].FixCommand.ExecuteAsync(null);
+    }
 
     [RelayCommand(CanExecute = nameof(HasVisualizationPipelines))]
     private async Task ShowVisualization(CancellationToken cancellationToken)

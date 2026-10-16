@@ -1,19 +1,19 @@
 <UserControl
     x:Class="Revit.Linter.DiagnosticReportPresenter.Views.DiagnosticReportView"
-    x:Name="Root"
-    behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
+    xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
+    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
-    xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
-    xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
+    xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
+    xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:viewModels="clr-namespace:Revit.Linter.DiagnosticReportPresenter.ViewModels"
+    x:Name="Root"
+    behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticReportViewModel}}"
     d:DesignHeight="450"
     d:DesignWidth="1400"
@@ -72,9 +72,9 @@
                 <Button
                     behaviors:HelpToolTip.Description="{Binding ExportReportDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ExportReportText, Mode=OneWay}"
+                    behaviors:OnboardingHighlight.Key="ExportReport"
                     d:Command="{x:Null}"
                     Command="{Binding ExportCommand}"
-                    behaviors:OnboardingHighlight.Key="ExportReport"
                     Content="{controls:Icon Kind=Export}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarIconButton}" />
@@ -108,10 +108,10 @@
                     </Border>
                 </Popup>
                 <TextBox
-                    d:Text="Search text"
                     behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"
                     controls:Hint.Text="{Binding SearchText}"
+                    d:Text="Search text"
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterSearchTextBox}"
                     Text="{Binding SearchField, UpdateSourceTrigger=LostFocus}" />
@@ -122,12 +122,10 @@
                 <UIElement />
             </DockPanel>
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
-            <!-- The fix and visualization columns stay frozen so row refreshes on a narrow pane never scroll them partially out of view. -->
+            <!--  The fix and visualization columns stay frozen so row refreshes on a narrow pane never scroll them partially out of view.  -->
             <DataGrid
                 x:Name="FindingsGrid"
                 d:ItemsSource="{d:SampleData ItemCount=2}"
-                LoadingRow="FindingsGrid_LoadingRow"
-                UnloadingRow="FindingsGrid_UnloadingRow"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 FrozenColumnCount="2"
@@ -137,6 +135,7 @@
                 SelectedItem="{Binding SelectedReport, Mode=TwoWay}">
                 <i:Interaction.Behaviors>
                     <behaviors:DataGridRowNavigationBehavior ActivateCommand="{Binding ShowCurrentVisualizationCommand}" />
+                    <behaviors:FirstMatchRowHighlightBehavior HighlightKey="InspectFinding" TargetCode="TOUR001" />
                 </i:Interaction.Behaviors>
                 <DataGrid.RowStyle>
                     <Style BasedOn="{StaticResource LinterDataGridRow}" TargetType="DataGridRow">
@@ -160,18 +159,19 @@
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
-                        CanUserResize="False">
+                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
                                     behaviors:HelpToolTip.Description="{Binding DataContext.FixDescription, Source={StaticResource proxy}, Mode=OneWay}"
                                     behaviors:HelpToolTip.Title="{Binding DataContext.FixTitle, Source={StaticResource proxy}, Mode=OneWay}"
-                                    Click="FixButton_OnClick"
+                                    Command="{Binding ShowPrimaryFixCommand}"
                                     Content="{controls:Icon Kind=Lightbulb}"
                                     Foreground="{DynamicResource LinterHighlightIconBrush}"
                                     Visibility="{Binding HasFixes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:OpenContextMenuOnClickBehavior OpenOnClick="{Binding HasMultipleFixes}" />
+                                    </i:Interaction.Behaviors>
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
                                             <Style.Triggers>
@@ -182,9 +182,7 @@
                                         </Style>
                                     </Button.Style>
                                     <Button.ContextMenu>
-                                        <ContextMenu
-                                            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                                            ItemsSource="{Binding Fixes}">
+                                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding Fixes}">
                                             <ContextMenu.ItemContainerStyle>
                                                 <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
@@ -198,17 +196,19 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
-                        CanUserResize="False">
+                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
                                     behaviors:HelpToolTip.Description="{Binding DataContext.ShowVisualizationDescription, Source={StaticResource proxy}, Mode=OneWay}"
                                     behaviors:HelpToolTip.Title="{Binding DataContext.ShowVisualizationText, Source={StaticResource proxy}, Mode=OneWay}"
-                                    Click="VisualizationButton_OnClick"
+                                    Command="{Binding DataContext.SelectAndShowPrimaryVisualizationCommand, Source={StaticResource proxy}}"
+                                    CommandParameter="{Binding}"
                                     Content="{controls:Icon Kind=Eye}"
                                     IsEnabled="{Binding HasVisualizationPipelines}">
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:OpenContextMenuOnClickBehavior OpenOnClick="{Binding HasMultipleVisualizationPipelines}" />
+                                    </i:Interaction.Behaviors>
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
                                             <Style.Triggers>
@@ -223,9 +223,7 @@
                                         </Style>
                                     </Button.Style>
                                     <Button.ContextMenu>
-                                        <ContextMenu
-                                            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                                            ItemsSource="{Binding VisualizationPipelines}">
+                                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding VisualizationPipelines}">
                                             <ContextMenu.ItemContainerStyle>
                                                 <Style BasedOn="{StaticResource LinterMenuItem}" TargetType="MenuItem">
                                                     <Setter Property="Header" Value="{Binding Title}" />
@@ -298,9 +296,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
-                        CanUserResize="False">
+                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button

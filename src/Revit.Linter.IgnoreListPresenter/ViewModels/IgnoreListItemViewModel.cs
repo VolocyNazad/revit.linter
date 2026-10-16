@@ -1,9 +1,11 @@
+using Revit.Linter.Behaviors;
+
 namespace Revit.Linter.IgnoreListPresenter.ViewModels;
 
 /// <summary>
 /// One row of the ignore-list pane: a stored ignore entry with display-ready target text.
 /// </summary>
-internal sealed class IgnoreListItemViewModel
+internal sealed class IgnoreListItemViewModel : IHasDiagnosticCode
 {
     /// <summary>Gets the diagnostic code the entry is ignored for.</summary>
     public required string Code { get; init; }

@@ -73,6 +73,24 @@ internal sealed partial class DiagnosticReportViewModel
             ? ShowPreferredVisualizationAsync(item)
             : Task.CompletedTask;
 
+    /// <summary>
+    /// Selects the finding the user acted on and shows its visualization when it offers exactly one.
+    /// </summary>
+    /// <remarks>
+    /// The row becomes the current one, so that stepping to the next finding continues from it.
+    /// When several visualizations exist only the selection happens here; their menu is opened
+    /// by a button behavior bound to the finding state.
+    /// </remarks>
+    [RelayCommand]
+    private Task SelectAndShowPrimaryVisualization(DiagnosticReportItemViewModel? item)
+    {
+        if (item is null) return Task.CompletedTask;
+        CollectionViewSource?.View.MoveCurrentTo(item);
+        return item.VisualizationPipelines.Count == 1
+            ? ShowPreferredVisualizationAsync(item)
+            : Task.CompletedTask;
+    }
+
     // Moves from the current row in the order the table shows, skipping rows that cannot be visualized,
     // and stops at either end of the list. Without a current row it starts from the matching end.
     private async Task ShowNeighbourVisualizationAsync(int step)

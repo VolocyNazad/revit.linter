@@ -2,12 +2,13 @@ using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Humanizer;
+using Revit.Linter.Behaviors;
 using Revit.Linter.ReportMessaging;
 using System.Globalization;
 
 namespace Revit.Linter.FixReportPresenter.ViewModels;
 
-internal sealed partial class FixReportItemViewModel : ObservableObject
+internal sealed partial class FixReportItemViewModel : ObservableObject, IHasDiagnosticCode
 {
     public required string Code { get; init; }
     public required string DocumentTitle { get; init; }
