@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:designData="clr-namespace:Revit.Linter.WelcomePresenter.DesignData"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -455,11 +456,14 @@
                     <Button
                         Margin="8,0,0,0"
                         Command="{Binding CloseWithResultCommand}"
-                        CommandParameter="True"
                         Content="{Binding FinishButtonText, Mode=OneWay}"
                         IsDefault="{Binding IsLastStep}"
                         Style="{StaticResource LinterDialogButton}"
-                        Visibility="{Binding IsLastStep, Converter={StaticResource BooleanToVisibility}}" />
+                        Visibility="{Binding IsLastStep, Converter={StaticResource BooleanToVisibility}}">
+                        <Button.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </Button.CommandParameter>
+                    </Button>
                 </StackPanel>
             </DockPanel>
         </Grid>

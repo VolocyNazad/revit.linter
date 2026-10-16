@@ -60,18 +60,24 @@
                     d:Content="Close"
                     Content="{Binding CloseButtonText}"
                     Command="{Binding CloseWithResultCommand}"
-                    CommandParameter="False"
                     IsCancel="True"
-                    Style="{StaticResource LinterDialogButton}" />
+                    Style="{StaticResource LinterDialogButton}">
+                    <Button.CommandParameter>
+                        <system:Boolean>False</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
                 <Button
                     x:Name="ConfirmButton"
                     Margin="8,0,0,0"
                     d:Content="Retry"
                     Content="{Binding ConfirmButtonText}"
                     Command="{Binding CloseWithResultCommand}"
-                    CommandParameter="True"
                     IsDefault="True"
-                    Style="{StaticResource LinterDialogButton}" />
+                    Style="{StaticResource LinterDialogButton}">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>
