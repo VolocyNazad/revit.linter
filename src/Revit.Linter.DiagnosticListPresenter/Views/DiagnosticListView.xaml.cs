@@ -1,4 +1,3 @@
-using Revit.Linter.DiagnosticListPresenter.ViewModels;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 
 namespace Revit.Linter.DiagnosticListPresenter.Views;
@@ -16,12 +15,5 @@ public sealed partial class DiagnosticListView
     {
         InitializeComponent();
         themeService.Register(this);
-    }
-
-    /// <summary>Clears the search box and re-enables every filter of the diagnostics list.</summary>
-    public void ResetSearchAndFilters()
-    {
-        if (DataContext is DiagnosticListViewModel viewModel)
-            viewModel.ResetSearchAndFilters();
     }
 }

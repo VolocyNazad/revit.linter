@@ -1,11 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Revit.Linter.Localization;
-using Revit.Context.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.DialogPresenter.Views;
-using Revit.Linter.ThemeManaging.Abstractions.Services;
-using System.Windows.Interop;
+using Revit.Linter.DialogPresenter.Infrastructure;
+using Revit.Linter.Localization;
+using System.Windows;
 
 namespace Revit.Linter.DialogPresenter.ViewModels;
 
@@ -13,15 +11,11 @@ namespace Revit.Linter.DialogPresenter.ViewModels;
 [GenerateLocalizedProperties]
 internal sealed partial class ConfirmationDialogViewModel : ObservableObject, IConfirmationDialog
 {
-    private readonly IRevitContext _revitContext;
-    private readonly IThemeService _themeService;
+    private readonly DialogWindowFactory _windowFactory;
 
-    public ConfirmationDialogViewModel(
-        IRevitContext revitContext,
-        IThemeService themeService)
+    public ConfirmationDialogViewModel(DialogWindowFactory windowFactory)
     {
-        _revitContext = revitContext;
-        _themeService = themeService;
+        _windowFactory = windowFactory;
     }
 
     [ObservableProperty]
@@ -48,14 +42,7 @@ internal sealed partial class ConfirmationDialogViewModel : ObservableObject, IC
         ConfirmButtonText = request.ConfirmButtonText;
         DialogResult = null;
 
-        ConfirmationDialogView window = new() {
-            DataContext = this,
-        };
-        _themeService.Register(window);
-
-        _ = new WindowInteropHelper(window) {
-            Owner = _revitContext.UIApplication!.MainWindowHandle
-        };
+        Window window = _windowFactory.CreateConfirmationDialog(this);
 
         using CancellationTokenRegistration registration = cancellationToken.Register(
             () => _ = window.Dispatcher.InvokeAsync(window.Close));

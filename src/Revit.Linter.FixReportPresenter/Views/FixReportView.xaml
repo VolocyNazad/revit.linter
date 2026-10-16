@@ -1,6 +1,5 @@
 <UserControl
     x:Class="Revit.Linter.FixReportPresenter.Views.FixReportView"
-    x:Name="Root"
     behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -24,6 +23,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
+            <composition:BindingProxy x:Key="rootProxy" DataContext="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -64,7 +64,7 @@
                             behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
                             behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
                             DisplayMemberPath="DisplayName"
-                            ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
+                            ItemsSource="{Binding DataContext.OpenedDocumentsViewModel.Collection, Source={StaticResource rootProxy}}"
                             SelectedValue="{Binding TargetDocumentTitle}"
                             SelectedValuePath="Title"
                             Style="{StaticResource LinterRadioListBox}" />

@@ -1,17 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Revit.Context.Abstractions.Services;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Localization;
-using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Infrastructure.Services;
-using Revit.Linter.WelcomePresenter.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Interop;
 using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
@@ -25,8 +21,6 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     /// </summary>
     internal const int CurrentWizardVersion = 3;
 
-    private readonly IRevitContext _revitContext;
-    private readonly IThemeService _themeService;
     private readonly IValueStore<WelcomeSettings> _settingsStore;
     private readonly IWelcomeHost _host;
     private readonly ILogger<WelcomeViewModel> _logger;
@@ -36,11 +30,10 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     private readonly WelcomeExamplesStepViewModel _examplesStep;
     private readonly WelcomePracticalStepViewModel _practicalStep;
     private readonly WelcomeFinishStepViewModel _finishStep;
+    private readonly WelcomeWindowFactory _windowFactory;
     private int _currentIndex;
 
     public WelcomeViewModel(
-        IRevitContext revitContext,
-        IThemeService themeService,
         IValueStore<WelcomeSettings> settingsStore,
         IWelcomeHost host,
         IPracticalTour practicalTour,
@@ -49,10 +42,9 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         WelcomeRulesStepViewModel rulesStep,
         WelcomeExamplesStepViewModel examplesStep,
         WelcomePracticalStepViewModel practicalStep,
-        WelcomeFinishStepViewModel finishStep)
+        WelcomeFinishStepViewModel finishStep,
+        WelcomeWindowFactory windowFactory)
     {
-        _revitContext = revitContext;
-        _themeService = themeService;
         _settingsStore = settingsStore;
         _host = host;
         _practicalTour = practicalTour;
@@ -62,6 +54,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         _examplesStep = examplesStep;
         _practicalStep = practicalStep;
         _finishStep = finishStep;
+        _windowFactory = windowFactory;
     }
 
     public ObservableCollection<WelcomeStepViewModel> Steps { get; } = [];
@@ -112,15 +105,8 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
             Steps[index].Number = index + 1;
         MoveTo(0);
 
-        WelcomeView window = new() { DataContext = this };
-        _themeService.Register(window);
+        Window window = _windowFactory.Create(this);
         DialogResult = null;
-
-        IntPtr owner = _revitContext.UIApplication?.MainWindowHandle ?? IntPtr.Zero;
-        if (owner == IntPtr.Zero)
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        else
-            _ = new WindowInteropHelper(window) { Owner = owner };
 
         bool finished = window.ShowDialog() == true;
         DialogResult = null;

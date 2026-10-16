@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Revit.Linter.Localization;
-using Revit.Context.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.DialogPresenter.Views;
-using Revit.Linter.ThemeManaging.Abstractions.Services;
+using Revit.Linter.DialogPresenter.Infrastructure;
+using Revit.Linter.Localization;
 using System.Windows;
-using System.Windows.Interop;
 
 namespace Revit.Linter.DialogPresenter.ViewModels;
 
@@ -13,15 +10,11 @@ namespace Revit.Linter.DialogPresenter.ViewModels;
 [GenerateLocalizedProperties]
 internal sealed partial class DialogViewModel : ObservableObject, IDialog
 {
-    private readonly IRevitContext _revitContext;
-    private readonly IThemeService _themeService;
+    private readonly DialogWindowFactory _windowFactory;
 
-    public DialogViewModel(
-        IRevitContext revitContext,
-        IThemeService themeService)
+    public DialogViewModel(DialogWindowFactory windowFactory)
     {
-        _revitContext = revitContext;
-        _themeService = themeService;
+        _windowFactory = windowFactory;
     }
 
     [ObservableProperty]
@@ -33,14 +26,7 @@ internal sealed partial class DialogViewModel : ObservableObject, IDialog
 
         Content = request.Content;
 
-        Window window = new DialogView() {
-            DataContext = this,
-        };
-        _themeService.Register(window);
-
-        _ = new WindowInteropHelper(window) {
-            Owner = _revitContext.UIApplication!.MainWindowHandle
-        };
+        Window window = _windowFactory.CreateDialog(this);
 
         using CancellationTokenRegistration registration = cancellationToken.Register(
             () => _ = window.Dispatcher.InvokeAsync(window.Close));

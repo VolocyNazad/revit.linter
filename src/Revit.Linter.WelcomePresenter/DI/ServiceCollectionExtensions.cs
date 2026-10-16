@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
                 .AddTransient<WelcomeExamplesStepViewModel>()
                 .AddTransient<WelcomePracticalStepViewModel>()
                 .AddTransient<WelcomeFinishStepViewModel>()
+                .AddTransient<WelcomeWindowFactory>()
                 .AddTransient<IWelcomeWizard, WelcomeViewModel>()
         ;
     }

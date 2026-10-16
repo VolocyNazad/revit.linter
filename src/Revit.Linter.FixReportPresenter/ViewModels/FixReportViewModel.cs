@@ -7,6 +7,7 @@ using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.OpenedDocuments.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -29,7 +30,8 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         IRevitContext revitContext, IFixReportReceiver fixReportReceiver,
         IEnumerable<IAccentElementsService> accentElementsServices,
         Core.Abstractions.Services.IDocumentationLauncher documentationLauncher,
-        Core.Abstractions.Services.IUserInterfaceActivityStream activityStream)
+        Core.Abstractions.Services.IUserInterfaceActivityStream activityStream,
+        OpenedDocumentsViewModel openedDocumentsViewModel)
     {
         _documentationLauncher = documentationLauncher;
         _fixReportReceiver = fixReportReceiver;
@@ -37,7 +39,13 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         _revitContext = revitContext;
         _accentElementsServices = accentElementsServices;
         _activityStream = activityStream;
+        OpenedDocumentsViewModel = openedDocumentsViewModel;
     }
+
+    /// <summary>
+    /// Gets the shared view model used by the document selector.
+    /// </summary>
+    public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
 
     /// <summary>Opens the documentation of this pane; bound to F1 over the pane's help tooltips.</summary>
     [RelayCommand]

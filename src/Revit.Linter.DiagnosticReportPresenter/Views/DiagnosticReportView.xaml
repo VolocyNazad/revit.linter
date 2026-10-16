@@ -12,7 +12,6 @@
     xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     xmlns:viewModels="clr-namespace:Revit.Linter.DiagnosticReportPresenter.ViewModels"
-    x:Name="Root"
     behaviors:HelpToolTip.HelpCommand="{Binding OpenHelpCommand}"
     d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticReportViewModel}}"
     d:DesignHeight="450"
@@ -24,6 +23,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
+            <composition:BindingProxy x:Key="rootProxy" DataContext="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -96,7 +96,7 @@
                                 behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
                                 behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
                                 DisplayMemberPath="DisplayName"
-                                ItemsSource="{Binding OpenedDocumentsViewModel.Collection, ElementName=Root}"
+                                ItemsSource="{Binding DataContext.OpenedDocumentsViewModel.Collection, Source={StaticResource rootProxy}}"
                                 SelectedValue="{Binding TargetDocumentTitle}"
                                 SelectedValuePath="Title"
                                 Style="{StaticResource LinterRadioListBox}" />

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.ViewModels;
 using Toolkit.ValueStore.Abstractions;
@@ -20,7 +21,7 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 [XamlConstructor]
 [AutoConstructor]
 [GenerateLocalizedProperties]
-internal sealed partial class DiagnosticListViewModel : InitializableObservableObject
+internal sealed partial class DiagnosticListViewModel : InitializableObservableObject, IDiagnosticListFilterReset
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IDiagnosticCatalog _diagnosticCatalog;

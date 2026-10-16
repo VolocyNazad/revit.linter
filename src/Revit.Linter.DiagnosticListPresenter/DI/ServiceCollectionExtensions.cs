@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Views;
 using MVVM.DependencyInjection;
 using Revit.Linter.DiagnosticListPresenter.ViewModels;
@@ -19,6 +20,8 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddDiagnosticListPresenterModule()
             => services
                 .AddView<DiagnosticListView>(ServiceLifetime.Singleton)
+                .AddSingleton<IDiagnosticListFilterReset>(
+                    provider => provider.GetRequiredService<DiagnosticListViewModel>())
                 .AddTransient<DiagnosticItemViewModel>()
         ;
     }

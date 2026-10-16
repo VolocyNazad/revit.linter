@@ -8,6 +8,7 @@ using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
+using Revit.Linter.OpenedDocuments.ViewModels;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 using Revit.Linter.Presentation.ViewModels;
@@ -130,6 +131,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IUserInterfaceActivityStream activityStream,
             IVisualizationViewActivator visualizationViewActivator,
             IDiagnosticReportExportService exportService,
+            OpenedDocumentsViewModel openedDocumentsViewModel,
             ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
     {
         _accentElementsServices = accentElementsServices;
@@ -147,9 +149,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
+        OpenedDocumentsViewModel = openedDocumentsViewModel;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
     }
+
+    /// <summary>
+    /// Gets the opened-document selector displayed by the view.
+    /// </summary>
+    public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
 
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticReportItemViewModel> Collection { get; private set; }

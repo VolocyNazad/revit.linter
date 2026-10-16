@@ -5,6 +5,7 @@ using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.WelcomePresenter.Abstractions;
@@ -32,7 +33,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     private readonly ITutorialSampleCopyService _tutorialSampleCopyService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly IDialog _dialog;
-    private readonly DiagnosticListPresenter.Views.DiagnosticListView _diagnosticListView;
+    private readonly IDiagnosticListFilterReset _diagnosticListFilterReset;
 
     public WelcomeHost(
         IRevitContext revitContext,
@@ -42,7 +43,7 @@ internal sealed class WelcomeHost : IWelcomeHost
         ITutorialSampleCopyService tutorialSampleCopyService,
         IRevitIdlingScheduler idlingScheduler,
         IDialog dialog,
-        DiagnosticListPresenter.Views.DiagnosticListView diagnosticListView)
+        IDiagnosticListFilterReset diagnosticListFilterReset)
     {
         _revitContext = revitContext;
         _localizer = localizer;
@@ -51,7 +52,7 @@ internal sealed class WelcomeHost : IWelcomeHost
         _tutorialSampleCopyService = tutorialSampleCopyService;
         _idlingScheduler = idlingScheduler;
         _dialog = dialog;
-        _diagnosticListView = diagnosticListView;
+        _diagnosticListFilterReset = diagnosticListFilterReset;
     }
 
     public string RibbonTabName => _localizer["ribbonTab_name"];
@@ -121,7 +122,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     public void ShowPracticalTourCompletedNotification()
         => _ = _dialog.Show(new DialogRequest(_localizer["practicalTour_completed_message"]));
 
-    public void ResetDiagnosticsSearchAndFilters() => _diagnosticListView.ResetSearchAndFilters();
+    public void ResetDiagnosticsSearchAndFilters() => _diagnosticListFilterReset.ResetSearchAndFilters();
 
     private void QueuePracticalTourPaneVisibility(bool visible)
         => _ = _idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));
