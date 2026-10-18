@@ -48,21 +48,23 @@ public sealed class PurgeableElementTests : RevitApiTest
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
-    // Families have a dedicated diagnostic: the purge check must stay silent for them.
+    // Families and their types are purgeable too: RVT003 reports them even though FamilyUnused
+    // and FamilyTypeUnused have dedicated diagnostics, so the overlap is intentional.
     [Test]
-    public async Task Loaded_family_is_ignored()
+    public async Task Unused_family_type_is_reported()
     {
         Document document = _document!;
         Family family = FamilyTestDocuments.LoadFamilyWithType(Application, document, "LinterT1");
+        FamilySymbol symbol = (FamilySymbol)document.GetElement(family.GetFamilySymbolIds().First());
         var diagnostic = new PurgeableElementUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
 
-        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
 
     [Test]
-    public async Task Only_non_family_elements_are_checked_by_filter()
+    public async Task Filter_does_not_exclude_family_elements()
     {
         Document document = _document!;
         Wall wall = CreateWall(document, 0, 3000);
@@ -70,7 +72,7 @@ public sealed class PurgeableElementTests : RevitApiTest
         var filter = new PurgeableElementUnusedDiagnosticFilter();
 
         await Assert.That(filter.IsRelevantFor(document, wall.WallType)).IsTrue();
-        await Assert.That(filter.IsRelevantFor(document, family)).IsFalse();
+        await Assert.That(filter.IsRelevantFor(document, family)).IsTrue();
     }
 
     [Test]

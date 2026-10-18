@@ -12,10 +12,6 @@ internal sealed class PurgeableElementUnusedDiagnostic(IDocumentQueryService doc
 
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
-        // Families, family types and materials have dedicated diagnostics.
-        if (targetElement is Family or FamilySymbol or Material)
-            return new(DiagnosticVerdict.Valid);
-
         IReadOnlyCollection<ElementId> unusedIds = documentQueries.GetOrCreate(
             DocumentQueryKey.Create(document, UnusedElementIdsQuery),
             () => PurgeableElementIds.GetIds(document));
