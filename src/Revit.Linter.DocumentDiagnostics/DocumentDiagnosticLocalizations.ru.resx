@@ -10,5 +10,7 @@
   <data name="DOC002_message" xml:space="preserve"><value>Таблица поиска типоразмеров «{tableName}» в семействе «{documentTitle}» не используется ни одним типоразмером. Время выполнения: {duration} мс.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Проверяет, задан ли вид предпросмотра документа.</value></data>
   <data name="DOC003_message" xml:space="preserve"><value>В документе «{documentTitle}» не задан вид предпросмотра. Время выполнения: {duration} мс.</value></data>
+  <data name="RVT002_description" xml:space="preserve"><value>Проверяет документ встроенными правилами Revit Performance Adviser.</value></data>
+  <data name="RVT002_message" xml:space="preserve"><value>Performance Adviser обнаружил проблему в документе «{documentTitle}».&#xA;Правило: {ruleName}&#xA;Элементы: {elementIds}&#xA;Подробности: {details}&#xA;Время выполнения: {duration} мс.</value></data>
   <data name="setActiveViewAsPreview_fix" xml:space="preserve"><value>Сделать активный вид видом предпросмотра</value></data>
 </root>

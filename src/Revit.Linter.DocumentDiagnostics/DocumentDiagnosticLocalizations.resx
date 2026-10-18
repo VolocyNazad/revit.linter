@@ -10,5 +10,7 @@
   <data name="DOC002_message" xml:space="preserve"><value>Size lookup table '{tableName}' in family '{documentTitle}' is not referenced by any family type. Duration: {duration} ms.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Checks whether a preview view is set for the document.</value></data>
   <data name="DOC003_message" xml:space="preserve"><value>Document '{documentTitle}' has no preview view. Duration: {duration} ms.</value></data>
+  <data name="RVT002_description" xml:space="preserve"><value>Checks the document with the built-in Revit Performance Adviser rules.</value></data>
+  <data name="RVT002_message" xml:space="preserve"><value>Performance Adviser reported a problem in document '{documentTitle}'.&#xA;Rule: {ruleName}&#xA;Elements: {elementIds}&#xA;Details: {details}&#xA;Duration: {duration} ms.</value></data>
   <data name="setActiveViewAsPreview_fix" xml:space="preserve"><value>Set active view as preview</value></data>
 </root>
