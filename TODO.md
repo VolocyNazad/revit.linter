@@ -99,6 +99,9 @@
 
 ## Asset-based RevitTests for built-in diagnostics
 
+- [ ] Cover the LargeArray (SHRD0032) family size boundary (49 versus 50 members) with a checked-in binary test asset. Live runs proved it cannot be built deterministically through the API: `LinearArray.Create` on an extrusion in a model family template silently drops the association with no warnings (counts 3/5/10 persist as `BaseArray`, counts 20/50 leave plain copies), and the `NumMembers` setter silently keeps the old value. Project boundaries (99 versus 100) and the family label branch are covered by code-built `ArrayDiagnosticsTests`.
+
+
 - [ ] Cover SYST001 with the code-built `ConnectorDiagnosticsTests` (cube families carrying pipe/duct/cable-tray/conduit/electrical connectors, the full connector-type matrix and the project-only filter — so far only compiled, needs a live Revit run) and SHRD0016 (imported CAD file) with a checked-in binary test asset. The `MEPCurve` branch still needs a project asset or a way to build MEP types in code. SHRD0020 title blocks are built in code (`FamilyTestDocuments.LoadTitleblockSymbol`: an annotation template reassigned to `OST_TitleBlocks`).
 - [ ] SHRD003 has no fix: `FamilyInstance.Mirrored` is get-only, and no in-place API mirror clears the flag (verified live: re-mirroring a mirrored instance about the same plane and about an orthogonal plane through its origin leaves `Mirrored` set); any odd-mirror alternative displaces the element, so there is no safe automatic unmirror.
 - [ ] Cover ARCH003 (zero-area room with boundaries) and SHRD0022 (materials cannot be created through the Revit API and empty documents have none to duplicate): no deterministic API construction is known; revisit if one is found.

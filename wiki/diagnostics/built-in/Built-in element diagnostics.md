@@ -41,6 +41,10 @@ lang: en
 | **SHRD0028** | Checks whether family symbols duplicate each other in the same family.                                    | ⚠️ Warning | `Family symbol 'Дверь_1200' (ID:99004) has identical parameter values with 'Дверь_1200_2'. (6 ms)` |
 | **SHRD0029** | Checks whether reference lines carry locked or EQ dimensions (family documents only).                     | 💬 Message | `Reference line 'Опорная линия' (ID:99014) has no locked or EQ dimensions. (5 ms)` |
 | **RVT003** | Checks for unused elements that Purge Unused can delete. | 💬 Message | `Element 'Стена_01' (ID:99015) is not used and can be purged. (5 ms)` |
+| **SHRD0031** | Checks for associated arrays (Group And Associate). | ⚠️ Warning | `Array 'Массив 1' (ID:99016) is associated. (5 ms)` |
+| **SHRD0032** | Checks arrays for excessive member count (100+ projects, 50+ families). | ⚠️ Warning | `Array 'Массив 1' (ID:99016) has too many members. (5 ms)` |
+| **SHRD0033** | Checks arrays driven by a family parameter. | ⚠️ Warning | `Array 'Массив 1' (ID:99016) is driven by a parameter. (5 ms)` |
+| **SHRD0034** | Checks radial arrays for excessive member count (50+ projects, 25+ families). | ⚠️ Warning | `Radial array 'Массив 1' (ID:99016) has too many members. (5 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

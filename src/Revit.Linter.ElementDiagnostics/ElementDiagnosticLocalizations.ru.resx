@@ -94,4 +94,14 @@
   <data name="SHRD0029_message" xml:space="preserve"><value>Опорная линия «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
   <data name="RVT003_description" xml:space="preserve"><value>Проверяет наличие неиспользуемых элементов, которые можно удалить командой «Удалить неиспользуемое».</value></data>
   <data name="RVT003_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0031_description" xml:space="preserve"><value>Проверяет наличие связанных массивов (Сгруппировать и связать). См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
+  <data name="SHRD0031_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) связан. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0032_description" xml:space="preserve"><value>Проверяет массивы с большим числом членов. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
+  <data name="SHRD0032_message" xml:space="preserve"><value>В массиве «{elementName}» ({elementId}) слишком много членов. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0033_description" xml:space="preserve"><value>Проверяет массивы, управляемые параметром семейства. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
+  <data name="SHRD0033_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) управляется параметром. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0034_description" xml:space="preserve"><value>Проверяет радиальные массивы с большим числом членов. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
+  <data name="SHRD0034_message" xml:space="preserve"><value>В радиальном массиве «{elementName}» ({elementId}) слишком много членов. Время выполнения: {duration} мс.</value></data>
+  <data name="unbindArray_fix" xml:space="preserve"><value>Отвязать массив</value></data>
+  <data name="deleteArray_fix" xml:space="preserve"><value>Удалить массив</value></data>
 </root>

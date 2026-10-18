@@ -94,4 +94,14 @@
   <data name="SHRD0029_message" xml:space="preserve"><value>Reference line '{elementName}' ({elementId}) has no locked or EQ dimensions. Duration: {duration} ms.</value></data>
   <data name="RVT003_description" xml:space="preserve"><value>Checks for unused elements that Purge Unused can delete.</value></data>
   <data name="RVT003_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) is not used and can be purged. Duration: {duration} ms.</value></data>
+  <data name="SHRD0031_description" xml:space="preserve"><value>Checks for associated arrays (Group And Associate). See Autodesk Revit Help: Performance Optimization for Revit Models; Model Efficiently; Arrays of Elements.</value></data>
+  <data name="SHRD0031_message" xml:space="preserve"><value>Array '{elementName}' ({elementId}) is associated. Duration: {duration} ms.</value></data>
+  <data name="SHRD0032_description" xml:space="preserve"><value>Checks arrays for excessive member count. See Autodesk Revit Help: Performance Optimization for Revit Models; Model Efficiently; Arrays of Elements.</value></data>
+  <data name="SHRD0032_message" xml:space="preserve"><value>Array '{elementName}' ({elementId}) has too many members. Duration: {duration} ms.</value></data>
+  <data name="SHRD0033_description" xml:space="preserve"><value>Checks arrays driven by a family parameter. See Autodesk Revit Help: Performance Optimization for Revit Models; Model Efficiently; Arrays of Elements.</value></data>
+  <data name="SHRD0033_message" xml:space="preserve"><value>Array '{elementName}' ({elementId}) is driven by a parameter. Duration: {duration} ms.</value></data>
+  <data name="SHRD0034_description" xml:space="preserve"><value>Checks radial arrays for excessive member count. See Autodesk Revit Help: Performance Optimization for Revit Models; Model Efficiently; Arrays of Elements.</value></data>
+  <data name="SHRD0034_message" xml:space="preserve"><value>Radial array '{elementName}' ({elementId}) has too many members. Duration: {duration} ms.</value></data>
+  <data name="unbindArray_fix" xml:space="preserve"><value>Unbind array</value></data>
+  <data name="deleteArray_fix" xml:space="preserve"><value>Delete array</value></data>
 </root>
