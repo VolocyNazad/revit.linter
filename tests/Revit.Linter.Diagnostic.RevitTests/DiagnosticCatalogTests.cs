@@ -51,11 +51,11 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     }
 
     [Test]
-    public async Task Catalog_snapshot_preserves_the_tour_mark()
+    public async Task Catalog_snapshot_preserves_the_tour_system_tag()
     {
         ElementDiagnosticId tourId = new(
             "TOUR-CATALOG", "Description", "Message", DiagnosticSeverity.Warning, true, false, "",
-            isExample: false, isTour: true);
+            systemTags: [DiagnosticTags.Tour]);
         ElementDiagnosticId regularId = CreateElementId("ELM-CATALOG");
         using ServiceProvider services = CreateServices(configure: collection =>
         {
@@ -75,9 +75,9 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         ElementDiagnosticRegistration regularRegistration = lease.Snapshot.ElementDiagnostics
             .Single(registration => registration.Identity.Code == "ELM-CATALOG");
 
-        await Assert.That(tourRegistration.Identity.IsTour).IsTrue();
-        await Assert.That(tourRegistration.Identity.IsExample).IsFalse();
-        await Assert.That(regularRegistration.Identity.IsTour).IsFalse();
+        await Assert.That(tourRegistration.Identity.SystemTags).Contains(DiagnosticTags.Tour);
+        await Assert.That(tourRegistration.Identity.SystemTags).DoesNotContain(DiagnosticTags.Example);
+        await Assert.That(regularRegistration.Identity.SystemTags).DoesNotContain(DiagnosticTags.Tour);
     }
 
     [Test]

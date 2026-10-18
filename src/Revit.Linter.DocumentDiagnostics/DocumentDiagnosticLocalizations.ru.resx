@@ -4,8 +4,8 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="DOC001_description" xml:space="preserve"><value>Проверяет наличие начального вида документа.</value></data>
   <data name="DOC001_message" xml:space="preserve"><value>Документ «{documentTitle}» не имеет начального вида. Время выполнения: {duration} мс.</value></data>
-  <data name="RVT_description" xml:space="preserve"><value>Проверяет наличие предупреждений Revit.</value></data>
-  <data name="RVT_message" xml:space="preserve"><value>В документе «{documentTitle}» обнаружены предупреждения.&#xA;Элементы: {elementIds}&#xA;Подробности: {details}&#xA;Время выполнения: {duration} мс.</value></data>
+  <data name="RVT001_description" xml:space="preserve"><value>Проверяет наличие предупреждений Revit.</value></data>
+  <data name="RVT001_message" xml:space="preserve"><value>В документе «{documentTitle}» обнаружены предупреждения.&#xA;Элементы: {elementIds}&#xA;Подробности: {details}&#xA;Время выполнения: {duration} мс.</value></data>
   <data name="DOC002_description" xml:space="preserve"><value>Проверяет, используются ли таблицы поиска типоразмеров семейства.</value></data>
   <data name="DOC002_message" xml:space="preserve"><value>Таблица поиска типоразмеров «{tableName}» в семействе «{documentTitle}» не используется ни одним типоразмером. Время выполнения: {duration} мс.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Проверяет, задан ли вид предпросмотра документа.</value></data>

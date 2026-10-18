@@ -113,7 +113,9 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 rule.Code, rule.Description,
                 rule.Message ?? CollisionDiagnosticLocalizations.GetString("Default_message"),
                 rule.Severity, rule.IsActive,
-                rule.IsObsolete, rule.ObsoleteDescription, isExample, isTour, isDebug: isDebug);
+                rule.IsObsolete, rule.ObsoleteDescription,
+                systemTags: DiagnosticTags.ForConfiguredRule(DiagnosticTags.Collision, isExample, isTour, isDebug),
+                tags: rule.Tags);
             return new ElementDiagnosticRegistration(
                 identity,
                 new ElementDiagnostic(

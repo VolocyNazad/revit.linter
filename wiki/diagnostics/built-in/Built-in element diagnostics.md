@@ -40,7 +40,7 @@ lang: en
 | **SHRD0027** | Checks whether groups exist in the document.                                        | 💬 Message | `Group 'Группа 1' (ID:99003) exists in the document. (5 ms)` |
 | **SHRD0028** | Checks whether family symbols duplicate each other in the same family.                                    | ⚠️ Warning | `Family symbol 'Дверь_1200' (ID:99004) has identical parameter values with 'Дверь_1200_2'. (6 ms)` |
 | **SHRD0029** | Checks whether reference lines carry locked or EQ dimensions (family documents only).                     | 💬 Message | `Reference line 'Опорная линия' (ID:99014) has no locked or EQ dimensions. (5 ms)` |
-| **SHRD0030** | Checks for unused elements that Purge Unused can delete. | 💬 Message | `Element 'Стена_01' (ID:99015) is not used and can be purged. (5 ms)` |
+| **RVT003** | Checks for unused elements that Purge Unused can delete. | 💬 Message | `Element 'Стена_01' (ID:99015) is not used and can be purged. (5 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

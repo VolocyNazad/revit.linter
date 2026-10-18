@@ -13,6 +13,7 @@ namespace Revit.Linter.DiagnosticReportExporting.Abstractions.Models;
 /// <param name="ObsoleteDescription">The reason the finding is obsolete, or <see langword="null"/>.</param>
 /// <param name="TargetElementId">The target element identifier text, or <see langword="null"/> when unknown.</param>
 /// <param name="DependencyElementIds">The dependency element identifier texts.</param>
+/// <param name="Tags">The tags of the diagnostic that reported the finding.</param>
 public sealed record DiagnosticReportExportItem(
     string Severity,
     string SeverityDisplayName,
@@ -23,4 +24,5 @@ public sealed record DiagnosticReportExportItem(
     bool IsObsolete,
     string? ObsoleteDescription,
     string? TargetElementId,
-    IReadOnlyCollection<string> DependencyElementIds);
+    IReadOnlyCollection<string> DependencyElementIds,
+    IReadOnlyCollection<string> Tags);

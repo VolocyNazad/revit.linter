@@ -92,6 +92,6 @@
   <data name="SHRD0028_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) полностью совпадает с «{duplicateNames}». Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0029_description" xml:space="preserve"><value>Проверяет, зафиксированы ли опорные линии заблокированными размерами или связью равенства EQ в документах семейств.</value></data>
   <data name="SHRD0029_message" xml:space="preserve"><value>Опорная линия «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
-  <data name="SHRD0030_description" xml:space="preserve"><value>Проверяет наличие неиспользуемых элементов, которые можно удалить командой «Удалить неиспользуемое».</value></data>
-  <data name="SHRD0030_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке. Время выполнения: {duration} мс.</value></data>
+  <data name="RVT003_description" xml:space="preserve"><value>Проверяет наличие неиспользуемых элементов, которые можно удалить командой «Удалить неиспользуемое».</value></data>
+  <data name="RVT003_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке. Время выполнения: {duration} мс.</value></data>
 </root>

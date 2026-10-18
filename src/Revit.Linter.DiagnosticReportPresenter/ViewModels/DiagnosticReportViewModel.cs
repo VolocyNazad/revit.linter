@@ -107,6 +107,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IDiagnosticReportExportService _exportService;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
+    private readonly Dictionary<string, IReadOnlyList<string>> _tagsByCode = new(StringComparer.Ordinal);
     private IElementVisualizationPipeline? _activeVisualizationPipeline;
     private ElementId? _activeVisualizationTargetId;
     private int _visualizationMutationDepth;
@@ -225,6 +227,21 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     #endregion
 
+    #region [FilterByTag] Command - Filter by tag
+
+    /// <summary>
+    /// Puts a row tag into the search box, so the list shows the findings that carry it.
+    /// </summary>
+    /// <param name="tag">The tag clicked in a row.</param>
+    [RelayCommand]
+    private void FilterByTag(string? tag)
+    {
+        if (tag is null || string.IsNullOrWhiteSpace(tag)) return;
+        SearchField = tag;
+    }
+
+    #endregion
+
     #region [Export] Command - Export
 
     /// <summary> Export </summary>
@@ -246,7 +263,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 item.TargetElementId?.ToString(),
                 item.TargetDependencyElementIds
                     .Select(elementId => elementId.ToString())
-                    .ToArray()))
+                    .ToArray(),
+                item.Tags))
             .ToList();
 
         Assembly assembly = typeof(DiagnosticReportViewModel).Assembly;
@@ -259,6 +277,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             MessageHeader = MessageHeader,
             DocumentHeader = DocumentHeader,
             CreatedHeader = CreatedHeader,
+            TagsHeader = TagsHeader,
             ReportTitle = HtmlReportTitle,
             GeneratedLabel = HtmlGeneratedLabel,
             TotalLabel = HtmlTotalLabel,
@@ -328,7 +347,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             && SeverityFilters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
             && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
+            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+            || DiagnosticTags.Matches(viewModel.Tags, SearchField));
     }
 
     private void ClearFilters()
@@ -394,6 +414,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
         _catalogLease?.Dispose();
         _catalogLease = lease;
+        RefreshTagIndex();
         _catalogChangesEnabled = true;
         _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
 
@@ -444,7 +465,22 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Clear();
         IDiagnosticCatalogSnapshotLease? previous = _catalogLease;
         _catalogLease = lease;
+        RefreshTagIndex();
         previous?.Dispose();
+    }
+
+    // Rebuilds the code-to-tags index from the current snapshot. A code that is no longer registered,
+    // for example after its rule was removed from a configuration file, keeps no tags.
+    private void RefreshTagIndex()
+    {
+        _tagsByCode.Clear();
+        DiagnosticCatalogSnapshot? snapshot = _catalogLease?.Snapshot;
+        if (snapshot is null) return;
+
+        foreach (IDiagnosticIdentity identity in snapshot.ElementDiagnostics.Select(registration => registration.Identity))
+            _tagsByCode[identity.Code] = identity.Tags;
+        foreach (IDiagnosticIdentity identity in snapshot.DocumentDiagnostics.Select(registration => registration.Identity))
+            _tagsByCode[identity.Code] = identity.Tags;
     }
 
     protected override void OnRevitChanged(RevitEventType revitEventType) {
@@ -619,6 +655,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             AccentElementDelegate = i => SelectElement(i),
             IsObsolete = report.IsObsolete,
             ObsoleteDescription = report.ObsoleteDescription,
+            Tags = GetTags(report.Code),
         };
         return item;
     }
@@ -1391,4 +1428,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private DiagnosticCatalogSnapshot GetCatalogSnapshot() =>
         _catalogLease?.Snapshot ?? throw new InvalidOperationException("The diagnostic catalog is not initialized.");
+
+    private IReadOnlyList<string> GetTags(string code) =>
+        _tagsByCode.TryGetValue(code, out IReadOnlyList<string>? tags) ? tags : DiagnosticTags.None;
 }

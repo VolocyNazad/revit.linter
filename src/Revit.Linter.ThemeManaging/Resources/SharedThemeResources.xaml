@@ -32,8 +32,8 @@
     <DataGridLength x:Key="LinterGridActionColumnWidth">32</DataGridLength>
     <system:Double x:Key="LinterGridToggleColumnMinWidth">64</system:Double>
     <system:Double x:Key="LinterGridCodeColumnMinWidth">76</system:Double>
-    <system:Double x:Key="LinterGridExampleCodeColumnMinWidth">132</system:Double>
     <system:Double x:Key="LinterGridSeverityColumnMinWidth">128</system:Double>
+    <system:Double x:Key="LinterGridTagsColumnMinWidth">96</system:Double>
     <system:Double x:Key="LinterGridDocumentColumnMinWidth">160</system:Double>
     <system:Double x:Key="LinterGridCreatedColumnMinWidth">136</system:Double>
 
@@ -589,6 +589,30 @@
                 <Setter Property="Foreground" Value="{DynamicResource LinterSeverityErrorBrush}" />
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+
+    <!--  Clickable tag chip of a finding row. The content is the tag text; the command filters by it.  -->
+    <Style x:Key="LinterTagChipButton" TargetType="{x:Type Button}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterAccentBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Margin="0,0,6,0"
+                        Padding="5,1"
+                        Background="{DynamicResource LinterSelectionBrush}"
+                        BorderBrush="{DynamicResource LinterAccentBrush}"
+                        BorderThickness="1"
+                        CornerRadius="2">
+                        <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--  Combo boxes (not editable)  -->

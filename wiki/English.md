@@ -36,6 +36,7 @@ Revit Linter helps designers and BIM teams find model problems before they affec
 - [[Diagnostic modules|Diagnostic modules]]
 - [[Diagnostic parameters|Diagnostic parameters]]
 - [[Diagnostic severity|Severity levels]]
+- [[Diagnostic tags|Diagnostic tags]]
 - [[User interface|User interface]]
 
 [[Home|← Choose language]]

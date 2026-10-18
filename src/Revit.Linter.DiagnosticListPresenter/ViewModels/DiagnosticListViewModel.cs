@@ -95,6 +95,21 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         }
     }
 
+    #region [FilterByTag] Command - Filter by tag
+
+    /// <summary>
+    /// Puts a row tag into the search box, so the list shows the diagnostics that carry it.
+    /// </summary>
+    /// <param name="tag">The tag clicked in a row.</param>
+    [RelayCommand]
+    private void FilterByTag(string? tag)
+    {
+        if (tag is null || string.IsNullOrWhiteSpace(tag)) return;
+        SearchField = tag;
+    }
+
+    #endregion
+
     #region [CheckAll] Command - Check all
 
     /// <summary> Check all </summary>
@@ -292,7 +307,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         => args.Accepted = args.Item is DiagnosticItemViewModel viewModel
         && Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && (viewModel.Description.ToString().Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
+        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+        || DiagnosticTags.Matches(viewModel.Tags, SearchField));
 
     private void RefreshFilters()
     {

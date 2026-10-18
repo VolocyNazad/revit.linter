@@ -8,6 +8,7 @@ version: 1
 rules:
 - code: "TOUR001"
   description: "Практическое обучение: изучение коллизии модели"
+  tags: ["Project"]
   message: "Коллизия: элемент «{elementName}» ({elementId}) пересекает элементы: {intersection.count} — «{intersection.elementNames}» ({intersection.elementIds})."
   severity: "Message"
   isActive: false

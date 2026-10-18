@@ -19,7 +19,7 @@ public sealed class RunDiagnosticSettings
     /// <summary>
     /// Gets or sets the legacy Revit-warning option retained for settings-file compatibility.
     /// </summary>
-    [Obsolete("Revit warnings are configured through the RVT document diagnostic.")]
+    [Obsolete("Revit warnings are configured through the RVT001 document diagnostic.")]
     public bool IncludeRevitWarnings { get; set; } = true;
 #pragma warning restore S1133
 }

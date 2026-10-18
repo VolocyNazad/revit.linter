@@ -23,6 +23,7 @@ lang: en
 - [[Built-in diagnostics and user rules|Built-in diagnostics and user rules]]
 - [[Diagnostic modules|Available modules]]
 - [[Diagnostic parameters|Common parameters]]
+- [[Diagnostic tags|Diagnostic tags]]
 - [[User diagnostics|User diagnostics]]
 - [[Collision diagnostics|Collision diagnostics]]
 - [[Project parameter diagnostics|Project parameter diagnostics]]

@@ -14,9 +14,7 @@
   <data name="invertVisible_text" xml:space="preserve"><value>Invert visible</value></data>
   <data name="isActive_header" xml:space="preserve"><value>Active</value></data>
   <data name="code_header" xml:space="preserve"><value>Code</value></data>
-  <data name="example_text" xml:space="preserve"><value>Example</value></data>
-  <data name="tour_text" xml:space="preserve"><value>Tour</value></data>
-  <data name="debug_text" xml:space="preserve"><value>Debug</value></data>
+  <data name="tags_header" xml:space="preserve"><value>Tags</value></data>
   <data name="openConfigurationFolder_title" xml:space="preserve"><value>Open configuration folder</value></data>
   <data name="openConfigurationFolder_description" xml:space="preserve"><value>Opens the folder containing configuration files that define the linter rules.</value></data>
   <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>The configuration folder could not be opened.&#xA;&#xA;{0}</value></data>
@@ -30,7 +28,8 @@
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows. The number next to a filter is the number of rows it matches.</value></data>
   <data name="isActive_description" xml:space="preserve"><value>Turns the diagnostic on or off for you. Your choice overrides the value set by the rule and is saved in your settings, so it applies to every document.</value></data>
   <data name="severity_description" xml:space="preserve"><value>Sets how serious you consider the findings of the diagnostic. Your choice overrides the level set by the rule and is saved in your settings.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Searches the code and the description, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code, the description and the tags, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="tags_description" xml:space="preserve"><value>Tags of the diagnostic. Click a tag to search for it.</value></data>
   <data name="checkAll_description" xml:space="preserve"><value>Turns on every diagnostic, including the ones hidden by the search and the filters.</value></data>
   <data name="uncheckAll_description" xml:space="preserve"><value>Turns off every diagnostic, including the ones hidden by the search and the filters.</value></data>
   <data name="checkVisible_description" xml:space="preserve"><value>Turns on only the diagnostics shown in the list now, after the search and the filters.</value></data>

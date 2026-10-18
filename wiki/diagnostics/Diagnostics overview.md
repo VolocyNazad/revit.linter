@@ -25,5 +25,6 @@ lang: en
 - [[Diagnostic conventions|Conventions]]
 - [[Diagnostic types by target|Diagnostic types]]
 - [[Diagnostic parameters|Diagnostic parameters]]
+- [[Diagnostic tags|Tags]]
 
 [[English|← Home]]

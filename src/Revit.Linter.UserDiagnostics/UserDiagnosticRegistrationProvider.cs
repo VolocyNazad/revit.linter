@@ -99,7 +99,9 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 rule.Code, rule.Description,
                 rule.Message ?? UserDiagnosticLocalizations.GetString("Default_message"),
                 rule.Severity, rule.IsActive,
-                rule.IsObsolete, rule.ObsoleteDescription, isExample, isTour: false, isDebug: isDebug);
+                rule.IsObsolete, rule.ObsoleteDescription,
+                systemTags: DiagnosticTags.ForConfiguredRule(DiagnosticTags.Custom, isExample, isTour: false, isDebug),
+                tags: rule.Tags);
             return new ElementDiagnosticRegistration(
                 identity,
                 new ElementDiagnostic(elementFunctionFactory) { Identity = identity, Formula = rule.Check },

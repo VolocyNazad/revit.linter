@@ -89,10 +89,6 @@
 
 - [ ] Show the user a visible warning when a collision rule skips selected elements without geometry (today this is only a `Warning` in the log from `ElementDiagnostic.BuildGroups`): after the run, report the skipped count per rule and advise narrowing the `take`/`andTake` filters, since skipped elements cannot collide but still cost a geometry read each.
 
-## Document diagnostics
-
-- [x] DOC004 (preview view not found) removed: deleting the view set as preview re-triggers DOC003 instead — Revit resets `PreviewViewId` to invalid on view deletion and rejects dangling ids in the setter, so the check could not fire.
-
 ## Ignore list
 
 - [ ] Migrate ignores that version 2.0.0 stored in the `Linter_Ignored`/`Linter_IgnoredType` project parameters into the in-document ignore list when a model is opened. The current implementation reads only the Extensible Storage list, so those ignores are not honored, and the obsolete parameters stay bound in models that already have them.

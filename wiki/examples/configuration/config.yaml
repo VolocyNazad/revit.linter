@@ -7,6 +7,7 @@ version: 1
 rules:
 - code: "CSTM001"
   description: "Generic model instances"
+  tags: ["Modeling", "Categories", "Project"]
   message: "'{elementName}' ({elementId}) is a generic model. Move it to a proper category or add it to the ignore list."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -152,6 +153,7 @@ rules:
 
 - code: "CSTM101"
   description: "Ducts and pipes without a system"
+  tags: ["MEP", "Systems", "Project"]
   message: "'{elementName}' ({elementId}) is not assigned to a system."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -167,6 +169,7 @@ rules:
 
 - code: "CSTM201"
   description: "Doors and windows without a mark"
+  tags: ["Project"]
   message: "'{elementName}' ({elementId}) has an empty mark."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -182,6 +185,7 @@ rules:
 
 - code: "CSTM202"
   description: "Mirrored doors"
+  tags: ["Doors", "Modeling", "Project"]
   message: "Door '{elementName}' ({elementId}) is mirrored: its handing differs from the family."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -197,6 +201,7 @@ rules:
 
 - code: "CSTM203"
   description: "Rooms without a meaningful name"
+  tags: ["Project"]
   message: "Room '{elementName}' ({elementId}) has an empty or default name."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -212,6 +217,7 @@ rules:
 
 - code: "CSTM204"
   description: "Unplaced rooms"
+  tags: ["Project"]
   message: "Room '{elementName}' ({elementId}) is not placed in the model."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"

@@ -4,8 +4,8 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="DOC001_description" xml:space="preserve"><value>Checks whether a starting view is configured for the document.</value></data>
   <data name="DOC001_message" xml:space="preserve"><value>Document '{documentTitle}' has no starting view. Duration: {duration} ms.</value></data>
-  <data name="RVT_description" xml:space="preserve"><value>Checks for Revit warnings.</value></data>
-  <data name="RVT_message" xml:space="preserve"><value>Warnings were found in document '{documentTitle}'.&#xA;Elements: {elementIds}&#xA;Details: {details}&#xA;Duration: {duration} ms.</value></data>
+  <data name="RVT001_description" xml:space="preserve"><value>Checks for Revit warnings.</value></data>
+  <data name="RVT001_message" xml:space="preserve"><value>Warnings were found in document '{documentTitle}'.&#xA;Elements: {elementIds}&#xA;Details: {details}&#xA;Duration: {duration} ms.</value></data>
   <data name="DOC002_description" xml:space="preserve"><value>Checks whether family size lookup tables are referenced by family types.</value></data>
   <data name="DOC002_message" xml:space="preserve"><value>Size lookup table '{tableName}' in family '{documentTitle}' is not referenced by any family type. Duration: {duration} ms.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Checks whether a preview view is set for the document.</value></data>

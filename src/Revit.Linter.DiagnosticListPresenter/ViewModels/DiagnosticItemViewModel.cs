@@ -18,7 +18,6 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
     public string Code { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public bool IsObsolete { get; private set; }
-    public bool IsExample { get; private set; }
     public bool IsTour { get; private set; }
     public bool IsDebug { get; private set; }
     public string? ConfigurationPath { get; private set; }
@@ -26,6 +25,10 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
     public Action? OpenDocumentationDelegate { get; private set; }
     public string ObsoleteDescription { get; private set; } = string.Empty;
     public TargetType TargetType { get; private set; }
+    public IReadOnlyList<string> Tags { get; private set; } = DiagnosticTags.None;
+    /// <summary>Gets the tags as one text, used to sort the column.</summary>
+    public string TagsText => string.Join(", ", Tags);
+    public bool HasTags => Tags.Count > 0;
 
     public bool IsActive
     {
@@ -92,26 +95,15 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
     [RelayCommand]
     private void OpenDocumentation() => OpenDocumentationDelegate?.Invoke();
 
-    private void Initialize(ElementDiagnosticId identity)
+    private void Initialize(IDiagnosticIdentity identity)
     {
         Code = identity.Code;
         Description = identity.Description;
         IsObsolete = identity.IsObsolete;
-        IsExample = identity.IsExample;
-        IsTour = identity.IsTour;
-        IsDebug = identity.IsDebug;
+        IsTour = identity.SystemTags.Contains(DiagnosticTags.Tour);
+        IsDebug = identity.SystemTags.Contains(DiagnosticTags.Debug);
         ObsoleteDescription = identity.ObsoleteDescription;
-    }
-
-    private void Initialize(DocumentDiagnosticId identity)
-    {
-        Code = identity.Code;
-        Description = identity.Description;
-        IsObsolete = identity.IsObsolete;
-        IsExample = identity.IsExample;
-        IsTour = identity.IsTour;
-        IsDebug = identity.IsDebug;
-        ObsoleteDescription = identity.ObsoleteDescription;
+        Tags = identity.Tags;
     }
 
     private void Override_Changed(object? sender, DiagnosticOverrideChangedEventArgs args)

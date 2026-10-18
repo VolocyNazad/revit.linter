@@ -11,6 +11,7 @@ rules:
 # >>> section: mep — Инженерные системы (ИОС)
 - code: "PRMTR101"
   description: "Параметры ADSK системных семейств ИОС (воздуховоды, трубы, лотки)"
+  tags: ["Инженерные системы", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -73,6 +74,7 @@ rules:
 # >>> section: architecture — Архитектура (АР)
 - code: "PRMTR201"
   description: "Параметры квартирографии ADSK у помещений"
+  tags: ["Архитектура", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -105,6 +107,7 @@ rules:
 # >>> section: structure — Конструкции (КР)
 - code: "PRMTR301"
   description: "Марка конструкции ADSK у колонн, каркаса и фундаментов"
+  tags: ["Конструкции", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

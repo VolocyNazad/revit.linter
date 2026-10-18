@@ -11,6 +11,7 @@ rules:
 # >>> section: mep — MEP systems
 - code: "PRMTR101"
   description: "ADSK parameters of MEP system families (ducts, pipes, cable trays)"
+  tags: ["MEP", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -73,6 +74,7 @@ rules:
 # >>> section: architecture — Architecture
 - code: "PRMTR201"
   description: "ADSK apartment parameters of rooms"
+  tags: ["Architecture", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
@@ -105,6 +107,7 @@ rules:
 # >>> section: structure — Structure
 - code: "PRMTR301"
   description: "ADSK structural mark of columns, framing and foundations"
+  tags: ["Structure", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

@@ -36,6 +36,7 @@ The welcome window keeps only the blocks of the selected disciplines (`mep`, `ar
 - `groupBy` is a constant in the examples, so every selected element is compared with every other one. Replace it with a formula to compare elements only inside a group.
 - The project parameter rules use names and GUIDs from the ADSK shared parameter file. The binding type, categories and group are an example of a company standard; adjust them to your template.
 - The project parameter file uses the `group` format of Revit 2024 and newer. For Revit 2021–2023 replace it with a `BuiltInParameterGroup` name such as `PG_DATA`; a rule whose `group` does not fit the running Revit version is skipped when the file is loaded. The welcome window converts the group automatically. See [[Project parameter diagnostics]].
+- The example rules carry a `tags` list. Tags are free text: they let you find a rule on the panes and appear in exported reports. Adjust them to your own conventions; a rule without `tags` has none. The example rules declare `Project`, because their `takeDocument` restricts them to project documents.
 
 ## Working configuration
 

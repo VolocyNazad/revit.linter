@@ -13,6 +13,8 @@ internal sealed class DiagnosticRule
     public bool IsActive { get; init; } = true;
     public bool IsObsolete { get; init; } = false;
     public string ObsoleteDescription { get; init; } = string.Empty;
+    /// <summary>Gets the tags used to find this rule; an empty list when none are declared.</summary>
+    public string[] Tags { get; init; } = [];
     public ElementFixPipelineDefinition[] Fixes { get; init; } = [];
     public ElementVisualizationPipelineDefinition[] Visualizations { get; init; } =
         [new() { Name = "Show and select", Steps = [new() { Type = "Show" }, new() { Type = "Select" }] }];

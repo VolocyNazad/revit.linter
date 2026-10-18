@@ -21,6 +21,10 @@ internal sealed partial class DiagnosticReportItemViewModel : ObservableObject, 
     public required ElementId[] TargetDependencyElementIds { get; init; }
     public required bool IsObsolete { get; init; }
     public required string ObsoleteDescription { get; init; }
+    /// <summary>Gets the tags of the diagnostic that reported the finding.</summary>
+    public required IReadOnlyList<string> Tags { get; init; }
+    /// <summary>Gets the tags as one text, used to sort the column.</summary>
+    public string TagsText => string.Join(", ", Tags);
     public required string Template { get; init; }
     public required Dictionary<string, object> Args { get; init; }
     public required Action<ElementId> AccentElementDelegate { get; init; }

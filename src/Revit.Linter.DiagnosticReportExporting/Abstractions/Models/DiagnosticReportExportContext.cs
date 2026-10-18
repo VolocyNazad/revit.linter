@@ -28,6 +28,9 @@ public sealed class DiagnosticReportExportContext
     /// <summary>Gets the creation date column header.</summary>
     public required string CreatedHeader { get; init; }
 
+    /// <summary>Gets the tags column header.</summary>
+    public required string TagsHeader { get; init; }
+
     /// <summary>Gets the HTML report title.</summary>
     public required string ReportTitle { get; init; }
 

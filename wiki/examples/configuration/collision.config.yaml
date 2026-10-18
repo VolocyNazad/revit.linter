@@ -12,6 +12,7 @@ rules:
 # >>> section: mep — MEP systems
 - code: "CLSN101"
   description: "Ducts;Pipes"
+  tags: ["MEP", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -92,6 +93,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN102"
   description: "Trays+Conduits;Ducts+Pipes"
+  tags: ["Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
@@ -172,6 +174,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN103"
   description: "Equipment;Ducts+Pipes+Trays"
+  tags: ["Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_MechanicalEquipment') or builtincategory('OST_DuctTerminal') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_ElectricalEquipment'))"
@@ -252,6 +255,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN104"
   description: "Ducts;Pipes;With links"
+  tags: ["MEP", "Links", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -333,6 +337,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN105"
   description: "Ducts;Fittings;Ignore connector-joined"
+  tags: ["Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -417,6 +422,7 @@ rules:
 # >>> section: architecture — Architecture
 - code: "CLSN201"
   description: "Walls;Walls"
+  tags: ["Architecture", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Walls'))"
@@ -497,6 +503,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN202"
   description: "Furniture+Fixtures;Walls+Columns"
+  tags: ["Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_Casework') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SpecialityEquipment'))"
@@ -577,6 +584,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN203"
   description: "Stairs+Railings;Walls+Floors"
+  tags: ["Project"]
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing'))"
@@ -660,6 +668,7 @@ rules:
 # >>> section: structure — Structure
 - code: "CLSN301"
   description: "Columns;Framing"
+  tags: ["Structure", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralColumns'))"
@@ -740,6 +749,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN302"
   description: "Framing;Framing"
+  tags: ["Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFraming'))"
@@ -820,6 +830,7 @@ rules:
           elementSets: ["Target"]
 - code: "CLSN303"
   description: "Foundations;Foundations+Columns"
+  tags: ["Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFoundation'))"

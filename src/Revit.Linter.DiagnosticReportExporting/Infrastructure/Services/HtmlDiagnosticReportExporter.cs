@@ -112,7 +112,8 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
         content.AppendLine("<div class=\"table-wrap\"><table><thead><tr>")
             .Append("<th>").Append(Encode(context.SeverityHeader)).Append("</th><th>").Append(Encode(context.CodeHeader))
             .Append("</th><th>").Append(Encode(context.MessageHeader)).Append("</th><th>").Append(Encode(context.DocumentHeader))
-            .Append("</th><th>").Append(Encode(context.CreatedHeader)).AppendLine("</th></tr></thead><tbody>");
+            .Append("</th><th>").Append(Encode(context.CreatedHeader))
+            .Append("</th><th>").Append(Encode(context.TagsHeader)).AppendLine("</th></tr></thead><tbody>");
 
         foreach (DiagnosticReportExportItem item in items)
         {
@@ -120,6 +121,7 @@ internal sealed class HtmlDiagnosticReportExporter : IDiagnosticReportExporter
                 .Append(Encode(item.Code)).Append("</td><td class=\"message-cell\">")
                 .Append(Encode(item.Message)).Append("</td><td>").Append(Encode(item.Document))
                 .Append("</td><td>").Append(Encode(item.Created.ToString("G", context.Culture)))
+                .Append("</td><td>").Append(Encode(string.Join("; ", item.Tags)))
                 .AppendLine("</td></tr>");
         }
 

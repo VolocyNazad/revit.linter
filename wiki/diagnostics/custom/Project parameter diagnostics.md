@@ -17,6 +17,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
   message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details} \n\nExecution time '{duration}' ms."
   severity: "Message"
   isActive: false
+  tags: ["Parameters"]
   take: "!property('IsFamilyDocument')"
   parameters:
     - guid: "dd002437-b54b-41b5-9142-71704a513ef3"
@@ -56,6 +57,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
 | `take`                | string           | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                              |
 | `parameters`          | list           | `array`             | `-`                              | The list of project parameters to check                                                                                |
+| `tags`                | sequence of strings | `string`         | `-`                              | Tags used to find the diagnostic in the panes and shown in the reports (default: none) (optional)                       |
 
 ---
 
@@ -88,3 +90,4 @@ The formats are intentionally version-specific. Store each configuration in the 
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`
+- Tags are free text; the search and the tag matching ignore case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags

@@ -92,6 +92,6 @@
   <data name="SHRD0028_message" xml:space="preserve"><value>Family symbol '{elementName}' ({elementId}) has identical parameter values with '{duplicateNames}'. Duration: {duration} ms.</value></data>
   <data name="SHRD0029_description" xml:space="preserve"><value>Checks whether reference lines are constrained by locked or equalized (EQ) dimensions in family documents.</value></data>
   <data name="SHRD0029_message" xml:space="preserve"><value>Reference line '{elementName}' ({elementId}) has no locked or EQ dimensions. Duration: {duration} ms.</value></data>
-  <data name="SHRD0030_description" xml:space="preserve"><value>Checks for unused elements that Purge Unused can delete.</value></data>
-  <data name="SHRD0030_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) is not used and can be purged. Duration: {duration} ms.</value></data>
+  <data name="RVT003_description" xml:space="preserve"><value>Checks for unused elements that Purge Unused can delete.</value></data>
+  <data name="RVT003_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) is not used and can be purged. Duration: {duration} ms.</value></data>
 </root>

@@ -1,4 +1,4 @@
-schemaVersion: 1.0
+schemaVersion: 1.1
 metadata:
   exportedAt:
     dateTime: 2026-10-01T10:00:00.0000000
@@ -71,6 +71,9 @@ items:
   dependencyElementIds:
   - 201
   - 202
+  tags:
+  - Project
+  - Family
 - severity: Warning
   severityDisplayName: Warning
   code: ELM001
@@ -101,6 +104,8 @@ items:
   obsoleteDescription: Use ELM002
   targetElementId: 
   dependencyElementIds: &o0 []
+  tags:
+  - Project
 - severity: Warning
   severityDisplayName: Warning
   code: ELM001
@@ -131,3 +136,4 @@ items:
   obsoleteDescription: 
   targetElementId: 102
   dependencyElementIds: *o0
+  tags: *o0

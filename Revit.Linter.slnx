@@ -130,6 +130,9 @@
     <Project Path="tests/Revit.Linter.Diagnostic.RevitTests/Revit.Linter.Diagnostic.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.DiagnosticListPresenter.Tests/Revit.Linter.DiagnosticListPresenter.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.DiagnosticReportExporting.Tests/Revit.Linter.DiagnosticReportExporting.Tests.csproj">
       <Platform Project="x64" />
     </Project>
@@ -311,6 +314,7 @@
     <File Path="wiki/reference/diagnostics/Diagnostic message placeholders.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic parameters.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic severity.md" />
+    <File Path="wiki/reference/diagnostics/Diagnostic tags.md" />
     <File Path="wiki/reference/diagnostics/Diagnostic types by target.md" />
     <File Path="wiki/reference/diagnostics/Fix pipelines.md" />
     <File Path="wiki/reference/diagnostics/Obsolete diagnostic.md" />
@@ -377,6 +381,7 @@
   <Folder Name="/wiki/ru/Справочник/" />
   <Folder Name="/wiki/ru/Справочник/Диагностика/">
     <File Path="wiki/ru/Справочник/Диагностика/Параметры диагностики.md" />
+    <File Path="wiki/ru/Справочник/Диагностика/Теги диагностик.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Подстановки сообщений.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Соглашения диагностики.md" />
     <File Path="wiki/ru/Справочник/Диагностика/Типы объектов проверки.md" />

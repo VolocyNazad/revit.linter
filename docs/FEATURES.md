@@ -5,12 +5,12 @@ This document is the concise contract for the product's current scope. Detailed 
 ## Included
 
 - Run built-in and YAML-configured diagnostics against Revit projects and families.
-- Present findings by severity, diagnostic code and target type, with typed element links and localized messages.
+- Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; a finding can be found by its tags and clicking a tag searches for it.
 - Apply supported fixes through Revit-safe transactions and report their results.
 - Ignore a finding for the element it affects or for the whole document, review and remove the entries in the built-in **Ignore list** pane, and keep the list inside the model itself.
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
-- Export the displayed findings as a self-contained HTML report or as CSV, JSON and YAML data.
-- Configure paths, diagnostic rules, formulas, filters and visualization behavior.
+- Export the displayed findings as a self-contained HTML report or as CSV, JSON and YAML data, including each finding's tags.
+- Configure paths, diagnostic rules, tags, formulas, filters and visualization behavior.
 - Introduce the add-in on first start with a welcome wizard that can install example configurations by discipline.
 - Offer an optional observational practical tour in a dockable pane along the real workflow (model, diagnostics, findings, show, fix or ignore, export report, then export it again in another format); the tour never runs diagnostics, modifies the model, or applies fixes by itself.
 - Back the tour with a managed TOUR001 training check that is installed and refreshed on start and removed on completion or opt-out; progress and opt-out are stored separately for each Revit version and the tour resumes from the ribbon.

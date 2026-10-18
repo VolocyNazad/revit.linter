@@ -205,57 +205,13 @@
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
                         Width="Auto"
-                        MinWidth="{StaticResource LinterGridExampleCodeColumnMinWidth}"
+                        MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
                         CanUserResize="False"
                         Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox Style="{StaticResource LinterObsoleteAwareCellTextBox}" Text="{Binding Code, Mode=OneWay}" />
-                                    <Border
-                                        Margin="6,0,0,0"
-                                        Padding="5,1"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource LinterSelectionBrush}"
-                                        BorderBrush="{DynamicResource LinterAccentBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="2"
-                                        Visibility="{Binding IsExample, Converter={StaticResource BooleanToVisibility}}">
-                                        <TextBlock
-                                            FontSize="10"
-                                            Foreground="{DynamicResource LinterAccentBrush}"
-                                            Text="{Binding DataContext.ExampleText, ElementName=Root, Mode=OneWay}" />
-                                    </Border>
-                                    <Border
-                                        Margin="6,0,0,0"
-                                        Padding="5,1"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource LinterSelectionBrush}"
-                                        BorderBrush="{DynamicResource LinterAccentBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="2"
-                                        Visibility="{Binding IsTour, Converter={StaticResource BooleanToVisibility}}">
-                                        <TextBlock
-                                            FontSize="10"
-                                            Foreground="{DynamicResource LinterAccentBrush}"
-                                            Text="{Binding DataContext.TourText, ElementName=Root, Mode=OneWay}" />
-                                    </Border>
-                                    <Border
-                                        Margin="6,0,0,0"
-                                        Padding="5,1"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource LinterSelectionBrush}"
-                                        BorderBrush="{DynamicResource LinterAccentBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="2"
-                                        Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}}">
-                                        <TextBlock
-                                            FontSize="10"
-                                            Foreground="{DynamicResource LinterAccentBrush}"
-                                            Text="{Binding DataContext.DebugText, ElementName=Root, Mode=OneWay}" />
-                                    </Border>
-                                </StackPanel>
+                                <TextBox Style="{StaticResource LinterObsoleteAwareCellTextBox}" Text="{Binding Code, Mode=OneWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -296,6 +252,39 @@
                                     Style="{StaticResource LinterObsoleteAwareCellTextBox}"
                                     Text="{Binding Description, Mode=OneWay}"
                                     TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridTagsColumnMinWidth}"
+                        SortMemberPath="TagsText"
+                        Header="{Binding DataContext.TagsHeader, Source={StaticResource proxy}}">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.TagsHeader, Source={StaticResource proxy}, Mode=OneWay}" />
+                                <Setter Property="behaviors:HelpToolTip.Description" Value="{Binding DataContext.TagsDescription, Source={StaticResource proxy}, Mode=OneWay}" />
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Tags}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                behaviors:HelpToolTip.Description="{Binding DataContext.TagsDescription, Source={StaticResource proxy}, Mode=OneWay}"
+                                                Command="{Binding DataContext.FilterByTagCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding}"
+                                                Content="{Binding}"
+                                                Style="{StaticResource LinterTagChipButton}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

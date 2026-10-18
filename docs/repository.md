@@ -91,7 +91,7 @@ Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file a
 `TOUR001` selection, so the user enables the check as the guided step asks. Completing the tour or
 opting out removes the managed file, so no training configuration is left behind; starting the tour
 again reinstalls it. Its `TOUR001` diagnostic owns
-the visualizations and fix menu required by the walkthrough, is marked with the tour badge, and stays pinned
+the visualizations and fix menu required by the walkthrough, carries the reserved `Tour` tag, and stays pinned
 at the top of the diagnostics list; typed UI activities carry diagnostic codes so
 unrelated findings cannot advance the tour.
 `Revit.Linter.ElementAccentor` contains atomic, reversible element interaction and graphics

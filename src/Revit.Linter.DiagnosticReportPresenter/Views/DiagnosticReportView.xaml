@@ -296,6 +296,39 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridTagsColumnMinWidth}"
+                        SortMemberPath="TagsText"
+                        Header="{Binding DataContext.TagsHeader, Source={StaticResource proxy}}">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.TagsHeader, Source={StaticResource proxy}, Mode=OneWay}" />
+                                <Setter Property="behaviors:HelpToolTip.Description" Value="{Binding DataContext.TagsDescription, Source={StaticResource proxy}, Mode=OneWay}" />
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Tags}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                behaviors:HelpToolTip.Description="{Binding DataContext.TagsDescription, Source={StaticResource proxy}, Mode=OneWay}"
+                                                Command="{Binding DataContext.FilterByTagCommand, Source={StaticResource proxy}}"
+                                                CommandParameter="{Binding}"
+                                                Content="{Binding}"
+                                                Style="{StaticResource LinterTagChipButton}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

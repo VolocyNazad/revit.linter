@@ -17,6 +17,7 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
   message: "Element named '{elementName}' with identifier '{elementId}' intersects {intersection.count} element(s) '{intersection.elementNames}' with identifiers '{intersection.elementIds}'. Execution time '{duration}' ms."
   severity: "Warning"
   isActive: true
+  tags: ["MEP", "Coordination"]
   takeDocument: "property('Title') != '' & !property('IsFamilyDocument')"
   take: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (class('Pipe') or class('Duct') or class('CableTray') or class('Conduit') or builtincategory('OST_DuctFitting') or builtincategory('OST_PipeFitting') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
@@ -121,6 +122,7 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 | `groupBy`             | string          | `string`            | `object`                         | [[Formula Revit\|Element grouping formula]]. Collision detection runs within groups                                                         |
 | `includeLinks`          | boolean         | `bool`              | `-`                              | Whether loaded Revit links contribute read-only candidates (default: `false`) (optional)                                                      |
 | `ignoreConnectedElements` | boolean   | `bool`              | `-`                              | Whether elements joined by MEP connectors are excluded from the check (default: `false`) (optional)                                          |
+| `tags`                | sequence of strings | `string`         | `-`                              | Tags used to find the diagnostic in the panes and shown in the reports (default: none) (optional)                                                |
 
 ---
 
@@ -139,3 +141,4 @@ Ready-made file: [collision.config.yaml](../../examples/configuration/collision.
 - If the `isObsolete` field is not specified, it defaults to `false`
 - If the `includeLinks` field is not specified, it defaults to `false`: linked models take part only when explicitly enabled, and their hits stay text-only in the report.
 - If the `ignoreConnectedElements` field is not specified, it defaults to `false`. Set it to `true` to skip joined elements: they touch by design while their family geometry overlaps at the joint, so they would otherwise be reported as collisions. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
+- Tags are free text; the search and the tag matching ignore case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags.

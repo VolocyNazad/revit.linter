@@ -6,7 +6,7 @@ namespace Revit.Linter.DiagnosticReportExporting.Infrastructure.Services;
 
 internal sealed class DiagnosticReportExportService : IDiagnosticReportExportService
 {
-    private const string SchemaVersion = "1.0";
+    private const string SchemaVersion = "1.1";
     private const string AllDocumentsScope = "AllDocuments";
     private const string DocumentScope = "Document";
 
@@ -69,6 +69,7 @@ internal sealed class DiagnosticReportExportService : IDiagnosticReportExportSer
             MessageHeader = request.Labels.MessageHeader,
             DocumentHeader = request.Labels.DocumentHeader,
             CreatedHeader = request.Labels.CreatedHeader,
+            TagsHeader = request.Labels.TagsHeader,
             ReportTitle = request.Labels.ReportTitle,
             GeneratedLabel = request.Labels.GeneratedLabel,
             TotalLabel = request.Labels.TotalLabel,

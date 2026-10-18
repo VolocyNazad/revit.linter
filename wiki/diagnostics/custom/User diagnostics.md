@@ -29,6 +29,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
   takeDocument: "true"
   take: "instance and builtincategory('OST_Walls')"
   check: "property('Name') == '1'"
+  tags: ["Walls", "Naming"]
 - code: "CSTM003"
   ...
 ```
@@ -50,6 +51,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 | `take`                | string           | `string`            | `ElementFilter`                  | [[Formula Revit\|Element filtering formula]]                                                                |
 | `check`               | string           | `string`            | `bool`                           | [[Formula syntax\|Element check formula]]; if the result is `true`, the element is considered valid               |
 | `fixes`               | sequence         | `-`                 | `-`                              | Optional [[Fix pipelines]] offered for invalid elements. |
+| `tags`                | sequence of strings | `string`         | `-`                              | Tags used to find the diagnostic in the panes and shown in the reports (default: none) (optional) |
 
 
 ---
@@ -59,6 +61,7 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 - If the `severity` field is not specified, it defaults to `Message`
 - If the `isActive` field is not specified, it defaults to `true`
 - If the `isObsolete` field is not specified, it defaults to `false`
+- Tags are free text; the search and the tag matching ignore case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags
 
 > **Note:** If `config.yaml` cannot be parsed, its diagnostic list is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log.
 

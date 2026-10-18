@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "metadata": {
     "exportedAt": "2026-10-01T10:00:00+05:00",
     "revitVersion": "2025",
@@ -34,6 +34,10 @@
       "dependencyElementIds": [
         "201",
         "202"
+      ],
+      "tags": [
+        "Project",
+        "Family"
       ]
     },
     {
@@ -46,7 +50,10 @@
       "isObsolete": true,
       "obsoleteDescription": "Use ELM002",
       "targetElementId": null,
-      "dependencyElementIds": []
+      "dependencyElementIds": [],
+      "tags": [
+        "Project"
+      ]
     },
     {
       "severity": "Warning",
@@ -58,7 +65,8 @@
       "isObsolete": false,
       "obsoleteDescription": null,
       "targetElementId": "102",
-      "dependencyElementIds": []
+      "dependencyElementIds": [],
+      "tags": []
     }
   ]
 }

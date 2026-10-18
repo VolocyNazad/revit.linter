@@ -83,7 +83,9 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
                 rule.Code, rule.Description,
                 rule.Message ?? ParameterElementDiagnosticLocalizations.GetString("Default_message"),
                 rule.Severity, rule.IsActive,
-                rule.IsObsolete, rule.ObsoleteDescription, isExample, isTour: false, isDebug: isDebug);
+                rule.IsObsolete, rule.ObsoleteDescription,
+                systemTags: DiagnosticTags.ForConfiguredRule(DiagnosticTags.ParameterProject, isExample, isTour: false, isDebug),
+                tags: rule.Tags);
             yield return new DocumentDiagnosticRegistration(
                 identity,
                 new DocumentDiagnostic(documentQueries) { Identity = identity, Parameters = rule.Parameters },

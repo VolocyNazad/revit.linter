@@ -108,6 +108,7 @@ public sealed class DiagnosticReportExporterTests : IDisposable
             MessageHeader = "Message",
             DocumentHeader = "Document",
             CreatedHeader = "Created",
+            TagsHeader = "Tags",
             ReportTitle = "Diagnostic report",
             GeneratedLabel = "Generated",
             TotalLabel = "Total",
@@ -130,20 +131,20 @@ public sealed class DiagnosticReportExporterTests : IDisposable
                 new(
                     "Error", "Error", "ELM002", "Wall \"W-1\", level 1\nsecond line", "Project A",
                     new DateTimeOffset(2026, 10, 1, 9, 30, 0, offset),
-                    false, null, "101", ["201", "202"]),
+                    false, null, "101", ["201", "202"], ["Project", "Family"]),
                 new(
                     "Warning", "Warning", "ELM001", "Plain message; with semicolon", "Project A",
                     new DateTimeOffset(2026, 10, 1, 9, 31, 5, offset),
-                    true, "Use ELM002", null, []),
+                    true, "Use ELM002", null, [], ["Project"]),
                 new(
                     "Warning", "Warning", "ELM001", "Another", "Project A",
                     new DateTimeOffset(2026, 10, 1, 9, 32, 0, offset),
-                    false, null, "102", [])
+                    false, null, "102", [], [])
             ]
             : [];
 
         return new DiagnosticReportExportDocument(
-            "1.0",
+            "1.1",
             new DiagnosticReportExportMetadata(
                 new DateTimeOffset(2026, 10, 1, 10, 0, 0, offset),
                 "2025",

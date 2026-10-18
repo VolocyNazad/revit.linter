@@ -4,7 +4,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="document_text" xml:space="preserve"><value>Документ</value></data><data name="exportReport_text" xml:space="preserve"><value>Экспортировать отчет</value></data>
   <data name="search_text" xml:space="preserve"><value>Поиск</value></data><data name="reports_text" xml:space="preserve"><value>Отчеты:</value></data>
-  <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data><data name="code_header" xml:space="preserve"><value>Код</value></data>
+  <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data><data name="code_header" xml:space="preserve"><value>Код</value></data><data name="tags_header" xml:space="preserve"><value>Теги</value></data>
   <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
   <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
   <data name="htmlReport_title" xml:space="preserve"><value>Отчёт диагностики</value></data><data name="htmlGenerated_label" xml:space="preserve"><value>Сформирован</value></data>
@@ -38,7 +38,8 @@
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице. Число рядом с фильтром — сколько строк ему соответствует.</value></data>
   <data name="document_description" xml:space="preserve"><value>Показывает замечания только выбранного открытого документа.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра. Список обновляется, когда вы покидаете поле. Поиск ограничивает и экспорт.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду, сообщению и тегам без учёта регистра. Список обновляется, когда вы покидаете поле. Поиск ограничивает и экспорт.</value></data>
+  <data name="tags_description" xml:space="preserve"><value>Теги проверки, которая обнаружила замечание. Нажмите на тег, чтобы найти по нему.</value></data>
   <data name="showPrevious_text" xml:space="preserve"><value>Предыдущее замечание</value></data>
   <data name="showPrevious_description" xml:space="preserve"><value>Выбирает предыдущую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>
   <data name="showNext_text" xml:space="preserve"><value>Следующее замечание</value></data>

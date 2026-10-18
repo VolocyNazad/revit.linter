@@ -12,7 +12,7 @@ Run this checklist in a debug build for every supported Revit generation that is
 
 ## Practical tour
 
-- Start or resume the tour and verify that the Diagnostics pane is brought forward, `tour/practical-tour.config.yaml` is installed for the running Revit version and `TOUR001` appears pinned at the top of the Diagnostics pane with the tour badge.
+- Start or resume the tour and verify that the Diagnostics pane is brought forward, `tour/practical-tour.config.yaml` is installed for the running Revit version and `TOUR001` appears pinned at the top of the Diagnostics pane with the `Tour` tag in the **Tags** column.
 - In the `TOUR001` row, press the document button. Verify that the rule configuration opens in an editor and only this action advances the corresponding task.
 - On the diagnostic-selection step, verify that `TOUR001` starts cleared at the top of the list; toggle another check and verify that the tour does not advance; then press Uncheck all, enable only `TOUR001`, and verify that it does.
 - On the search step, type text into the Diagnostics search box and verify that **Search and filters** does not complete; toggle a filter with the box empty and verify that it does not complete either; then combine non-empty text with a filter change, in any order, and verify that the combination completes the step. Clear the box and verify that the text half is disarmed.

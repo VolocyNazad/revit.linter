@@ -7,6 +7,7 @@ version: 1
 rules:
 - code: "CSTM001"
   description: "Экземпляры обобщённых моделей"
+  tags: ["Моделирование", "Категории", "Project"]
   message: "'{elementName}' ({elementId}) — обобщённая модель. Перенесите элемент в подходящую категорию или добавьте в список игнорирования."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -152,6 +153,7 @@ rules:
 
 - code: "CSTM101"
   description: "Воздуховоды и трубы без системы"
+  tags: ["Инженерные системы", "Системы", "Project"]
   message: "'{elementName}' ({elementId}) не входит ни в одну систему."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -167,6 +169,7 @@ rules:
 
 - code: "CSTM201"
   description: "Двери и окна без марки"
+  tags: ["Project"]
   message: "У элемента '{elementName}' ({elementId}) не заполнена марка."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -182,6 +185,7 @@ rules:
 
 - code: "CSTM202"
   description: "Зеркально отражённые двери"
+  tags: ["Двери", "Моделирование", "Project"]
   message: "Дверь '{elementName}' ({elementId}) отражена зеркально: открывание не совпадает с семейством."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -197,6 +201,7 @@ rules:
 
 - code: "CSTM203"
   description: "Помещения без осмысленного имени"
+  tags: ["Project"]
   message: "У помещения '{elementName}' ({elementId}) пустое имя или имя по умолчанию."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -212,6 +217,7 @@ rules:
 
 - code: "CSTM204"
   description: "Неразмещённые помещения"
+  tags: ["Project"]
   message: "Помещение '{elementName}' ({elementId}) не размещено в модели."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"

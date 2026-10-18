@@ -23,7 +23,8 @@ internal sealed class CsvDiagnosticReportExporter : IDiagnosticReportExporter
             context.CodeHeader,
             context.MessageHeader,
             context.DocumentHeader,
-            context.CreatedHeader);
+            context.CreatedHeader,
+            context.TagsHeader);
 
         foreach (DiagnosticReportExportItem item in document.Items)
             AppendRow(content, delimiter,
@@ -31,7 +32,8 @@ internal sealed class CsvDiagnosticReportExporter : IDiagnosticReportExporter
                 item.Code,
                 item.Message,
                 item.Document,
-                item.Created.ToString("G", context.Culture));
+                item.Created.ToString("G", context.Culture),
+                string.Join("; ", item.Tags));
 
         File.WriteAllText(fileName, content.ToString(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
     }
