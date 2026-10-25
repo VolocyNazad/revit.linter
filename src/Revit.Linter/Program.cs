@@ -12,6 +12,7 @@ using Revit.Linter.ConfigurationPath.DI;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
+using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.DI;
 using Revit.Linter.DiagnosticReportExporting.DI;
 using Revit.Linter.DiagnosticReportPresenter.DI;
@@ -94,6 +95,7 @@ internal sealed class Program
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddConfigurationPathModule()
                 .AddSingleton<IDiagnosticConfigurationRuleTextFormatter, GlobalDiagnosticConfigurationRuleTextFormatter>()
+                .AddSingleton<IConfigurationFileLauncher, ConfigurationFileLauncher>()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
