@@ -19,6 +19,24 @@ public sealed class CompileProjectModule : Module<CompiledRevitTarget[]>
 
         foreach (var configuration in configurations)
         {
+            // Every project keeps one project.assets.json regardless of the configuration, so a previous
+            // restore for another Revit version can leave the wrong target framework behind. Restore for the
+            // configuration being compiled first, then build without the implicit restore.
+            await context.SubModule($"{configuration.Name} restore", async () =>
+                await context.Shell.Command.ExecuteCommandLineTool(
+                    new GenericCommandLineToolOptions("dotnet")
+                    {
+                        Arguments =
+                        [
+                            "restore",
+                            BuildPaths.AddInProject,
+                            "--nologo",
+                            $"-p:Configuration={configuration.Name}",
+                            "-p:Platform=x64"
+                        ]
+                    },
+                    cancellationToken: cancellationToken));
+
             await context.SubModule(configuration.Name, async () =>
                 await context.Shell.Command.ExecuteCommandLineTool(
                     new GenericCommandLineToolOptions("dotnet")
@@ -28,13 +46,15 @@ public sealed class CompileProjectModule : Module<CompiledRevitTarget[]>
                             "build",
                             BuildPaths.AddInProject,
                             "--configuration", configuration.Name,
+                            "--no-restore",
                             "--nologo",
                             "--consoleLoggerParameters:ErrorsOnly;Summary",
                             "-p:Platform=x64",
                             "-p:TreatWarningsAsErrors=true",
                             $"-p:Version={versioning.Version}"
                         ]
-                    }, cancellationToken: cancellationToken));
+                    },
+                    cancellationToken: cancellationToken));
 
             targets.Add(new CompiledRevitTarget(
                 configuration.RevitVersion,
