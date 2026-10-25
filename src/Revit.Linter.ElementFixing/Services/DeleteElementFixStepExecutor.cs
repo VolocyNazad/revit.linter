@@ -1,11 +1,12 @@
 using Autodesk.Revit.DB;
+using Revit.Linter.ElementFixing.Abstractions.Models;
 using Revit.Linter.ElementFixing.Abstractions.Services;
 
 namespace Revit.Linter.ElementFixing.Services;
 
 internal sealed class DeleteElementFixStepExecutor : IElementFixStepExecutor
 {
-    public string Type => "Delete";
+    public ElementFixStepType Type => ElementFixStepType.Delete;
 
     public bool Execute(Document document, IReadOnlyCollection<ElementId> elementIds)
     {

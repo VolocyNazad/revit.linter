@@ -37,7 +37,7 @@ internal sealed class CollisionElementPool(
     /// <returns>The cached element list.</returns>
     internal IList<Element> Collect(Document document, View? view) =>
         documentQueries.GetCached(
-            document, view, CollisionQueryNames.TargetElements,
+            document, view, CollisionQuery.TargetElements,
             () => CollectUncached(document, view),
             takeFormula);
 
@@ -68,7 +68,7 @@ internal sealed class CollisionElementPool(
     // instead of on every target-elements cache miss (once per unique take formula).
     private LogicalOrFilter GetModelCategoryFilter(Document document) =>
         documentQueries.GetCached(
-            document, null, CollisionQueryNames.ModelCategoryFilter,
+            document, null, CollisionQuery.ModelCategoryFilter,
             () => BuildModelCategoryFilter(document));
 
     private static LogicalOrFilter BuildModelCategoryFilter(Document document)

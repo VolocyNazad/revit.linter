@@ -49,7 +49,7 @@ internal sealed class PairIntersections(IDocumentQueryService documentQueries, I
         long elementId,
         long targetElementId) =>
         documentQueries.GetCached(
-            document, view, CollisionQueryNames.PairIntersects,
+            document, view, CollisionQuery.PairIntersects,
             () => Intersects(solids, targetSolids, elementId, targetElementId),
             pairKey);
 

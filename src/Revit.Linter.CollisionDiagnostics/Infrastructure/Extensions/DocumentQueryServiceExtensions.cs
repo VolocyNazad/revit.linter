@@ -21,7 +21,7 @@ internal static class DocumentQueryServiceExtensions
     /// <param name="documentQueries">The document query service.</param>
     /// <param name="document">The queried document.</param>
     /// <param name="view">The view the query is limited to, or <see langword="null"/> for the whole document.</param>
-    /// <param name="queryName">The query name from <see cref="CollisionQueryNames"/>.</param>
+    /// <param name="query">The collision query to cache.</param>
     /// <param name="compute">Creates the value on a cache miss.</param>
     /// <param name="argumentParts">Values that distinguish queries sharing a name, joined into one cache argument.</param>
     /// <returns>The cached or newly created value.</returns>
@@ -33,7 +33,7 @@ internal static class DocumentQueryServiceExtensions
         this IDocumentQueryService documentQueries,
         Document document,
         View? view,
-        string queryName,
+        CollisionQuery query,
         Func<T> compute,
         params string[] argumentParts)
     {
@@ -41,6 +41,6 @@ internal static class DocumentQueryServiceExtensions
             ? null
             : string.Join(ArgumentSeparator, argumentParts);
         return documentQueries.GetOrCreate(
-            DocumentQueryKey.Create(document, queryName, view, argument: argument), compute);
+            DocumentQueryKey.Create(document, query.CacheName(), view, argument: argument), compute);
     }
 }

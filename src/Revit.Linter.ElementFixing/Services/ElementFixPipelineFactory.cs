@@ -2,6 +2,7 @@ using Autodesk.Revit.DB;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.ElementFixing.Abstractions.Models;
 using Revit.Linter.ElementFixing.Abstractions.Services;
 
 namespace Revit.Linter.ElementFixing.Services;
@@ -11,8 +12,8 @@ internal sealed class ElementFixPipelineFactory(
     ILogger<ElementFixPipelineFactory> logger)
     : IElementFixPipelineFactory
 {
-    private readonly IReadOnlyDictionary<string, IElementFixStepExecutor> _executors = executors
-        .ToDictionary(executor => executor.Type, StringComparer.OrdinalIgnoreCase);
+    private readonly IReadOnlyDictionary<ElementFixStepType, IElementFixStepExecutor> _executors = executors
+        .ToDictionary(executor => executor.Type);
 
     public IElementFix Create(
         ElementDiagnosticId identity,
@@ -21,12 +22,18 @@ internal sealed class ElementFixPipelineFactory(
     {
         (string normalizedName, ElementFixStepDefinition[] normalizedSteps) =
             ElementFixPipelineDefinitionValidator.Validate(
-            name, steps, _executors.Keys.ToArray());
+            name, steps, [.. _executors.Keys.Select(type => type.ToString())]);
         ConfiguredStep[] parsedSteps = normalizedSteps
-            .Select(step => new ConfiguredStep(_executors[step.Type], step.ElementSets))
+            .Select(step => new ConfiguredStep(
+                _executors[ParseType(step.Type)], step.ElementSets))
             .ToArray();
         return new ConfiguredElementFixPipeline(identity, normalizedName, parsedSteps, logger);
     }
+
+    // The definition validator has already normalized the step type to one of the executor types,
+    // so the parse cannot fail for a validated definition.
+    private static ElementFixStepType ParseType(string type) =>
+        (ElementFixStepType)Enum.Parse(typeof(ElementFixStepType), type, ignoreCase: true);
 
     private sealed record ConfiguredStep(
         IElementFixStepExecutor Executor,

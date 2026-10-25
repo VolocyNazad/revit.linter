@@ -1,4 +1,5 @@
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.ElementFixing.Abstractions.Models;
 
 namespace Revit.Linter.ElementFixing.Services;
 
@@ -18,7 +19,8 @@ internal static class ElementFixPipelineDefinitionValidator
             .Select(step => Normalize(step, supportedTypes))
             .ToArray();
         if (normalizedSteps.Take(normalizedSteps.Length - 1)
-            .Any(step => string.Equals(step.Type, "Delete", StringComparison.OrdinalIgnoreCase)))
+            .Any(step => string.Equals(
+                step.Type, nameof(ElementFixStepType.Delete), StringComparison.OrdinalIgnoreCase)))
             throw new ArgumentException("Delete must be the final fix pipeline step.", nameof(steps));
 
         return (name.Trim(), normalizedSteps);

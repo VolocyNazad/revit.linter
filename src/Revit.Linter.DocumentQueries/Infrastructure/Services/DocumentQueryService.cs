@@ -19,7 +19,7 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
 
     public IReadOnlyList<Element> GetElements(Document document, View? view = null)
         => GetOrCreate(
-            DocumentQueryKey.Create(document, DocumentQueryNames.Elements, view),
+            DocumentQueryKey.Create(document, DocumentQuery.Elements.CacheName(), view),
             () => CreateCollector(document, view)
                 .WherePasses(_allElementsFilter ??= ElementFilterUtils.AllFilter())
                 .ToElements()
@@ -29,7 +29,7 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
         where TElement : Element
         => GetOrCreate(
             DocumentQueryKey.Create(
-                document, DocumentQueryNames.ElementsOfClass, argument: typeof(TElement).FullName),
+                document, DocumentQuery.ElementsOfClass.CacheName(), argument: typeof(TElement).FullName),
             () => new FilteredElementCollector(document)
                 .OfClass(typeof(TElement))
                 .Cast<TElement>()
@@ -37,7 +37,7 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
 
     public IReadOnlyList<Element> GetElementTypes(Document document)
         => GetOrCreate(
-            DocumentQueryKey.Create(document, DocumentQueryNames.ElementTypes),
+            DocumentQueryKey.Create(document, DocumentQuery.ElementTypes.CacheName()),
             () => new FilteredElementCollector(document)
                 .WhereElementIsElementType()
                 .ToElements()
@@ -46,7 +46,8 @@ internal sealed class DocumentQueryService(IRevitTransactionMemoryCache transact
     // An element without geometry yields null, so this query bypasses the non-null guard of GetOrCreate.
     public GeometryElement? GetGeometry(Element element, View? view = null)
         => GetOrCreateCounted(
-            DocumentQueryKey.Create(element.Document, DocumentQueryNames.Geometry, view, element.Id),
+            DocumentQueryKey.Create(
+                element.Document, DocumentQuery.Geometry.CacheName(), view, element.Id),
             () => element.get_Geometry(view is null ? DefaultGeometryOptions : new Options { View = view }));
 
     public TItem GetOrCreate<TItem>(DocumentQueryKey key, Func<TItem> factory)

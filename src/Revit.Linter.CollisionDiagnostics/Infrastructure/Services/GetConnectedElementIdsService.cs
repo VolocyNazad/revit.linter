@@ -12,7 +12,7 @@ internal sealed class GetConnectedElementIdsService(IDocumentQueryService docume
     public HashSet<long> Execute(Element element)
         => documentQueries.GetOrCreate(
             DocumentQueryKey.Create(
-                element.Document, CollisionQueryNames.ConnectedElementIds, elementId: element.Id),
+                element.Document, CollisionQuery.ConnectedElementIds.CacheName(), elementId: element.Id),
             () => CollectConnectedIds(element));
 
     private static HashSet<long> CollectConnectedIds(Element element)

@@ -39,28 +39,30 @@ internal sealed class ElementVisualizationPipelineFactory(
 
     private static ElementVisualizationStep Parse(ElementVisualizationStepDefinition step)
     {
-        if (string.IsNullOrWhiteSpace(step.Type))
-            throw new ArgumentException("Visualization step type cannot be empty.");
-
+        ElementVisualizationStepType type = ParseType(step.Type);
         string[] elementSets = step.ElementSets
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .Select(value => value.Trim())
             .Distinct(StringComparer.Ordinal)
             .ToArray();
-        return step.Type.Trim().ToUpperInvariant() switch
+        return type switch
         {
-            "SHOW" or "SHOWELEMENTS" => Accent(AccentElementsType.ShowElements),
-            "SELECT" or "SELECTELEMENTS" => Accent(AccentElementsType.SelectElements),
-            "ISOLATE" or "ISOLATEELEMENTSONVIEW" => Accent(AccentElementsType.IsolateElementsOnView),
-            "CUT" or "CUTVIEWBYELEMENTS" => Accent(AccentElementsType.CutViewByElements),
-            "OVERRIDEELEMENTS" => new OverrideElementsStep(elementSets, ParseStyle(step)),
-            "OVERRIDEFILTER" => new OverrideFilterStep(elementSets, ParseStyle(step)),
-            "DETAILLEVEL" or "SETDETAILLEVEL" => new DetailLevelStep(ParseDetailLevel(step, elementSets), []),
-            "DISPLAYSTYLE" or "SETDISPLAYSTYLE" => new DisplayStyleStep(ParseDisplayStyle(step, elementSets), []),
-            "SETCATEGORYVISIBILITY" => new SetCategoryVisibilityStep(ParseCategories(step, elementSets), []),
-            _ => throw new ArgumentException(
-                $"Unknown visualization step '{step.Type}'. Supported values: Show, Select, Isolate, " +
-                "Cut, OverrideElements, OverrideFilter, DetailLevel, DisplayStyle, SetCategoryVisibility.")
+            ElementVisualizationStepType.Show => Accent(AccentElementsType.ShowElements),
+            ElementVisualizationStepType.Select => Accent(AccentElementsType.SelectElements),
+            ElementVisualizationStepType.Isolate => Accent(AccentElementsType.IsolateElementsOnView),
+            ElementVisualizationStepType.Cut => Accent(AccentElementsType.CutViewByElements),
+            ElementVisualizationStepType.OverrideElements =>
+                new OverrideElementsStep(elementSets, ParseStyle(step)),
+            ElementVisualizationStepType.OverrideFilter =>
+                new OverrideFilterStep(elementSets, ParseStyle(step)),
+            ElementVisualizationStepType.DetailLevel =>
+                new DetailLevelStep(ParseDetailLevel(step, elementSets), []),
+            ElementVisualizationStepType.DisplayStyle =>
+                new DisplayStyleStep(ParseDisplayStyle(step, elementSets), []),
+            ElementVisualizationStepType.SetCategoryVisibility =>
+                new SetCategoryVisibilityStep(ParseCategories(step, elementSets), []),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(step), step.Type, "Unsupported visualization step type.")
         };
 
         AccentElementsStep Accent(AccentElementsType type)
@@ -69,6 +71,28 @@ internal sealed class ElementVisualizationPipelineFactory(
                 throw new ArgumentException($"Visualization step '{step.Type}' does not support style.");
             return new(type, elementSets);
         }
+    }
+
+    private static ElementVisualizationStepType ParseType(string type)
+    {
+        if (string.IsNullOrWhiteSpace(type))
+            throw new ArgumentException("Visualization step type cannot be empty.");
+
+        return type.Trim().ToUpperInvariant() switch
+        {
+            "SHOW" or "SHOWELEMENTS" => ElementVisualizationStepType.Show,
+            "SELECT" or "SELECTELEMENTS" => ElementVisualizationStepType.Select,
+            "ISOLATE" or "ISOLATEELEMENTSONVIEW" => ElementVisualizationStepType.Isolate,
+            "CUT" or "CUTVIEWBYELEMENTS" => ElementVisualizationStepType.Cut,
+            "OVERRIDEELEMENTS" => ElementVisualizationStepType.OverrideElements,
+            "OVERRIDEFILTER" => ElementVisualizationStepType.OverrideFilter,
+            "DETAILLEVEL" or "SETDETAILLEVEL" => ElementVisualizationStepType.DetailLevel,
+            "DISPLAYSTYLE" or "SETDISPLAYSTYLE" => ElementVisualizationStepType.DisplayStyle,
+            "SETCATEGORYVISIBILITY" => ElementVisualizationStepType.SetCategoryVisibility,
+            _ => throw new ArgumentException(
+                $"Unknown visualization step '{type}'. Supported values: Show, Select, Isolate, " +
+                "Cut, OverrideElements, OverrideFilter, DetailLevel, DisplayStyle, SetCategoryVisibility.")
+        };
     }
 
     private static ViewGraphicsStyle ParseStyle(ElementVisualizationStepDefinition step)

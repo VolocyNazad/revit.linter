@@ -24,7 +24,7 @@ internal sealed class CollisionGroups(
     /// <returns>The cached groups.</returns>
     internal ElementGroups Get(Document document, View? view) =>
         documentQueries.GetCached(
-            document, view, CollisionQueryNames.Groups,
+            document, view, CollisionQuery.Groups,
             () => Build(elementPool.Collect(document, view), view),
             elementPool.TakeFormula, elementPool.GroupByFormula);
 

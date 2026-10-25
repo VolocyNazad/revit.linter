@@ -100,7 +100,7 @@ internal sealed class LinkedModelCollisions(
     // testability, and the grouping formula would otherwise run once per target of the group.
     private IReadOnlyList<LinkInstancePartition> GetPartitions(Document document, string group) =>
         documentQueries.GetCached(
-            document, null, CollisionQueryNames.LinkGroupsByInstance,
+            document, null, CollisionQuery.LinkGroupsByInstance,
             () => (IReadOnlyList<LinkInstancePartition>)
                 [
                     .. GetGroups(document)[group]
@@ -118,7 +118,7 @@ internal sealed class LinkedModelCollisions(
     // without readable geometry are dropped here rather than failing the index build later.
     private ILookup<string, LinkedCandidate> GetGroups(Document document) =>
         documentQueries.GetCached(
-            document, null, CollisionQueryNames.LinkGroups,
+            document, null, CollisionQuery.LinkGroups,
             () => CollectCandidates(document).ToLookup(candidate => elementPool.GroupOf(candidate.Element)),
             elementPool.TakeFormula, elementPool.GroupByFormula);
 
@@ -127,7 +127,7 @@ internal sealed class LinkedModelCollisions(
     private (BoundingBoxGridIndex Index, Dictionary<long, LinkedCandidate> ByElementId) GetSpatialIndex(
         Document document, string group, LinkInstancePartition partition) =>
         documentQueries.GetCached(
-            document, null, CollisionQueryNames.LinkSpatialIndex,
+            document, null, CollisionQuery.LinkSpatialIndex,
             () =>
             {
                 Dictionary<long, LinkedCandidate> byElementId =

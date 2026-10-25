@@ -11,6 +11,7 @@ internal sealed class GetElementBoundingBoxService(IDocumentQueryService documen
 {
     public BoundingBoxXYZ Execute(Element element, View? view)
         => documentQueries.GetOrCreate(
-            DocumentQueryKey.Create(element.Document, CollisionQueryNames.BoundingBox, view, element.Id),
+            DocumentQueryKey.Create(
+                element.Document, CollisionQuery.ElementBoundingBox.CacheName(), view, element.Id),
             () => documentQueries.GetRequiredGeometry(element, view).GetBoundingBox());
 }

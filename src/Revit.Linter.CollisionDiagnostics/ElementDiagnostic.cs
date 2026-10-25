@@ -67,7 +67,7 @@ internal sealed class ElementDiagnostic(
             : null;
         FamilyTrees? familyTrees = IgnoreNestedFamilies
             ? documentQueries.GetCached(
-                document, null, CollisionQueryNames.FamilyTreeRoots, static () => new FamilyTrees())
+                document, null, CollisionQuery.FamilyTreeRoots, static () => new FamilyTrees())
             : null;
         List<Element> intersections = FindIntersections(
             document, view, spatialIndex, targetElement, targetBoundingBox, targetSolids, connectedIds,
@@ -97,7 +97,7 @@ internal sealed class ElementDiagnostic(
     private BoundingBoxGridIndex GetSpatialIndex(
         Document document, View? view, ElementGroups groups, string group) =>
         documentQueries.GetCached(
-            document, view, CollisionQueryNames.SpatialIndex,
+            document, view, CollisionQuery.SpatialIndex,
             () => BoundingBoxGridIndex.Build(
                 groups.ByGroup[group],
                 element => getElementBoundingBox.Execute(element, view)),

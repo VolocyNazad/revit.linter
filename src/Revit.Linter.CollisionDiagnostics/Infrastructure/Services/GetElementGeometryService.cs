@@ -12,6 +12,7 @@ internal sealed class GetElementGeometryService(IDocumentQueryService documentQu
 {
     public IReadOnlyCollection<Solid> Execute(Element element, View? view)
         => documentQueries.GetOrCreate(
-            DocumentQueryKey.Create(element.Document, CollisionQueryNames.Solids, view, element.Id),
+            DocumentQueryKey.Create(
+                element.Document, CollisionQuery.ElementSolids.CacheName(), view, element.Id),
             () => documentQueries.GetGeometry(element, view)?.GetSolids() ?? (IReadOnlyCollection<Solid>)[]);
 }
