@@ -74,4 +74,14 @@ foreach ($item in $listed) {
 $missingItems = @($managed | Where-Object { $_ -notin $listed } | Sort-Object)
 if ($missingItems) { throw "Files missing from Solution Items: $($missingItems -join ', ')" }
 
+# Build output must never be tracked: generated bin/ and obj/ content is local to a machine.
+if (Get-Command git -ErrorAction SilentlyContinue) {
+    $trackedOutputs = @(& git -C $root ls-files |
+        Where-Object { $_ -match '(^|/)(bin|obj)/' } |
+        Sort-Object)
+    if ($trackedOutputs) {
+        throw "Tracked build output: $($trackedOutputs -join ', ')"
+    }
+}
+
 Write-Host "Repository policy validation passed: $($solution.Name); $($listed.Count) solution items."
