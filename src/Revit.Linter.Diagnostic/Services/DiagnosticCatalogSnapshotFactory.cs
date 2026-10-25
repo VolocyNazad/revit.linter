@@ -35,6 +35,9 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
         catch
         {
             configurationErrorState.CompleteRefresh();
+            // The collected registrations never reached a snapshot, so dispose the components the
+            // providers already created instead of leaking them.
+            DiagnosticCatalogSnapshotOwner.DisposeComponents(elementDiagnostics, documentDiagnostics);
             throw;
         }
     }

@@ -18,17 +18,33 @@ internal sealed class DiagnosticCatalogSnapshotOwner : IDisposable
         if (_disposed) return;
         _disposed = true;
 
+        DisposeComponents(Snapshot.ElementDiagnostics, Snapshot.DocumentDiagnostics);
+    }
+
+    /// <summary>Disposes the components owned by registrations that will never reach a snapshot.</summary>
+    /// <remarks>
+    /// Snapshot creation owns every component returned by the registration providers. When creation
+    /// fails - a provider throws or the aggregated result fails validation - the collected
+    /// registrations have no owner yet, so the factory disposes their components here instead of
+    /// leaking them.
+    /// </remarks>
+    public static void DisposeComponents(
+        IEnumerable<ElementDiagnosticRegistration> elementDiagnostics,
+        IEnumerable<DocumentDiagnosticRegistration> documentDiagnostics)
+    {
         var disposed = new HashSet<object>(ReferenceComparer.Instance);
-        foreach (object component in GetOwnedComponents())
+        foreach (object component in GetOwnedComponents(elementDiagnostics, documentDiagnostics))
         {
             if (component is IDisposable disposable && disposed.Add(component))
                 disposable.Dispose();
         }
     }
 
-    private IEnumerable<object> GetOwnedComponents()
+    private static IEnumerable<object> GetOwnedComponents(
+        IEnumerable<ElementDiagnosticRegistration> elementDiagnostics,
+        IEnumerable<DocumentDiagnosticRegistration> documentDiagnostics)
     {
-        foreach (ElementDiagnosticRegistration registration in Snapshot.ElementDiagnostics)
+        foreach (ElementDiagnosticRegistration registration in elementDiagnostics)
         {
             yield return registration.Diagnostic;
             yield return registration.Filter;
@@ -38,7 +54,7 @@ internal sealed class DiagnosticCatalogSnapshotOwner : IDisposable
                 yield return pipeline;
         }
 
-        foreach (DocumentDiagnosticRegistration registration in Snapshot.DocumentDiagnostics)
+        foreach (DocumentDiagnosticRegistration registration in documentDiagnostics)
         {
             yield return registration.Diagnostic;
             yield return registration.Filter;
