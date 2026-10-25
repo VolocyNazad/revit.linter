@@ -3,17 +3,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.OpenedDocuments.Abstractions.Models;
+using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using Revit.Linter.Presentation.ViewModels;
-using System.Collections.ObjectModel;
 
 namespace Revit.Linter.OpenedDocuments.ViewModels;
 
 /// <summary>
 /// Provides the selectable collection of non-linked documents currently open in Revit.
 /// </summary>
+/// <remarks>
+/// Presenters consume the selector through <see cref="IOpenedDocuments"/>; this view model is an implementation
+/// detail of the module and the composition root registers it under that contract.
+/// </remarks>
 [GenerateLocalizedProperties]
 [XamlConstructor]
-public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
+public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel, IOpenedDocuments
 {
     private readonly IRevitContext _revitContext;
 
@@ -28,26 +33,24 @@ public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
         _revitContext = revitContext;
     }
 
-    /// <summary>
-    /// Gets the document selector items, starting with the localized item that represents all documents.
-    /// </summary>
+    /// <inheritdoc />
     [ObservableProperty]
-    public partial ObservableCollection<DocumentViewModel> Collection { get; private set; } = [];
+    public partial IReadOnlyList<OpenedDocument> Documents { get; private set; } = [];
 
     /// <inheritdoc />
     protected override void OnRevitChanged(RevitEventType revitEventType)
     {
-        if (revitEventType is RevitEventType.DocumentClosed 
+        if (revitEventType is RevitEventType.DocumentClosed
             or RevitEventType.DocumentCreated or RevitEventType.DocumentOpened)
             Refresh();
     }
 
     private void Refresh()
     {
-        IEnumerable<DocumentViewModel> collection = _revitContext.Application!.Documents
-            .Cast<Document>().Where(i => !i.IsLinked)
-            .Select(i => new DocumentViewModel { Title = i.Title, DisplayName = i.Title })
-            .Prepend(new DocumentViewModel { Title = string.Empty, DisplayName = AllDocumentsText });
-        Collection = new(collection);
+        IEnumerable<OpenedDocument> documents = _revitContext.Application!.Documents
+            .Cast<Document>().Where(document => !document.IsLinked)
+            .Select(document => new OpenedDocument { Title = document.Title, DisplayName = document.Title })
+            .Prepend(new OpenedDocument { Title = string.Empty, DisplayName = AllDocumentsText });
+        Documents = documents.ToArray();
     }
 }

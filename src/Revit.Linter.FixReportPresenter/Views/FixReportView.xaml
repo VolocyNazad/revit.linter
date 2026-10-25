@@ -64,7 +64,7 @@
                             behaviors:HelpToolTip.Description="{Binding DocumentDescription, Mode=OneWay}"
                             behaviors:HelpToolTip.Title="{Binding DocumentText, Mode=OneWay}"
                             DisplayMemberPath="DisplayName"
-                            ItemsSource="{Binding DataContext.OpenedDocumentsViewModel.Collection, Source={StaticResource rootProxy}}"
+                            ItemsSource="{Binding DataContext.OpenedDocuments.Documents, Source={StaticResource rootProxy}}"
                             SelectedValue="{Binding TargetDocumentTitle}"
                             SelectedValuePath="Title"
                             Style="{StaticResource LinterRadioListBox}" />

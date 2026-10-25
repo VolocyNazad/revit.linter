@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
+using Revit.Linter.OpenedDocuments.Abstractions.Models;
 using Revit.Linter.ReportMessaging;
 using Revit.Linter.ThemeManaging.Controls;
 using System.Windows.Data;
@@ -132,7 +133,7 @@ internal sealed class DiagnosticReportDesignData
     public DiagnosticReportRowDesignData? SelectedReport { get; set; } = Rows[0];
 
     /// <summary>Gets the document selector shown in the filter popup.</summary>
-    public OpenedDocumentsDesignData OpenedDocumentsViewModel { get; } = new();
+    public OpenedDocumentsDesignData OpenedDocuments { get; } = new();
 
     /// <summary>Gets the severity filters shown in the filter popup.</summary>
     public IEnumerable<DiagnosticReportFilterDesignData> SeverityFilters { get; } =
@@ -349,24 +350,14 @@ internal sealed class OpenedDocumentsDesignData
     private const string ResourceBaseName = "Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel";
 
     /// <summary>Gets the selectable documents, starting with the item that represents all documents.</summary>
-    public IReadOnlyList<DocumentDesignData> Collection { get; } =
+    public IReadOnlyList<OpenedDocument> Documents { get; } =
     [
-        new DocumentDesignData
+        new OpenedDocument
         {
             Title = string.Empty,
             DisplayName = LocalizationResourceReader.GetString(ResourceBaseName, "allDocuments_text"),
         },
-        new DocumentDesignData { Title = "Sample Project.rvt", DisplayName = "Sample Project.rvt" },
-        new DocumentDesignData { Title = "Family.rfa", DisplayName = "Family.rfa" },
+        new OpenedDocument { Title = "Sample Project.rvt", DisplayName = "Sample Project.rvt" },
+        new OpenedDocument { Title = "Family.rfa", DisplayName = "Family.rfa" },
     ];
-}
-
-/// <summary>Provides one representative document of the document selector.</summary>
-internal sealed class DocumentDesignData
-{
-    /// <summary>Gets the document title used to identify the selected document.</summary>
-    public required string Title { get; init; }
-
-    /// <summary>Gets the text displayed in the document selector.</summary>
-    public required string DisplayName { get; init; }
 }

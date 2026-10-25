@@ -124,6 +124,9 @@
     <File Path="CONTRIBUTING.md" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Revit.Linter.Architecture.Tests/Revit.Linter.Architecture.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.CollisionTestModels.RevitTests/Revit.Linter.CollisionTestModels.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>

@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Behaviors;
 using Revit.Linter.Localization;
+using Revit.Linter.OpenedDocuments.Abstractions.Models;
 using Revit.Linter.ReportMessaging;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -54,8 +55,8 @@ internal sealed class FixReportDesignData
         TargetDocumentTitle = SampleDocumentTitle;
     }
 
-    /// <summary>Gets the opened-document selector shared with the document filter.</summary>
-    public OpenedDocumentsDesignData OpenedDocumentsViewModel { get; } = new();
+    /// <summary>Gets the opened-document selector shown in the filter popup.</summary>
+    public OpenedDocumentsDesignData OpenedDocuments { get; } = new();
 
     /// <summary>Gets the collection view the grid reads its rows from.</summary>
     public CollectionViewSource CollectionViewSource { get; }
@@ -148,15 +149,17 @@ internal sealed class FixReportRowDesignData : IHasDiagnosticCode
 /// <summary>Provides the document selector entries of the fix-report pane for the XAML designer.</summary>
 internal sealed class OpenedDocumentsDesignData
 {
-    /// <summary>Gets the documents available in the selector.</summary>
-    public IReadOnlyList<OpenedDocumentDesignData> Collection { get; } =
+    private const string ResourceBaseName = "Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel";
+
+    /// <summary>Gets the documents available in the selector, starting with the entry for all documents.</summary>
+    public IReadOnlyList<OpenedDocument> Documents { get; } =
     [
-        new("Sample Project - Architecture.rvt", "Sample Project - Architecture.rvt"),
-        new("Sample Project - Structure.rvt", "Sample Project - Structure.rvt"),
+        new OpenedDocument
+        {
+            Title = string.Empty,
+            DisplayName = LocalizationResourceReader.GetString(ResourceBaseName, "allDocuments_text"),
+        },
+        new OpenedDocument { Title = "Sample Project - Architecture.rvt", DisplayName = "Sample Project - Architecture.rvt" },
+        new OpenedDocument { Title = "Sample Project - Structure.rvt", DisplayName = "Sample Project - Structure.rvt" },
     ];
 }
-
-/// <summary>Provides one document filter entry for the XAML designer.</summary>
-/// <param name="DisplayName">The text shown in the document selector.</param>
-/// <param name="Title">The document title used for selection.</param>
-internal sealed record OpenedDocumentDesignData(string DisplayName, string Title);

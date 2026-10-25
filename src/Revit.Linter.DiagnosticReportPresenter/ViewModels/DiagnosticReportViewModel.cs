@@ -6,7 +6,7 @@ using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
-using Revit.Linter.OpenedDocuments.ViewModels;
+using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
@@ -128,7 +128,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IUserInterfaceActivityStream activityStream,
             IVisualizationViewActivator visualizationViewActivator,
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
-            OpenedDocumentsViewModel openedDocumentsViewModel,
+            IOpenedDocuments openedDocuments,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
         _accentElementsServices = accentElementsServices;
@@ -148,7 +148,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
         _clipboardService = clipboardService;
-        OpenedDocumentsViewModel = openedDocumentsViewModel;
+        OpenedDocuments = openedDocuments;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
     }
@@ -156,7 +156,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     /// <summary>
     /// Gets the opened-document selector displayed by the view.
     /// </summary>
-    public OpenedDocumentsViewModel OpenedDocumentsViewModel { get; }
+    public IOpenedDocuments OpenedDocuments { get; }
 
     [ObservableProperty]
     public partial ObservableCollection<DiagnosticReportItemViewModel> Collection { get; private set; }

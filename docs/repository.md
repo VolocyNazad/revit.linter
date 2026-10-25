@@ -70,6 +70,10 @@ presenter: it holds the contracts other modules and the host use for that presen
 (`IDiagnosticReportPresenter`, `IVisualizationViewActivator`), so no consumer has to reference the presenter
 project for them. A presenter that needs such an outward contract gets a matching `<Module>.Interactions` project
 instead of exposing it from its implementation assembly.
+`Revit.Linter.OpenedDocuments` owns the shared opened-document selector of the report and fix panes. It exposes
+the selector through `IOpenedDocuments` and the stable `OpenedDocument` item model, so those panes bind to the
+contract and never reference the selector view model; the view model keeps the Revit-aware refresh of the open
+document list.
 Each presenter project keeps the design-time data of its views next to them in `DesignData/`
 (`<ViewName>DesignData` classes wired through `d:DataContext` with `IsDesignTimeCreatable`); they exist for the XAML designer only,
 mirror the binding paths of their view and read the same localized resources, so the preview never
@@ -328,6 +332,8 @@ Test projects that use RevitThreadExecutor and inherit from RevitApiTest use the
 `tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the in-memory transaction cache, the document query service built over it, repository-root lookup). It is a library, not a test project: it has no test framework reference and its name does not end in `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in `Revit.Linter.Diagnostic.RevitTests`.
 
 Generated report formats are pinned with snapshot tests in `Revit.Linter.DiagnosticReportExporting.Tests`. `Snapshot.Match` from `Revit.Linter.Testing` compares the output with `Snapshots/<Class>.<Test>.verified.<ext>`; on a difference it writes a `*.received.*` file next to it (ignored by Git) and fails. To accept an intended format change, review the received file and rename it over the verified one in the same commit. Snapshot inputs use the invariant culture so the text is identical on .NET Framework and .NET.
+
+`Revit.Linter.Architecture.Tests` guards the documented coupling between UI presenter projects: it fails when a presenter project references another UI module or uses that module's view model outside the composition points recorded in the [architecture decisions](architecture.md).
 
 ## Continuous integration
 
