@@ -14,7 +14,7 @@ public sealed class ExampleConfigurationParsingTests
     public async Task Every_supported_parameter_group_value_round_trips_from_configuration_text()
     {
         int count = 0;
-#if BEFORE2024
+#if !AFTER2024
         foreach (BuiltInParameterGroup value in Enum.GetValues(typeof(BuiltInParameterGroup)).Cast<BuiltInParameterGroup>())
         {
             BuiltInParameterGroup parsed = ParameterIdentifierParser.ParseGroup(value.ToString());
@@ -78,7 +78,7 @@ public sealed class ExampleConfigurationParsingTests
     public async Task Every_supported_parameter_group_value_is_known()
     {
         int count = 0;
-#if BEFORE2024
+#if !AFTER2024
         foreach (BuiltInParameterGroup value in Enum.GetValues(typeof(BuiltInParameterGroup)).Cast<BuiltInParameterGroup>())
         {
             await Assert.That(ParameterIdentifierParser.IsKnownGroup(value.ToString())).IsTrue();
@@ -102,7 +102,7 @@ public sealed class ExampleConfigurationParsingTests
     }
 
     [Test]
-#if BEFORE2024
+#if !AFTER2024
     [Arguments("PG_UNKNOWN")]
     [Arguments("")]
     [Arguments("PG_DATA, PG_TEXT")]
@@ -130,7 +130,7 @@ public sealed class ExampleConfigurationParsingTests
     }
 
     [Test]
-#if BEFORE2024
+#if !AFTER2024
     [Skip("Example configurations use Revit 2024+ parameter groups; Revit 2021-2023 installs converted copies.")]
 #endif
     public async Task Parameter_identifiers_in_example_configuration_are_convertible()
@@ -165,7 +165,7 @@ public sealed class ExampleConfigurationParsingTests
     }
 
     private static object ParseGroup(string value) =>
-#if BEFORE2024
+#if !AFTER2024
         ParameterIdentifierParser.ParseGroup(value);
 #else
         ParameterIdentifierParser.ParseGroupTypeId(value);

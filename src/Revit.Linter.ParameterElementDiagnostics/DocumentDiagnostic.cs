@@ -1,5 +1,5 @@
 using Revit.Linter.Core.Abstractions;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
@@ -28,7 +28,7 @@ internal sealed class DocumentDiagnostic(
         ICollection<string> messages = [];
         // Group and category identifiers repeat across rules, so they are parsed once per
         // distinct value instead of once per rule.
-#if BEFORE2024
+#if !AFTER2024
         Dictionary<string, BuiltInParameterGroup> parsedGroups = new(StringComparer.Ordinal);
 #else
         Dictionary<string, ForgeTypeId> parsedGroups = new(StringComparer.Ordinal);
@@ -88,7 +88,7 @@ internal sealed class DocumentDiagnostic(
                 messages.Add(GetInvalidPropertyMessage(parameterData, "IsInstance"));
             if (definition.VariesAcrossGroups != parameterData.AllowVaryBetweenGroups)
                 messages.Add(GetInvalidPropertyMessage(parameterData, "AllowVaryBetweenGroups"));
-#if BEFORE2024
+#if !AFTER2024
             if (!parsedGroups.TryGetValue(parameterData.Group, out BuiltInParameterGroup group))
                 parsedGroups[parameterData.Group] = group = ParameterIdentifierParser.ParseGroup(parameterData.Group);
             if (definition.ParameterGroup != group)

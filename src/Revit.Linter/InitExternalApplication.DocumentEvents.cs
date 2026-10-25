@@ -10,7 +10,7 @@ using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 

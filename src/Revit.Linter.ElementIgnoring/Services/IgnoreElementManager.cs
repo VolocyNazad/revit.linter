@@ -424,14 +424,14 @@ internal sealed class IgnoreElementManager(
     }
 
     private static long ElementIdValue(ElementId id) =>
-#if BEFORE2024
+#if !AFTER2024
         id.IntegerValue;
 #else
         id.Value;
 #endif
 
     private static ElementId ToElementId(long value) =>
-#if BEFORE2024
+#if !AFTER2024
         new ElementId((int)value);
 #else
         new ElementId(value);

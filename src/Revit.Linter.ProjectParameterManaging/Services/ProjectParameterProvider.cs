@@ -3,10 +3,10 @@ using Autodesk.Revit.DB;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using System.Reflection;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
-#if BEFORE2024
+#if !AFTER2024
 using ParameterGroupId = Autodesk.Revit.DB.BuiltInParameterGroup;
 #else
 using ParameterGroupId = Autodesk.Revit.DB.ForgeTypeId;
@@ -109,7 +109,7 @@ internal sealed class ProjectParameterProvider : IProjectParameterProvider
             || !binding.Categories.Cast<Category>().Select(i => i.BuiltInCategory).SetEquals(builtInCategories);
     }
 
-#if BEFORE2024
+#if !AFTER2024
     private static ParameterGroupId GetGroup(InternalDefinition definition) => definition.ParameterGroup;
 #else
     private static ParameterGroupId GetGroup(InternalDefinition definition) => definition.GetGroupTypeId();

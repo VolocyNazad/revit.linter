@@ -6,7 +6,7 @@ using Revit.Linter.FixReportPresenter.Views;
 using Revit.Linter.IgnoreListPresenter.Views;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.PracticalTourPresenter.Views;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 

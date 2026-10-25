@@ -1,7 +1,7 @@
 // Ribbon tab and product buttons.
 
 using Revit.Linter.Core.Abstractions.Models;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 

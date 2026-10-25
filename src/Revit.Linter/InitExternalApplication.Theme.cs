@@ -1,7 +1,7 @@
 // Theme propagation from Revit to the add-in views.
 
 using Revit.Linter.ThemeManaging.Abstractions.Services;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 
@@ -9,7 +9,7 @@ namespace Revit.Linter;
 
 internal sealed partial class InitExternalApplication
 {
-#if !BEFORE2024
+#if AFTER2024
     private void InitializeThemeHandling()
     {
         ChangePluginTheme();

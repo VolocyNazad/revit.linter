@@ -333,7 +333,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     }
 
     private static ElementId ToElementId(long value) =>
-#if BEFORE2024
+#if !AFTER2024
         new ElementId((int)value);
 #else
         new ElementId(value);

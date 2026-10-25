@@ -90,7 +90,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             SelectElement(element);
             return;
         }
-#if BEFORE2024
+#if !AFTER2024
         if (parameter is not int elementId) return;
 #else
         if (parameter is not long elementId) return;
@@ -106,7 +106,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         _accentElementsServices.SelectElement(targetdocument, elementId);
     }
     private bool CanSelectElement(object? elementId)
-#if BEFORE2024
+#if !AFTER2024
         => elementId is int
 #else
         => elementId is long or ElementId

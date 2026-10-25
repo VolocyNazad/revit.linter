@@ -1,5 +1,5 @@
 ﻿using Autodesk.Revit.DB;
-#if BEFORE2024
+#if !AFTER2024
 using ParameterGroupId = Autodesk.Revit.DB.BuiltInParameterGroup;
 #else
 using ParameterGroupId = Autodesk.Revit.DB.ForgeTypeId;

@@ -278,6 +278,11 @@ composition root for add-in logs (`...\\logs\\`) and the ValueStore settings dir
   `$(MajorRevitVersion)` and are conditional on that property being defined, because the
   Revit-independent `netstandard2.0` projects are evaluated without a Revit configuration and
   an empty version would fail the whole restore.
+- The SDK defines `BEFORE<year>` for `MajorRevitVersion <= year` and `AFTER<year>` for
+  `MajorRevitVersion >= year`. Both constants are inclusive, so a boundary that starts at the year
+  itself must be written with `AFTER<year>` (`#if AFTER2024` / `#if !AFTER2024`) instead of
+  `BEFORE<year>`; otherwise Revit 2024 would compile the 2021-2023 compatibility branch and hit the
+  obsolete-API warnings that the release build treats as errors.
 
 ## Documentation layout
 

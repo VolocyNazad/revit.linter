@@ -9,7 +9,7 @@ internal static class CategoryIdentifiers
     /// is 32-bit through Revit 2023 and 64-bit from Revit 2024.
     /// </summary>
     public static string ToNumeric(BuiltInCategory category) =>
-#if BEFORE2024
+#if !AFTER2024
         ((int)category).ToString();
 #else
         ((long)category).ToString();

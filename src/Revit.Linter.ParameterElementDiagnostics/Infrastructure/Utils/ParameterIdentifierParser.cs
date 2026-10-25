@@ -5,7 +5,7 @@ namespace Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 /// </summary>
 internal static class ParameterIdentifierParser
 {
-#if BEFORE2024
+#if !AFTER2024
     public static BuiltInParameterGroup ParseGroup(string value) =>
         int.TryParse(value, out int id)
             ? (BuiltInParameterGroup)id
@@ -13,17 +13,17 @@ internal static class ParameterIdentifierParser
 #endif
 
     public static BuiltInCategory ParseCategory(string value) =>
-#if BEFORE2024
+#if !AFTER2024
         int.TryParse(value, out int id)
             ? (BuiltInCategory)id
             : (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), value);
 #else
         long.TryParse(value, out long id)
             ? (BuiltInCategory)id
-            : Enum.Parse<BuiltInCategory>(value);
+            : (BuiltInCategory)Enum.Parse(typeof(BuiltInCategory), value);
 #endif
 
-#if !BEFORE2024
+#if AFTER2024
     public static ForgeTypeId ParseGroupTypeId(string value) => new(value);
 #endif
 
@@ -33,7 +33,7 @@ internal static class ParameterIdentifierParser
     /// </summary>
     public static bool IsKnownCategory(string value)
     {
-#if BEFORE2024
+#if !AFTER2024
         if (int.TryParse(value, out int id))
             return Enum.IsDefined(typeof(BuiltInCategory), (BuiltInCategory)id);
 #else
@@ -57,7 +57,7 @@ internal static class ParameterIdentifierParser
         Justification = "Index 0 is intentionally not a match: a valid identifier never starts with a colon, and the empty value is handled separately.")]
     public static bool IsKnownGroup(string value)
     {
-#if BEFORE2024
+#if !AFTER2024
         if (int.TryParse(value, out int id))
             return Enum.IsDefined(typeof(BuiltInParameterGroup), (BuiltInParameterGroup)id);
 

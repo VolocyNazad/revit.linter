@@ -166,7 +166,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         IProjectParameterProvider provider = services.GetRequiredService<IProjectParameterProvider>();
         using Transaction transaction = new(_document!, "Add test project parameter");
         transaction.Start();
-#if BEFORE2024
+#if !AFTER2024
         bool added = provider.Add(
             _document!, ParameterId, [BuiltInCategory.OST_Walls], BuiltInParameterGroup.PG_DATA);
 #else
@@ -202,14 +202,14 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
     };
 
     private static string GetDataGroupIdentifier() =>
-#if BEFORE2024
+#if !AFTER2024
         BuiltInParameterGroup.PG_DATA.ToString();
 #else
         GroupTypeId.Data.TypeId;
 #endif
 
     private static string GetDifferentGroupIdentifier() =>
-#if BEFORE2024
+#if !AFTER2024
         BuiltInParameterGroup.PG_TEXT.ToString();
 #else
         GroupTypeId.Text.TypeId;

@@ -1,4 +1,4 @@
-﻿#if BEFORE2024
+﻿#if !AFTER2024
 using Revit.Sugar;
 #endif
 

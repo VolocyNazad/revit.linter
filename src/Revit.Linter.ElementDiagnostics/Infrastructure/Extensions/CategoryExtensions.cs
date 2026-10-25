@@ -1,4 +1,4 @@
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 
@@ -8,7 +8,7 @@ internal static class CategoryExtensions
 {
     public static bool IsBuiltInCategory(this Category category, BuiltInCategory builtInCategory)
     {
-#if BEFORE2024
+#if !AFTER2024
         return category.Id.IsCategory(builtInCategory);
 #else
         return category.BuiltInCategory == builtInCategory;

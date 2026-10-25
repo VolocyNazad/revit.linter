@@ -16,7 +16,7 @@ using Revit.TransactionMemoryCache.Abstractions.Services;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 
@@ -109,7 +109,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
 
         GetService<ITutorialSampleCopyService>().CleanupAbandonedCopies(GetService<IConfigurationPaths>().RevitVersion);
 
-#if !BEFORE2024
+#if AFTER2024
         InitializeThemeHandling();
 #endif
 
@@ -150,7 +150,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             app.FamilyLoadedIntoDocument -= App_FamilyLoadedIntoDocument;
             Application.ViewActivated -= App_ViewActivated;
 
-#if !BEFORE2024
+#if AFTER2024
             Application.ThemeChanged -= Application_ThemeChanged;
 #endif
 

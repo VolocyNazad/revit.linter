@@ -5,7 +5,7 @@ using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.ProjectParameterManaging.Abstractions.Services;
 using Revit.Linter.ProjectParameterManaging.DI;
 using TUnit.Core.Executors;
-#if BEFORE2024
+#if !AFTER2024
 using Revit.Sugar;
 #endif
 
@@ -301,7 +301,7 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         IEnumerable<BuiltInCategory> categories,
         bool isInstance = true,
         bool allowVaryBetweenGroups = false) =>
-#if BEFORE2024
+#if !AFTER2024
         provider.Add(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance, allowVaryBetweenGroups);
 #else
         provider.Add(document, parameterId, categories, GroupTypeId.Data, isInstance, allowVaryBetweenGroups);
@@ -320,7 +320,7 @@ public sealed class ProjectParameterProviderTests : RevitApiTest
         IEnumerable<BuiltInCategory> categories,
         bool isInstance = true,
         bool allowVaryBetweenGroups = false) =>
-#if BEFORE2024
+#if !AFTER2024
         provider.IsConfigured(document, parameterId, categories, BuiltInParameterGroup.PG_DATA, isInstance, allowVaryBetweenGroups);
 #else
         provider.IsConfigured(document, parameterId, categories, GroupTypeId.Data, isInstance, allowVaryBetweenGroups);

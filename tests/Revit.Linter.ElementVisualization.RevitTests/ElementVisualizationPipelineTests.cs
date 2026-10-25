@@ -125,7 +125,7 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
         .First(view => !view.IsTemplate);
 
     private static ElementId CreateElementId(int value)
-#if BEFORE2024
+#if !AFTER2024
         => new(value);
 #else
         => new((long)value);
