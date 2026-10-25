@@ -1,5 +1,7 @@
 using Autodesk.Revit.DB;
+#if !IS2021
 using Autodesk.Revit.DB.Structure;
+#endif
 using Microsoft.Extensions.Logging.Abstractions;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
@@ -201,6 +203,10 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         await Assert.That(count).IsEqualTo(5);
     }
 
+    // Revit 2021 does not permit creating the test family geometry through the API on the opened
+    // templates (the same limitation disables the connector-cube tests there), so the nested-family
+    // fixture cannot be built on 2021 and the case stays on the manual checklist for that version.
+#if !IS2021
     [Test]
     public async Task Non_shared_nested_components_are_not_project_elements()
     {
@@ -311,6 +317,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
             .OfClass(typeof(FamilySymbol))
             .Cast<FamilySymbol>()
             .First(candidate => candidate.Family.Id == family.Id);
+#endif
 
     private BoundingBoxGridIndex BuildIndex() => BoundingBoxGridIndex.Build(
         [_center!, _first!, _second!, _distant!, _long!],
