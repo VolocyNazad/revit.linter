@@ -18,7 +18,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Store ignores inside the model: element and document ignores live in one Extensible Storage data storage and are skipped before a run visits elements. Ignore from a report row, in bulk or for the whole document; the new **Ignore list** pane lists, removes and clears the entries, and a document-level entry suppresses every finding of that diagnostic in that document.
 - Check loaded Revit links in collision rules: with `includeLinks: true` linked elements take part in the collision with their own spatial indexes and conformal transforms, and a linked hit names its element as `Name [Link]`. New rule flags exclude MEP-connected elements (`ignoreConnectedElements`) and parent/nested pairs of one family tree (`ignoreNestedFamilies`).
 - Support negated filter leaves in formulas, for example `!category(...)`, through inverted native filter overloads.
-- Convert `Double` parameters with the parameter's own unit instead of the length unit.
 - Add visualization pipeline steps for detail level, display style and category visibility.
 - Open the rule configuration from the diagnostics pane with **Open With**, reveal it in Explorer or open it in Notepad, reset persisted check settings behind a confirmation, open a module's documentation from its rows and mark debug configurations with a debug badge.
 - Offer element, bulk and document ignore actions on report rows with applied notifications, and mark the active visualization on report rows and menus.
@@ -41,6 +40,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The practical tour no longer completes the selection step when other diagnostics were enabled before it, and an identical example configuration is no longer rewritten with another backup.
 - Stacked dialogs are owned by the active window, and their default and close buttons pass real boolean results.
 - Report rows whose target element was deleted or undone stay visible as stale rows without fixes or visualizations instead of failing.
+- `Double` parameters are now converted with the parameter's own unit instead of the length unit.
 
 ## [2.0.0] - 2026-10-06
 
