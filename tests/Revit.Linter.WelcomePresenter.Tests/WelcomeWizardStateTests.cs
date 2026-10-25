@@ -42,7 +42,7 @@ public sealed class WelcomeWizardStateTests
     }
 
     [Fact]
-    public void Newer_wizard_version_gets_only_the_introduction_again()
+    public void Newer_wizard_version_reoffers_the_examples_step()
     {
         OnboardingSettings settings = new();
         WelcomeWizardState.MarkShown(settings, WelcomeWizardPlan.AllSteps, WizardVersion, RevitVersion);
@@ -50,7 +50,7 @@ public sealed class WelcomeWizardStateTests
         WelcomeWizardPlan plan = WelcomeWizardState.GetPendingPlan(settings, WizardVersion + 1, RevitVersion);
 
         Assert.True(plan.IncludeIntro);
-        Assert.False(plan.IncludeExamples);
+        Assert.True(plan.IncludeExamples);
     }
 
     [Fact]

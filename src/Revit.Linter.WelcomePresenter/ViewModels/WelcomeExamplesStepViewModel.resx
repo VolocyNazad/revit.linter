@@ -10,9 +10,11 @@
   <data name="mep_text" xml:space="preserve"><value>MEP systems</value></data>
   <data name="architecture_text" xml:space="preserve"><value>Architecture</value></data>
   <data name="structure_text" xml:space="preserve"><value>Structure</value></data>
-  <data name="contents_text" xml:space="preserve"><value>Disciplines add collision rules — five for MEP systems, three for architecture and structure — and a project parameter rule based on the ADSK shared parameters. Six element checks are installed in any case.</value></data>
-  <data name="target_format" xml:space="preserve"><value>The example is always written to the "examples" subfolder in {0}. Your own files are never touched.</value></data>
+  <data name="contents_text" xml:space="preserve"><value>Each discipline adds collision rules and a project parameter rule based on the ADSK shared parameters. The element checks are installed in any case.</value></data>
+  <data name="target_format" xml:space="preserve"><value>The example is always written to the "examples" subfolder in {0}. An identical example file is left untouched; a different or edited one is saved as a .bak-&lt;timestamp&gt; copy before the shipped example replaces it.</value></data>
   <data name="installButton_text" xml:space="preserve"><value>Load examples</value></data>
-  <data name="installed_format" xml:space="preserve"><value>Done. The example configuration was installed in {1}. The examples are now available in the diagnostics list.</value></data>
+  <data name="installed_format" xml:space="preserve"><value>Done. The example configuration was written to {0}. The examples are now available in the diagnostics list.</value></data>
+  <data name="unchanged_format" xml:space="preserve"><value>The example configuration in {0} is already up to date; nothing was changed.</value></data>
+  <data name="updated_format" xml:space="preserve"><value>The example configuration in {0} was updated. The previous file is kept as {1}.</value></data>
   <data name="failed_format" xml:space="preserve"><value>The examples could not be written: {0}</value></data>
 </root>

@@ -66,10 +66,17 @@ internal sealed partial class WelcomeExamplesStepViewModel(
             ExampleInstallationResult result = installer.Install(disciplines);
 
             IsInstalled = true;
-            InstallationFeedback = GetLocalizedString(
-                "installed_format",
-                result.Files.Count,
-                Path.Combine(installer.TargetDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
+            string examplesDirectory = Path.Combine(
+                installer.TargetDirectory, ExampleConfigurationInstaller.ExamplesFolderName);
+            InstalledExampleFile? installed = result.Files.FirstOrDefault();
+            InstallationFeedback = installed?.Outcome switch
+            {
+                ExampleInstallationOutcome.Unchanged =>
+                    GetLocalizedString("unchanged_format", examplesDirectory),
+                ExampleInstallationOutcome.Replaced when installed.BackupPath is not null =>
+                    GetLocalizedString("updated_format", examplesDirectory, installed.BackupPath),
+                _ => GetLocalizedString("installed_format", examplesDirectory),
+            };
             StatusMessage = null;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)

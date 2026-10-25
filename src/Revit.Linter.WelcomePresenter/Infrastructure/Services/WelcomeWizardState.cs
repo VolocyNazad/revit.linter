@@ -24,12 +24,19 @@ internal static class WelcomeWizardState
 {
     /// <summary>
     /// Returns the steps the user has not seen: the introduction until the current wizard version is
-    /// completed, and the examples until they were offered for the given Revit version.
+    /// completed, and the examples until they were offered for the given Revit version under the current
+    /// wizard content version.
     /// </summary>
+    /// <remarks>
+    /// A newer wizard content version re-offers the examples even for a Revit version that was offered them
+    /// before, because the examples themselves may have changed (for example, when the configuration format
+    /// changes). The offer stays once per Revit version after that.
+    /// </remarks>
     public static WelcomeWizardPlan GetPendingPlan(OnboardingSettings settings, int currentWizardVersion, int revitVersion) =>
         new(
             IncludeIntro: settings.CompletedWizardVersion < currentWizardVersion,
-            IncludeExamples: !settings.ExamplesOfferedRevitVersions.Contains(revitVersion));
+            IncludeExamples: settings.CompletedWizardVersion < currentWizardVersion
+                             || !settings.ExamplesOfferedRevitVersions.Contains(revitVersion));
 
     /// <summary>
     /// Records the shown steps. The completed version never decreases and a Revit version is stored once.

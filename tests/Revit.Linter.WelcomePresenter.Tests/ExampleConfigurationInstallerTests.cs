@@ -55,6 +55,8 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
 
         InstalledExampleFile installed = Assert.Single(result.Files);
         Assert.Equal(ConfigurationPathUtils.DiagnosticsConfigFileName, installed.FileName);
+        Assert.Equal(ExampleInstallationOutcome.Installed, installed.Outcome);
+        Assert.Null(installed.BackupPath);
         DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
             ConfigurationPathUtils.GetDiagnosticConfiguration(installed.Path));
         Assert.Equal(2, file.Version);
@@ -65,19 +67,18 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
     }
 
     [Fact]
-    public void Install_writes_one_file_and_removes_obsolete_example_files()
+    public void Install_leaves_the_legacy_example_files_to_the_startup_migration()
     {
         string examplesDirectory = Path.Combine(_tempDirectory, ConfigurationPathUtils.ExamplesFolderName);
         Directory.CreateDirectory(examplesDirectory);
-        foreach (string obsolete in new[]
-                 {
-                     ConfigurationPathUtils.LegacyConfigFileName,
-                     ConfigurationPathUtils.LegacyCollisionConfigFileName,
-                     ConfigurationPathUtils.LegacyParameterElementConfigFileName,
-                 })
-        {
-            File.WriteAllText(Path.Combine(examplesDirectory, obsolete), "version: 1\nrules: []\n");
-        }
+        (string Name, string Content)[] legacyContent =
+        [
+            (ConfigurationPathUtils.LegacyConfigFileName, "- code: \"OLD001\"\n"),
+            (ConfigurationPathUtils.LegacyCollisionConfigFileName, "- code: \"OLD002\"\n"),
+            (ConfigurationPathUtils.LegacyParameterElementConfigFileName, "- code: \"OLD003\"\n"),
+        ];
+        foreach ((string name, string content) in legacyContent)
+            File.WriteAllText(Path.Combine(examplesDirectory, name), content);
 
         ExampleConfigurationInstaller.Install(
             _tempDirectory,
@@ -86,8 +87,75 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
                 RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
             useLegacyParameterGroups: false);
 
-        Assert.Single(Directory.GetFiles(examplesDirectory));
+        foreach ((string name, string content) in legacyContent)
+            Assert.Equal(content, File.ReadAllText(Path.Combine(examplesDirectory, name)));
         Assert.True(File.Exists(Path.Combine(examplesDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName)));
+    }
+
+    [Fact]
+    public void Install_keeps_a_backup_of_an_existing_example_file()
+    {
+        string examplesDirectory = Path.Combine(_tempDirectory, ConfigurationPathUtils.ExamplesFolderName);
+        Directory.CreateDirectory(examplesDirectory);
+        string path = Path.Combine(examplesDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(path, "# my own copy\nversion: 2\nrules: []\n");
+
+        ExampleInstallationResult result = ExampleConfigurationInstaller.Install(
+            _tempDirectory,
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: false);
+
+        string backup = Assert.Single(Directory.GetFiles(examplesDirectory, "*.bak-*"));
+        InstalledExampleFile installed = Assert.Single(result.Files);
+        Assert.Equal(ExampleInstallationOutcome.Replaced, installed.Outcome);
+        Assert.Equal(backup, installed.BackupPath);
+        Assert.Contains("# my own copy", File.ReadAllText(backup), StringComparison.Ordinal);
+        Assert.DoesNotContain("# my own copy", File.ReadAllText(path), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Install_does_not_rewrite_an_identical_example_file()
+    {
+        Func<string, string> readTemplate = fileName => File.ReadAllText(Path.Combine(
+            RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName));
+        ExampleConfigurationInstaller.Install(
+            _tempDirectory, [ExampleDiscipline.Mep], readTemplate, useLegacyParameterGroups: false);
+        string examplesDirectory = Path.Combine(_tempDirectory, ConfigurationPathUtils.ExamplesFolderName);
+        string path = Path.Combine(examplesDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        string installed = File.ReadAllText(path);
+
+        ExampleInstallationResult second = ExampleConfigurationInstaller.Install(
+            _tempDirectory, [ExampleDiscipline.Mep], readTemplate, useLegacyParameterGroups: false);
+
+        Assert.Equal(installed, File.ReadAllText(path));
+        Assert.Empty(Directory.GetFiles(examplesDirectory, "*.bak-*"));
+        InstalledExampleFile installedFile = Assert.Single(second.Files);
+        Assert.Equal(ExampleInstallationOutcome.Unchanged, installedFile.Outcome);
+        Assert.Null(installedFile.BackupPath);
+    }
+
+    [Fact]
+    public void Install_replaces_an_empty_example_file_without_a_backup()
+    {
+        string examplesDirectory = Path.Combine(_tempDirectory, ConfigurationPathUtils.ExamplesFolderName);
+        Directory.CreateDirectory(examplesDirectory);
+        string path = Path.Combine(examplesDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(path, "  " + Environment.NewLine);
+
+        ExampleInstallationResult result = ExampleConfigurationInstaller.Install(
+            _tempDirectory,
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: false);
+
+        Assert.Contains("version: 2", File.ReadAllText(path), StringComparison.Ordinal);
+        Assert.Empty(Directory.GetFiles(examplesDirectory, "*.bak-*"));
+        InstalledExampleFile installed = Assert.Single(result.Files);
+        Assert.Equal(ExampleInstallationOutcome.Installed, installed.Outcome);
+        Assert.Null(installed.BackupPath);
     }
 
     [Fact]

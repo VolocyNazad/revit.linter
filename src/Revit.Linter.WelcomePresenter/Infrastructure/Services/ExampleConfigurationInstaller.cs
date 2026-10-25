@@ -19,15 +19,6 @@ internal sealed class ExampleConfigurationInstaller(
     internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
     private const string ExampleFileName = ConfigurationPathUtils.DiagnosticsConfigFileName;
 
-    // Obsolete example files are removed from the product-owned examples folder so the user
-    // does not keep a file the product no longer reads.
-    private static readonly string[] ObsoleteFileNames =
-    [
-        ConfigurationPathUtils.LegacyConfigFileName,
-        ConfigurationPathUtils.LegacyCollisionConfigFileName,
-        ConfigurationPathUtils.LegacyParameterElementConfigFileName,
-    ];
-
     private const string ResourcePrefix = "Revit.Linter.WelcomePresenter.Examples.";
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
@@ -66,17 +57,66 @@ internal sealed class ExampleConfigurationInstaller(
 
         string examplesDirectory = Path.Combine(targetDirectory, ExamplesFolderName);
         Directory.CreateDirectory(examplesDirectory);
-        foreach (string obsoleteFileName in ObsoleteFileNames)
-        {
-            string obsoletePath = Path.Combine(examplesDirectory, obsoleteFileName);
-            if (File.Exists(obsoletePath)) File.Delete(obsoletePath);
-        }
 
         string content = ExampleConfigurationComposer.Compose(
             readTemplate(ExampleFileName), sections, useLegacyParameterGroups);
         string path = Path.Combine(examplesDirectory, ExampleFileName);
+
+        // The examples folder is inside the user's configuration folder. An identical file means the example
+        // is already installed, so it is left untouched; a different or empty file is replaced, and a
+        // non-empty user-edited copy is preserved as a backup first.
+        ExampleInstallationOutcome outcome = ExampleInstallationOutcome.Installed;
+        string? backupPath = null;
+        if (File.Exists(path))
+        {
+            string existing = File.ReadAllText(path);
+            if (string.Equals(existing, content, StringComparison.Ordinal))
+            {
+                return new ExampleInstallationResult(
+                [
+                    new InstalledExampleFile(ExampleFileName, path)
+                    {
+                        Outcome = ExampleInstallationOutcome.Unchanged,
+                    },
+                ]);
+            }
+
+            if (!string.IsNullOrWhiteSpace(existing))
+            {
+                backupPath = CreateUniquePath($"{path}.bak-{DateTime.Now:yyyyMMdd-HHmmss}");
+                File.Copy(path, backupPath, overwrite: false);
+                outcome = ExampleInstallationOutcome.Replaced;
+            }
+        }
+
         File.WriteAllText(path, content, encoding);
-        return new ExampleInstallationResult([new InstalledExampleFile(ExampleFileName, path)]);
+        return new ExampleInstallationResult(
+        [
+            new InstalledExampleFile(ExampleFileName, path)
+            {
+                Outcome = outcome,
+                BackupPath = backupPath,
+            },
+        ]);
+    }
+
+    private static string CreateUniquePath(string candidate)
+    {
+        if (!File.Exists(candidate)) return candidate;
+
+        string? directory = Path.GetDirectoryName(candidate);
+        string name = Path.GetFileNameWithoutExtension(candidate);
+        string extension = Path.GetExtension(candidate);
+        int index = 2;
+        string next;
+        do
+        {
+            next = Path.Combine(directory ?? string.Empty, $"{name}-{index}{extension}");
+            index++;
+        }
+        while (File.Exists(next));
+
+        return next;
     }
 
     private static string ToSectionName(ExampleDiscipline discipline) => discipline switch
