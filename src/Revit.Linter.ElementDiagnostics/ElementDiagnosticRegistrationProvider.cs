@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Toolkit.ValueStore.Abstractions;
+using Revit.Linter.Core.Abstractions.Services;
 using System.Reflection;
 
 namespace Revit.Linter.ElementDiagnostics;
@@ -7,7 +7,7 @@ namespace Revit.Linter.ElementDiagnostics;
 internal sealed class ElementDiagnosticRegistrationProvider(
     IServiceProvider serviceProvider,
     IElementVisualizationPipelineFactory visualizationPipelineFactory,
-    IValueStore<ElementDiagnosticOverridesSettings> overrideStore)
+    IBuiltInDiagnosticStateProvider builtInStateProvider)
     : IDiagnosticRegistrationProvider
 {
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
@@ -43,10 +43,11 @@ internal sealed class ElementDiagnosticRegistrationProvider(
                 diagnostic,
                 FindByCode(filters, identity.Code, item => item.Identity.Code),
                 FindByCode(documentFilters, identity.Code, item => item.Identity.Code),
-                new ElementDiagnosticIdOverride(identity, overrideStore),
+                builtInStateProvider.GetState(identity.Code, identity.DefaultSeverity, identity.IsActive),
                 fixes.Where(fix => string.Equals(
                     fix.Identity.Code, identity.Code, StringComparison.Ordinal)).ToArray(),
-                diagnosticVisualizationPipelines)
+                diagnosticVisualizationPipelines,
+                builtInStateProvider.ConfigurationPath)
             {
                 Documentation = new("Built-in element diagnostics", "Встроенные проверки элементов"),
             };

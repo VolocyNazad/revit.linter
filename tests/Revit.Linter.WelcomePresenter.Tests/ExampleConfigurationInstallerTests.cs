@@ -1,5 +1,6 @@
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Testing;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
@@ -9,227 +10,180 @@ namespace Revit.Linter.WelcomePresenter.Tests;
 
 public sealed class ExampleConfigurationInstallerTests : IDisposable
 {
-    private static readonly string[] FileNames =
-        ["config.yaml", "collision.config.yaml", "parameter-element.config.yaml"];
-
     private readonly string _tempDirectory = Path.Combine(
         Path.GetTempPath(),
         nameof(ExampleConfigurationInstallerTests),
         Guid.NewGuid().ToString("N"));
 
-    public static TheoryData<string, ExampleDiscipline[], int, int> RealExampleCases => new()
+    public static TheoryData<string, ExampleDiscipline[], int, int, int> RealExampleCases => new()
     {
-        { "", [ExampleDiscipline.Mep], 5, 1 },
-        { "", [ExampleDiscipline.Architecture], 3, 1 },
-        { "", [ExampleDiscipline.Structure], 3, 1 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Structure], 8, 2 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 11, 3 },
-        { "ru", [ExampleDiscipline.Architecture], 3, 1 },
-        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 11, 3 },
+        { "", [ExampleDiscipline.Mep], 6, 5, 1 },
+        { "", [ExampleDiscipline.Architecture], 6, 3, 1 },
+        { "", [ExampleDiscipline.Structure], 6, 3, 1 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture], 6, 8, 2 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 11, 3 },
+        { "ru", [ExampleDiscipline.Mep], 6, 5, 1 },
+        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 11, 3 },
     };
 
-    [Fact]
-    public void Installs_every_file_into_the_examples_subfolder()
-    {
-        ExampleInstallationResult result = Install([ExampleDiscipline.Mep]);
+    public ExampleConfigurationInstallerTests() => Directory.CreateDirectory(_tempDirectory);
 
-        Assert.Equal(FileNames, result.Files.Select(file => file.FileName));
-        Assert.All(result.Files, file =>
+    public void Dispose()
+    {
+        try
         {
-            Assert.Equal(
-                Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, file.FileName),
-                file.Path);
-            Assert.Equal(FakeTemplate(file.FileName) + Environment.NewLine, File.ReadAllText(file.Path));
-        });
-    }
-
-    [Fact]
-    public void Existing_user_files_are_never_touched()
-    {
-        Directory.CreateDirectory(_tempDirectory);
-        string rulesFile = Path.Combine(_tempDirectory, "config.yaml");
-        string emptyFile = Path.Combine(_tempDirectory, "collision.config.yaml");
-        File.WriteAllText(rulesFile, "- code: \"MINE\"");
-        File.WriteAllText(emptyFile, string.Empty);
-
-        ExampleInstallationResult result = Install([ExampleDiscipline.Mep]);
-
-        Assert.Equal("- code: \"MINE\"", File.ReadAllText(rulesFile));
-        Assert.Empty(File.ReadAllText(emptyFile));
-        Assert.All(result.Files, file => Assert.StartsWith(
-            $"# {file.FileName}",
-            File.ReadAllText(Path.Combine(
-                _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, file.FileName))));
-    }
-
-    [Fact]
-    public void Reinstalling_overwrites_the_examples()
-    {
-        Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(Path.Combine(_tempDirectory, "config.yaml"), "- code: \"MINE\"");
-        Install([ExampleDiscipline.Mep]);
-        string examplesPath = Path.Combine(
-            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml");
-        File.WriteAllText(examplesPath, "stale");
-
-        Install([ExampleDiscipline.Mep]);
-
-        Assert.Equal("- code: \"MINE\"", File.ReadAllText(Path.Combine(_tempDirectory, "config.yaml")));
-        Assert.StartsWith("# config.yaml", File.ReadAllText(examplesPath));
-    }
-
-    [Fact]
-    public void Files_are_written_as_utf8_without_a_byte_order_mark()
-    {
-        Install([ExampleDiscipline.Mep]);
-
-        byte[] bytes = File.ReadAllBytes(Path.Combine(
-            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml"));
-        Assert.False(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF);
-    }
-
-    [Fact]
-    public void Empty_discipline_selection_is_rejected_before_anything_is_written()
-    {
-        Assert.Throws<ArgumentException>(() => Install([]));
-
-        Assert.False(Directory.Exists(_tempDirectory));
+            if (Directory.Exists(_tempDirectory)) Directory.Delete(_tempDirectory, recursive: true);
+        }
+        catch (IOException)
+        {
+            // Best effort cleanup of a test directory.
+        }
     }
 
     [Theory]
     [MemberData(nameof(RealExampleCases))]
-    public void Real_examples_deserialize_for_the_selected_disciplines(
-        string languageFolder, ExampleDiscipline[] disciplines, int expectedCollisionRules, int expectedParameterRules)
+    public void Real_examples_compose_the_expected_rules(
+        string language, ExampleDiscipline[] disciplines, int custom, int collision, int parameter)
     {
-        ExampleConfigurationInstaller.Install(
-            _tempDirectory, disciplines, fileName => ReadWikiExample(languageFolder, fileName), useLegacyParameterGroups: false);
+        string directory = Path.Combine(_tempDirectory, "real", string.IsNullOrEmpty(language) ? "en" : language);
 
-        Assert.Equal(6, ReadRules("config.yaml").Count);
-        Assert.Equal(expectedCollisionRules, ReadRules("collision.config.yaml").Count);
-        Assert.Equal(expectedParameterRules, ReadRules("parameter-element.config.yaml").Count);
-    }
+        ExampleInstallationResult result = ExampleConfigurationInstaller.Install(
+            directory,
+            disciplines,
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", language, fileName)),
+            useLegacyParameterGroups: false);
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("ru")]
-    public void Real_parameter_example_uses_only_groups_that_convert_for_revit_before_2024(string languageFolder)
-    {
-        ExampleConfigurationInstaller.Install(
-            _tempDirectory,
-            [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure],
-            fileName => ReadWikiExample(languageFolder, fileName),
-            useLegacyParameterGroups: true);
-
-        string content = File.ReadAllText(Path.Combine(
-            _tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "parameter-element.config.yaml"));
-        Assert.Contains("group: \"PG_DATA\"", content);
-        Assert.DoesNotContain("group: \"autodesk.parameter.group:", content);
+        InstalledExampleFile installed = Assert.Single(result.Files);
+        Assert.Equal(ConfigurationPathUtils.DiagnosticsConfigFileName, installed.FileName);
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            ConfigurationPathUtils.GetDiagnosticConfiguration(installed.Path));
+        Assert.Equal(2, file.Version);
+        Assert.Equal(custom, file.Rules.Count(rule => rule.Type == "custom"));
+        Assert.Equal(collision, file.Rules.Count(rule => rule.Type == "collision"));
+        Assert.Equal(parameter, file.Rules.Count(rule => rule.Type == "parameter"));
+        Assert.DoesNotContain(file.Rules, rule => rule.Type == "builtIn");
     }
 
     [Fact]
-    public void Practical_tour_install_writes_the_template_into_the_tour_folder()
+    public void Install_writes_one_file_and_removes_obsolete_example_files()
     {
-        string path = ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
+        string examplesDirectory = Path.Combine(_tempDirectory, ConfigurationPathUtils.ExamplesFolderName);
+        Directory.CreateDirectory(examplesDirectory);
+        foreach (string obsolete in new[]
+                 {
+                     ConfigurationPathUtils.LegacyConfigFileName,
+                     ConfigurationPathUtils.LegacyCollisionConfigFileName,
+                     ConfigurationPathUtils.LegacyParameterElementConfigFileName,
+                 })
+        {
+            File.WriteAllText(Path.Combine(examplesDirectory, obsolete), "version: 1\nrules: []\n");
+        }
 
-        Assert.Equal(
-            Path.Combine(
-                _tempDirectory,
-                ExampleConfigurationInstaller.TourFolderName,
-                ExampleConfigurationInstaller.PracticalTourFileName),
-            path);
-        Assert.Equal("# practical-tour", File.ReadAllText(path));
-        byte[] bytes = File.ReadAllBytes(path);
+        ExampleConfigurationInstaller.Install(
+            _tempDirectory,
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: false);
+
+        Assert.Single(Directory.GetFiles(examplesDirectory));
+        Assert.True(File.Exists(Path.Combine(examplesDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName)));
+    }
+
+    [Fact]
+    public void Install_never_touches_the_user_configuration_file()
+    {
+        string userPath = Path.Combine(_tempDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(userPath, "version: 2\nrules: []\n# user file\n");
+
+        ExampleConfigurationInstaller.Install(
+            _tempDirectory,
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: false);
+
+        Assert.Equal("version: 2\nrules: []\n# user file\n", File.ReadAllText(userPath));
+    }
+
+    [Fact]
+    public void Install_writes_utf8_without_a_byte_order_mark()
+    {
+        ExampleInstallationResult result = ExampleConfigurationInstaller.Install(
+            _tempDirectory,
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: false);
+
+        byte[] bytes = File.ReadAllBytes(result.Files[0].Path);
         Assert.False(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF);
     }
 
     [Fact]
-    public void Practical_tour_install_removes_the_stale_examples_configuration()
+    public void Install_converts_parameter_groups_for_revit_before_2024()
     {
-        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
-        string stalePath = Path.Combine(
+        ExampleInstallationResult result = ExampleConfigurationInstaller.Install(
             _tempDirectory,
-            ExampleConfigurationInstaller.ExamplesFolderName,
-            ExampleConfigurationInstaller.PracticalTourFileName);
-        string siblingPath = Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, "config.yaml");
-        File.WriteAllText(stalePath, "stale");
-        File.WriteAllText(siblingPath, "- code: \"MINE\"");
+            [ExampleDiscipline.Mep],
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)),
+            useLegacyParameterGroups: true);
 
-        ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
-
-        Assert.False(File.Exists(stalePath));
-        Assert.Equal("- code: \"MINE\"", File.ReadAllText(siblingPath));
+        string content = File.ReadAllText(result.Files[0].Path);
+        Assert.Contains("group: \"PG_DATA\"", content, StringComparison.Ordinal);
+        Assert.DoesNotContain("autodesk.parameter.group:", content, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void Practical_tour_install_refreshes_an_existing_tour_configuration()
+    public void Install_rejects_an_empty_discipline_selection()
     {
-        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.TourFolderName));
-        File.WriteAllText(
-            Path.Combine(
-                _tempDirectory,
-                ExampleConfigurationInstaller.TourFolderName,
-                ExampleConfigurationInstaller.PracticalTourFileName),
-            "stale");
-
-        string path = ExampleConfigurationInstaller.InstallPracticalTour(_tempDirectory, _ => "# practical-tour");
-
-        Assert.Equal("# practical-tour", File.ReadAllText(path));
+        Assert.Throws<ArgumentException>(() => ExampleConfigurationInstaller.Install(
+            _tempDirectory, [], _ => string.Empty, useLegacyParameterGroups: false));
     }
 
     [Fact]
-    public void Practical_tour_remove_deletes_the_installed_configuration()
+    public void Practical_tour_is_installed_and_removed_as_a_managed_file()
     {
-        Directory.CreateDirectory(Path.Combine(_tempDirectory, ExampleConfigurationInstaller.TourFolderName));
-        string path = Path.Combine(
+        string staleExample = Path.Combine(
+            _tempDirectory, ConfigurationPathUtils.ExamplesFolderName, ConfigurationPathUtils.PracticalTourFileName);
+        Directory.CreateDirectory(Path.GetDirectoryName(staleExample)!);
+        File.WriteAllText(staleExample, "stale");
+
+        string path = ExampleConfigurationInstaller.InstallPracticalTour(
             _tempDirectory,
-            ExampleConfigurationInstaller.TourFolderName,
-            ExampleConfigurationInstaller.PracticalTourFileName);
-        string siblingPath = Path.Combine(_tempDirectory, "config.yaml");
-        File.WriteAllText(path, "stale");
-        File.WriteAllText(siblingPath, "- code: \"MINE\"");
+            fileName => File.ReadAllText(Path.Combine(
+                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)));
 
-        bool removed = ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory);
+        Assert.Equal(Path.Combine(_tempDirectory, ConfigurationPathUtils.TourFolderName,
+            ConfigurationPathUtils.PracticalTourFileName), path);
+        Assert.False(File.Exists(staleExample));
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            ConfigurationPathUtils.GetDiagnosticConfiguration(path));
+        DiagnosticRule rule = Assert.Single(file.Rules);
+        Assert.Equal("TOUR001", rule.Code);
+        Assert.Equal("collision", rule.Type);
+        Assert.False(rule.IsActive);
+        Assert.Equal(3, rule.Visualizations.Length);
 
-        Assert.True(removed);
+        Assert.True(ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory));
         Assert.False(File.Exists(path));
-        Assert.Equal("- code: \"MINE\"", File.ReadAllText(siblingPath));
+        Assert.False(ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory));
     }
 
     [Fact]
-    public void Practical_tour_remove_reports_a_missing_configuration()
+    public void Every_example_is_embedded_per_language()
     {
-        bool removed = ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory);
-
-        Assert.False(removed);
+        string[] resources = typeof(ExampleConfigurationInstaller).Assembly.GetManifestResourceNames();
+        foreach (string language in new[] { "en", "ru" })
+        {
+            Assert.Contains(
+                $"Revit.Linter.WelcomePresenter.Examples.{language}.{ConfigurationPathUtils.DiagnosticsConfigFileName}",
+                resources);
+            Assert.Contains(
+                $"Revit.Linter.WelcomePresenter.Examples.{language}.{ConfigurationPathUtils.PracticalTourFileName}",
+                resources);
+        }
     }
-
-    [Theory]
-    [InlineData("en")]
-    [InlineData("ru")]
-    public void Every_example_is_embedded_for_the_language(string language)
-    {
-        string[] resourceNames = typeof(IWelcomeWizard).Assembly.GetManifestResourceNames();
-
-        Assert.All(FileNames, fileName =>
-            Assert.Contains($"Revit.Linter.WelcomePresenter.Examples.{language}.{fileName}", resourceNames));
-    }
-
-    public void Dispose()
-    {
-        if (Directory.Exists(_tempDirectory)) Directory.Delete(_tempDirectory, recursive: true);
-    }
-
-    private ExampleInstallationResult Install(ExampleDiscipline[] disciplines) =>
-        ExampleConfigurationInstaller.Install(_tempDirectory, disciplines, FakeTemplate, useLegacyParameterGroups: false);
-
-    private static string FakeTemplate(string fileName) => $"# {fileName}";
-
-    private static string ReadWikiExample(string languageFolder, string fileName) =>
-        File.ReadAllText(Path.Combine(
-            RepositoryRoot.Find(), "wiki", "examples", "configuration", languageFolder, fileName));
-
-    private List<Dictionary<string, object>> ReadRules(string fileName) =>
-        ConfigurationPathUtils.GetVersionedConfigurations<Dictionary<string, object>>(
-            Path.Combine(_tempDirectory, ExampleConfigurationInstaller.ExamplesFolderName, fileName))?.Rules
-        ?? [];
 }

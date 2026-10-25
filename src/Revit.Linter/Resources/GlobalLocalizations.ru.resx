@@ -145,7 +145,13 @@
     <value>Некоторые правила конфигурации некорректны и пропущены; остальные правила используются. Исправьте файл и сохраните его, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
   </data>
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
-    <value>Конфигурацию пользовательских диагностик не удалось разобрать, поэтому она считается пустой. Исправьте config.yaml и сохраните файл, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
+    <value>Конфигурацию диагностик не удалось разобрать, поэтому она считается пустой. Исправьте diagnostics.config.yaml и сохраните файл, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="configurationMigration_notice_message" xml:space="preserve">
+    <value>Revit Linter теперь читает один файл diagnostics.config.yaml. Старые файлы config.yaml, collision.config.yaml и parameter-element.config.yaml больше не читаются и оставлены без изменений. Открыть инструкцию по миграции, чтобы перенести правила?</value>
+  </data>
+  <data name="configurationMigration_notice_openGuide" xml:space="preserve">
+    <value>Открыть инструкцию</value>
   </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">
     <value>Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit.</value>

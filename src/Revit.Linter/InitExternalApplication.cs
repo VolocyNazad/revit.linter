@@ -111,7 +111,22 @@ internal sealed class InitExternalApplication : ExternalApplication
         Logger.LogInformation("Revit.Linter started (Revit {Version})", Application.ControlledApplication.VersionNumber);
 
         ScheduleWelcomeWizard();
+        ScheduleConfigurationMigrationNotice();
     }
+
+    /// <summary>
+    /// Queues the one-time configuration migration notice for the first Idling event.
+    /// </summary>
+    /// <remarks>
+    /// The notice is shown only when a legacy configuration file exists and was not reported for this
+    /// Revit version. A failure is logged inside the notice service and never affects add-in startup.
+    /// </remarks>
+    private static void ScheduleConfigurationMigrationNotice() =>
+        _ = GetService<RevitIdlingScheduler>().RunAsync(application =>
+        {
+            _ = application;
+            _ = GetService<ConfigurationMigrationNotice>().ShowIfNeededAsync();
+        });
 
     /// <summary>
     /// Queues the first-run welcome wizard for the first Idling event, when the Revit main window exists.

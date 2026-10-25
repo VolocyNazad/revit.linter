@@ -12,7 +12,7 @@ This example reports doors whose **Mark** parameter is empty.
 
 On the Diagnostics pane, press [[Diagnostic configuration path button|Open configuration folder]]. Each Revit version has its own folder.
 
-Create `config.yaml`, or open the existing file. If you loaded the welcome examples, use them as a starting point instead of replacing the file.
+Create `diagnostics.config.yaml`, or open the existing file. If you loaded the welcome examples, use them as a starting point instead of replacing the file.
 
 ## 2. Add the rule
 

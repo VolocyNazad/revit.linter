@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
@@ -121,17 +122,33 @@ public sealed class DiagnosticServiceTests : DiagnosticTestBase
     }
 
     [Test]
-    public async Task Duplicate_document_diagnostic_identity_is_rejected_by_catalog()
+    public async Task Hidden_document_diagnostic_is_not_executed_and_does_not_report()
+    {
+        DocumentDiagnosticId id = CreateDocumentId("DOC004");
+        DocumentDiagnostic diagnostic = new(id, new DiagnosticFeedback(DiagnosticVerdict.NotValid));
+        ReportSender sender = new();
+        using ServiceProvider services = CreateServices(sender, documentDiagnostics:
+            [CreateDocumentRegistration(id, diagnostic, isActive: true, isHidden: true)]);
+
+        DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
+
+        await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
+        await Assert.That(diagnostic.ExecutionCount).IsEqualTo(0);
+        await Assert.That(sender.Reports).IsEmpty();
+    }
+
+    [Test]
+    public async Task Duplicate_document_diagnostic_identity_keeps_the_first_registration()
     {
         DocumentDiagnosticId id = CreateDocumentId("DOC003");
         ReportSender sender = new();
         using ServiceProvider services = CreateServices(sender, documentDiagnostics:
             [CreateDocumentRegistration(id), CreateDocumentRegistration(id)]);
 
-        Exception? exception = CaptureException(
-            () => services.GetRequiredService<IDiagnosticService>());
+        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        using IDiagnosticCatalogSnapshotLease lease = catalog.AcquireSnapshot();
 
-        await Assert.That(exception).IsTypeOf<DuplicateDiagnosticIdException>();
+        await Assert.That(lease.Snapshot.DocumentDiagnostics.Count).IsEqualTo(1);
         await Assert.That(sender.Reports).IsEmpty();
     }
 

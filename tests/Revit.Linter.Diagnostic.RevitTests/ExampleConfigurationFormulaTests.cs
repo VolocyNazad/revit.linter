@@ -1,12 +1,10 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
 using Revit.Linter.Testing;
-using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
-using ParameterRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
-using UserRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -20,39 +18,47 @@ public sealed class ExampleConfigurationFormulaTests
         ElementFilterFactory elementFilterFactory = new(NullLogger<ElementFilterFactory>.Instance, notifier);
         ElementFunctionFactory elementFunctionFactory = new(
             NullLogger<ElementFunctionFactory>.Instance, notifier);
-        foreach (UserRule rule in Read<UserRule>("config.yaml")!.Rules)
-        {
-            _ = documentFilterFactory.Create(rule.TakeDocument);
-            _ = elementFilterFactory.Create(rule.Take);
-            _ = elementFunctionFactory.Create(rule.Check, fallback: true);
-        }
 
-        foreach (CollisionRule rule in Read<CollisionRule>("collision.config.yaml")!.Rules)
-        {
-            _ = documentFilterFactory.Create(rule.TakeDocument);
-            _ = elementFilterFactory.Create(rule.Take);
-            _ = elementFilterFactory.Create(rule.AndTake);
-            _ = elementFunctionFactory.Create<object>(rule.GroupBy, string.Empty);
-        }
+        foreach (DiagnosticRule rule in Read(ConfigurationPathUtils.DiagnosticsConfigFileName))
+            Compile(rule, documentFilterFactory, elementFilterFactory, elementFunctionFactory);
 
         // The managed practical-tour configuration is a collision rule as well.
-        foreach (CollisionRule rule in Read<CollisionRule>("practical-tour.config.yaml")!.Rules)
-        {
-            _ = documentFilterFactory.Create(rule.TakeDocument);
-            _ = elementFilterFactory.Create(rule.Take);
-            _ = elementFilterFactory.Create(rule.AndTake);
-            _ = elementFunctionFactory.Create<object>(rule.GroupBy, string.Empty);
-        }
-
-        foreach (ParameterRule rule in Read<ParameterRule>("parameter-element.config.yaml")!.Rules)
-            _ = documentFilterFactory.Create(rule.Take);
+        foreach (DiagnosticRule rule in Read(ConfigurationPathUtils.PracticalTourFileName))
+            Compile(rule, documentFilterFactory, elementFilterFactory, elementFunctionFactory);
 
         await Assert.That(notifier.NotificationCount).IsEqualTo(0);
     }
 
-    private static ConfigurationFile<TRule>? Read<TRule>(string fileName) where TRule : class =>
-        ConfigurationPathUtils.GetVersionedConfigurations<TRule>(Path.Combine(RepositoryRoot.Find(),
-            "wiki", "examples", "configuration", fileName));
+    private static void Compile(
+        DiagnosticRule rule,
+        DocumentFilterFactory documentFilterFactory,
+        ElementFilterFactory elementFilterFactory,
+        ElementFunctionFactory elementFunctionFactory)
+    {
+        switch (rule.Type)
+        {
+            case "custom":
+                _ = documentFilterFactory.Create(rule.TakeDocument!);
+                _ = elementFilterFactory.Create(rule.Take!);
+                _ = elementFunctionFactory.Create(rule.Check!, fallback: true);
+                break;
+
+            case "collision":
+                _ = documentFilterFactory.Create(rule.TakeDocument!);
+                _ = elementFilterFactory.Create(rule.Take!);
+                _ = elementFilterFactory.Create(rule.AndTake!);
+                _ = elementFunctionFactory.Create<object>(rule.GroupBy!, string.Empty);
+                break;
+
+            case "parameter":
+                _ = documentFilterFactory.Create(rule.Take!);
+                break;
+        }
+    }
+
+    private static IReadOnlyList<DiagnosticRule> Read(string fileName) =>
+        ConfigurationPathUtils.GetDiagnosticConfiguration(Path.Combine(
+            RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName))?.Rules ?? [];
 
     private sealed class CountingFormulaCompilationNotifier : IFormulaCompilationNotifier
     {

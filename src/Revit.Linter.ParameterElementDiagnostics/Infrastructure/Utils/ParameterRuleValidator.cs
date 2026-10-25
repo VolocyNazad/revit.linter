@@ -1,4 +1,5 @@
 using Revit.Linter.ParameterElementDiagnostics.Models;
+using DiagnosticRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
 
 namespace Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 

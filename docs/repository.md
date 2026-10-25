@@ -71,8 +71,8 @@ shown, because a dockable pane does not have the keyboard focus on hover. View m
 `Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
 (`welcomeSettings.yml` in the settings value store), resumable practical-tour progress stored separately for
 each Revit version, and the example configuration installer. The
-installed examples are the files under `wiki/examples/configuration/` (English) and its `ru/`
-subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
+installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/` (English) and its
+`ru/` subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
 ribbon tab name, the log folder and the pane and link actions through `IWelcomeHost`. Its headless rules
 (example composition, installation without overwriting, first-run state) are covered by
 `Revit.Linter.WelcomePresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on every
@@ -87,8 +87,8 @@ takes an accent frame on the button itself, while rows, text and other surfaces 
 so their inner text never casts accent shadows. The host also brings the required pane to the foreground.
 The tour is hosted in a right-side Revit dockable pane; its registration and visibility remain host actions
 behind `IWelcomeHost`.
-Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file and clears the persisted
-`TOUR001` selection, so the user enables the check as the guided step asks. Completing the tour or
+Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where
+`TOUR001` declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or
 opting out removes the managed file, so no training configuration is left behind; starting the tour
 again reinstalls it. Its `TOUR001` diagnostic owns
 the visualizations and fix menu required by the walkthrough, carries the reserved `Tour` tag, and stays pinned
@@ -187,13 +187,13 @@ location, updater synchronization name) is owned by `ProductIdentity` in `Revit.
 (`src/Revit.Linter.Core/Abstractions/ProductIdentity.cs`). The updater and the installer compile the
 same file as a source link, so they stay independent build units without a project reference to the
 Revit API. Path composition stays with the owning module: `ConfigurationPathUtils` for user
-configurations (`Documents\Revit Linter\<year>\`, `config.yaml`, `collision.config.yaml`,
-`parameter-element.config.yaml`, `examples/`, `debug/`, `tour/`), `UpdaterPaths`
-in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\` (`logs/`, `state.json`,
-`downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the composition root for
-add-in logs (`...\\logs\\`) and the ValueStore settings directory (`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`).
-Renaming the vendor, product or repository requires editing `ProductIdentity` only; the `build/` asset
-name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
+configurations (`Documents\Revit Linter\<year>\`, `diagnostics.config.yaml`, `examples\`,
+`debug\`, `tour\`), `UpdaterPaths` in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`
+(`logs/`, `state.json`, `downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the
+composition root for add-in logs (`...\\logs\\`) and the ValueStore settings directory
+(`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`). Renaming the vendor, product or repository requires editing
+`ProductIdentity` only; the `build/` asset name `RevitLinter-<version>.msi` mirrors
+`ProductIdentity.GetMsiAssetName`.
 
 ## Technology stack
 
@@ -247,7 +247,7 @@ name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
 - `wiki/diagnostics/` contains diagnostic modules and their configuration.
 - `wiki/reference/` contains diagnostic and formula reference material.
 - `wiki/interface/` contains the UI, panes, and ribbon-button documentation.
-- `wiki/examples/` contains configuration files users can copy and edit; the welcome wizard installs the same files. Keep the discipline `section` comment markers in pairs, and keep the English files and their `ru/` counterparts in step.
+- `wiki/examples/` contains configuration files users can copy and edit; the welcome wizard installs the same single `diagnostics.config.yaml`. Keep the discipline `section` comment markers in pairs, and keep the English file and its `ru/` counterpart in step.
 - `wiki/assets/` contains static images shared by Obsidian and GitHub Wiki.
 - English pages live in the task-oriented folders directly under `wiki/`; Russian pages mirror that structure under `wiki/ru/`.
 - `wiki/Home.md` is the language selector. Every localized page links to its counterpart and declares `lang: en` or `lang: ru` in YAML front matter.

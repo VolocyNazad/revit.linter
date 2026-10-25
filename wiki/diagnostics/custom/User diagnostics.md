@@ -4,15 +4,16 @@ lang: en
 
 > Language: **English** · [[Пользовательские проверки|Русский]]
 
-The list and behavior of diagnostics is defined through a configuration file with a `.yaml` extension, which in turn must be located at the [[Diagnostic configuration path convention|path]] specified by the convention. The file must be named `config.yaml`.
+The list and behavior of diagnostics is defined through the single [[Configuration file|configuration file]] `diagnostics.config.yaml`. A user element check is a rule with `type: "custom"` and must be located at the [[Diagnostic configuration path convention|path]] specified by the convention.
 
-Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
+Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagnostics.config.yaml).
 
 ---
 
 **Example configuration:**
 ```yml
-- code: "CSTM001"
+- type: "custom"
+  code: "CSTM001"
   description: "custom"
   message: "For the element named '{elementName}' with identifier '{elementId}', the 'Марка' and/or 'Комментарии' parameters are incorrectly set. Execution time '{duration}' ms."
   isObsolete: true
@@ -40,11 +41,13 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 
 | Field                  | Type              | Input data type | Formula return type | Purpose                                                                                                            |
 | --------------------- | ---------------- | ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `type`                | string           | `string`            | `-`                              | Rule type; must be `custom` for a user element diagnostic |
 | `code`                | string           | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                     |
 | `description`         | string           | `string`            | `-`                              | Description of the diagnostic                                                                                                     |
 | `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{elementName}`, `{elementId}`, `{duration}` (default: the localized generic template) (optional) |
 | `severity`            | enum     | `string`            | `-`                              | [[Diagnostic severity\|Severity level]] <br>(default: `Message`) (optional)                           |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
+| `isHidden`            | boolean | `bool`              | `-`                              | Hides the diagnostic from the panes, the run list and the reports and stops it from running (default: `false`) (optional) |
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
 | `obsoleteDescription` | string           | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
 | `takeDocument`        | string           | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                              |
@@ -63,6 +66,6 @@ Ready-made file: [config.yaml](../../examples/configuration/config.yaml).
 - If the `isObsolete` field is not specified, it defaults to `false`
 - Tags are free text; the search and the tag matching ignore case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags
 
-> **Note:** If `config.yaml` cannot be parsed, its diagnostic list is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log.
+> **Note:** If `diagnostics.config.yaml` cannot be parsed, the whole file is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log. A structurally invalid rule is skipped on its own and the other rules stay in use.
 
 > **Note:** If `takeDocument`, `take`, or `check` cannot be compiled, the rule cannot perform that stage. The warning in the application log includes the rejected formula text so the failing expression can be identified.

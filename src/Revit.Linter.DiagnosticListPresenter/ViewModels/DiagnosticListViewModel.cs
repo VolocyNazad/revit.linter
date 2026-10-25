@@ -3,12 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.ViewModels;
-using Toolkit.ValueStore.Abstractions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -30,8 +30,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IDialog _dialog;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly ILogger<DiagnosticListViewModel> _logger;
-    private readonly IValueStore<ElementDiagnosticOverridesSettings> _elementOverrideStore;
-    private readonly IValueStore<DocumentDiagnosticOverridesSettings> _documentOverrideStore;
+    private readonly IDiagnosticConfigurationWriter _configurationWriter;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
@@ -231,9 +230,9 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
         try
         {
-            _elementOverrideStore.Update(settings => settings.Overrides.Clear());
-            _documentOverrideStore.Update(settings => settings.Overrides.Clear());
-            _logger.LogInformation("Diagnostic settings were reset to rule defaults");
+            _configurationWriter.ResetBuiltInOverrides();
+            _diagnosticCatalog.Refresh();
+            _logger.LogInformation("Diagnostic settings were reset to their defaults");
         }
         catch (Exception exception)
         {
@@ -246,41 +245,22 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     #endregion
 
-    private void UpdateIsActive(
+    private static void UpdateIsActive(
         IEnumerable<DiagnosticItemViewModel> source,
         Func<bool, bool> transform)
     {
         var items = source.ToArray();
-        var elements = items.Where(item => item.TargetType == TargetType.Element).ToArray();
-        var documents = items.Where(item => item.TargetType == TargetType.Document).ToArray();
-        var transitions = items
-            .Select(item => (Item: item, Before: item.IsActive))
-            .Where(transition => transform(transition.Before) != transition.Before)
-            .ToArray();
 
-        if (elements.Length > 0)
-            _elementOverrideStore.Update(settings => UpdateSettings(settings.Overrides, elements, transform));
-        if (documents.Length > 0)
-            _documentOverrideStore.Update(settings => UpdateSettings(settings.Overrides, documents, transform));
-
-        // Bulk actions change the selection without touching a checkbox, so observers
-        // would otherwise miss them. Only genuinely changed diagnostics are published.
-        foreach (var transition in transitions)
-            _activityStream.Publish(new DiagnosticSelectionChangedActivity(
-                transition.Item.Code, transform(transition.Before)));
-    }
-
-    private static void UpdateSettings(
-        IDictionary<string, DiagnosticOverrideSettings> settings,
-        IEnumerable<DiagnosticItemViewModel> items,
-        Func<bool, bool> transform)
-    {
-        foreach (var item in items)
-            settings[item.Code] = new DiagnosticOverrideSettings
-            {
-                Severity = item.Severity,
-                IsActive = transform(item.IsActive),
-            };
+        // Only genuine transitions are written and published. Each write persists the same state to the
+        // configuration file the row came from, so a bulk action over hidden rules cannot occur: hidden
+        // rows are never part of the collection.
+        foreach (DiagnosticItemViewModel item in items)
+        {
+            bool before = item.IsActive;
+            bool after = transform(before);
+            if (after != before)
+                item.IsActive = after;
+        }
     }
 
     private void InitializeCollectionView()
@@ -366,20 +346,20 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
             foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
             {
+                if (registration.State.IsHidden) continue;
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
                 viewModel.Initialize(
-                    registration.Override,
-                    registration.ConfigurationPath,
-                    () => OpenDocumentation(registration.Override.Identity.Code));
+                    registration,
+                    () => OpenDocumentation(registration.Identity.Code));
                 items.Add(viewModel);
             }
             foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
             {
+                if (registration.State.IsHidden) continue;
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
                 viewModel.Initialize(
-                    registration.Override,
-                    registration.ConfigurationPath,
-                    () => OpenDocumentation(registration.Override.Identity.Code));
+                    registration,
+                    () => OpenDocumentation(registration.Identity.Code));
                 items.Add(viewModel);
             }
 

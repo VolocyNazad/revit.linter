@@ -1,19 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
-internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStream activityStream) : ObservableObject
+internal sealed partial class DiagnosticItemViewModel(
+    IUserInterfaceActivityStream activityStream,
+    IDiagnosticConfigurationWriter configurationWriter,
+    ILogger<DiagnosticItemViewModel> logger) : ObservableObject
 {
-    private DocumentDiagnosticIdOverride? _documentOverride;
-    private ElementDiagnosticIdOverride? _elementOverride;
-    private Dispatcher? _dispatcher;
+    private DiagnosticState? _state;
+    private DiagnosticRuleType? _ruleType;
 
     public string Code { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
@@ -32,48 +35,36 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
 
     public bool IsActive
     {
-        get => _elementOverride?.IsActive ?? _documentOverride?.IsActive ?? false;
+        get => _state?.IsActive ?? false;
         set
         {
-            if (value == IsActive) return;
-            if (_elementOverride is not null) _elementOverride.IsActive = value;
-            else if (_documentOverride is not null) _documentOverride.IsActive = value;
-            else return;
-
-            activityStream.Publish(new DiagnosticSelectionChangedActivity(Code, value));
+            if (_state is null || value == _state.IsActive) return;
+            WriteState(isActive: value);
         }
     }
 
     public DiagnosticSeverity Severity
     {
-        get => _elementOverride?.Severity ?? _documentOverride?.Severity ?? default;
+        get => _state?.Severity ?? default;
         set
         {
-            if (_elementOverride is not null) _elementOverride.Severity = value;
-            else if (_documentOverride is not null) _documentOverride.Severity = value;
+            if (_state is null || value == _state.Severity) return;
+            WriteState(severity: value);
         }
     }
 
-    public void Initialize(ElementDiagnosticIdOverride item, string? configurationPath = null, Action? openDocumentation = null)
+    public void Initialize(ElementDiagnosticRegistration registration, Action? openDocumentation = null)
     {
-        _dispatcher = Dispatcher.CurrentDispatcher;
-        _elementOverride = item;
         TargetType = TargetType.Element;
-        Initialize(item.Identity);
-        ConfigurationPath = configurationPath;
-        OpenDocumentationDelegate = openDocumentation;
-        item.Changed += Override_Changed;
+        Initialize(registration.Identity, registration.State, registration.RuleType,
+            registration.ConfigurationPath, openDocumentation);
     }
 
-    public void Initialize(DocumentDiagnosticIdOverride item, string? configurationPath = null, Action? openDocumentation = null)
+    public void Initialize(DocumentDiagnosticRegistration registration, Action? openDocumentation = null)
     {
-        _dispatcher = Dispatcher.CurrentDispatcher;
-        _documentOverride = item;
         TargetType = TargetType.Document;
-        Initialize(item.Identity);
-        ConfigurationPath = configurationPath;
-        OpenDocumentationDelegate = openDocumentation;
-        item.Changed += Override_Changed;
+        Initialize(registration.Identity, registration.State, registration.RuleType,
+            registration.ConfigurationPath, openDocumentation);
     }
 
     [RelayCommand(CanExecute = nameof(HasConfiguration))]
@@ -95,8 +86,15 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
     [RelayCommand]
     private void OpenDocumentation() => OpenDocumentationDelegate?.Invoke();
 
-    private void Initialize(IDiagnosticIdentity identity)
+    private void Initialize(
+        IDiagnosticIdentity identity,
+        DiagnosticState state,
+        DiagnosticRuleType? ruleType,
+        string? configurationPath,
+        Action? openDocumentation)
     {
+        _state = state;
+        _ruleType = ruleType;
         Code = identity.Code;
         Description = identity.Description;
         IsObsolete = identity.IsObsolete;
@@ -104,26 +102,46 @@ internal sealed partial class DiagnosticItemViewModel(IUserInterfaceActivityStre
         IsDebug = identity.SystemTags.Contains(DiagnosticTags.Debug);
         ObsoleteDescription = identity.ObsoleteDescription;
         Tags = identity.Tags;
+        ConfigurationPath = configurationPath;
+        OpenDocumentationDelegate = openDocumentation;
     }
 
-    private void Override_Changed(object? sender, DiagnosticOverrideChangedEventArgs args)
+    private void WriteState(bool? isActive = null, DiagnosticSeverity? severity = null)
     {
-        Dispatcher? dispatcher = _dispatcher;
-        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
-        if (!dispatcher.CheckAccess())
+        if (_state is null || ConfigurationPath is null) return;
+
+        bool nextIsActive = isActive ?? _state.IsActive;
+        DiagnosticSeverity nextSeverity = severity ?? _state.Severity;
+        try
         {
-            _ = dispatcher.InvokeAsync(() => NotifyChanges(args));
+            configurationWriter.UpdateState(
+                ConfigurationPath,
+                Code,
+                _ruleType ?? DiagnosticRuleType.BuiltIn,
+                nextIsActive,
+                nextSeverity,
+                _state.IsHidden);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(
+                exception,
+                "Failed to persist the state of diagnostic {DiagnosticCode} to {ConfigurationPath}",
+                Code, ConfigurationPath);
             return;
         }
 
-        NotifyChanges(args);
-    }
-
-    private void NotifyChanges(DiagnosticOverrideChangedEventArgs args)
-    {
-        if (args.Previous.IsActive != args.Current.IsActive)
+        if (_state.IsActive != nextIsActive)
+        {
+            _state.IsActive = nextIsActive;
             OnPropertyChanged(nameof(IsActive));
-        if (args.Previous.Severity != args.Current.Severity)
+            activityStream.Publish(new DiagnosticSelectionChangedActivity(Code, nextIsActive));
+        }
+
+        if (_state.Severity != nextSeverity)
+        {
+            _state.Severity = nextSeverity;
             OnPropertyChanged(nameof(Severity));
+        }
     }
 }

@@ -22,13 +22,8 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<IGetElementGeometryService, GetElementGeometryService>()
                 .AddSingleton<IGetElementBoundingBoxService, GetElementBoundingBoxService>()
                 .AddSingleton<IGetConnectedElementIdsService, GetConnectedElementIdsService>()
-                .AddSingleton<CollisionDiagnosticConfigurationErrorState>()
-                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
-                    provider.GetRequiredService<CollisionDiagnosticConfigurationErrorState>())
                 .AddSingleton<CollisionDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
-                    provider.GetRequiredService<CollisionDiagnosticRegistrationProvider>())
-                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
                     provider.GetRequiredService<CollisionDiagnosticRegistrationProvider>());
             return services;
         }

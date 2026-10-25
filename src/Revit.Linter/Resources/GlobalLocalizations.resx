@@ -145,7 +145,13 @@
     <value>Some configuration rules are invalid and were skipped; the other rules are in use. Fix the file and save it to reload the rules.&#xA;&#xA;{0}</value>
   </data>
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
-    <value>The user diagnostic configuration could not be parsed and is being treated as empty. Fix config.yaml and save it to reload the rules.&#xA;&#xA;{0}</value>
+    <value>The diagnostic configuration could not be parsed and is being treated as empty. Fix diagnostics.config.yaml and save it to reload the rules.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="configurationMigration_notice_message" xml:space="preserve">
+    <value>Revit Linter now reads one diagnostics.config.yaml file. The old config.yaml, collision.config.yaml and parameter-element.config.yaml files are no longer read and were left unchanged. Open the migration guide to move your rules?</value>
+  </data>
+  <data name="configurationMigration_notice_openGuide" xml:space="preserve">
+    <value>Open the migration guide</value>
   </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">
     <value>Formula compilation failed. Fix the configuration file and restart Revit.</value>

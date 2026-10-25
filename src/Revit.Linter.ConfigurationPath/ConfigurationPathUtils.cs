@@ -1,4 +1,4 @@
-﻿using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -11,14 +11,17 @@ namespace Revit.Linter.ConfigurationPath;
 /// </summary>
 public static class ConfigurationPathUtils
 {
-    /// <summary>Gets the user configuration file name shared by element diagnostics.</summary>
-    public const string ConfigFileName = "config.yaml";
+    /// <summary>Gets the single diagnostic configuration file name used by the current format.</summary>
+    public const string DiagnosticsConfigFileName = "diagnostics.config.yaml";
 
-    /// <summary>Gets the user configuration file name for collision diagnostics.</summary>
-    public const string CollisionConfigFileName = "collision.config.yaml";
+    /// <summary>Gets the legacy element diagnostic configuration file name, read only to detect an unmigrated folder.</summary>
+    public const string LegacyConfigFileName = "config.yaml";
 
-    /// <summary>Gets the user configuration file name for project-parameter diagnostics.</summary>
-    public const string ParameterElementConfigFileName = "parameter-element.config.yaml";
+    /// <summary>Gets the legacy collision configuration file name, read only to detect an unmigrated folder.</summary>
+    public const string LegacyCollisionConfigFileName = "collision.config.yaml";
+
+    /// <summary>Gets the legacy project-parameter configuration file name, read only to detect an unmigrated folder.</summary>
+    public const string LegacyParameterElementConfigFileName = "parameter-element.config.yaml";
 
     /// <summary>Gets the managed practical-tour configuration file name.</summary>
     public const string PracticalTourFileName = "practical-tour.config.yaml";
@@ -35,6 +38,7 @@ public static class ConfigurationPathUtils
     /// unlike the examples folder, its files are never installed by the product.
     /// </remarks>
     public const string DebugFolderName = "debug";
+
     private static int _revitVersion =
 #if IS2021
     2021;
@@ -68,47 +72,75 @@ public static class ConfigurationPathUtils
         _revitVersion.ToString()
     );
 
-    /// <summary>Gets the main user configuration file path for the current Revit version.</summary>
-    public static string ConfigPath => Path.Combine(Directory, ConfigFileName);
+    /// <summary>Gets the top-level user configuration file path for the current Revit version.</summary>
+    public static string ConfigPath => Path.Combine(Directory, DiagnosticsConfigFileName);
 
-    /// <summary>Gets the example user configuration file path for the current Revit version.</summary>
-    public static string ExampleConfigPath => Path.Combine(Directory, ExamplesFolderName, ConfigFileName);
+    /// <summary>Gets the example configuration file path for the current Revit version.</summary>
+    public static string ExampleConfigPath => Path.Combine(Directory, ExamplesFolderName, DiagnosticsConfigFileName);
 
-    /// <summary>Gets the debug user configuration file path for the current Revit version.</summary>
-    public static string DebugConfigPath => Path.Combine(Directory, DebugFolderName, ConfigFileName);
+    /// <summary>Gets the debug configuration file path for the current Revit version.</summary>
+    public static string DebugConfigPath => Path.Combine(Directory, DebugFolderName, DiagnosticsConfigFileName);
 
     /// <summary>Gets the managed practical-tour configuration file path.</summary>
     public static string PracticalTourConfigPath =>
         Path.Combine(Directory, TourFolderName, PracticalTourFileName);
 
-    /// <summary>Gets the collision configuration file path for the current Revit version.</summary>
-    public static string CollisionConfigPath => Path.Combine(Directory, CollisionConfigFileName);
+    /// <summary>Gets the legacy element configuration file path, used only to detect an unmigrated folder.</summary>
+    public static string LegacyConfigPath => Path.Combine(Directory, LegacyConfigFileName);
 
-    /// <summary>Gets the example collision configuration file path.</summary>
-    public static string ExampleCollisionConfigPath =>
-        Path.Combine(Directory, ExamplesFolderName, CollisionConfigFileName);
+    /// <summary>Gets the legacy collision configuration file path, used only to detect an unmigrated folder.</summary>
+    public static string LegacyCollisionConfigPath => Path.Combine(Directory, LegacyCollisionConfigFileName);
 
-    /// <summary>Gets the debug collision configuration file path.</summary>
-    public static string DebugCollisionConfigPath =>
-        Path.Combine(Directory, DebugFolderName, CollisionConfigFileName);
+    /// <summary>Gets the legacy project-parameter configuration file path, used only to detect an unmigrated folder.</summary>
+    public static string LegacyParameterElementConfigPath =>
+        Path.Combine(Directory, LegacyParameterElementConfigFileName);
 
-    /// <summary>Gets the project-parameter configuration file path.</summary>
-    public static string ParameterElementConfigPath => Path.Combine(Directory, ParameterElementConfigFileName);
+    /// <summary>Gets the legacy configuration files whose presence means the user has not migrated yet.</summary>
+    public static IReadOnlyList<string> LegacyConfigurationPaths { get; } =
+    [
+        LegacyConfigPath,
+        LegacyCollisionConfigPath,
+        LegacyParameterElementConfigPath,
+        Path.Combine(Directory, ExamplesFolderName, LegacyConfigFileName),
+        Path.Combine(Directory, ExamplesFolderName, LegacyCollisionConfigFileName),
+        Path.Combine(Directory, ExamplesFolderName, LegacyParameterElementConfigFileName),
+        Path.Combine(Directory, DebugFolderName, LegacyConfigFileName),
+        Path.Combine(Directory, DebugFolderName, LegacyCollisionConfigFileName),
+        Path.Combine(Directory, DebugFolderName, LegacyParameterElementConfigFileName),
+    ];
 
-    /// <summary>Gets the example project-parameter configuration file path.</summary>
-    public static string ExampleParameterElementConfigPath =>
-        Path.Combine(Directory, ExamplesFolderName, ParameterElementConfigFileName);
+    /// <summary>
+    /// Gets the header written into a newly created configuration file.
+    /// </summary>
+    /// <remarks>
+    /// The comments explain the format to a user who opens the file for the first time, so the product
+    /// never creates an unexplained empty file.
+    /// </remarks>
+    public const string ConfigurationHeader = """
+        # Revit Linter diagnostics configuration (format version 2).
+        # This single file holds every configured check. The "type" field selects the module:
+        #   custom    - a user-defined element check;
+        #   collision - a check that compares elements with each other;
+        #   parameter - a project-parameter check;
+        #   builtIn   - an override of a check that ships with the product. Such an entry may
+        #               contain only code, isActive, severity and isHidden.
+        #
+        # Settings changed in the Diagnostics pane are written back to this file; comments and
+        # the order of the rules are preserved. A rule with isHidden: true is not shown in the
+        # interface, does not run and does not appear in reports.
+        #
+        # File format version for compatibility checks.
 
-    /// <summary>Gets the debug project-parameter configuration file path.</summary>
-    public static string DebugParameterElementConfigPath =>
-        Path.Combine(Directory, DebugFolderName, ParameterElementConfigFileName);
+        version: 2
+        rules: []
+        """;
 
     /// <summary>Gets the diagnostic configuration file format version this product reads.</summary>
     /// <remarks>
-    /// Diagnostic registration providers refuse files with a newer version: such a file was written
-    /// for a newer product whose rule schema this product may not understand.
+    /// Configuration files are versioned so that an older product never tries to interpret a file written
+    /// for a newer one. Version 2 is the single-file format with a per-rule <c>type</c> discriminator.
     /// </remarks>
-    public const int SupportedConfigurationVersion = 1;
+    public const int SupportedConfigurationVersion = 2;
 
     // DeserializerBuilder builds the type graph via reflection: build once and reuse.
     // The built deserializer is used only for reading configuration files.
@@ -117,106 +149,50 @@ public static class ConfigurationPathUtils
         .Build();
 
     /// <summary>
-    /// Creates the parent directory and an empty file when the specified configuration file does not exist.
+    /// Creates the parent directory and a configuration file with the format header when the file does not exist.
     /// </summary>
     /// <param name="path">The configuration file path.</param>
     /// <exception cref="T:System.InvalidOperationException"><paramref name="path"/> does not contain a directory.</exception>
-    public static void EnsureFileExists(string path)
+    public static void EnsureConfigurationFile(string path)
     {
         string? directoryPath = Path.GetDirectoryName(path)
             ?? throw new InvalidOperationException("Diagnostic configuration file not found.");
         System.IO.Directory.CreateDirectory(directoryPath);
 
         if (!File.Exists(path))
-            File.WriteAllText(path, string.Empty);
-    }
-
-    /// <summary>
-    /// Reads and deserializes a YAML configuration file using camel-case member names.
-    /// </summary>
-    /// <typeparam name="T">The reference type represented by the configuration file.</typeparam>
-    /// <param name="configPath">The configuration file path.</param>
-    /// <returns>The deserialized configuration, or <see langword="null"/> when the file is empty.</returns>
-    /// <remarks>A missing file is created before it is read.</remarks>
-    public static T? GetConfigurations<T>(string configPath) where T : class
-    {
-        EnsureFileExists(configPath);
-        string configContent = File.ReadAllText(configPath);
-        if (string.IsNullOrEmpty(configContent)) return null;
-        T? rules = ConfigurationDeserializer.Deserialize<T>(configContent);
-        return rules;
+            File.WriteAllText(path, ConfigurationHeader);
     }
 
     /// <summary>
     /// Reads a diagnostic configuration file with its format metadata.
     /// </summary>
-    /// <typeparam name="TRule">The rule type of one diagnostic module.</typeparam>
-    /// <param name="configPath">The configuration file path.</param>
-    /// <returns>
-    /// The enveloped file, or a version 0 file when the content is a legacy bare rule list;
-    /// <see langword="null"/> when the file is empty.
-    /// </returns>
-    /// <remarks>A missing file is created before it is read.</remarks>
-    public static ConfigurationFile<TRule>? GetVersionedConfigurations<TRule>(string configPath)
-        where TRule : class
+    /// <param name="path">The configuration file path.</param>
+    /// <returns>The parsed file, or <see langword="null"/> when the file is missing or empty.</returns>
+    /// <remarks>
+    /// The format version is returned as written; the caller decides whether this product supports it.
+    /// A file that is not valid YAML throws <see cref="YamlException"/>.
+    /// </remarks>
+    public static DiagnosticConfigurationFile? GetDiagnosticConfiguration(string path)
     {
-        EnsureFileExists(configPath);
-        string configContent = File.ReadAllText(configPath);
-        if (string.IsNullOrEmpty(configContent)) return null;
-        try
-        {
-            return ConfigurationDeserializer.Deserialize<ConfigurationFile<TRule>>(configContent);
-        }
-        catch (YamlException)
-        {
-            // Legacy files predate the envelope and carry a bare rule list.
-            List<TRule>? rules = ConfigurationDeserializer.Deserialize<List<TRule>>(configContent);
-            if (rules is null) return null;
-            return new ConfigurationFile<TRule> { Version = 0, Rules = rules };
-        }
+        if (!File.Exists(path)) return null;
+        string configContent = File.ReadAllText(path);
+        if (string.IsNullOrWhiteSpace(configContent)) return null;
+        return ConfigurationDeserializer.Deserialize<DiagnosticConfigurationFile>(configContent);
     }
 
     /// <summary>
-    /// Attempts to read a diagnostic configuration file with its format metadata
-    /// and converts YAML parsing failures into a failed result.
+    /// Attempts to read a diagnostic configuration file and converts YAML parsing failures into a failed result.
     /// </summary>
-    /// <typeparam name="TRule">The rule type of one diagnostic module.</typeparam>
-    /// <param name="configPath">The configuration file path.</param>
-    /// <param name="configuration">The enveloped configuration, or <see langword="null"/> when the file is empty or invalid.</param>
-    /// <param name="error">The YAML parsing error when reading failed; otherwise <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> when the file was read successfully; otherwise <see langword="false"/>.</returns>
-    public static bool TryGetVersionedConfigurations<TRule>(
-        string configPath, out ConfigurationFile<TRule>? configuration, out Exception? error)
-        where TRule : class
+    /// <param name="path">The configuration file path.</param>
+    /// <param name="configuration">The parsed file, or <see langword="null"/> when the file is missing or empty.</param>
+    /// <param name="error">The YAML parsing error when reading failed; otherwise, <see langword="null"/>.</param>
+    /// <returns><see langword="true"/> when the file was read successfully; otherwise, <see langword="false"/>.</returns>
+    public static bool TryGetDiagnosticConfiguration(
+        string path, out DiagnosticConfigurationFile? configuration, out Exception? error)
     {
         try
         {
-            configuration = GetVersionedConfigurations<TRule>(configPath);
-            error = null;
-            return true;
-        }
-        catch (YamlException exception)
-        {
-            configuration = null;
-            error = exception;
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Attempts to read a YAML configuration and converts YAML parsing failures into a failed result.
-    /// </summary>
-    /// <typeparam name="T">The reference type represented by the configuration file.</typeparam>
-    /// <param name="configPath">The configuration file path.</param>
-    /// <param name="configuration">The deserialized configuration, or <see langword="null"/> when the file is empty or invalid.</param>
-    /// <param name="error">The YAML parsing error when reading failed; otherwise <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> when the file was read successfully; otherwise <see langword="false"/>.</returns>
-    public static bool TryGetConfigurations<T>(
-        string configPath, out T? configuration, out Exception? error) where T : class
-    {
-        try
-        {
-            configuration = GetConfigurations<T>(configPath);
+            configuration = GetDiagnosticConfiguration(path);
             error = null;
             return true;
         }

@@ -23,7 +23,7 @@ This document records stable architectural rules. Implementation details belong 
 
 - Views contain layout and view-only mechanics. View models own state and commands; application and diagnostic behavior lives in services.
 - Presenter modules publish completed, product-level UI facts through `IUserInterfaceActivityStream`; event types describe the action and result without naming an observer. Optional observers such as onboarding translate those facts in their own module. Observer failures are isolated by the host stream and never change the originating command's result.
-- The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup refreshes the managed `tour/practical-tour.config.yaml` file and clears the persisted selection override, so the user enables the check as the guided step asks. Completing the tour or opting out removes the managed file. Step advancement itself stays purely observational — only observed UI facts move the tour state machine, and resumed tours keep the current selection. Tour rules carry the reserved `Tour` tag and are sorted above the rest of the diagnostics list.
+- The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where the rule declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or opting out removes the managed file. Step advancement itself stays purely observational — only observed UI facts move the tour state machine, and resumed tours keep the current selection. Tour rules carry the reserved `Tour` tag and are sorted above the rest of the diagnostics list.
 - Reusable WPF mechanics live in `Revit.Linter.Behaviors`. Prefer bindings, converters, commands and behaviors over event handlers.
 - `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
 - View-model bases shared by presenter modules (`InitializableObservableObject`, `RevitInteractionViewModel`) and `BindingProxy` live in `Revit.Linter.Presentation`; a presenter module does not keep its own copy.
@@ -39,6 +39,17 @@ This document records stable architectural rules. Implementation details belong 
   keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;
   the application shows them once per distinct description. Validation logic stays free of Revit API types
   so it is covered by headless tests; Revit-version knowledge is passed in from the compatibility boundary.
+- Every diagnostic module reads the same `diagnostics.config.yaml` through
+  `IDiagnosticConfigurationService`; the file is parsed once per catalog revision and each rule is dispatched
+  by its `type` (`custom`, `collision`, `parameter`, `builtIn`). Providers do not watch their own files.
+- The effective state of a diagnostic (`isActive`, `severity`, `isHidden`) lives in the configuration file.
+  The Diagnostics pane writes it back through `IDiagnosticConfigurationWriter`, which patches only the
+  affected YAML fields so comments and rule order survive. There is no separate override store.
+- Diagnoses whose `isHidden` is `true` are absent from the list, the run selection and the reports, and are
+  not executed; `isHidden` is stronger than `isActive`. The reset command removes built-in overrides and
+  `isHidden` fields but never rewrites the user's own `isActive`/`severity` values.
+- The first rule with a duplicate code and target kind wins; a configured rule never overrides a built-in
+  check of the same kind. The conflict is logged, not shown as a configuration error.
 - Diagnostics read the transaction cache only through `Revit.Linter.DocumentQueries`. Queries that several
   modules need (all elements, elements of a class, element types, element geometry) are methods of
   `IDocumentQueryService`, so one query has exactly one key. A module-specific derived value uses
@@ -46,8 +57,8 @@ This document records stable architectural rules. Implementation details belong 
   the document, and the view when the result depends on it; a key never relies on an element identifier or a
   document title alone.
 - Diagnostic codes and serialized configuration contracts are stable user-facing identifiers. Change them only with an explicit migration or compatibility decision.
-- A diagnostic identity carries free-text tags used only to find the diagnostic in the panes and to label it in reports; a rule's `tags` list is additive and does not change the file format version. The product also adds reserved system tags the user cannot set: `BuiltIn` marks a check that ships with the product, `Custom`, `Collision` and `ParameterProject` name the module that loaded a configured rule, and `Example`, `Tour` and `Debug` state where a check came from. The document-kind tags `Project` and `Family` are ordinary tags the product sets on its built-in diagnostics; a configured rule declares them itself, because only the rule knows which document kinds it applies to. System tags are trusted and always English, so a rule tag that reuses a reserved name is dropped.
-- Diagnostic configuration files carry a `version` file format envelope around the rule list (`version` plus `rules`); files without it read as legacy version 0. A file with a newer version than the running product is refused when it is loaded, so compatibility checks have a reliable signal.
+- A diagnostic identity carries free-text tags used only to find the diagnostic in the panes and to label it in reports; a rule's `tags` list is additive and does not change the file format version. The product also adds reserved system tags the user cannot set: `BuiltIn` marks a check that ships with the product, `Custom`, `Collision` and `ParameterProject` name the rule's declared `type`, and `Example`, `Tour` and `Debug` state where a check came from. The document-kind tags `Project` and `Family` are ordinary tags the product sets on its built-in diagnostics; a configured rule declares them itself, because only the rule knows which document kinds it applies to. System tags are trusted and always English, so a rule tag that reuses a reserved name is dropped.
+- Diagnostic configuration files carry a single `version` file format envelope around the rule list. Version 2 is the one-file format with a per-rule `type`; files without it are not read, and a file with a newer version than the running product is refused when it is loaded, so compatibility checks have a reliable signal. The old split files are detected only to show the one-time migration notice and are never modified.
 
 ## Element highlighting
 

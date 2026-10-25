@@ -48,7 +48,7 @@ internal sealed class DiagnosticService(
                 view is not null,
                 snapshot.DocumentDiagnostics.Count,
                 snapshot.ElementDiagnostics.Count,
-                snapshot.ElementDiagnostics.Count(registration => registration.Override.IsActive),
+                snapshot.ElementDiagnostics.Count(registration => registration.State.IsEnabled),
                 stopwatch.ElapsedMilliseconds);
             bool documentDiagnosticsCompleted = RunDocumentDiagnostics(snapshot, document, logDurations: true);
             Stopwatch collectionStopwatch = Stopwatch.StartNew();
@@ -114,7 +114,7 @@ internal sealed class DiagnosticService(
                 completed = false;
             }
 
-            if (logDurations && registration.Override.IsActive)
+            if (logDurations && registration.State.IsEnabled)
                 logger.Log(
                     GetDurationLogLevel(stopwatch.ElapsedMilliseconds),
                     "Document diagnostic {DiagnosticCode} finished in {ElapsedMilliseconds} ms",
@@ -127,7 +127,7 @@ internal sealed class DiagnosticService(
     private void RunDocumentDiagnostic(
         DocumentDiagnosticRegistration registration, Document document, IIgnoredElements ignoredElements)
     {
-        if (!registration.Override.IsActive || !registration.Filter.IsRelevantFor(document)) return;
+        if (!registration.State.IsEnabled || !registration.Filter.IsRelevantFor(document)) return;
         if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
 
         (DiagnosticFeedback[] feedbacks, double duration) = Measure(
@@ -141,7 +141,7 @@ internal sealed class DiagnosticService(
             DocumentDiagnosticId identity = registration.Identity;
             diagnosticReportSender.Send(new DiagnosticReport(
                 identity.Code,
-                registration.Override.Severity,
+                registration.State.Severity,
                 document,
                 new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
                     feedback, ("duration", duration), ("documentTitle", document.Title))),
@@ -217,7 +217,7 @@ internal sealed class DiagnosticService(
             // Checking covers the diagnostic itself, and publishing covers handing each finding to the
             // report, which updates the report view. The ignore list and the rule filter are timed apart
             // because both run for every element of the document, whichever diagnostic is active.
-            if (logDurations && registration.Override.IsActive)
+            if (logDurations && registration.State.IsEnabled)
                 logger.Log(
                     GetDurationLogLevel(stopwatch.ElapsedMilliseconds),
                     "Element diagnostic {DiagnosticCode} finished in {ElapsedMilliseconds} ms: {VisitedCount} elements visited, {IgnoredCount} ignored, {CheckedCount} checked, {FindingCount} findings; rule filter {FilterMilliseconds:F0} ms, ignore list {IgnoreMilliseconds:F0} ms, checking {CheckMilliseconds:F0} ms, publishing findings {PublishMilliseconds:F0} ms",
@@ -247,7 +247,7 @@ internal sealed class DiagnosticService(
         ElementDiagnosticRunStatistics statistics,
         List<DiagnosticReport>? batch)
     {
-        if (!registration.Override.IsActive || !registration.DocumentFilter.IsRelevantFor(document)) return;
+        if (!registration.State.IsEnabled || !registration.DocumentFilter.IsRelevantFor(document)) return;
 
         // A document-level ignore suppresses the whole diagnostic in this document, so its elements
         // are not even visited.
@@ -284,7 +284,7 @@ internal sealed class DiagnosticService(
             ElementDiagnosticId identity = registration.Identity;
             DiagnosticReport report = new(
                 identity.Code,
-                registration.Override.Severity,
+                registration.State.Severity,
                 document,
                 new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
                     feedback,

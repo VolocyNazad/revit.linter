@@ -13,12 +13,19 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
     internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
     internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
     internal const string PracticalTourFileName = ConfigurationPathUtils.PracticalTourFileName;
+    private const string ExampleFileName = ConfigurationPathUtils.DiagnosticsConfigFileName;
+
+    // Obsolete example files are removed from the product-owned examples folder so the user
+    // does not keep a file the product no longer reads.
+    private static readonly string[] ObsoleteFileNames =
+    [
+        ConfigurationPathUtils.LegacyConfigFileName,
+        ConfigurationPathUtils.LegacyCollisionConfigFileName,
+        ConfigurationPathUtils.LegacyParameterElementConfigFileName,
+    ];
 
     private const string ResourcePrefix = "Revit.Linter.WelcomePresenter.Examples.";
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
-
-    private static readonly string[] FileNames =
-        [ConfigurationPathUtils.ConfigFileName, ConfigurationPathUtils.CollisionConfigFileName, ConfigurationPathUtils.ParameterElementConfigFileName];
 
     private readonly ILogger<ExampleConfigurationInstaller> _logger;
 
@@ -36,7 +43,7 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
             ConfigurationPathUtils.RevitVersion < FirstRevitVersionWithGroupTypeIds);
 
         _logger.LogInformation(
-            "Installed example configurations for {Disciplines} into {Directory}: {Files}",
+            "Installed the example configuration for {Disciplines} into {Directory}: {Files}",
             disciplines, TargetDirectory, result.Files.Select(file => file.Path));
         return result;
     }
@@ -89,8 +96,7 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
     }
 
     /// <summary>
-    /// Installs the examples into the examples subfolder of an explicit directory
-    /// from an explicit template source. User files are never touched.
+    /// Installs the example into the examples subfolder of an explicit directory.
     /// </summary>
     /// <remarks>Separated from the Revit-version and culture lookup so it can be exercised headlessly.</remarks>
     internal static ExampleInstallationResult Install(
@@ -104,21 +110,20 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
 
         string[] sections = disciplines.Select(ToSectionName).Distinct().ToArray();
         UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
-        List<InstalledExampleFile> files = new(FileNames.Length);
 
         string examplesDirectory = Path.Combine(targetDirectory, ExamplesFolderName);
         Directory.CreateDirectory(examplesDirectory);
-        foreach (string fileName in FileNames)
+        foreach (string obsoleteFileName in ObsoleteFileNames)
         {
-            string content = ExampleConfigurationComposer.Compose(
-                readTemplate(fileName), sections, useLegacyParameterGroups);
-
-            string path = Path.Combine(examplesDirectory, fileName);
-            File.WriteAllText(path, content, encoding);
-            files.Add(new InstalledExampleFile(fileName, path));
+            string obsoletePath = Path.Combine(examplesDirectory, obsoleteFileName);
+            if (File.Exists(obsoletePath)) File.Delete(obsoletePath);
         }
 
-        return new ExampleInstallationResult(files);
+        string content = ExampleConfigurationComposer.Compose(
+            readTemplate(ExampleFileName), sections, useLegacyParameterGroups);
+        string path = Path.Combine(examplesDirectory, ExampleFileName);
+        File.WriteAllText(path, content, encoding);
+        return new ExampleInstallationResult([new InstalledExampleFile(ExampleFileName, path)]);
     }
 
     private static string ToSectionName(ExampleDiscipline discipline) => discipline switch

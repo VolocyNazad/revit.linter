@@ -4,9 +4,10 @@
 # с видимой геометрией, а не мусорные элементы с маленькой или невидимой геометрией.
 
 # Версия формата файла для проверок совместимости.
-version: 1
+version: 2
 rules:
-- code: "TOUR001"
+- type: "collision"
+  code: "TOUR001"
   description: "Практическое обучение: изучение коллизии модели"
   tags: ["Project"]
   message: "Коллизия: элемент «{elementName}» ({elementId}) пересекает элементы: {intersection.count} — «{intersection.elementNames}» ({intersection.elementIds})."

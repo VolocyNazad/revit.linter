@@ -4,15 +4,16 @@ lang: en
 
 > Language: **English** · [[Проверки параметров проекта|Русский]]
 
-The list and behavior of diagnostics is defined through a configuration file with a `.yaml` extension, which in turn must be located at the [[Diagnostic configuration path convention|path]] specified by the convention. The file must be named `parameter-element.config.yaml`.
+The list and behavior of diagnostics is defined through the single [[Configuration file|configuration file]] `diagnostics.config.yaml`. A project-parameter check is a rule with `type: "parameter"` and must be located at the [[Diagnostic configuration path convention|path]] specified by the convention.
 
-Ready-made file: [parameter-element.config.yaml](../../examples/configuration/parameter-element.config.yaml).
+Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagnostics.config.yaml).
 
 ---
 
 **Example configuration:**`
 ```yml
-- code: "PRMTR001"
+- type: "parameter"
+  code: "PRMTR001"
   description: "custom"
   message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details} \n\nExecution time '{duration}' ms."
   severity: "Message"
@@ -48,6 +49,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 
 | Field                  | Type              | Input data type | Formula return type | Purpose                                                                                                            |
 | --------------------- | ---------------- | ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `type`                | string           | `string`            | `-`                              | Rule type; must be `parameter` for a project-parameter diagnostic |
 | `code`                | string           | `string`            | `-`                              | Unique identifier of the diagnostic                                                                                     |
 | `description`         | string           | `string`            | `-`                              | Description of the diagnostic                                                                                                     |
 | `message`             | string           | `string`            | `-`                              | Error message template. Available variables: `{documentTitle}`, `{details}`, `{duration}` (default: the localized generic template) (optional) |
@@ -55,6 +57,7 @@ Ready-made file: [parameter-element.config.yaml](../../examples/configuration/pa
 | `isObsolete`          | boolean | `bool`              | `-`                              | [[Obsolete diagnostic\|Whether the diagnostic is obsolete]] (default: `false`) (optional)                                |
 | `obsoleteDescription` | string           | `string`            | `-`                              | [[Obsolete diagnostic\|Description of the reason for obsolescence]] (shown when `isObsolete: true`) (optional) |
 | `isActive`            | boolean | `bool`              | `-`                              | Whether the diagnostic is active (default: `true`) (optional)                                                           |
+| `isHidden`            | boolean | `bool`              | `-`                              | Hides the diagnostic from the panes, the run list and the reports and stops it from running (default: `false`) (optional) |
 | `take`                | string           | `string`            | `bool`                           | [[Formula syntax\|Document filtering formula]]                                                              |
 | `parameters`          | list           | `array`             | `-`                              | The list of project parameters to check                                                                                |
 | `tags`                | sequence of strings | `string`         | `-`                              | Tags used to find the diagnostic in the panes and shown in the reports (default: none) (optional)                       |

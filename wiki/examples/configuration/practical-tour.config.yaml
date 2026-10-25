@@ -4,9 +4,10 @@
 # to work with instead of junk elements with small or invisible geometry.
 
 # File format version for compatibility checks.
-version: 1
+version: 2
 rules:
-- code: "TOUR001"
+- type: "collision"
+  code: "TOUR001"
   description: "Practical tour: review a model collision"
   tags: ["Project"]
   message: "Сollision: element '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."

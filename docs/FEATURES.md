@@ -10,8 +10,8 @@ This document is the concise contract for the product's current scope. Detailed 
 - Ignore a finding for the element it affects or for the whole document, review and remove the entries in the built-in **Ignore list** pane, and keep the list inside the model itself.
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
 - Export the displayed findings as a self-contained HTML report or as CSV, JSON and YAML data, including each finding's tags.
-- Configure paths, diagnostic rules, tags, formulas, filters and visualization behavior.
-- Introduce the add-in on first start with a welcome wizard that can install example configurations by discipline.
+- Configure every rule in one `diagnostics.config.yaml` per Revit version: `type` selects the module, `builtIn` entries override the activity, severity and visibility of product checks, and `isHidden` removes a diagnostic from the interface, execution and reports.
+- Introduce the add-in on first start with a welcome wizard that can install one example configuration by discipline.
 - Offer an optional observational practical tour in a dockable pane along the real workflow (model, diagnostics, findings, show, fix or ignore, export report, then export it again in another format); the tour never runs diagnostics, modifies the model, or applies fixes by itself.
 - Back the tour with a managed TOUR001 training check that is installed and refreshed on start and removed on completion or opt-out; progress and opt-out are stored separately for each Revit version and the tour resumes from the ribbon.
 - Show the tour pane only while a tour session is active; after opt-out, completion, or refusal it stays hidden instead of appearing empty.
@@ -23,6 +23,7 @@ This document is the concise contract for the product's current scope. Detailed 
 ## Compatibility contract
 
 - Serialized diagnostic codes, configuration keys and message placeholders are user-facing contracts.
+- Diagnostic configuration uses one `diagnostics.config.yaml` per Revit version with a `type` discriminator; split files from earlier versions are not read and are left untouched for the migration guide.
 - The in-document ignore list is persisted user data with its own schema version; a list written by a newer product version is read as empty instead of being reinterpreted.
 - Revit-version-specific API differences stay behind compatibility boundaries.
 - Headless logic must remain usable without a running Revit process; operations on live Revit objects use the dedicated Revit test infrastructure.

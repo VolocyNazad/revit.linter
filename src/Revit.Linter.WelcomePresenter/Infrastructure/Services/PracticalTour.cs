@@ -18,7 +18,6 @@ internal sealed class PracticalTour(
     IThemeService themeService,
     IUserInterfaceActivityStream activityStream,
     IValueStore<WelcomeSettings> settingsStore,
-    IValueStore<ElementDiagnosticOverridesSettings> elementOverrideStore,
     IWelcomeHost welcomeHost,
     IExampleConfigurationInstaller exampleConfigurationInstaller,
     PracticalTourView view,
@@ -56,11 +55,9 @@ internal sealed class PracticalTour(
 
             if (savedProgress is null)
             {
-                // A fresh tour starts with the managed check switched off so the user
-                // enables it as the guided step asks. Clearing the persisted override
-                // falls back to the configuration default and publishes no activity,
-                // so the tour cannot advance spuriously. Resumed tours keep the selection.
-                elementOverrideStore.Update(settings => settings.Overrides.Remove(DiagnosticCode));
+                // A fresh tour starts with the managed check switched off because the installed
+                // tour configuration declares isActive: false; the user enables it as the guided
+                // step asks. Resumed tours keep the selection written to the managed file.
             }
 
             PracticalTourViewModel viewModel = new(new PracticalTourStateMachine());

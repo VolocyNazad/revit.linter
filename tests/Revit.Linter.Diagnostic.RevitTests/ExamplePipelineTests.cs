@@ -9,8 +9,6 @@ using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementFixing.DI;
 using Revit.Linter.ElementVisualization.DI;
 using Revit.Linter.Testing;
-using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
-using UserRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -25,48 +23,38 @@ public sealed class ExamplePipelineTests
             provider.GetRequiredService<IElementVisualizationPipelineFactory>();
         int builtCount = 0;
 
-        foreach (UserRule rule in Read<UserRule>("config.yaml")!.Rules)
+        foreach (DiagnosticRule rule in Read(ConfigurationPathUtils.DiagnosticsConfigFileName))
         {
-            ElementDiagnosticId identity = CreateIdentity(rule.Code, rule.Description);
-            foreach (ElementFixPipelineDefinition fix in rule.Fixes)
-            {
-                fixFactory.Create(identity, fix.Name, fix.Steps);
-                builtCount++;
-            }
-            foreach (ElementVisualizationPipelineDefinition visualization in rule.Visualizations)
-            {
-                visualizationFactory.Create(identity, visualization.Name, visualization.Steps);
-                builtCount++;
-            }
+            if (rule.Type is not ("custom" or "collision")) continue;
+            builtCount += BuildRule(rule, fixFactory, visualizationFactory);
         }
 
-        foreach (CollisionRule rule in Read<CollisionRule>("collision.config.yaml")!.Rules)
-            builtCount += BuildCollisionRule(rule, fixFactory, visualizationFactory);
-
         // The managed practical-tour configuration is a collision rule as well.
-        foreach (CollisionRule rule in Read<CollisionRule>("practical-tour.config.yaml")!.Rules)
-            builtCount += BuildCollisionRule(rule, fixFactory, visualizationFactory);
+        foreach (DiagnosticRule rule in Read(ConfigurationPathUtils.PracticalTourFileName))
+            builtCount += BuildRule(rule, fixFactory, visualizationFactory);
 
         await Assert.That(builtCount).IsGreaterThan(0);
     }
 
-    private static int BuildCollisionRule(
-        CollisionRule rule,
+    private static int BuildRule(
+        DiagnosticRule rule,
         IElementFixPipelineFactory fixFactory,
         IElementVisualizationPipelineFactory visualizationFactory)
     {
-        ElementDiagnosticId identity = CreateIdentity(rule.Code, rule.Description);
+        ElementDiagnosticId identity = CreateIdentity(rule.Code!, rule.Description ?? string.Empty);
         int builtCount = 0;
         foreach (ElementFixPipelineDefinition fix in rule.Fixes)
         {
             fixFactory.Create(identity, fix.Name, fix.Steps);
             builtCount++;
         }
+
         foreach (ElementVisualizationPipelineDefinition visualization in rule.Visualizations)
         {
             visualizationFactory.Create(identity, visualization.Name, visualization.Steps);
             builtCount++;
         }
+
         return builtCount;
     }
 
@@ -84,7 +72,7 @@ public sealed class ExamplePipelineTests
         return services.BuildServiceProvider();
     }
 
-    private static ConfigurationFile<TRule>? Read<TRule>(string fileName) where TRule : class =>
-        ConfigurationPathUtils.GetVersionedConfigurations<TRule>(Path.Combine(RepositoryRoot.Find(),
-            "wiki", "examples", "configuration", fileName));
+    private static IReadOnlyList<DiagnosticRule> Read(string fileName) =>
+        ConfigurationPathUtils.GetDiagnosticConfiguration(Path.Combine(
+            RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName))?.Rules ?? [];
 }

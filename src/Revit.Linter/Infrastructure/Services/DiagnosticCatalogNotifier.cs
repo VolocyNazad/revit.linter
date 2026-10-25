@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.UserDiagnostics.Abstractions.Services;
 using System.Windows.Threading;
 
 namespace Revit.Linter.Infrastructure.Services;
@@ -15,8 +14,8 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DiagnosticCatalogNotifier> _logger;
     private readonly IStringLocalizer<GlobalLocalizations> _localizer;
-    private readonly IUserDiagnosticConfigurationErrorSource _configurationErrorSource;
-    private readonly IDiagnosticConfigurationErrorSource[] _skippedRuleSources;
+    private readonly IDiagnosticConfigurationErrorSource _configurationErrorSource;
+    private readonly IDiagnosticConfigurationParseErrorSource _parseErrorSource;
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
     private readonly object _sync = new();
     private string? _lastError;
@@ -27,24 +26,22 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         IServiceProvider serviceProvider,
         ILogger<DiagnosticCatalogNotifier> logger,
         IStringLocalizer<GlobalLocalizations> localizer,
-        IUserDiagnosticConfigurationErrorSource configurationErrorSource,
-        IEnumerable<IDiagnosticConfigurationErrorSource> skippedRuleSources)
+        IDiagnosticConfigurationErrorSource configurationErrorSource,
+        IDiagnosticConfigurationParseErrorSource parseErrorSource)
     {
-        _skippedRuleSources = skippedRuleSources.ToArray();
         _catalog = catalog;
         _serviceProvider = serviceProvider;
         _logger = logger;
         _localizer = localizer;
         _configurationErrorSource = configurationErrorSource;
+        _parseErrorSource = parseErrorSource;
         _catalog.Changed += Catalog_Changed;
         _catalog.RefreshFailed += Catalog_RefreshFailed;
         _configurationErrorSource.Changed += ConfigurationErrorSource_Changed;
-        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
-            source.Changed += SkippedRuleSource_Changed;
+        _parseErrorSource.Changed += ParseErrorSource_Changed;
 
         ShowCurrentConfigurationError();
-        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
-            ShowSkippedRules(source);
+        ShowCurrentParseError();
     }
 
     public void Dispose()
@@ -58,8 +55,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         _catalog.Changed -= Catalog_Changed;
         _catalog.RefreshFailed -= Catalog_RefreshFailed;
         _configurationErrorSource.Changed -= ConfigurationErrorSource_Changed;
-        foreach (IDiagnosticConfigurationErrorSource source in _skippedRuleSources)
-            source.Changed -= SkippedRuleSource_Changed;
+        _parseErrorSource.Changed -= ParseErrorSource_Changed;
     }
 
     private void Catalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
@@ -72,7 +68,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
 
         if (args.Origin == DiagnosticCatalogChangeOrigin.ExternalFile &&
             _configurationErrorSource.CurrentError is null &&
-            Array.TrueForAll(_skippedRuleSources, source => source.CurrentError is null))
+            _parseErrorSource.CurrentError is null)
             ShowMessage(_localizer["diagnosticCatalog_externalChange_message"]);
     }
 
@@ -96,27 +92,26 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         ShowCurrentConfigurationError();
     }
 
-    private void ShowCurrentConfigurationError()
-    {
-        Exception? error = _configurationErrorSource.CurrentError;
-        if (error is not null)
-            ShowMessage(_localizer["userDiagnosticConfiguration_parseFailed_message", error.Message]);
-    }
-
-    private void SkippedRuleSource_Changed(object? sender, EventArgs args)
+    private void ParseErrorSource_Changed(object? sender, EventArgs args)
     {
         lock (_sync)
             if (_disposed) return;
 
-        if (sender is IDiagnosticConfigurationErrorSource source)
-            ShowSkippedRules(source);
+        ShowCurrentParseError();
     }
 
-    private void ShowSkippedRules(IDiagnosticConfigurationErrorSource source)
+    private void ShowCurrentConfigurationError()
     {
-        string? error = source.CurrentError;
+        string? error = _configurationErrorSource.CurrentError;
         if (error is not null)
             ShowMessage(_localizer["diagnosticConfiguration_rulesSkipped_message", error]);
+    }
+
+    private void ShowCurrentParseError()
+    {
+        Exception? error = _parseErrorSource.CurrentError;
+        if (error is not null)
+            ShowMessage(_localizer["userDiagnosticConfiguration_parseFailed_message", error.Message]);
     }
 
     private void ShowMessage(string content)

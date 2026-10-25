@@ -21,9 +21,9 @@ Set by the product. They are always English and look the same in every interface
 | Tag | Meaning |
 | :--- | :--- |
 | `BuiltIn` | The check ships with Revit Linter. |
-| `Custom` | A user-defined check from `config.yaml`. |
-| `Collision` | A collision check from `collision.config.yaml`. |
-| `ParameterProject` | A project parameter check from `parameter-element.config.yaml`. |
+| `Custom` | A user-defined check from `diagnostics.config.yaml`. |
+| `Collision` | A collision check from `diagnostics.config.yaml`. |
+| `ParameterProject` | A project parameter check from `diagnostics.config.yaml`. |
 | `Example` | The check came from the installed example configurations. |
 | `Tour` | The managed practical-tour training check. |
 | `Debug` | The check came from a debug configuration. |
@@ -33,7 +33,7 @@ Set by the product. They are always English and look the same in every interface
 ## How the tag list of a diagnostic is built
 
 - A built-in diagnostic gets `BuiltIn` and the document kinds it applies to (`Project`, `Family` or both).
-- A rule loaded from a configuration file gets the tag of the module that loaded it (`Custom`, `Collision` or `ParameterProject`) and, when the product installed the rule, the provenance tag (`Example`, `Tour` or `Debug`). The author's `tags` from the file follow.
+- A rule loaded from a configuration file gets the tag of its declared `type` (`Custom`, `Collision` or `ParameterProject`) and, when the product installed the rule, the provenance tag (`Example`, `Tour` or `Debug`). The author's `tags` from the file follow.
 - The system tags come first in declaration order, then the user tags in the order they are written in the file.
 
 Before the list is built, tags are trimmed, empty tags are dropped and duplicates are removed ignoring case, so `MEP` and `mep` are one tag.

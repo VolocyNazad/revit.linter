@@ -56,14 +56,14 @@ public abstract class DiagnosticTestBase : RevitApiTest
         ElementDiagnosticId id,
         IElementDiagnostic? diagnostic = null,
         bool isActive = true,
-        ElementDiagnosticIdOverride? diagnosticOverride = null,
+        DiagnosticState? state = null,
         IReadOnlyList<IElementFix>? fixes = null) =>
         new(
             id,
             diagnostic ?? new ElementDiagnostic(id, DiagnosticFeedback.Valid),
             new ElementFilter(id, true),
             new ElementDocumentFilter(id, true),
-            diagnosticOverride ?? CreateOverride(id, DiagnosticSeverity.Warning, isActive),
+            state ?? new DiagnosticState(isActive, DiagnosticSeverity.Warning, isHidden: false),
             fixes ?? [],
             []);
 
@@ -76,39 +76,14 @@ public abstract class DiagnosticTestBase : RevitApiTest
         IDocumentDiagnostic? diagnostic = null,
         bool isActive = true,
         DiagnosticSeverity severity = DiagnosticSeverity.Warning,
+        bool isHidden = false,
         IReadOnlyList<IDocumentFix>? fixes = null) =>
         new(
             id,
             diagnostic ?? new DocumentDiagnostic(id, DiagnosticFeedback.Valid),
             new DocumentFilter(id, true),
-            CreateOverride(id, severity, isActive),
+            new DiagnosticState(isActive, severity, isHidden),
             fixes ?? []);
-
-    private protected static DocumentDiagnosticIdOverride CreateOverride(
-        DocumentDiagnosticId id, DiagnosticSeverity severity, bool isActive)
-    {
-        var settings = new DocumentDiagnosticOverridesSettings();
-        settings.Overrides[id.Code] = new DiagnosticOverrideSettings
-        {
-            Severity = severity,
-            IsActive = isActive,
-        };
-        return new DocumentDiagnosticIdOverride(
-            id, new ValueStoreStub<DocumentDiagnosticOverridesSettings>(settings));
-    }
-
-    private protected static ElementDiagnosticIdOverride CreateOverride(
-        ElementDiagnosticId id, DiagnosticSeverity severity, bool isActive)
-    {
-        var settings = new ElementDiagnosticOverridesSettings();
-        settings.Overrides[id.Code] = new DiagnosticOverrideSettings
-        {
-            Severity = severity,
-            IsActive = isActive,
-        };
-        return new ElementDiagnosticIdOverride(
-            id, new ValueStoreStub<ElementDiagnosticOverridesSettings>(settings));
-    }
 
     private protected static object GetArgument(DiagnosticReport report, string name) =>
         report.Message.Args.Single(argument => argument.Item1 == name).Item2;
@@ -142,12 +117,34 @@ public abstract class DiagnosticTestBase : RevitApiTest
         services.AddSingleton<IIgnoreElementDetector>(new IgnoreElementDetector(false));
         services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
         services.AddSingleton(TestDocumentQueries.Create());
+        services.AddSingleton<IDiagnosticConfigurationErrorState>(new TestConfigurationErrorState());
+        services.AddSingleton<IBuiltInDiagnosticStateProvider>(new TestBuiltInStateProvider());
         if (elementDiagnostics is not null || documentDiagnostics is not null)
             services.AddSingleton<IDiagnosticRegistrationProvider>(
                 new TestRegistrationProvider(elementDiagnostics, documentDiagnostics));
         configure?.Invoke(services);
         services.AddDiagnosticModule();
         return services.BuildServiceProvider();
+    }
+
+    private protected sealed class TestConfigurationErrorState : IDiagnosticConfigurationErrorState
+    {
+        public string? CurrentError { get; private set; }
+        public event EventHandler? Changed;
+        public void BeginRefresh() => CurrentError = null;
+        public void SetFileErrors(IReadOnlyList<string> messages, Exception? parseError)
+            => CurrentError = messages.Count == 0 ? null : string.Join(Environment.NewLine, messages);
+        public void AddRuleErrors(IEnumerable<string> messages)
+            => CurrentError = string.Join(Environment.NewLine, messages);
+        public void CompleteRefresh() => Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private protected sealed class TestBuiltInStateProvider : IBuiltInDiagnosticStateProvider
+    {
+        public string ConfigurationPath => string.Empty;
+        public IReadOnlyList<string> OverriddenCodes => [];
+        public DiagnosticState GetState(string code, DiagnosticSeverity defaultSeverity, bool defaultIsActive)
+            => new(defaultIsActive, defaultSeverity, isHidden: false);
     }
 
     private protected sealed class ReportSender : IDiagnosticReportSender

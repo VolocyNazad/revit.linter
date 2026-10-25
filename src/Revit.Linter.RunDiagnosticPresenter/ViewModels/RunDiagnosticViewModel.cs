@@ -147,10 +147,10 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
         using IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
         DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
         return snapshot.ElementDiagnostics
-            .Where(registration => registration.Override.IsActive)
+            .Where(registration => registration.State.IsEnabled)
             .Select(registration => registration.Identity.Code)
             .Concat(snapshot.DocumentDiagnostics
-                .Where(registration => registration.Override.IsActive)
+                .Where(registration => registration.State.IsEnabled)
                 .Select(registration => registration.Identity.Code))
             .ToArray();
     }

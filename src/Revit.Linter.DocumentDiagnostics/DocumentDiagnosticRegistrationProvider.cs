@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Toolkit.ValueStore.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.Core.Abstractions.Services;
 using System.Reflection;
 
 namespace Revit.Linter.DocumentDiagnostics;
 
 internal sealed class DocumentDiagnosticRegistrationProvider(
     IServiceProvider serviceProvider,
-    IValueStore<DocumentDiagnosticOverridesSettings> overrideStore)
+    IBuiltInDiagnosticStateProvider builtInStateProvider)
     : IDiagnosticRegistrationProvider
 {
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
@@ -26,9 +26,10 @@ internal sealed class DocumentDiagnosticRegistrationProvider(
                 diagnostic,
                 filters.Single(filter => string.Equals(
                     filter.Identity.Code, identity.Code, StringComparison.Ordinal)),
-                new DocumentDiagnosticIdOverride(identity, overrideStore),
+                builtInStateProvider.GetState(identity.Code, identity.DefaultSeverity, identity.IsActive),
                 fixes.Where(fix => string.Equals(
-                    fix.Identity.Code, identity.Code, StringComparison.Ordinal)).ToArray())
+                    fix.Identity.Code, identity.Code, StringComparison.Ordinal)).ToArray(),
+                builtInStateProvider.ConfigurationPath)
             {
                 Documentation = new("Built-in document diagnostics", "Встроенные проверки документа"),
             };

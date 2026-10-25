@@ -241,9 +241,11 @@
     <File Path="docs/repository.md" />
   </Folder>
   <Folder Name="/wiki/">
+    <File Path="wiki/Configuration file.md" />
     <File Path="wiki/Documentation.md" />
     <File Path="wiki/English.md" />
     <File Path="wiki/Home.md" />
+    <File Path="wiki/Migrating configuration.md" />
   </Folder>
   <Folder Name="/wiki/assets/" />
   <Folder Name="/wiki/assets/diagrams/">
@@ -265,16 +267,12 @@
   </Folder>
   <Folder Name="/wiki/examples/" />
   <Folder Name="/wiki/examples/configuration/">
-    <File Path="wiki/examples/configuration/collision.config.yaml" />
-    <File Path="wiki/examples/configuration/config.yaml" />
     <File Path="wiki/examples/configuration/Configuration examples.md" />
-    <File Path="wiki/examples/configuration/parameter-element.config.yaml" />
+    <File Path="wiki/examples/configuration/diagnostics.config.yaml" />
     <File Path="wiki/examples/configuration/practical-tour.config.yaml" />
   </Folder>
   <Folder Name="/wiki/examples/configuration/ru/">
-    <File Path="wiki/examples/configuration/ru/collision.config.yaml" />
-    <File Path="wiki/examples/configuration/ru/config.yaml" />
-    <File Path="wiki/examples/configuration/ru/parameter-element.config.yaml" />
+    <File Path="wiki/examples/configuration/ru/diagnostics.config.yaml" />
     <File Path="wiki/examples/configuration/ru/practical-tour.config.yaml" />
   </Folder>
   <Folder Name="/wiki/getting-started/">
@@ -327,7 +325,9 @@
   </Folder>
   <Folder Name="/wiki/ru/">
     <File Path="wiki/ru/Документация.md" />
+    <File Path="wiki/ru/Миграция конфигурации.md" />
     <File Path="wiki/ru/Русский.md" />
+    <File Path="wiki/ru/Файл конфигурации.md" />
   </Folder>
   <Folder Name="/wiki/ru/Диагностика/">
     <File Path="wiki/ru/Диагностика/Встроенные проверки и пользовательские правила.md" />

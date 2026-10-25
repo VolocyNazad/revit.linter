@@ -9,54 +9,37 @@ public sealed class DebugConfigurationPathTests
     }
 
     [Fact]
-    public void DebugConfigPath_lives_in_debug_folder()
+    public void Debug_path_uses_the_single_configuration_file_in_the_debug_folder()
     {
         Assert.Equal(
-            Path.Combine(
-                ConfigurationPathUtils.Directory,
-                ConfigurationPathUtils.DebugFolderName,
-                ConfigurationPathUtils.ConfigFileName),
+            Path.Combine(ConfigurationPathUtils.Directory, ConfigurationPathUtils.DebugFolderName,
+                ConfigurationPathUtils.DiagnosticsConfigFileName),
             ConfigurationPathUtils.DebugConfigPath);
     }
 
     [Fact]
-    public void DebugCollisionConfigPath_lives_in_debug_folder()
+    public void Example_path_uses_the_single_configuration_file_in_the_examples_folder()
     {
         Assert.Equal(
-            Path.Combine(
-                ConfigurationPathUtils.Directory,
-                ConfigurationPathUtils.DebugFolderName,
-                ConfigurationPathUtils.CollisionConfigFileName),
-            ConfigurationPathUtils.DebugCollisionConfigPath);
+            Path.Combine(ConfigurationPathUtils.Directory, ConfigurationPathUtils.ExamplesFolderName,
+                ConfigurationPathUtils.DiagnosticsConfigFileName),
+            ConfigurationPathUtils.ExampleConfigPath);
     }
 
     [Fact]
-    public void DebugParameterElementConfigPath_lives_in_debug_folder()
+    public void Debug_and_example_paths_differ_from_the_user_path_and_each_other()
     {
-        Assert.Equal(
-            Path.Combine(
-                ConfigurationPathUtils.Directory,
-                ConfigurationPathUtils.DebugFolderName,
-                ConfigurationPathUtils.ParameterElementConfigFileName),
-            ConfigurationPathUtils.DebugParameterElementConfigPath);
-    }
-
-    [Fact]
-    public void Debug_folder_differs_from_examples_and_tour_folders()
-    {
-        Assert.NotEqual(ConfigurationPathUtils.DebugFolderName, ConfigurationPathUtils.ExamplesFolderName);
-        Assert.NotEqual(ConfigurationPathUtils.DebugFolderName, ConfigurationPathUtils.TourFolderName);
-    }
-
-    [Fact]
-    public void Debug_paths_differ_from_example_paths()
-    {
+        Assert.NotEqual(ConfigurationPathUtils.ConfigPath, ConfigurationPathUtils.DebugConfigPath);
+        Assert.NotEqual(ConfigurationPathUtils.ConfigPath, ConfigurationPathUtils.ExampleConfigPath);
         Assert.NotEqual(ConfigurationPathUtils.DebugConfigPath, ConfigurationPathUtils.ExampleConfigPath);
-        Assert.NotEqual(
-            ConfigurationPathUtils.DebugCollisionConfigPath,
-            ConfigurationPathUtils.ExampleCollisionConfigPath);
-        Assert.NotEqual(
-            ConfigurationPathUtils.DebugParameterElementConfigPath,
-            ConfigurationPathUtils.ExampleParameterElementConfigPath);
+    }
+
+    [Fact]
+    public void Tour_path_stays_in_the_managed_tour_folder()
+    {
+        Assert.Equal(
+            Path.Combine(ConfigurationPathUtils.Directory, ConfigurationPathUtils.TourFolderName,
+                ConfigurationPathUtils.PracticalTourFileName),
+            ConfigurationPathUtils.PracticalTourConfigPath);
     }
 }

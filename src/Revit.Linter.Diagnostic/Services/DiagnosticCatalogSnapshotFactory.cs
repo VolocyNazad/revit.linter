@@ -1,17 +1,22 @@
-using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
+using Microsoft.Extensions.Logging;
+using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.Diagnostic.Services;
 
 internal sealed class DiagnosticCatalogSnapshotFactory(
-    IEnumerable<IDiagnosticRegistrationProvider> providers) : IDiagnosticCatalogSnapshotFactory
+    IEnumerable<IDiagnosticRegistrationProvider> providers,
+    IDiagnosticConfigurationErrorState configurationErrorState,
+    IBuiltInDiagnosticStateProvider builtInStateProvider,
+    ILogger<DiagnosticCatalogSnapshotFactory> logger) : IDiagnosticCatalogSnapshotFactory
 {
     private readonly IDiagnosticRegistrationProvider[] _providers = providers.ToArray();
 
     public DiagnosticCatalogSnapshotOwner Create()
     {
+        configurationErrorState.BeginRefresh();
         List<ElementDiagnosticRegistration> elementDiagnostics = [];
         List<DocumentDiagnosticRegistration> documentDiagnostics = [];
-        DiagnosticCatalogSnapshot snapshot;
         try
         {
             foreach (IDiagnosticRegistrationProvider provider in _providers)
@@ -19,33 +24,68 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
                 elementDiagnostics.AddRange(provider.GetElementDiagnostics());
                 documentDiagnostics.AddRange(provider.GetDocumentDiagnostics());
             }
-            snapshot = new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics);
-        }
-        catch
-        {
-            new DiagnosticCatalogSnapshotOwner(
-                new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics)).Dispose();
-            throw;
-        }
 
-        var owner = new DiagnosticCatalogSnapshotOwner(snapshot);
-        try
-        {
+            elementDiagnostics = KeepFirstRegistration(elementDiagnostics, registration => registration.Identity.Code);
+            documentDiagnostics = KeepFirstRegistration(documentDiagnostics, registration => registration.Identity.Code);
+            ReportUnknownBuiltInOverrides(elementDiagnostics, documentDiagnostics);
+
+            var snapshot = new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics);
             Validate(snapshot);
-            return owner;
+            configurationErrorState.CompleteRefresh();
+            return new DiagnosticCatalogSnapshotOwner(snapshot);
         }
         catch
         {
-            owner.Dispose();
+            configurationErrorState.CompleteRefresh();
             throw;
         }
     }
 
+    private List<T> KeepFirstRegistration<T>(List<T> registrations, Func<T, string> getCode)
+    {
+        HashSet<string> codes = new(StringComparer.Ordinal);
+        List<T> result = new(registrations.Count);
+        foreach (T registration in registrations)
+        {
+            string code = getCode(registration);
+            if (!codes.Add(code))
+            {
+                logger.LogDebug(
+                    "Diagnostic {DiagnosticCode} was registered more than once; keeping the first registration",
+                    code);
+                continue;
+            }
+
+            result.Add(registration);
+        }
+
+        return result;
+    }
+
+    private void ReportUnknownBuiltInOverrides(
+        IReadOnlyList<ElementDiagnosticRegistration> elementDiagnostics,
+        IReadOnlyList<DocumentDiagnosticRegistration> documentDiagnostics)
+    {
+        HashSet<string> builtInCodes = new(StringComparer.Ordinal);
+        foreach (ElementDiagnosticRegistration registration in elementDiagnostics)
+            if (registration.RuleType is null) builtInCodes.Add(registration.Identity.Code);
+        foreach (DocumentDiagnosticRegistration registration in documentDiagnostics)
+            if (registration.RuleType is null) builtInCodes.Add(registration.Identity.Code);
+
+        List<string> errors = [];
+        foreach (string code in builtInStateProvider.OverriddenCodes)
+        {
+            if (builtInCodes.Contains(code)) continue;
+            errors.Add(
+                $"diagnostics.config.yaml: built-in override '{code}' was skipped: no built-in diagnostic has this code");
+        }
+
+        if (errors.Count > 0)
+            configurationErrorState.AddRuleErrors(errors);
+    }
+
     private static void Validate(DiagnosticCatalogSnapshot snapshot)
     {
-        ValidateUniqueCodes(snapshot.ElementDiagnostics.Select(registration => registration.Identity.Code));
-        ValidateUniqueCodes(snapshot.DocumentDiagnostics.Select(registration => registration.Identity.Code));
-
         foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
         {
             ValidateCode(registration.Identity.Code, registration.Diagnostic.Identity.Code, "diagnostic");
@@ -64,15 +104,6 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
             foreach (IDocumentFix fix in registration.Fixes)
                 ValidateCode(registration.Identity.Code, fix.Identity.Code, "fix");
         }
-    }
-
-    private static void ValidateUniqueCodes(IEnumerable<string> codes)
-    {
-        string? duplicateCode = codes
-            .GroupBy(code => code, StringComparer.Ordinal)
-            .FirstOrDefault(group => group.Count() > 1)?.Key;
-        if (duplicateCode is not null)
-            throw new DuplicateDiagnosticIdException(duplicateCode);
     }
 
     private static void ValidateCode(string registrationCode, string componentCode, string componentName)

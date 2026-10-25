@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Languages.DI;
-using Revit.Linter.UserDiagnostics.Abstractions.Services;
-using Revit.Linter.UserDiagnostics.Services;
 
 namespace Revit.Linter.UserDiagnostics.DI;
 
@@ -19,16 +17,8 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddUserDiagnostics()
         {
             services.AddFormulaFactories()
-                .AddSingleton<UserDiagnosticConfigurationErrorState>()
-                .AddSingleton<IUserDiagnosticConfigurationErrorSource>(provider =>
-                    provider.GetRequiredService<UserDiagnosticConfigurationErrorState>())
-                .AddSingleton<UserDiagnosticSkippedRuleState>()
-                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
-                    provider.GetRequiredService<UserDiagnosticSkippedRuleState>())
                 .AddSingleton<UserDiagnosticRegistrationProvider>()
                 .AddSingleton<IDiagnosticRegistrationProvider>(provider =>
-                    provider.GetRequiredService<UserDiagnosticRegistrationProvider>())
-                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
                     provider.GetRequiredService<UserDiagnosticRegistrationProvider>());
             return services;
         }

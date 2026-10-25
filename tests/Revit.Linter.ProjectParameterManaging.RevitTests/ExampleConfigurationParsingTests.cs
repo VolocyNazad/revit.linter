@@ -2,10 +2,10 @@ using Autodesk.Revit.DB;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.Testing;
 using TUnit.Core;
+using DiagnosticRule = Revit.Linter.Core.Abstractions.Models.DiagnosticRule;
 
 namespace Revit.Linter.ProjectParameterManaging.RevitTests;
 
@@ -136,23 +136,23 @@ public sealed class ExampleConfigurationParsingTests
 #endif
     public async Task Parameter_identifiers_in_example_configuration_are_convertible()
     {
-        ConfigurationFile<DiagnosticRule>? file =
-            ConfigurationPathUtils.GetVersionedConfigurations<DiagnosticRule>(
-                Path.Combine(RepositoryRoot.Find(), "wiki", "examples", "configuration", "parameter-element.config.yaml"));
+        DiagnosticConfigurationFile? file =
+            ConfigurationPathUtils.GetDiagnosticConfiguration(
+                Path.Combine(RepositoryRoot.Find(), "wiki", "examples", "configuration", "diagnostics.config.yaml"));
 
         await Assert.That(file?.Rules).IsNotNull();
-        foreach (DiagnosticRule rule in file!.Rules)
+        foreach (DiagnosticRule rule in file!.Rules.Where(rule => rule.Type == "parameter"))
         {
-            if (!Enum.IsDefined(typeof(DiagnosticSeverity), rule.Severity))
+            if (rule.Severity is null || !Enum.IsDefined(typeof(DiagnosticSeverity), rule.Severity.Value))
                 throw new InvalidOperationException(
                     $"Unknown severity '{rule.Severity}' in rule '{rule.Code}'.");
 
-            foreach (ParameterElementData parameter in rule.Parameters)
+            foreach (DiagnosticParameter parameter in rule.Parameters ?? [])
             {
                 try
                 {
-                    _ = ParseGroup(parameter.Group);
-                    foreach (string category in parameter.Categories)
+                    _ = ParseGroup(parameter.Group!);
+                    foreach (string category in parameter.Categories ?? [])
                         _ = ParameterIdentifierParser.ParseCategory(category);
                 }
                 catch (Exception exception)

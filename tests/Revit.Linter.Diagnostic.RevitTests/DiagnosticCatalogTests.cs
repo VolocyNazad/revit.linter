@@ -84,15 +84,13 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     public async Task Disposing_catalog_disposes_owned_components()
     {
         ElementDiagnosticId id = CreateElementId("ELM-DISPOSE");
-        TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(id);
         ServiceProvider services = CreateServices(elementDiagnostics:
-            [CreateElementRegistration(id, diagnosticOverride: new(id, store), fixes: [fix])]);
+            [CreateElementRegistration(id, fixes: [fix])]);
         _ = services.GetRequiredService<IDiagnosticCatalog>();
 
         await services.DisposeAsync();
 
-        await Assert.That(store.SubscriptionDisposed).IsTrue();
         await Assert.That(fix.IsDisposed).IsTrue();
     }
 
@@ -100,22 +98,19 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     public async Task Active_lease_defers_snapshot_disposal()
     {
         ElementDiagnosticId id = CreateElementId("ELM-LEASE");
-        TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(id);
         ServiceProvider services = CreateServices(elementDiagnostics:
-            [CreateElementRegistration(id, diagnosticOverride: new(id, store), fixes: [fix])]);
+            [CreateElementRegistration(id, fixes: [fix])]);
         IDiagnosticCatalogSnapshotLease lease = services
             .GetRequiredService<IDiagnosticCatalog>()
             .AcquireSnapshot();
 
         await services.DisposeAsync();
 
-        await Assert.That(store.SubscriptionDisposed).IsFalse();
         await Assert.That(fix.IsDisposed).IsFalse();
 
         lease.Dispose();
 
-        await Assert.That(store.SubscriptionDisposed).IsTrue();
         await Assert.That(fix.IsDisposed).IsTrue();
     }
 
@@ -325,20 +320,17 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     {
         ElementDiagnosticId registrationId = CreateElementId("ELM-INVALID");
         ElementDiagnosticId diagnosticId = CreateElementId("ELM-OTHER");
-        TrackingValueStore<ElementDiagnosticOverridesSettings> store = new(new());
         ElementFix fix = new(registrationId);
         using ServiceProvider services = CreateServices(elementDiagnostics:
         [
             CreateElementRegistration(
                 registrationId,
                 new ElementDiagnostic(diagnosticId, DiagnosticFeedback.Valid),
-                diagnosticOverride: new(registrationId, store),
                 fixes: [fix])
         ]);
 
         _ = CaptureException(() => services.GetRequiredService<IDiagnosticCatalog>());
 
-        await Assert.That(store.SubscriptionDisposed).IsTrue();
         await Assert.That(fix.IsDisposed).IsTrue();
     }
 
@@ -348,8 +340,8 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         ServiceCollection collection = new();
         collection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
         collection.AddSingleton(TestDocumentQueries.Create());
-        collection.AddSingleton<IValueStore<ElementDiagnosticOverridesSettings>>(
-            new ValueStoreStub<ElementDiagnosticOverridesSettings>(new()));
+        collection.AddSingleton<IDiagnosticConfigurationErrorState>(new TestConfigurationErrorState());
+        collection.AddSingleton<IBuiltInDiagnosticStateProvider>(new TestBuiltInStateProvider());
         collection.AddSingleton<IElementVisualizationPipelineFactory, TestElementVisualizationPipelineFactory>();
         collection.AddElementAccentor();
         collection.AddElementDiagnostics();
@@ -441,20 +433,6 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         }
 
         public void Notify() => _listener?.Invoke();
-
-        private sealed class DisposableCallback(Action dispose) : IDisposable
-        {
-            public void Dispose() => dispose();
-        }
-    }
-
-    private sealed class TrackingValueStore<T>(T value) : IValueStore<T> where T : class
-    {
-        public T CurrentValue { get; } = value;
-        public bool SubscriptionDisposed { get; private set; }
-        public IDisposable OnChange(Action<T> listener) => new DisposableCallback(
-            () => SubscriptionDisposed = true);
-        public void Update(Action<T> change) => change(CurrentValue);
 
         private sealed class DisposableCallback(Action dispose) : IDisposable
         {

@@ -15,6 +15,8 @@ lang: en
 - [[Practical tour|Practical tour]]
 - [[Create your first rule|Create your first rule]]
 - [[Diagnostic configuration path convention|Configuration folders]]
+- [[Configuration file|Configuration file]]
+- [[Migrating configuration|Migrating configuration]]
 - [[Troubleshooting|Troubleshooting and logs]]
 
 ## Configure diagnostics

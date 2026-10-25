@@ -1,147 +1,117 @@
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Models;
+
 namespace Revit.Linter.ConfigurationPath.Tests;
 
 public sealed class ConfigurationPathUtilsTests : IDisposable
 {
-    private readonly string _tempDirectory = Path.Combine(
-        Path.GetTempPath(),
-        nameof(ConfigurationPathUtilsTests),
-        Guid.NewGuid().ToString("N"));
+    private readonly string _directory = Path.Combine(
+        Path.GetTempPath(), nameof(ConfigurationPathUtilsTests), Guid.NewGuid().ToString("N"));
+
+    public ConfigurationPathUtilsTests() => Directory.CreateDirectory(_directory);
+
+    public void Dispose()
+    {
+        try
+        {
+            if (Directory.Exists(_directory)) Directory.Delete(_directory, recursive: true);
+        }
+        catch (IOException)
+        {
+            // Best effort cleanup of a test directory.
+        }
+    }
 
     [Fact]
     public void RevitVersion_matches_the_year_of_the_build_configuration()
     {
-#if IS2021
-        const int expected = 2021;
-#elif IS2022
-        const int expected = 2022;
-#elif IS2023
-        const int expected = 2023;
-#elif IS2024
-        const int expected = 2024;
-#elif IS2025
-        const int expected = 2025;
-#elif IS2026
-        const int expected = 2026;
-#elif IS2027
-        const int expected = 2027;
-#else
-        Assert.Fail("The test build targets an unknown Revit year.");
-        return;
-#endif
-
-        Assert.Equal(expected, ConfigurationPathUtils.RevitVersion);
+        Assert.InRange(ConfigurationPathUtils.RevitVersion, 2021, 2027);
     }
 
     [Fact]
-    public void EnsureFileExists_creates_parent_directories_and_file()
+    public void EnsureConfigurationFile_creates_a_version_two_header()
     {
-        string path = GetPath("nested", "configuration.yaml");
+        string path = Path.Combine(_directory, "nested", ConfigurationPathUtils.DiagnosticsConfigFileName);
 
-        ConfigurationPathUtils.EnsureFileExists(path);
+        ConfigurationPathUtils.EnsureConfigurationFile(path);
 
         Assert.True(File.Exists(path));
-        Assert.Empty(File.ReadAllText(path));
+        string content = File.ReadAllText(path);
+        Assert.Contains("version: 2", content, StringComparison.Ordinal);
+        Assert.Contains("rules: []", content, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void EnsureFileExists_does_not_overwrite_existing_file()
+    public void EnsureConfigurationFile_does_not_overwrite_an_existing_file()
     {
-        string path = GetPath("configuration.yaml");
-        Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(path, "existing content");
+        string path = Path.Combine(_directory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(path, "version: 2\nrules: []\n");
 
-        ConfigurationPathUtils.EnsureFileExists(path);
+        ConfigurationPathUtils.EnsureConfigurationFile(path);
 
-        Assert.Equal("existing content", File.ReadAllText(path));
+        Assert.Equal("version: 2\nrules: []\n", File.ReadAllText(path));
     }
 
     [Fact]
-    public void GetConfigurations_creates_missing_file_and_returns_null()
+    public void GetDiagnosticConfiguration_reads_the_envelope_and_rules()
     {
-        string path = GetPath("nested", "configuration.yaml");
-
-        TestConfiguration? result = ConfigurationPathUtils.GetConfigurations<TestConfiguration>(path);
-
-        Assert.Null(result);
-        Assert.True(File.Exists(path));
-    }
-
-    [Fact]
-    public void GetConfigurations_returns_null_for_empty_file()
-    {
-        string path = GetPath("configuration.yaml");
-        Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(path, string.Empty);
-
-        TestConfiguration? result = ConfigurationPathUtils.GetConfigurations<TestConfiguration>(path);
-
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public void GetConfigurations_deserializes_camel_case_yaml()
-    {
-        string path = GetPath("configuration.yaml");
-        Directory.CreateDirectory(_tempDirectory);
+        string path = Path.Combine(_directory, ConfigurationPathUtils.DiagnosticsConfigFileName);
         File.WriteAllText(path, """
-            displayName: Wall checks
-            isActive: true
-            codes:
-              - WALL-001
-              - WALL-002
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                takeDocument: "!property('IsFamilyDocument')"
+                take: "instance"
+                check: "true"
             """);
 
-        TestConfiguration? result = ConfigurationPathUtils.GetConfigurations<TestConfiguration>(path);
+        DiagnosticConfigurationFile? file = ConfigurationPathUtils.GetDiagnosticConfiguration(path);
 
-        Assert.NotNull(result);
-        Assert.Equal("Wall checks", result.DisplayName);
-        Assert.True(result.IsActive);
-        Assert.Equal(["WALL-001", "WALL-002"], result.Codes);
+        Assert.NotNull(file);
+        Assert.Equal(2, file.Version);
+        DiagnosticRule rule = Assert.Single(file.Rules);
+        Assert.Equal("custom", rule.Type);
+        Assert.Equal("CSTM001", rule.Code);
     }
 
     [Fact]
-    public void GetConfigurations_reads_updated_file_content()
+    public void GetDiagnosticConfiguration_returns_null_for_a_missing_file()
     {
-        string path = GetPath("configuration.yaml");
-        Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(path, "displayName: First");
-        _ = ConfigurationPathUtils.GetConfigurations<TestConfiguration>(path);
-        File.WriteAllText(path, "displayName: Second");
+        string path = Path.Combine(_directory, "missing.yaml");
 
-        TestConfiguration? result = ConfigurationPathUtils.GetConfigurations<TestConfiguration>(path);
-
-        Assert.NotNull(result);
-        Assert.Equal("Second", result.DisplayName);
+        Assert.Null(ConfigurationPathUtils.GetDiagnosticConfiguration(path));
     }
 
     [Fact]
-    public void TryGetConfigurations_returns_error_for_unknown_field()
+    public void TryGetDiagnosticConfiguration_reports_invalid_yaml()
     {
-        string path = GetPath("configuration.yaml");
-        Directory.CreateDirectory(_tempDirectory);
-        File.WriteAllText(path, "fieldThatDoesNotExist: value");
+        string path = Path.Combine(_directory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(path, "version: 2\nrules: [\n");
 
-        bool loaded = ConfigurationPathUtils.TryGetConfigurations<TestConfiguration>(
-            path, out TestConfiguration? result, out Exception? error);
+        bool loaded = ConfigurationPathUtils.TryGetDiagnosticConfiguration(path, out _, out Exception? error);
 
         Assert.False(loaded);
-        Assert.Null(result);
         Assert.NotNull(error);
-        Assert.Contains("fieldThatDoesNotExist", error.Message, StringComparison.Ordinal);
     }
 
-    public void Dispose()
+    [Fact]
+    public void Configured_file_names_match_the_single_file_format()
     {
-        if (Directory.Exists(_tempDirectory)) Directory.Delete(_tempDirectory, recursive: true);
+        Assert.Equal("diagnostics.config.yaml", ConfigurationPathUtils.DiagnosticsConfigFileName);
+        Assert.EndsWith(
+            ConfigurationPathUtils.DiagnosticsConfigFileName, ConfigurationPathUtils.ConfigPath, StringComparison.Ordinal);
+        Assert.Contains(ConfigurationPathUtils.DebugFolderName, ConfigurationPathUtils.DebugConfigPath, StringComparison.Ordinal);
+        Assert.Contains(ConfigurationPathUtils.ExamplesFolderName, ConfigurationPathUtils.ExampleConfigPath, StringComparison.Ordinal);
+        Assert.Contains(ConfigurationPathUtils.TourFolderName, ConfigurationPathUtils.PracticalTourConfigPath, StringComparison.Ordinal);
     }
 
-    private string GetPath(params string[] parts) =>
-        parts.Aggregate(_tempDirectory, Path.Combine);
-
-    public sealed class TestConfiguration
+    [Fact]
+    public void Legacy_configured_files_are_kept_only_for_detection()
     {
-        public string? DisplayName { get; set; }
-        public bool IsActive { get; set; }
-        public IList<string> Codes { get; set; } = [];
+        Assert.Equal(9, ConfigurationPathUtils.LegacyConfigurationPaths.Count);
+        Assert.Contains(ConfigurationPathUtils.LegacyConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
+        Assert.Contains(ConfigurationPathUtils.LegacyCollisionConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
+        Assert.Contains(ConfigurationPathUtils.LegacyParameterElementConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
     }
 }

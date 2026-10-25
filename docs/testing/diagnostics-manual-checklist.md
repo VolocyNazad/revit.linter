@@ -405,7 +405,7 @@
 
 ## Пользовательские (CSTM)
 
-Файл `config.yaml`, пример — `wiki/examples/configuration/config.yaml`.
+Файл `diagnostics.config.yaml`, пример — `wiki/examples/configuration/diagnostics.config.yaml`; правило с `type: custom`.
 
 - [ ] 🏢 Правило с `takeDocument: "!property('IsFamilyDocument')"` срабатывает в проекте и молчит в семействе
 - [ ] 🏠 Правило с `takeDocument: "true"` срабатывает в семействе
@@ -416,7 +416,7 @@
 
 ## Коллизии (CLSN)
 
-Файл `collision.config.yaml`, пример — `wiki/examples/configuration/collision.config.yaml`.
+Файл `diagnostics.config.yaml`, пример — `wiki/examples/configuration/diagnostics.config.yaml`; правило с `type: collision`.
 
 - [ ] 🏢 Два пересекающихся элемента из `take`/`andTake` находятся; непересекающиеся — нет
 - [ ] `groupBy` ограничивает проверку своей группой
@@ -427,11 +427,18 @@
 
 ## Параметры проекта (PRMTR)
 
-Файл `parameter-element.config.yaml`, пример — `wiki/examples/configuration/parameter-element.config.yaml`.
+Файл `diagnostics.config.yaml`, пример — `wiki/examples/configuration/diagnostics.config.yaml`; правило с `type: parameter`.
 
 - [ ] 🏢 Параметр с неверной группой/категориями/флагом instance находится; корректный — нет
 - [ ] Невалидное правило (неизвестная категория, плохой `group`/`guid`, пустые `code`/`take`/`parameters`/`name`/`categories`) пропускается с именованным сообщением, остальные правила работают
 - [ ] Формат `group` проверен под версию Revit: `PG_TEXT` для 2021–2023, `ForgeTypeId` для 2024+
+
+## Встроенные проверки (builtIn)
+
+- [ ] Запись `type: builtIn` с `isActive: false`/`severity` применяется к встроенной проверке из панели
+- [ ] Запись `isHidden: true` убирает проверку из панели, списка запуска и отчёта и не выполняет её
+- [ ] «Сброс настроек» удаляет записи `builtIn` и все `isHidden`, не меняя `isActive`/`severity` пользовательских правил
+- [ ] Старые `config.yaml`, `collision.config.yaml`, `parameter-element.config.yaml` не читаются, показывается одно уведомление о миграции на версию Revit; кнопка открывает страницу миграции
 
 ## Список игнорирования
 

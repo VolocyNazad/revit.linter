@@ -1,10 +1,8 @@
-using Revit.Linter.ConfigurationPath;
-using Revit.Linter.ConfigurationPath.Abstractions.Models;
-using Microsoft.Extensions.Logging;
-using Revit.Linter.UserDiagnostics.Models;
-using Revit.Linter.UserDiagnostics.Services;
-using Toolkit.ValueStore.Abstractions;
+using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
+using Microsoft.Extensions.Logging;
+using UserDiagnosticRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
 
 namespace Revit.Linter.UserDiagnostics;
 
@@ -14,84 +12,43 @@ internal sealed class UserDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
     IElementFixPipelineFactory fixPipelineFactory,
     IElementVisualizationPipelineFactory visualizationPipelineFactory,
-    IValueStore<ElementDiagnosticOverridesSettings> overrideStore,
-    UserDiagnosticConfigurationErrorState configurationErrorState,
-    UserDiagnosticSkippedRuleState skippedRuleState,
+    IDiagnosticConfigurationService configurationService,
+    IDiagnosticConfigurationErrorState configurationErrorState,
     ILogger<UserDiagnosticRegistrationProvider> logger)
-    : IDiagnosticRegistrationProvider, IDiagnosticCatalogChangeSource, IDisposable
+    : IDiagnosticRegistrationProvider
 {
-    private static readonly string _configPath = ConfigurationPathUtils.ConfigPath;
-    private static readonly string _debugConfigPath = ConfigurationPathUtils.DebugConfigPath;
-    private static readonly string _exampleConfigPath = ConfigurationPathUtils.ExampleConfigPath;
-    private readonly ConfigurationFileChangeSource _changeSource = new(
-        [_configPath, _debugConfigPath, _exampleConfigPath]);
-
-    public IDisposable OnChange(Action listener) => _changeSource.OnChange(listener);
-    public void Dispose() => _changeSource.Dispose();
-
     public IEnumerable<ElementDiagnosticRegistration> GetElementDiagnostics()
     {
-        List<(DiagnosticRule Rule, bool IsExample, bool IsDebug, string ConfigurationPath)> loadedRules = [];
-        List<string> skippedRules = [];
+        List<ElementDiagnosticRegistration> registrations = [];
+        List<string> errors = [];
         HashSet<string> codes = new(StringComparer.Ordinal);
-        Exception? configurationError = null;
-        string? configurationErrorPath = null;
-        foreach ((string path, bool isExample, bool isDebug) in new[]
-                  {
-                      (_configPath, false, false), (_debugConfigPath, false, true),
-                      (_exampleConfigPath, true, false),
-                  })
-        {
-            // Debug configurations are optional and user-owned: reading a missing file must not
-            // create it, otherwise every machine grows an empty debug folder on startup.
-            if (isDebug && !File.Exists(path)) continue;
-            bool loaded = ConfigurationPathUtils.TryGetVersionedConfigurations(
-                path, out ConfigurationFile<DiagnosticRule>? file, out Exception? error);
-            if (!loaded)
-            {
-                configurationError = error;
-                configurationErrorPath = path;
-                continue;
-            }
-            if (file is not null && file.Version > ConfigurationPathUtils.SupportedConfigurationVersion)
-            {
-                logger.LogError(
-                    "Diagnostic configuration {ConfigurationPath} has version {ConfigurationVersion}, " +
-                    "newer than supported version {SupportedVersion}; ignoring the file",
-                    path, file.Version, ConfigurationPathUtils.SupportedConfigurationVersion);
-                continue;
-            }
 
-            foreach (DiagnosticRule rule in (file?.Rules ?? []).Where(rule => codes.Add(rule.Code)))
-                loadedRules.Add((rule, isExample, isDebug, path));
+        foreach (DiagnosticRuleSource source in configurationService.GetRules())
+        {
+            if (!DiagnosticRuleTypes.TryParse(source.Rule.Type, out DiagnosticRuleType type)
+                || type != DiagnosticRuleType.Custom)
+                continue;
+
+            UserDiagnosticRule? rule = ToRule(source.Rule);
+            if (rule is null || !codes.Add(rule.Code))
+                continue;
+            ElementDiagnosticRegistration? registration = TryCreateRegistration(rule, source, errors);
+            if (registration is not null)
+                registrations.Add(registration);
         }
 
-        if (configurationError is null)
-            configurationErrorState.Clear();
-        else if (configurationErrorState.Set(configurationError))
-            logger.LogError(
-                configurationError,
-                "Failed to parse user diagnostic configuration {ConfigurationPath}; treating it as empty",
-                configurationErrorPath);
-        foreach ((DiagnosticRule rule, bool isExample, bool isDebug, string configurationPath) in loadedRules)
-        {
-            ElementDiagnosticRegistration? registration = TryCreateRegistration(
-                rule, isExample, isDebug, configurationPath);
-            if (registration is null)
-                skippedRules.Add($"rule '{rule.Code}' from {configurationPath}");
-            else
-                yield return registration;
-        }
+        if (errors.Count > 0)
+            configurationErrorState.AddRuleErrors(errors);
 
-        skippedRuleState.Set(skippedRules.Count == 0
-            ? null
-            : $"User rules skipped: {string.Join(", ", skippedRules)}.");
+        return registrations;
     }
 
-    // A rule with invalid fix or visualization pipelines must not fail the whole catalog:
-    // it is skipped and described through the skipped-rule state instead.
+    public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
     private ElementDiagnosticRegistration? TryCreateRegistration(
-        DiagnosticRule rule, bool isExample, bool isDebug, string configurationPath)
+        UserDiagnosticRule rule,
+        DiagnosticRuleSource source,
+        List<string> errors)
     {
         try
         {
@@ -100,7 +57,8 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 rule.Message ?? UserDiagnosticLocalizations.GetString("Default_message"),
                 rule.Severity, rule.IsActive,
                 rule.IsObsolete, rule.ObsoleteDescription,
-                systemTags: DiagnosticTags.ForConfiguredRule(DiagnosticTags.Custom, isExample, isTour: false, isDebug),
+                systemTags: DiagnosticTags.ForConfiguredRule(
+                    DiagnosticTags.Custom, source.IsExample, source.IsTour, source.IsDebug),
                 tags: rule.Tags);
             return new ElementDiagnosticRegistration(
                 identity,
@@ -108,14 +66,15 @@ internal sealed class UserDiagnosticRegistrationProvider(
                 new ElementDiagnosticFilter(elementFilterFactory) { Identity = identity, Formula = rule.Take },
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
                     { Identity = identity, Formula = rule.TakeDocument },
-                new ElementDiagnosticIdOverride(identity, overrideStore),
+                new DiagnosticState(rule.IsActive, rule.Severity, isHidden: source.Rule.IsHidden ?? false),
                 CreateFixes(rule, (name, steps) => fixPipelineFactory.Create(identity, name, steps)),
                 rule.Visualizations
                     .Select(pipeline => visualizationPipelineFactory.Create(
                         identity, pipeline.Name, pipeline.Steps))
                     .ToArray(),
-                configurationPath)
+                source.Path)
             {
+                RuleType = DiagnosticRuleType.Custom,
                 Documentation = new("User diagnostics", "Пользовательские проверки"),
             };
         }
@@ -124,16 +83,43 @@ internal sealed class UserDiagnosticRegistrationProvider(
             logger.LogError(
                 exception,
                 "Skipping user rule {RuleCode} from {ConfigurationPath}: its fix or visualization pipelines are invalid",
-                rule.Code, configurationPath);
+                rule.Code, source.Path);
+            errors.Add($"diagnostics.config.yaml: rule '{rule.Code}' was skipped: its fix or visualization pipeline is invalid");
             return null;
         }
     }
 
-    public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
-
-    internal static T[] CreateFixes<T>(
-        DiagnosticRule rule,
+    private static T[] CreateFixes<T>(
+        UserDiagnosticRule rule,
         Func<string, IReadOnlyList<ElementFixStepDefinition>, T> factory) => rule.Fixes
-            .Select(pipeline => factory(pipeline.Name, pipeline.Steps))
-            .ToArray();
+        .Select(pipeline => factory(pipeline.Name, pipeline.Steps))
+        .ToArray();
+
+    private static UserDiagnosticRule? ToRule(DiagnosticRule rule)
+    {
+        if (string.IsNullOrWhiteSpace(rule.Code)
+            || string.IsNullOrWhiteSpace(rule.TakeDocument)
+            || string.IsNullOrWhiteSpace(rule.Take)
+            || string.IsNullOrWhiteSpace(rule.Check))
+            return null;
+
+        return new UserDiagnosticRule
+        {
+            Code = rule.Code,
+            TakeDocument = rule.TakeDocument,
+            Take = rule.Take,
+            Check = rule.Check,
+            Description = rule.Description ?? string.Empty,
+            Message = rule.Message,
+            Severity = rule.Severity ?? DiagnosticSeverity.Message,
+            IsActive = rule.IsActive ?? true,
+            IsObsolete = rule.IsObsolete ?? false,
+            ObsoleteDescription = rule.ObsoleteDescription ?? string.Empty,
+            Tags = rule.Tags,
+            Fixes = rule.Fixes,
+            Visualizations = rule.Visualizations.Length > 0
+                ? rule.Visualizations
+                : [new() { Name = "Show and select", Steps = [new() { Type = "Show" }, new() { Type = "Select" }] }],
+        };
+    }
 }

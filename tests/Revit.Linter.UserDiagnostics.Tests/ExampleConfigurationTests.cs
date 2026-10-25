@@ -1,9 +1,7 @@
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Testing;
-using CollisionRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
-using ParameterRule = Revit.Linter.ParameterElementDiagnostics.Models.DiagnosticRule;
-using UserRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
 
 namespace Revit.Linter.UserDiagnostics.Tests;
 
@@ -12,37 +10,34 @@ public sealed class ExampleConfigurationTests
     [Theory]
     [InlineData("")]
     [InlineData("ru")]
-    public void All_example_configuration_files_deserialize_with_supported_version(string languageFolder)
+    public void All_example_rules_are_in_one_version_two_file(string languageFolder)
     {
-        ConfigurationFile<UserRule>? userFile = Read<UserRule>(languageFolder, "config.yaml");
-        ConfigurationFile<CollisionRule>? collisionFile =
-            Read<CollisionRule>(languageFolder, "collision.config.yaml");
-        ConfigurationFile<ParameterRule>? parameterFile =
-            Read<ParameterRule>(languageFolder, "parameter-element.config.yaml");
+        DiagnosticConfigurationFile? file = Read(languageFolder, ConfigurationPathUtils.DiagnosticsConfigFileName);
 
-        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, userFile?.Version);
-        Assert.NotEmpty(userFile?.Rules ?? []);
-        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, collisionFile?.Version);
-        Assert.NotEmpty(collisionFile?.Rules ?? []);
-        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, parameterFile?.Version);
-        Assert.NotEmpty(parameterFile?.Rules ?? []);
+        Assert.NotNull(file);
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, file.Version);
+        Assert.Equal(6, file.Rules.Count(rule => rule.Type == "custom"));
+        Assert.Equal(11, file.Rules.Count(rule => rule.Type == "collision"));
+        Assert.Equal(3, file.Rules.Count(rule => rule.Type == "parameter"));
+        Assert.DoesNotContain(file.Rules, rule => rule.Type == "builtIn");
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("ru")]
-    public void Practical_tour_configuration_deserializes_with_three_visualizations(string languageFolder)
+    public void Practical_tour_configuration_uses_the_single_file_format(string languageFolder)
     {
-        ConfigurationFile<CollisionRule>? tourFile = Read<CollisionRule>(
-            languageFolder, "practical-tour.config.yaml");
+        DiagnosticConfigurationFile? tourFile = Read(languageFolder, ConfigurationPathUtils.PracticalTourFileName);
 
-        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, tourFile?.Version);
-        CollisionRule tourRule = Assert.Single(tourFile?.Rules ?? [], rule => rule.Code == "TOUR001");
+        Assert.NotNull(tourFile);
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, tourFile.Version);
+        DiagnosticRule tourRule = Assert.Single(tourFile.Rules, rule => rule.Code == "TOUR001");
+        Assert.Equal("collision", tourRule.Type);
+        Assert.False(tourRule.IsActive);
         Assert.Equal(3, tourRule.Visualizations.Length);
     }
 
-    private static ConfigurationFile<TRule>? Read<TRule>(string languageFolder, string fileName)
-        where TRule : class =>
-        ConfigurationPathUtils.GetVersionedConfigurations<TRule>(Path.Combine(RepositoryRoot.Find(),
-            "wiki", "examples", "configuration", languageFolder, fileName));
+    private static DiagnosticConfigurationFile? Read(string languageFolder, string fileName) =>
+        ConfigurationPathUtils.GetDiagnosticConfiguration(Path.Combine(
+            RepositoryRoot.Find(), "wiki", "examples", "configuration", languageFolder, fileName));
 }

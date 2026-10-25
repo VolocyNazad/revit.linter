@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
@@ -44,13 +44,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<!-- The installed examples are the Wiki example files themselves, so the documentation and the product cannot drift apart. -->
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.config.yaml" Link="Examples\en\config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.collision.config.yaml" Link="Examples\en\collision.config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.parameter-element.config.yaml" Link="Examples\en\parameter-element.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.diagnostics.config.yaml" Link="Examples\en\diagnostics.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.practical-tour.config.yaml" Link="Examples\en\practical-tour.config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.config.yaml" Link="Examples\ru\config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\collision.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.collision.config.yaml" Link="Examples\ru\collision.config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\parameter-element.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.parameter-element.config.yaml" Link="Examples\ru\parameter-element.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.diagnostics.config.yaml" Link="Examples\ru\diagnostics.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.practical-tour.config.yaml" Link="Examples\ru\practical-tour.config.yaml" />
 	</ItemGroup>
 	<ItemGroup>
