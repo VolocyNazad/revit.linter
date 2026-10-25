@@ -1,4 +1,4 @@
-using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Localization;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
@@ -7,7 +7,7 @@ namespace Revit.Linter.WelcomePresenter.ViewModels;
 /// Explains where diagnostics come from without coupling the welcome flow to diagnostic implementations.
 /// </summary>
 [GenerateLocalizedProperties]
-internal sealed partial class WelcomeRulesStepViewModel : WelcomeStepViewModel
+internal sealed partial class WelcomeRulesStepViewModel(IConfigurationPaths paths) : WelcomeStepViewModel
 {
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
@@ -20,7 +20,7 @@ internal sealed partial class WelcomeRulesStepViewModel : WelcomeStepViewModel
     {
         get
         {
-            string parameterGroup = ConfigurationPathUtils.RevitVersion < FirstRevitVersionWithGroupTypeIds
+            string parameterGroup = paths.RevitVersion < FirstRevitVersionWithGroupTypeIds
                 ? "PG_DATA"
                 : "autodesk.parameter.group:data-1.0.0";
             return ProjectParameterRuleTemplateText.Replace("{parameterGroup}", parameterGroup);

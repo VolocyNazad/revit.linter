@@ -1,5 +1,3 @@
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
 using Microsoft.Extensions.Logging;
 using UserDiagnosticRule = Revit.Linter.UserDiagnostics.Models.DiagnosticRule;
@@ -105,10 +103,10 @@ internal sealed class UserDiagnosticRegistrationProvider(
 
         return new UserDiagnosticRule
         {
-            Code = rule.Code,
-            TakeDocument = rule.TakeDocument,
-            Take = rule.Take,
-            Check = rule.Check,
+            Code = rule.Code ?? string.Empty,
+            TakeDocument = rule.TakeDocument ?? string.Empty,
+            Take = rule.Take ?? string.Empty,
+            Check = rule.Check ?? string.Empty,
             Description = rule.Description ?? string.Empty,
             Message = rule.Message,
             Severity = rule.Severity ?? DiagnosticSeverity.Message,
@@ -123,3 +121,4 @@ internal sealed class UserDiagnosticRegistrationProvider(
         };
     }
 }
+

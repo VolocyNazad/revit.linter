@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
-using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using System.Diagnostics;
@@ -18,62 +17,52 @@ internal sealed class DiagnosticService(
     : IDiagnosticService
 {
     public DiagnosticServiceResult Execute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
-        => ExecuteSafely(() =>
+        => ExecuteSafely(document, () =>
         {
             using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
             DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
-            Element[] elements = elementIds.Select(document.GetElement).ToArray();
-            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(snapshot, document, logDurations: false);
+            // A selected element can disappear before the run starts, for example after an undo or a
+            // synchronize; the deleted id must not turn into a null element inside every diagnostic.
+            Element[] elements = elementIds
+                .Select(elementId => document.GetElement(elementId))
+                .OfType<Element>()
+                .ToArray();
+            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(
+                snapshot, document, DiagnosticRunOptions.Incremental);
             bool elementDiagnosticsCompleted = RunElementDiagnostics(
-                snapshot, document, elements, view, logDurations: false);
+                snapshot, document, elements, view, DiagnosticRunOptions.Incremental);
             return documentDiagnosticsCompleted && elementDiagnosticsCompleted;
         });
 
     public DiagnosticServiceResult Execute(Document document, View? view = null)
     {
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        int generation0Collections = GC.CollectionCount(0);
-        int generation2Collections = GC.CollectionCount(2);
+        var metrics = new DiagnosticRunMetrics();
 
         // Drops what incremental runs counted, so the statistics logged below describe this run only.
         documentQueries.TakeStatistics();
 
-        DiagnosticServiceResult result = ExecuteSafely(() =>
+        DiagnosticServiceResult result = ExecuteSafely(document, () =>
         {
             using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
             DiagnosticCatalogSnapshot snapshot = lease.Snapshot;
-            logger.LogInformation(
-                "Diagnostic run of {DocumentTitle} started (active view only: {IsViewScoped}) with {DocumentDiagnosticCount} document and {ElementDiagnosticCount} element diagnostics, {ActiveElementDiagnosticCount} of them active; preparation took {PreparationMilliseconds} ms",
-                document.Title,
-                view is not null,
-                snapshot.DocumentDiagnostics.Count,
-                snapshot.ElementDiagnostics.Count,
-                snapshot.ElementDiagnostics.Count(registration => registration.State.IsEnabled),
-                stopwatch.ElapsedMilliseconds);
-            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(snapshot, document, logDurations: true);
+            metrics.LogStarted(logger, document, view is not null, snapshot);
+            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(
+                snapshot, document, DiagnosticRunOptions.Full);
             Stopwatch collectionStopwatch = Stopwatch.StartNew();
             IReadOnlyList<Element> elements = CollectElements(document, view);
-            logger.LogDebug(
-                "Collected {ElementCount} elements of {DocumentTitle} in {ElapsedMilliseconds} ms",
-                elements.Count, document.Title, collectionStopwatch.ElapsedMilliseconds);
+            DiagnosticRunMetrics.LogElementCollection(
+                logger, document, elements.Count, collectionStopwatch.ElapsedMilliseconds);
             bool elementDiagnosticsCompleted = RunElementDiagnostics(
-                snapshot, document, elements, view, logDurations: true);
+                snapshot, document, elements, view, DiagnosticRunOptions.Full);
             return documentDiagnosticsCompleted && elementDiagnosticsCompleted;
         });
-        LogQueryStatistics();
-        logger.LogInformation(
-            "Diagnostic run of {DocumentTitle} (active view only: {IsViewScoped}) finished with {Result} in {ElapsedMilliseconds} ms; managed memory {ManagedMemoryMegabytes} MB, garbage collections during the run: {Generation0Collections} of generation 0, {Generation2Collections} of generation 2",
-            document.Title,
-            view is not null,
-            result,
-            stopwatch.ElapsedMilliseconds,
-            GC.GetTotalMemory(forceFullCollection: false) / (1024 * 1024),
-            GC.CollectionCount(0) - generation0Collections,
-            GC.CollectionCount(2) - generation2Collections);
+
+        DiagnosticRunMetrics.LogQueryStatistics(logger, documentQueries);
+        metrics.LogCompleted(logger, document, view is not null, result);
         return result;
     }
 
-    private DiagnosticServiceResult ExecuteSafely(Func<bool> execute)
+    private DiagnosticServiceResult ExecuteSafely(Document document, Func<bool> execute)
     {
         try
         {
@@ -81,22 +70,15 @@ internal sealed class DiagnosticService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Internal error");
+            logger.LogError(ex, "Unexpected failure while running diagnostics for {DocumentTitle}", document.Title);
             return DiagnosticServiceResult.Failed;
         }
     }
 
-    // A cold cache shows as misses and a warm one as hits, so two runs of the same model can be compared:
-    // misses for a query the previous run already answered mean the cache was invalidated in between.
-    private void LogQueryStatistics()
-    {
-        foreach (DocumentQueryStatistics statistics in documentQueries.TakeStatistics())
-            logger.LogDebug(
-                "Document query {Query}: {Hits} cache hits, {Misses} misses, {MissMilliseconds:F0} ms computing misses (nested queries included)",
-                statistics.Query, statistics.Hits, statistics.Misses, statistics.MissMilliseconds);
-    }
-
-    private bool RunDocumentDiagnostics(DiagnosticCatalogSnapshot snapshot, Document document, bool logDurations)
+    private bool RunDocumentDiagnostics(
+        DiagnosticCatalogSnapshot snapshot,
+        Document document,
+        DiagnosticRunOptions options)
     {
         bool completed = true;
         // Resolved once for the run, like the element path below.
@@ -114,11 +96,9 @@ internal sealed class DiagnosticService(
                 completed = false;
             }
 
-            if (logDurations && registration.State.IsEnabled)
-                logger.Log(
-                    GetDurationLogLevel(stopwatch.ElapsedMilliseconds),
-                    "Document diagnostic {DiagnosticCode} finished in {ElapsedMilliseconds} ms",
-                    registration.Identity.Code, stopwatch.ElapsedMilliseconds);
+            if (options.LogDurations && registration.State.IsEnabled)
+                DiagnosticRunMetrics.LogDocumentDiagnostic(
+                    logger, registration.Identity.Code, stopwatch.ElapsedMilliseconds);
         }
 
         return completed;
@@ -130,7 +110,7 @@ internal sealed class DiagnosticService(
         if (!registration.State.IsEnabled || !registration.Filter.IsRelevantFor(document)) return;
         if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
 
-        (DiagnosticFeedback[] feedbacks, double duration) = Measure(
+        (DiagnosticFeedback[] feedbacks, double duration) = DiagnosticRunMetrics.Measure(
             (registration, document),
             static state => state.registration.Diagnostic.Execute(state.document).ToArray());
 
@@ -163,7 +143,7 @@ internal sealed class DiagnosticService(
         Document document,
         IEnumerable<Element> elements,
         View? view,
-        bool logDurations)
+        DiagnosticRunOptions options)
     {
         bool completed = true;
 
@@ -174,14 +154,14 @@ internal sealed class DiagnosticService(
         foreach (ElementDiagnosticRegistration registration in snapshot.ElementDiagnostics)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            ElementDiagnosticRunStatistics statistics = new();
+            var statistics = new ElementDiagnosticRunStatistics();
 
             // A full run hands the findings of a diagnostic to the report as one batch instead of one
             // notification per finding. The batch is sent whether the diagnostic finished or failed, so
             // every finding produced before a failure still reaches the report, and it is sent before the
             // failure is reported, which keeps the order the reports had when they were sent one by one.
             // An incremental run produces a handful of findings and keeps sending them immediately.
-            List<DiagnosticReport>? batch = logDurations ? new List<DiagnosticReport>() : null;
+            List<DiagnosticReport>? batch = options.BatchReports ? [] : null;
             Exception? failure = null;
             try
             {
@@ -217,20 +197,12 @@ internal sealed class DiagnosticService(
             // Checking covers the diagnostic itself, and publishing covers handing each finding to the
             // report, which updates the report view. The ignore list and the rule filter are timed apart
             // because both run for every element of the document, whichever diagnostic is active.
-            if (logDurations && registration.State.IsEnabled)
-                logger.Log(
-                    GetDurationLogLevel(stopwatch.ElapsedMilliseconds),
-                    "Element diagnostic {DiagnosticCode} finished in {ElapsedMilliseconds} ms: {VisitedCount} elements visited, {IgnoredCount} ignored, {CheckedCount} checked, {FindingCount} findings; rule filter {FilterMilliseconds:F0} ms, ignore list {IgnoreMilliseconds:F0} ms, checking {CheckMilliseconds:F0} ms, publishing findings {PublishMilliseconds:F0} ms",
+            if (options.LogDurations && registration.State.IsEnabled)
+                DiagnosticRunMetrics.LogElementDiagnostic(
+                    logger,
                     registration.Identity.Code,
                     stopwatch.ElapsedMilliseconds,
-                    statistics.VisitedCount,
-                    statistics.IgnoredCount,
-                    statistics.CheckedCount,
-                    statistics.FindingCount,
-                    ToMilliseconds(statistics.FilterTicks),
-                    ToMilliseconds(statistics.IgnoreTicks),
-                    statistics.CheckMilliseconds,
-                    ToMilliseconds(statistics.PublishTicks));
+                    statistics);
         }
 
         return completed;
@@ -273,7 +245,7 @@ internal sealed class DiagnosticService(
             }
 
             statistics.CheckedCount++;
-            (DiagnosticFeedback feedback, double duration) = Measure(
+            (DiagnosticFeedback feedback, double duration) = DiagnosticRunMetrics.Measure(
                 (registration, document, view, element),
                 static state => state.registration.Diagnostic.Execute(state.document, state.view, state.element));
             statistics.CheckMilliseconds += duration;
@@ -303,27 +275,6 @@ internal sealed class DiagnosticService(
         }
     }
 
-    // A full run writes one line per diagnostic. Only the slow ones are worth a place in the default log;
-    // the rest is available when the log level is lowered to Debug.
-    private const long SlowDiagnosticMilliseconds = 100;
-
-    private static LogLevel GetDurationLogLevel(long elapsedMilliseconds) =>
-        elapsedMilliseconds >= SlowDiagnosticMilliseconds ? LogLevel.Information : LogLevel.Debug;
-
-    private static double ToMilliseconds(long stopwatchTicks) => stopwatchTicks * 1000.0 / Stopwatch.Frequency;
-
-    private sealed class ElementDiagnosticRunStatistics
-    {
-        public int VisitedCount { get; set; }
-        public int IgnoredCount { get; set; }
-        public int CheckedCount { get; set; }
-        public int FindingCount { get; set; }
-        public long IgnoreTicks { get; set; }
-        public long FilterTicks { get; set; }
-        public double CheckMilliseconds { get; set; }
-        public long PublishTicks { get; set; }
-    }
-
     private void ReportFailure(Document document, string diagnosticCode, Exception exception)
     {
         logger.LogError(exception, "Diagnostic {DiagnosticCode} failed", diagnosticCode);
@@ -335,15 +286,6 @@ internal sealed class DiagnosticService(
                 DiagnosticLocalizations.GetString("diagnosticFailed_message"),
                 ("error", exception.Message)),
             document));
-    }
-
-    // The state tuple keeps the lambdas above static: no display-class allocation per
-    // element and no Stopwatch allocation per measurement, only two timestamps.
-    private static (T Result, double Duration) Measure<TState, T>(TState state, Func<TState, T> execute)
-    {
-        long started = Stopwatch.GetTimestamp();
-        T result = execute(state);
-        return (result, ToMilliseconds(Stopwatch.GetTimestamp() - started));
     }
 
     private static (string, object)[] CreateMessageArguments(
@@ -360,5 +302,4 @@ internal sealed class DiagnosticService(
             result[index++] = (pair.Key, pair.Value);
         return result;
     }
-
 }

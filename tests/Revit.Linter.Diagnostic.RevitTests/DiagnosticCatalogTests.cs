@@ -7,7 +7,6 @@ using Revit.Linter.Diagnostic.DI;
 using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementDiagnostics.DI;
 using Revit.Linter.Testing;
-using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 

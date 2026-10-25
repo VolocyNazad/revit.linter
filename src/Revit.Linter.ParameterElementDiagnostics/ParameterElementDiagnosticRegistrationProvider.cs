@@ -1,5 +1,3 @@
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
@@ -88,7 +86,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
 
         return new ParameterDiagnosticRule
         {
-            Code = rule.Code,
+            Code = rule.Code ?? string.Empty,
             Description = rule.Description ?? string.Empty,
             Message = rule.Message,
             Severity = rule.Severity ?? DiagnosticSeverity.Message,
@@ -96,7 +94,7 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
             IsObsolete = rule.IsObsolete ?? false,
             ObsoleteDescription = rule.ObsoleteDescription ?? string.Empty,
             Tags = rule.Tags,
-            Take = rule.Take,
+            Take = rule.Take ?? string.Empty,
             Parameters = rule.Parameters is null
                 ? []
                 : rule.Parameters.Select(parameter => new ParameterElementData
@@ -111,3 +109,4 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
         };
     }
 }
+

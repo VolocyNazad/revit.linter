@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
-using Revit.Linter.ElementVisualization.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.WallTopOffsetUnconnected;
 

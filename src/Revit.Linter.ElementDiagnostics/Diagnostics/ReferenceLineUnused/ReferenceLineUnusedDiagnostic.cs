@@ -1,6 +1,5 @@
 using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
-using Revit.Sugar;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.ReferenceLineUnused;
 

@@ -1,3 +1,4 @@
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticConfiguration.Models;
@@ -16,16 +17,9 @@ namespace Revit.Linter.ConfigurationPath.Services;
 /// </remarks>
 public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationService, IDiagnosticCatalogChangeSource, IDisposable
 {
-    private static readonly DiagnosticConfigurationFileDescriptor[] _defaultFiles =
-    [
-        new(ConfigurationPathUtils.ConfigPath, IsTopLevel: true),
-        new(ConfigurationPathUtils.DebugConfigPath, IsDebug: true),
-        new(ConfigurationPathUtils.ExampleConfigPath, IsExample: true),
-        new(ConfigurationPathUtils.PracticalTourConfigPath, IsTour: true),
-    ];
-
     private readonly object _sync = new();
     private readonly DiagnosticConfigurationErrorState _errorState;
+    private readonly IDiagnosticConfigurationRuleTextFormatter? _ruleTextFormatter;
     private readonly ConfigurationFileChangeSource _changeSource;
     private readonly IReadOnlyList<DiagnosticConfigurationFileDescriptor> _files;
     private IReadOnlyList<DiagnosticRuleSource> _rules = [];
@@ -36,7 +30,19 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
     /// <summary>Creates the service for the configuration files of the running Revit version.</summary>
     /// <param name="errorState">The state that collects the problems found while reading the files.</param>
     public DiagnosticConfigurationService(DiagnosticConfigurationErrorState errorState)
-        : this(_defaultFiles, errorState)
+        : this(CreateDefaultFiles(new ConfigurationPaths()), errorState, null)
+    {
+    }
+
+    /// <summary>Creates the service for the paths and formatter resolved by the host.</summary>
+    /// <param name="errorState">The state that collects the problems found while reading the files.</param>
+    /// <param name="paths">The configuration paths of the running Revit version.</param>
+    /// <param name="ruleTextFormatter">Formats rule schema problems in the user's language, or <see langword="null"/> for English.</param>
+    public DiagnosticConfigurationService(
+        DiagnosticConfigurationErrorState errorState,
+        IConfigurationPaths paths,
+        IDiagnosticConfigurationRuleTextFormatter? ruleTextFormatter)
+        : this(CreateDefaultFiles(paths), errorState, ruleTextFormatter)
     {
     }
 
@@ -46,13 +52,30 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
     public DiagnosticConfigurationService(
         IReadOnlyList<DiagnosticConfigurationFileDescriptor> files,
         DiagnosticConfigurationErrorState errorState)
+        : this(files, errorState, null)
+    {
+    }
+
+    private DiagnosticConfigurationService(
+        IReadOnlyList<DiagnosticConfigurationFileDescriptor> files,
+        DiagnosticConfigurationErrorState errorState,
+        IDiagnosticConfigurationRuleTextFormatter? ruleTextFormatter)
     {
         if (files.Count == 0) throw new ArgumentException("At least one configuration file is required.", nameof(files));
 
         _files = files;
         _errorState = errorState;
+        _ruleTextFormatter = ruleTextFormatter;
         _changeSource = new ConfigurationFileChangeSource(files.Select(file => file.Path));
     }
+
+    private static IReadOnlyList<DiagnosticConfigurationFileDescriptor> CreateDefaultFiles(IConfigurationPaths paths) =>
+    [
+        new(paths.ConfigPath, IsTopLevel: true),
+        new(paths.DebugConfigPath, IsDebug: true),
+        new(paths.ExampleConfigPath, IsExample: true),
+        new(paths.PracticalTourConfigPath, IsTour: true),
+    ];
 
     /// <inheritdoc />
     public string ConfigurationPath => _files.FirstOrDefault(file => file.IsTopLevel)?.Path ?? _files[0].Path;
@@ -122,12 +145,15 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
     private void Rebuild()
     {
         List<DiagnosticRuleSource> rules = [];
-        List<string> errors = [];
+        List<string> fileErrors = [];
+        List<string> ruleErrors = [];
+        List<DiagnosticConfigurationFileProblem> problems = [];
         Exception? parseError = null;
 
         foreach (DiagnosticConfigurationFileDescriptor descriptor in _files)
         {
             string path = descriptor.Path;
+            string fileName = Path.GetFileName(path);
             try
             {
                 if (!File.Exists(path))
@@ -139,30 +165,54 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
                 if (!ConfigurationPathUtils.TryGetDiagnosticConfiguration(
                         path, out DiagnosticConfigurationFile? file, out Exception? readError))
                 {
-                    errors.Add($"{Path.GetFileName(path)}: {readError?.Message ?? "the file is not valid YAML"}");
-                    parseError ??= readError;
+                    // The first parse failure is published as the parse error so the notifier shows
+                    // exactly one message for it; any further failure joins the skipped-rule summary.
+                    if (readError is null)
+                    {
+                        fileErrors.Add($"{fileName}: the file is not valid YAML");
+                    }
+                    else if (parseError is null)
+                    {
+                        parseError = readError;
+                    }
+                    else
+                    {
+                        fileErrors.Add($"{fileName}: {readError.Message}");
+                        problems.Add(new DiagnosticConfigurationFileProblem(
+                            DiagnosticConfigurationFileProblemCode.FileUnreadable, fileName, [readError.Message]));
+                    }
                     continue;
                 }
 
                 if (file is null)
                 {
-                    errors.Add($"{Path.GetFileName(path)}: the file is empty; add version: 2 and a rules list");
+                    fileErrors.Add($"{fileName}: the file is empty; add version: 2 and a rules list");
+                    problems.Add(new DiagnosticConfigurationFileProblem(
+                        DiagnosticConfigurationFileProblemCode.FileEmpty, fileName, []));
                     continue;
                 }
 
                 if (file.Version > ConfigurationPathUtils.SupportedConfigurationVersion)
                 {
-                    errors.Add(
-                        $"{Path.GetFileName(path)}: format version {file.Version} is newer than supported version " +
+                    fileErrors.Add(
+                        $"{fileName}: format version {file.Version} is newer than supported version " +
                         $"{ConfigurationPathUtils.SupportedConfigurationVersion}; the file was ignored");
+                    problems.Add(new DiagnosticConfigurationFileProblem(
+                        DiagnosticConfigurationFileProblemCode.VersionNewer,
+                        fileName,
+                        [file.Version.ToString(), ConfigurationPathUtils.SupportedConfigurationVersion.ToString()]));
                     continue;
                 }
 
                 if (file.Version != ConfigurationPathUtils.SupportedConfigurationVersion)
                 {
-                    errors.Add(
-                        $"{Path.GetFileName(path)}: unsupported format version {file.Version}; " +
+                    fileErrors.Add(
+                        $"{fileName}: unsupported format version {file.Version}; " +
                         $"expected version {ConfigurationPathUtils.SupportedConfigurationVersion}");
+                    problems.Add(new DiagnosticConfigurationFileProblem(
+                        DiagnosticConfigurationFileProblemCode.VersionUnsupported,
+                        fileName,
+                        [file.Version.ToString(), ConfigurationPathUtils.SupportedConfigurationVersion.ToString()]));
                     continue;
                 }
 
@@ -170,32 +220,43 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
                 {
                     if (rule is null)
                     {
-                        errors.Add($"{Path.GetFileName(path)}: an empty rule entry was ignored");
+                        fileErrors.Add($"{fileName}: an empty rule entry was ignored");
+                        problems.Add(new DiagnosticConfigurationFileProblem(
+                            DiagnosticConfigurationFileProblemCode.EmptyRule, fileName, []));
                         continue;
                     }
 
-                    IReadOnlyList<string> ruleErrors = DiagnosticRuleValidator.Validate(rule);
-                    if (ruleErrors.Count == 0)
+                    IReadOnlyList<DiagnosticRuleIssue> ruleIssues = DiagnosticRuleValidator.ValidateIssues(rule);
+                    if (ruleIssues.Count == 0)
                     {
                         rules.Add(new DiagnosticRuleSource(
                             rule, path, descriptor.IsExample, descriptor.IsDebug, descriptor.IsTour));
                         continue;
                     }
 
-                    string code = string.IsNullOrWhiteSpace(rule.Code) ? "(no code)" : rule.Code;
-                    foreach (string ruleError in ruleErrors)
-                        errors.Add($"{Path.GetFileName(path)}: rule '{code}' was skipped: {ruleError}");
+                    string code = string.IsNullOrWhiteSpace(rule.Code) ? "(no code)" : rule.Code ?? "(no code)";
+                    foreach (DiagnosticRuleIssue issue in ruleIssues)
+                    {
+                        string text = _ruleTextFormatter is null
+                            ? DiagnosticRuleValidator.Describe(issue)
+                            : _ruleTextFormatter.Format(issue.Code.ToString(), issue.Arguments);
+                        ruleErrors.Add($"{fileName}: rule '{code}' was skipped: {text}");
+                    }
                 }
             }
             catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
             {
-                errors.Add($"{Path.GetFileName(path)}: {exception.Message}");
-                parseError ??= exception;
+                // An unreadable file is a skipped source, not a YAML parse failure.
+                fileErrors.Add($"{fileName}: {exception.Message}");
+                problems.Add(new DiagnosticConfigurationFileProblem(
+                    DiagnosticConfigurationFileProblemCode.FileUnreadable, fileName, [exception.Message]));
             }
         }
 
         _rules = rules.AsReadOnly();
         _dirty = false;
-        _errorState.SetFileErrors(errors, parseError);
+        _errorState.SetFileErrors(fileErrors, problems, parseError);
+        _errorState.AddRuleErrors(ruleErrors);
     }
 }
+

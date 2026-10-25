@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.ConfigurationPath;
-using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Languages.Factories;

@@ -14,7 +14,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DiagnosticCatalogNotifier> _logger;
     private readonly IStringLocalizer<GlobalLocalizations> _localizer;
-    private readonly IDiagnosticConfigurationErrorSource _configurationErrorSource;
+    private readonly IDiagnosticConfigurationProblemSource _problemSource;
     private readonly IDiagnosticConfigurationParseErrorSource _parseErrorSource;
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
     private readonly object _sync = new();
@@ -26,22 +26,23 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         IServiceProvider serviceProvider,
         ILogger<DiagnosticCatalogNotifier> logger,
         IStringLocalizer<GlobalLocalizations> localizer,
-        IDiagnosticConfigurationErrorSource configurationErrorSource,
+        IDiagnosticConfigurationProblemSource problemSource,
         IDiagnosticConfigurationParseErrorSource parseErrorSource)
     {
         _catalog = catalog;
         _serviceProvider = serviceProvider;
         _logger = logger;
         _localizer = localizer;
-        _configurationErrorSource = configurationErrorSource;
+        _problemSource = problemSource;
         _parseErrorSource = parseErrorSource;
         _catalog.Changed += Catalog_Changed;
         _catalog.RefreshFailed += Catalog_RefreshFailed;
-        _configurationErrorSource.Changed += ConfigurationErrorSource_Changed;
-        _parseErrorSource.Changed += ParseErrorSource_Changed;
 
-        ShowCurrentConfigurationError();
-        ShowCurrentParseError();
+        // Every configuration problem is published through the same state object, so one subscription
+        // shows the parse failure, the structured file problems and the skipped-rule summary together.
+        _problemSource.Changed += ProblemSource_Changed;
+
+        ShowCurrentProblems();
     }
 
     public void Dispose()
@@ -54,8 +55,7 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
 
         _catalog.Changed -= Catalog_Changed;
         _catalog.RefreshFailed -= Catalog_RefreshFailed;
-        _configurationErrorSource.Changed -= ConfigurationErrorSource_Changed;
-        _parseErrorSource.Changed -= ParseErrorSource_Changed;
+        _problemSource.Changed -= ProblemSource_Changed;
     }
 
     private void Catalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
@@ -67,7 +67,8 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         }
 
         if (args.Origin == DiagnosticCatalogChangeOrigin.ExternalFile &&
-            _configurationErrorSource.CurrentError is null &&
+            _problemSource.CurrentRuleError is null &&
+            _problemSource.CurrentProblems.Count == 0 &&
             _parseErrorSource.CurrentError is null)
             ShowMessage(_localizer["diagnosticCatalog_externalChange_message"]);
     }
@@ -84,35 +85,61 @@ internal sealed class DiagnosticCatalogNotifier : IDisposable
         ShowMessage(_localizer["diagnosticCatalog_refreshFailed_message", args.Exception.Message]);
     }
 
-    private void ConfigurationErrorSource_Changed(object? sender, EventArgs args)
+    private void ProblemSource_Changed(object? sender, EventArgs args)
     {
         lock (_sync)
             if (_disposed) return;
 
-        ShowCurrentConfigurationError();
+        ShowCurrentProblems();
     }
 
-    private void ParseErrorSource_Changed(object? sender, EventArgs args)
+    private void ShowCurrentProblems()
     {
-        lock (_sync)
-            if (_disposed) return;
+        List<string> sections = [];
 
-        ShowCurrentParseError();
+        if (_parseErrorSource.CurrentError is { } parseError)
+            sections.Add(_localizer["userDiagnosticConfiguration_parseFailed_message", parseError.Message]);
+
+        IReadOnlyList<DiagnosticConfigurationFileProblem> problems = _problemSource.CurrentProblems;
+        if (problems.Count > 0)
+        {
+            string details = string.Join(
+                Environment.NewLine, problems.Select(FormatProblem));
+            sections.Add(_localizer["diagnosticConfiguration_fileProblems_message", details]);
+        }
+
+        if (_problemSource.CurrentRuleError is { } ruleError)
+            sections.Add(_localizer["diagnosticConfiguration_rulesSkipped_message", ruleError]);
+
+        if (sections.Count > 0)
+            ShowMessage(string.Join(Environment.NewLine + Environment.NewLine, sections));
     }
 
-    private void ShowCurrentConfigurationError()
+    private string FormatProblem(DiagnosticConfigurationFileProblem problem) => problem.Code switch
     {
-        string? error = _configurationErrorSource.CurrentError;
-        if (error is not null)
-            ShowMessage(_localizer["diagnosticConfiguration_rulesSkipped_message", error]);
-    }
-
-    private void ShowCurrentParseError()
-    {
-        Exception? error = _parseErrorSource.CurrentError;
-        if (error is not null)
-            ShowMessage(_localizer["userDiagnosticConfiguration_parseFailed_message", error.Message]);
-    }
+        DiagnosticConfigurationFileProblemCode.FileEmpty =>
+            _localizer["diagnosticConfiguration_fileEmpty_message", problem.FileName],
+        DiagnosticConfigurationFileProblemCode.VersionNewer =>
+            _localizer[
+                "diagnosticConfiguration_fileVersionNewer_message",
+                problem.FileName,
+                problem.Arguments[0],
+                problem.Arguments[1]],
+        DiagnosticConfigurationFileProblemCode.VersionUnsupported =>
+            _localizer[
+                "diagnosticConfiguration_fileVersionUnsupported_message",
+                problem.FileName,
+                problem.Arguments[0],
+                problem.Arguments[1]],
+        DiagnosticConfigurationFileProblemCode.FileUnreadable =>
+            _localizer[
+                "diagnosticConfiguration_fileUnreadable_message",
+                problem.FileName,
+                problem.Arguments[0]],
+        DiagnosticConfigurationFileProblemCode.EmptyRule =>
+            _localizer["diagnosticConfiguration_emptyRule_message", problem.FileName],
+        _ => _localizer["diagnosticConfiguration_fileUnreadable_message", problem.FileName, problem.Code.ToString()],
+    };
 
     private void ShowMessage(string content)
     {

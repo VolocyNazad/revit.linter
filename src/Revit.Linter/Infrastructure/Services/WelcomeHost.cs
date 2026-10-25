@@ -12,6 +12,7 @@ using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using System.IO;
 
 namespace Revit.Linter.Infrastructure.Services;
@@ -34,6 +35,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly IDialog _dialog;
     private readonly IDiagnosticListFilterReset _diagnosticListFilterReset;
+    private readonly IConfigurationPaths _paths;
 
     public WelcomeHost(
         IRevitContext revitContext,
@@ -43,7 +45,8 @@ internal sealed class WelcomeHost : IWelcomeHost
         ITutorialSampleCopyService tutorialSampleCopyService,
         IRevitIdlingScheduler idlingScheduler,
         IDialog dialog,
-        IDiagnosticListFilterReset diagnosticListFilterReset)
+        IDiagnosticListFilterReset diagnosticListFilterReset,
+        IConfigurationPaths paths)
     {
         _revitContext = revitContext;
         _localizer = localizer;
@@ -53,6 +56,7 @@ internal sealed class WelcomeHost : IWelcomeHost
         _idlingScheduler = idlingScheduler;
         _dialog = dialog;
         _diagnosticListFilterReset = diagnosticListFilterReset;
+        _paths = paths;
     }
 
     public string RibbonTabName => _localizer["ribbonTab_name"];
@@ -151,7 +155,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     {
         string? replacedPath = _tutorialSampleOpenRequest.Set(path);
         if (replacedPath is not null)
-            _tutorialSampleCopyService.DeleteCopy(replacedPath, ConfigurationPathUtils.RevitVersion);
+            _tutorialSampleCopyService.DeleteCopy(replacedPath, _paths.RevitVersion);
         InitExternalApplication.SetTutorialSampleButtonVisible(true);
         _logger.LogInformation("Queued tutorial sample copy {TutorialSamplePath} for opening", path);
         _ = _idlingScheduler.RunAsync(OpenQueuedTutorialSample);

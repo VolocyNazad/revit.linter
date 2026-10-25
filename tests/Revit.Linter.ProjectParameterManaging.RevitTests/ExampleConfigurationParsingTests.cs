@@ -4,7 +4,6 @@ using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.Testing;
-using TUnit.Core;
 using DiagnosticRule = Revit.Linter.Core.Abstractions.Models.DiagnosticRule;
 
 namespace Revit.Linter.ProjectParameterManaging.RevitTests;

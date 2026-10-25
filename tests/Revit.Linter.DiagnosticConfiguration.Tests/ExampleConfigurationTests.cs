@@ -1,5 +1,4 @@
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.DiagnosticConfiguration;
 using Revit.Linter.DiagnosticConfiguration.Editing;
 using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.DiagnosticConfiguration.Parsing;

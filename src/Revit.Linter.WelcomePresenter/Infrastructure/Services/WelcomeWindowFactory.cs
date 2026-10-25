@@ -1,7 +1,6 @@
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Views;
-using System;
 using System.Windows;
 using System.Windows.Interop;
 

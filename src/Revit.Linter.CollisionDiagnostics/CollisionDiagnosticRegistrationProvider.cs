@@ -1,8 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
-using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
 using CollisionDiagnosticRule = Revit.Linter.CollisionDiagnostics.Models.DiagnosticRule;
@@ -127,11 +124,11 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
 
         return new CollisionDiagnosticRule
         {
-            Code = rule.Code,
-            TakeDocument = rule.TakeDocument,
-            Take = rule.Take,
-            AndTake = rule.AndTake,
-            GroupBy = rule.GroupBy,
+            Code = rule.Code ?? string.Empty,
+            TakeDocument = rule.TakeDocument ?? string.Empty,
+            Take = rule.Take ?? string.Empty,
+            AndTake = rule.AndTake ?? string.Empty,
+            GroupBy = rule.GroupBy ?? string.Empty,
             IncludeLinks = rule.IncludeLinks ?? false,
             IgnoreConnectedElements = rule.IgnoreConnectedElements ?? false,
             Description = rule.Description ?? string.Empty,
@@ -148,3 +145,4 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
         };
     }
 }
+

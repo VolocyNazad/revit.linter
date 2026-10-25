@@ -2,6 +2,7 @@ using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Behaviors;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
@@ -21,6 +22,7 @@ internal sealed class PracticalTour(
     IWelcomeHost welcomeHost,
     IExampleConfigurationInstaller exampleConfigurationInstaller,
     PracticalTourView view,
+    IConfigurationPaths paths,
     ILogger<PracticalTour> logger) : IPracticalTour
 {
     internal const string DiagnosticCode = "TOUR001";
@@ -34,7 +36,7 @@ internal sealed class PracticalTour(
         try
         {
             if (_viewModel is not null) EndSession(hidePane: false);
-            int revitVersion = ConfigurationPathUtils.RevitVersion;
+            int revitVersion = paths.RevitVersion;
             PracticalTourProgress? savedProgress = GetProgress(revitVersion);
             if (restart || savedProgress is { IsCompleted: true } or { IsOptedOut: true })
             {
@@ -260,7 +262,7 @@ internal sealed class PracticalTour(
         {
             welcomeHost.ShowPracticalTourCompletedNotification();
             logger.LogInformation(
-                "Practical tour completed for Revit {RevitVersion}", ConfigurationPathUtils.RevitVersion);
+                "Practical tour completed for Revit {RevitVersion}", paths.RevitVersion);
         }
         catch (Exception exception)
         {
@@ -402,7 +404,7 @@ internal sealed class PracticalTour(
     {
         try
         {
-            int revitVersion = ConfigurationPathUtils.RevitVersion;
+            int revitVersion = paths.RevitVersion;
             settingsStore.Update(settings => settings.PracticalTourProgressByRevitVersion.Remove(revitVersion));
         }
         catch (Exception exception)
@@ -479,7 +481,7 @@ internal sealed class PracticalTour(
 
     private void SaveProgress(PracticalTourStep step, bool isCompleted, bool isOptedOut)
     {
-        int revitVersion = ConfigurationPathUtils.RevitVersion;
+        int revitVersion = paths.RevitVersion;
         bool hasCleanRun = _viewModel?.HasCleanRun == true;
         bool hasSingleVisualization = _viewModel?.HasSingleVisualization == true;
         string? firstExportFormat = _viewModel?.FirstExportFormat;

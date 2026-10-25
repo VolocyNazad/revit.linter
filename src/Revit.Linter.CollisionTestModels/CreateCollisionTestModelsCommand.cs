@@ -2,7 +2,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI;
 using Revit.Linter.CollisionTestModels.Abstractions.Models;
 using Revit.Linter.CollisionTestModels.Infrastructure.Services;
-using System.IO;
 
 namespace Revit.Linter.CollisionTestModels;
 

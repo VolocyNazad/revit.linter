@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
@@ -23,6 +23,7 @@ internal sealed class ConfigurationMigrationNotice(
     IConfirmationDialog confirmationDialog,
     IDocumentationLauncher documentationLauncher,
     IStringLocalizer<GlobalLocalizations> localizer,
+    IConfigurationPaths paths,
     ILogger<ConfigurationMigrationNotice> logger)
 {
     private static readonly DocumentationPage MigrationPage =
@@ -34,9 +35,9 @@ internal sealed class ConfigurationMigrationNotice(
     {
         try
         {
-            if (!ConfigurationPathUtils.LegacyConfigurationPaths.Any(File.Exists)) return;
+            if (!paths.LegacyConfigurationPaths.Any(File.Exists)) return;
 
-            int revitVersion = ConfigurationPathUtils.RevitVersion;
+            int revitVersion = paths.RevitVersion;
             if (settingsStore.CurrentValue.NotifiedRevitVersions.Contains(revitVersion)) return;
 
             settingsStore.Update(settings =>

@@ -8,7 +8,7 @@ using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
 using Revit.Linter.CollisionTestModels.DI;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
-using Revit.Linter.ConfigurationPath.Services;
+using Revit.Linter.ConfigurationPath.DI;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
@@ -92,24 +92,8 @@ internal sealed class Program
                 .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
                 .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddDocumentQueries()
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
-                .AddSingleton<DiagnosticConfigurationErrorState>()
-                .AddSingleton<IDiagnosticConfigurationErrorState>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationErrorState>())
-                .AddSingleton<IDiagnosticConfigurationErrorSource>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationErrorState>())
-                .AddSingleton<IDiagnosticConfigurationParseErrorSource>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationErrorState>())
-                .AddSingleton<DiagnosticConfigurationService>()
-                .AddSingleton<IDiagnosticConfigurationService>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationService>())
-                .AddSingleton<IDiagnosticCatalogChangeSource>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationService>())
-                .AddSingleton<BuiltInDiagnosticStateProvider>()
-                .AddSingleton<IBuiltInDiagnosticStateProvider>(provider =>
-                    provider.GetRequiredService<BuiltInDiagnosticStateProvider>())
-                .AddSingleton<DiagnosticConfigurationWriter>()
-                .AddSingleton<IDiagnosticConfigurationWriter>(provider =>
-                    provider.GetRequiredService<DiagnosticConfigurationWriter>())
+                .AddConfigurationPathModule()
+                .AddSingleton<IDiagnosticConfigurationRuleTextFormatter, GlobalDiagnosticConfigurationRuleTextFormatter>()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()

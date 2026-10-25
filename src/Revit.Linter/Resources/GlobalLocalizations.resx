@@ -144,6 +144,45 @@
   <data name="diagnosticConfiguration_rulesSkipped_message" xml:space="preserve">
     <value>Some configuration rules are invalid and were skipped; the other rules are in use. Fix the file and save it to reload the rules.&#xA;&#xA;{0}</value>
   </data>
+  <data name="diagnosticConfiguration_fileProblems_message" xml:space="preserve">
+    <value>Some configuration files could not be read; the valid rules they contain are in use. Fix the files and save them to reload the rules.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="diagnosticConfiguration_fileEmpty_message" xml:space="preserve">
+    <value>{0}: the file is empty; add version: 2 and a rules list</value>
+  </data>
+  <data name="diagnosticConfiguration_fileVersionNewer_message" xml:space="preserve">
+    <value>{0}: format version {1} is newer than supported version {2}; the file was ignored</value>
+  </data>
+  <data name="diagnosticConfiguration_fileVersionUnsupported_message" xml:space="preserve">
+    <value>{0}: unsupported format version {1}; expected version {2}</value>
+  </data>
+  <data name="diagnosticConfiguration_fileUnreadable_message" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="diagnosticConfiguration_emptyRule_message" xml:space="preserve">
+    <value>{0}: an empty rule entry was ignored</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnknownType_message" xml:space="preserve">
+    <value>unknown type '{0}'; expected custom, collision, parameter or builtIn</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingCode_message" xml:space="preserve">
+    <value>the code is missing</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingField_message" xml:space="preserve">
+    <value>the {0} field is missing</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingParameters_message" xml:space="preserve">
+    <value>the parameters list is missing or empty</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnsupportedField_message" xml:space="preserve">
+    <value>the {0} field is not supported by type '{1}'</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnsupportedType_message" xml:space="preserve">
+    <value>unsupported type '{0}'</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnknown_message" xml:space="preserve">
+    <value>the rule is not valid: {0}</value>
+  </data>
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
     <value>The diagnostic configuration could not be parsed and is being treated as empty. Fix diagnostics.config.yaml and save it to reload the rules.&#xA;&#xA;{0}</value>
   </data>
@@ -188,5 +227,6 @@ tour</value></data>
   <data name="welcome_showFailed_message" xml:space="preserve"><value>Failed to show the welcome window.
 
 {0}</value></data>
+  <data name="configuration_openFailed_message" xml:space="preserve"><value>The configuration file could not be opened.&#xA;&#xA;{0}</value></data>
   <data name="visualizationView_create_transaction" xml:space="preserve"><value>Create Revit Linter visualization view</value></data>
 </root>

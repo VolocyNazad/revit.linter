@@ -1,8 +1,8 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-		<PackageReference Include="System.Text.Json" />
+		<PackageReference Include="System.Text.Json" Condition="'$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'netstandard2.0'" />
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
 	</ItemGroup>

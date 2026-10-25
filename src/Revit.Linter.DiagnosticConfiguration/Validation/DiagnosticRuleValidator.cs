@@ -7,7 +7,8 @@ namespace Revit.Linter.DiagnosticConfiguration.Validation;
 /// The validator is Revit-independent, so the same rules protect the add-in loader and the standalone
 /// diagnostics editor. It reports the problems a rule has before it can be registered; it does not
 /// validate formulas, pipeline step semantics or Revit-specific identifiers, which require the
-/// runtime that owns the corresponding module.
+/// runtime that owns the corresponding module. <see cref="Validate"/> returns the English text and
+/// <see cref="ValidateIssues"/> the same problems as stable codes, so a host can localize them.
 /// </remarks>
 public static class DiagnosticRuleValidator
 {
@@ -16,48 +17,55 @@ public static class DiagnosticRuleValidator
     /// </summary>
     /// <param name="rule">The configuration entry.</param>
     /// <returns>The user-facing problem descriptions; an empty list when the rule is valid.</returns>
-    public static IReadOnlyList<string> Validate(DiagnosticRule rule)
+    public static IReadOnlyList<string> Validate(DiagnosticRule rule) =>
+        ValidateIssues(rule).Select(Describe).ToList();
+
+    /// <summary>Validates the entry and reports every problem as a stable code and its arguments.</summary>
+    /// <param name="rule">The configuration entry.</param>
+    /// <returns>The schema problems; an empty list when the rule is valid.</returns>
+    public static IReadOnlyList<DiagnosticRuleIssue> ValidateIssues(DiagnosticRule rule)
     {
-        List<string> errors = [];
+        List<DiagnosticRuleIssue> issues = [];
         if (!DiagnosticRuleTypes.TryParse(rule.Type, out DiagnosticRuleType type))
         {
-            errors.Add($"unknown type '{rule.Type ?? "(missing)"}'; expected custom, collision, parameter or builtIn");
-            return errors;
+            issues.Add(new DiagnosticRuleIssue(
+                DiagnosticRuleIssueCode.UnknownType, [rule.Type ?? "(missing)"]));
+            return issues;
         }
 
         if (string.IsNullOrWhiteSpace(rule.Code))
-            errors.Add("the code is missing");
+            issues.Add(new DiagnosticRuleIssue(DiagnosticRuleIssueCode.MissingCode, []));
 
         switch (type)
         {
             case DiagnosticRuleType.Custom:
-                Require(rule.TakeDocument, "takeDocument", errors);
-                Require(rule.Take, "take", errors);
-                Require(rule.Check, "check", errors);
-                Reject(rule, errors, "andTake", rule.AndTake,
+                Require(rule.TakeDocument, "takeDocument", issues);
+                Require(rule.Take, "take", issues);
+                Require(rule.Check, "check", issues);
+                Reject(rule, issues, "andTake", rule.AndTake,
                     "parameters", rule.Parameters is { Length: > 0 });
                 break;
 
             case DiagnosticRuleType.Collision:
-                Require(rule.TakeDocument, "takeDocument", errors);
-                Require(rule.Take, "take", errors);
-                Require(rule.AndTake, "andTake", errors);
-                Require(rule.GroupBy, "groupBy", errors);
-                Reject(rule, errors, "check", rule.Check,
+                Require(rule.TakeDocument, "takeDocument", issues);
+                Require(rule.Take, "take", issues);
+                Require(rule.AndTake, "andTake", issues);
+                Require(rule.GroupBy, "groupBy", issues);
+                Reject(rule, issues, "check", rule.Check,
                     "parameters", rule.Parameters is { Length: > 0 });
                 break;
 
             case DiagnosticRuleType.Parameter:
-                Require(rule.Take, "take", errors);
+                Require(rule.Take, "take", issues);
                 if (rule.Parameters is not { Length: > 0 })
-                    errors.Add("the parameters list is missing or empty");
-                Reject(rule, errors, "check", rule.Check,
+                    issues.Add(new DiagnosticRuleIssue(DiagnosticRuleIssueCode.MissingParameters, []));
+                Reject(rule, issues, "check", rule.Check,
                     "andTake", rule.AndTake,
                     "groupBy", rule.GroupBy);
                 break;
 
             case DiagnosticRuleType.BuiltIn:
-                Reject(rule, errors,
+                Reject(rule, issues,
                     "description", !string.IsNullOrWhiteSpace(rule.Description),
                     "message", rule.Message,
                     "takeDocument", rule.TakeDocument,
@@ -74,20 +82,37 @@ public static class DiagnosticRuleValidator
                 break;
 
             default:
-                errors.Add($"unsupported type '{type}'");
+                issues.Add(new DiagnosticRuleIssue(
+                    DiagnosticRuleIssueCode.UnsupportedType, [type.ToString()]));
                 break;
         }
 
-        return errors;
+        return issues;
     }
 
-    private static void Require(string? value, string name, List<string> errors)
+    /// <summary>Formats one issue as the English description used by logs and legacy callers.</summary>
+    /// <param name="issue">The issue to format.</param>
+    /// <returns>The user-facing English description.</returns>
+    public static string Describe(DiagnosticRuleIssue issue) => issue.Code switch
+    {
+        DiagnosticRuleIssueCode.UnknownType =>
+            $"unknown type '{issue.Arguments[0]}'; expected custom, collision, parameter or builtIn",
+        DiagnosticRuleIssueCode.MissingCode => "the code is missing",
+        DiagnosticRuleIssueCode.MissingField => $"the {issue.Arguments[0]} field is missing",
+        DiagnosticRuleIssueCode.MissingParameters => "the parameters list is missing or empty",
+        DiagnosticRuleIssueCode.UnsupportedField =>
+            $"the {issue.Arguments[0]} field is not supported by type '{issue.Arguments[1]}'",
+        DiagnosticRuleIssueCode.UnsupportedType => $"unsupported type '{issue.Arguments[0]}'",
+        _ => "the rule is not valid",
+    };
+
+    private static void Require(string? value, string name, List<DiagnosticRuleIssue> issues)
     {
         if (string.IsNullOrWhiteSpace(value))
-            errors.Add($"the {name} field is missing");
+            issues.Add(new DiagnosticRuleIssue(DiagnosticRuleIssueCode.MissingField, [name]));
     }
 
-    private static void Reject(DiagnosticRule rule, List<string> errors, params object?[] fields)
+    private static void Reject(DiagnosticRule rule, List<DiagnosticRuleIssue> issues, params object?[] fields)
     {
         for (int index = 0; index + 1 < fields.Length; index += 2)
         {
@@ -101,7 +126,8 @@ public static class DiagnosticRuleValidator
                 _ => true,
             };
             if (isPresent)
-                errors.Add($"the {name} field is not supported by type '{rule.Type}'");
+                issues.Add(new DiagnosticRuleIssue(
+                    DiagnosticRuleIssueCode.UnsupportedField, [name, rule.Type ?? string.Empty]));
         }
     }
 }

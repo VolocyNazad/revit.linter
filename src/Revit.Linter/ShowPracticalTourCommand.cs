@@ -2,7 +2,6 @@ using Autodesk.Revit.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Infrastructure.ExternalCommands;
 using Revit.Linter.WelcomePresenter.Abstractions;
-using Revit.Linter.WelcomePresenter.Abstractions.Services;
 
 namespace Revit.Linter;
 

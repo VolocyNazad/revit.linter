@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementVisualization.Abstractions.Models;

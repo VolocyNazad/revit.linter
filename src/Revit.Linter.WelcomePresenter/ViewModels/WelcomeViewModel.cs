@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
@@ -31,6 +32,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     private readonly WelcomePracticalStepViewModel _practicalStep;
     private readonly WelcomeFinishStepViewModel _finishStep;
     private readonly WelcomeWindowFactory _windowFactory;
+    private readonly IConfigurationPaths _paths;
     private int _currentIndex;
 
     public WelcomeViewModel(
@@ -43,7 +45,8 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         WelcomeExamplesStepViewModel examplesStep,
         WelcomePracticalStepViewModel practicalStep,
         WelcomeFinishStepViewModel finishStep,
-        WelcomeWindowFactory windowFactory)
+        WelcomeWindowFactory windowFactory,
+        IConfigurationPaths paths)
     {
         _settingsStore = settingsStore;
         _host = host;
@@ -55,6 +58,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         _practicalStep = practicalStep;
         _finishStep = finishStep;
         _windowFactory = windowFactory;
+        _paths = paths;
     }
 
     public ObservableCollection<WelcomeStepViewModel> Steps { get; } = [];
@@ -81,7 +85,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     public bool ShowIfNeeded()
     {
         WelcomeWizardPlan plan = WelcomeWizardState.GetPendingPlan(
-            _settingsStore.CurrentValue, CurrentWizardVersion, ConfigurationPathUtils.RevitVersion);
+            _settingsStore.CurrentValue, CurrentWizardVersion, _paths.RevitVersion);
         if (!plan.HasSteps) return false;
 
         ShowSteps(plan);
@@ -113,7 +117,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
 
         // Closing the window in any way counts as shown; the ribbon command reopens the wizard.
         _settingsStore.Update(settings => WelcomeWizardState.MarkShown(
-            settings, plan, CurrentWizardVersion, ConfigurationPathUtils.RevitVersion));
+            settings, plan, CurrentWizardVersion, _paths.RevitVersion));
         _logger.LogInformation(
             "Welcome wizard closed (finished: {Finished}, examples installed: {ExamplesInstalled})",
             finished, _examplesStep.IsInstalled);
@@ -121,7 +125,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         if (finished)
         {
             bool sampleQueued = _practicalStep.StartPracticalTour
-                && _practicalStep.PrepareTutorialSample(ConfigurationPathUtils.RevitVersion);
+                && _practicalStep.PrepareTutorialSample(_paths.RevitVersion);
             if (_practicalStep.StartPracticalTour && _host.HasOpenDocument) _host.ShowPanes();
             if (sampleQueued)
                 _practicalTour.Start(hasOpenDocument: false, restart: true, tutorialSampleQueued: true);

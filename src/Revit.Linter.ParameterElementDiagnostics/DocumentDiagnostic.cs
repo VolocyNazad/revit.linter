@@ -1,5 +1,7 @@
-using Revit.Sugar;
 using Revit.Linter.Core.Abstractions;
+#if BEFORE2024
+using Revit.Sugar;
+#endif
 using Revit.Linter.ParameterElementDiagnostics.Infrastructure.Utils;
 using Revit.Linter.ParameterElementDiagnostics.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Models;

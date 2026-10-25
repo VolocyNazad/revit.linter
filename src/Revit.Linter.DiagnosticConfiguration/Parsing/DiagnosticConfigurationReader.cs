@@ -38,6 +38,30 @@ public static class DiagnosticConfigurationReader
         return Read(File.ReadAllText(path));
     }
 
+    /// <summary>Attempts to read configuration text and converts YAML parsing failures into a failed result.</summary>
+    /// <param name="yaml">The configuration file content.</param>
+    /// <param name="configuration">The parsed file, or <see langword="null"/> when the text is empty.</param>
+    /// <param name="error">The YAML parsing error when reading failed; otherwise, <see langword="null"/>.</param>
+    /// <returns><see langword="true"/> when the text was read successfully; otherwise, <see langword="false"/>.</returns>
+    public static bool TryRead(
+        string yaml,
+        out DiagnosticConfigurationFile? configuration,
+        out Exception? error)
+    {
+        try
+        {
+            configuration = Read(yaml);
+            error = null;
+            return true;
+        }
+        catch (YamlException exception)
+        {
+            configuration = null;
+            error = exception;
+            return false;
+        }
+    }
+
     /// <summary>Attempts to read one configuration file and converts YAML parsing failures into a failed result.</summary>
     /// <param name="path">The configuration file path.</param>
     /// <param name="configuration">The parsed file, or <see langword="null"/> when the file is missing or empty.</param>

@@ -30,6 +30,15 @@ public static class ProductIdentity
     /// <summary>Gets the process name of the updater without extension.</summary>
     public const string UpdaterProcessName = "Revit.Linter.Updater";
 
+    /// <summary>Gets the standalone diagnostics editor executable file name.</summary>
+    public const string EditorExecutableName = "Revit.Linter.Editor.exe";
+
+    /// <summary>Gets the per-user MSI payload folder segment of the diagnostics editor.</summary>
+    public const string EditorFolderName = "Editor";
+
+    /// <summary>Gets the Start menu shortcut name of the diagnostics editor.</summary>
+    public const string EditorShortcutName = "Revit Linter Diagnostics Editor";
+
     /// <summary>Gets the MSI release asset file name prefix.</summary>
     public const string MsiAssetPrefix = "RevitLinter-";
 

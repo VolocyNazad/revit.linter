@@ -43,6 +43,15 @@ public sealed class DiagnosticConfigurationReaderTests
         => Assert.ThrowsAny<YamlException>(() => DiagnosticConfigurationReader.Read("rules: [\n"));
 
     [Fact]
+    public void TryRead_converts_a_yaml_failure_into_a_failed_result()
+    {
+        bool loaded = DiagnosticConfigurationReader.TryRead("rules: [\n", out _, out Exception? error);
+
+        Assert.False(loaded);
+        Assert.IsAssignableFrom<YamlException>(error);
+    }
+
+    [Fact]
     public void TryReadFile_converts_a_yaml_failure_into_a_failed_result()
     {
         string directory = Path.Combine(Path.GetTempPath(), nameof(DiagnosticConfigurationReaderTests), Guid.NewGuid().ToString("N"));

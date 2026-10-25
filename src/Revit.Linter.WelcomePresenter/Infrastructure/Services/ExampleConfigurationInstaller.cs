@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using System.Globalization;
@@ -28,10 +29,15 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
     private readonly ILogger<ExampleConfigurationInstaller> _logger;
+    private readonly IConfigurationPaths _paths;
 
-    public ExampleConfigurationInstaller(ILogger<ExampleConfigurationInstaller> logger) => _logger = logger;
+    public ExampleConfigurationInstaller(ILogger<ExampleConfigurationInstaller> logger, IConfigurationPaths paths)
+    {
+        _logger = logger;
+        _paths = paths;
+    }
 
-    public string TargetDirectory => ConfigurationPathUtils.Directory;
+    public string TargetDirectory => _paths.Directory;
 
     public ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines)
     {
@@ -40,7 +46,7 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
             TargetDirectory,
             disciplines,
             fileName => ReadTemplate(language, fileName),
-            ConfigurationPathUtils.RevitVersion < FirstRevitVersionWithGroupTypeIds);
+            _paths.RevitVersion < FirstRevitVersionWithGroupTypeIds);
 
         _logger.LogInformation(
             "Installed the example configuration for {Disciplines} into {Directory}: {Files}",

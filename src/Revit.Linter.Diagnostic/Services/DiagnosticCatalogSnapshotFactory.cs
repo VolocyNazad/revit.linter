@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.Diagnostic.Services;
 
@@ -67,10 +65,17 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
         IReadOnlyList<DocumentDiagnosticRegistration> documentDiagnostics)
     {
         HashSet<string> builtInCodes = new(StringComparer.Ordinal);
-        foreach (ElementDiagnosticRegistration registration in elementDiagnostics)
-            if (registration.RuleType is null) builtInCodes.Add(registration.Identity.Code);
-        foreach (DocumentDiagnosticRegistration registration in documentDiagnostics)
-            if (registration.RuleType is null) builtInCodes.Add(registration.Identity.Code);
+        foreach (ElementDiagnosticRegistration registration in elementDiagnostics.Where(
+                     registration => registration.RuleType is null))
+        {
+            builtInCodes.Add(registration.Identity.Code);
+        }
+
+        foreach (DocumentDiagnosticRegistration registration in documentDiagnostics.Where(
+                     registration => registration.RuleType is null))
+        {
+            builtInCodes.Add(registration.Identity.Code);
+        }
 
         List<string> errors = [];
         foreach (string code in builtInStateProvider.OverriddenCodes)

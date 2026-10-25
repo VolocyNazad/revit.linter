@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
-using Revit.Linter.Diagnostic.Infrastructure.Exceptions;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 

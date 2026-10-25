@@ -1,3 +1,4 @@
+using System.IO;
 using System.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;

@@ -1,4 +1,3 @@
-using Autodesk.Revit.DB;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;

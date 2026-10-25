@@ -144,6 +144,45 @@
   <data name="diagnosticConfiguration_rulesSkipped_message" xml:space="preserve">
     <value>Некоторые правила конфигурации некорректны и пропущены; остальные правила используются. Исправьте файл и сохраните его, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
   </data>
+  <data name="diagnosticConfiguration_fileProblems_message" xml:space="preserve">
+    <value>Некоторые файлы конфигурации не удалось прочитать; корректные правила из них используются. Исправьте файлы и сохраните их, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
+  </data>
+  <data name="diagnosticConfiguration_fileEmpty_message" xml:space="preserve">
+    <value>{0}: файл пуст; добавьте version: 2 и список rules</value>
+  </data>
+  <data name="diagnosticConfiguration_fileVersionNewer_message" xml:space="preserve">
+    <value>{0}: версия формата {1} новее поддерживаемой версии {2}; файл проигнорирован</value>
+  </data>
+  <data name="diagnosticConfiguration_fileVersionUnsupported_message" xml:space="preserve">
+    <value>{0}: неподдерживаемая версия формата {1}; ожидалась версия {2}</value>
+  </data>
+  <data name="diagnosticConfiguration_fileUnreadable_message" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="diagnosticConfiguration_emptyRule_message" xml:space="preserve">
+    <value>{0}: пустая запись правила проигнорирована</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnknownType_message" xml:space="preserve">
+    <value>неизвестный тип «{0}»; ожидался custom, collision, parameter или builtIn</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingCode_message" xml:space="preserve">
+    <value>код не указан</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingField_message" xml:space="preserve">
+    <value>поле {0} не указано</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleMissingParameters_message" xml:space="preserve">
+    <value>список parameters не указан или пуст</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnsupportedField_message" xml:space="preserve">
+    <value>поле {0} не поддерживается типом «{1}»</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnsupportedType_message" xml:space="preserve">
+    <value>неподдерживаемый тип «{0}»</value>
+  </data>
+  <data name="diagnosticConfiguration_ruleUnknown_message" xml:space="preserve">
+    <value>правило некорректно: {0}</value>
+  </data>
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
     <value>Конфигурацию диагностик не удалось разобрать, поэтому она считается пустой. Исправьте diagnostics.config.yaml и сохраните файл, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
   </data>
@@ -188,5 +227,6 @@
   <data name="welcome_showFailed_message" xml:space="preserve"><value>Не удалось показать окно знакомства.
 
 {0}</value></data>
+  <data name="configuration_openFailed_message" xml:space="preserve"><value>Не удалось открыть файл конфигурации.&#xA;&#xA;{0}</value></data>
   <data name="visualizationView_create_transaction" xml:space="preserve"><value>Создание вида визуализации Revit Linter</value></data>
 </root>

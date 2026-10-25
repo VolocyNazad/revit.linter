@@ -1,4 +1,5 @@
-using Revit.Linter.Core.Abstractions;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
+using Revit.Linter.ConfigurationPath.Services;
 using Revit.Linter.DiagnosticConfiguration;
 using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.DiagnosticConfiguration.Parsing;
@@ -38,51 +39,30 @@ public static class ConfigurationPathUtils
     /// </remarks>
     public const string DebugFolderName = "debug";
 
-    private static int _revitVersion =
-#if IS2021
-    2021;
-#elif IS2022
-    2022;
-#elif IS2023
-    2023;
-#elif IS2024
-    2024;
-#elif IS2025
-    2025;
-#elif IS2026
-    2026;
-#elif IS2027
-    2027;
-#else
-    throw new InvalidOperationException("Unsupported Revit version");
-#endif
+    private static readonly IConfigurationPaths _defaultPaths = new ConfigurationPaths();
 
     /// <summary>
     /// Gets the Revit release year this build targets, for example <c>2025</c>.
     /// </summary>
-    public static int RevitVersion => _revitVersion;
+    /// <remarks>Application code resolves <see cref="IConfigurationPaths"/> from dependency injection.</remarks>
+    public static int RevitVersion => _defaultPaths.RevitVersion;
 
     /// <summary>
     /// The configuration directory for the current Revit version under the user's Documents folder.
     /// </summary>
-    public static readonly string Directory = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        ProductIdentity.DocumentsFolderName,
-        _revitVersion.ToString()
-    );
+    public static string Directory => _defaultPaths.Directory;
 
     /// <summary>Gets the top-level user configuration file path for the current Revit version.</summary>
-    public static string ConfigPath => Path.Combine(Directory, DiagnosticsConfigFileName);
+    public static string ConfigPath => _defaultPaths.ConfigPath;
 
     /// <summary>Gets the example configuration file path for the current Revit version.</summary>
-    public static string ExampleConfigPath => Path.Combine(Directory, ExamplesFolderName, DiagnosticsConfigFileName);
+    public static string ExampleConfigPath => _defaultPaths.ExampleConfigPath;
 
     /// <summary>Gets the debug configuration file path for the current Revit version.</summary>
-    public static string DebugConfigPath => Path.Combine(Directory, DebugFolderName, DiagnosticsConfigFileName);
+    public static string DebugConfigPath => _defaultPaths.DebugConfigPath;
 
     /// <summary>Gets the managed practical-tour configuration file path.</summary>
-    public static string PracticalTourConfigPath =>
-        Path.Combine(Directory, TourFolderName, PracticalTourFileName);
+    public static string PracticalTourConfigPath => _defaultPaths.PracticalTourConfigPath;
 
     /// <summary>Gets the legacy element configuration file path, used only to detect an unmigrated folder.</summary>
     public static string LegacyConfigPath => Path.Combine(Directory, LegacyConfigFileName);
@@ -95,18 +75,7 @@ public static class ConfigurationPathUtils
         Path.Combine(Directory, LegacyParameterElementConfigFileName);
 
     /// <summary>Gets the legacy configuration files whose presence means the user has not migrated yet.</summary>
-    public static IReadOnlyList<string> LegacyConfigurationPaths { get; } =
-    [
-        LegacyConfigPath,
-        LegacyCollisionConfigPath,
-        LegacyParameterElementConfigPath,
-        Path.Combine(Directory, ExamplesFolderName, LegacyConfigFileName),
-        Path.Combine(Directory, ExamplesFolderName, LegacyCollisionConfigFileName),
-        Path.Combine(Directory, ExamplesFolderName, LegacyParameterElementConfigFileName),
-        Path.Combine(Directory, DebugFolderName, LegacyConfigFileName),
-        Path.Combine(Directory, DebugFolderName, LegacyCollisionConfigFileName),
-        Path.Combine(Directory, DebugFolderName, LegacyParameterElementConfigFileName),
-    ];
+    public static IReadOnlyList<string> LegacyConfigurationPaths => _defaultPaths.LegacyConfigurationPaths;
 
     /// <summary>
     /// Gets the header written into a newly created configuration file.
