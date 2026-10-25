@@ -23,6 +23,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
     private readonly Core.Abstractions.Services.IUserInterfaceActivityStream _activityStream;
+    private FilteredRowCollection<FixReportItemViewModel>? _rows;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
@@ -54,7 +55,10 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     [ObservableProperty]
     public partial ObservableCollection<FixReportItemViewModel> Collection { get; private set; }  = null!;
     partial void OnCollectionChanged(ObservableCollection<FixReportItemViewModel> value)
-        => InitializeCollectionView();
+    {
+        Rows.Attach(value);
+        CollectionViewSource = Rows.ViewSource;
+    }
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
@@ -69,28 +73,11 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
-
-    [ObservableProperty]
-    public partial IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> Filters { get; private set; } = [];
-    partial void OnFiltersChanged(
-        IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> oldValue,
-        IEnumerable<IDiagnosticFilter<FixReportItemViewModel>> newValue)
-    {
-        if (oldValue != null)
-            foreach (var filter in oldValue)
-                filter.PropertyChanged -= Filter_PropertyChanged;
-        if (newValue != null)
-            foreach (var filter in newValue)
-                filter.PropertyChanged += Filter_PropertyChanged;
-        RefreshCollectionView();
-    }
-    private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        => RefreshCollectionView();
+    partial void OnSearchFieldChanged(string value) => Rows.Refresh();
 
     [ObservableProperty]
     public partial string? TargetDocumentTitle { get; set; }
-    partial void OnTargetDocumentTitleChanged(string? value) => RefreshCollectionView();
+    partial void OnTargetDocumentTitleChanged(string? value) => Rows.Refresh();
 
     #region [SelectElement] Command - Select element
 
@@ -128,27 +115,15 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     #endregion
 
-    private void InitializeCollectionView()
-    {
-        CollectionViewSource = new()
-        {
-            Source = Collection
-        };
+    private FilteredRowCollection<FixReportItemViewModel> Rows => _rows ??=
+        new(
+            [new SortDescription(nameof(FixReportItemViewModel.Code), ListSortDirection.Ascending)],
+            IsRowVisible);
 
-        CollectionViewSource.Filter += CollectionViewSource_Filter;
-
-        CollectionViewSource.SortDescriptions.Clear();
-        CollectionViewSource.SortDescriptions.Add(
-            new SortDescription(nameof(FixReportItemViewModel.Code), ListSortDirection.Ascending));
-    }
-    private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
-
-    private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-       => args.Accepted = args.Item is FixReportItemViewModel viewModel
-        && (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
-       //&& Filters.Where(i => i.IsActive).Any(filter => filter.IsValid(viewModel))
-       && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-       || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
+    private bool IsRowVisible(FixReportItemViewModel viewModel)
+        => (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
+        && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
 
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {

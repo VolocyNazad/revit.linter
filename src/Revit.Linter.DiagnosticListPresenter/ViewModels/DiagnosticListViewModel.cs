@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
@@ -31,6 +31,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly ILogger<DiagnosticListViewModel> _logger;
     private readonly IDiagnosticConfigurationWriter _configurationWriter;
+    private readonly IConfigurationPaths _configurationPaths;
+    private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
@@ -40,7 +42,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     public partial ObservableCollection<DiagnosticItemViewModel> Collection { get; private set; } = null!;
     partial void OnCollectionChanged(ObservableCollection<DiagnosticItemViewModel> value)
     {
-        InitializeCollectionView();
+        Rows.Attach(value);
+        CollectionViewSource = Rows.ViewSource;
         RefreshFilters();
     }
 
@@ -53,7 +56,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     {
         // Search typing refreshes the list immediately; the tour observes the typed text
         // separately, so typing alone never completes a step that also asks for filter actions.
-        RefreshCollectionView();
+        Rows.Refresh();
         _activityStream.Publish(new DiagnosticSearchChangedActivity(value));
     }
 
@@ -62,21 +65,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     partial void OnFiltersChanged(
         IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> oldValue,
         IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> newValue)
-    {
-        if (oldValue != null)
-            foreach (var filter in oldValue)
-                filter.PropertyChanged -= Filter_PropertyChanged;
-        if (newValue != null)
-            foreach (var filter in newValue)
-                filter.PropertyChanged += Filter_PropertyChanged;
-        RefreshCollectionView();
-    }
-    private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        RefreshCollectionView();
-        if (!_isResettingFilters)
-            _activityStream.Publish(new DiagnosticListFilteredActivity());
-    }
+        => Rows.SetFilters("target-type", newValue);
 
     /// <summary>Clears the search box and re-enables every filter without publishing user activity.</summary>
     public void ResetSearchAndFilters()
@@ -145,7 +134,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     {
         try
         {
-            string directory = ConfigurationPathUtils.Directory;
+            string directory = _configurationPaths.Directory;
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
@@ -245,7 +234,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     #endregion
 
-    private static void UpdateIsActive(
+    private void UpdateIsActive(
         IEnumerable<DiagnosticItemViewModel> source,
         Func<bool, bool> transform)
     {
@@ -254,41 +243,62 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         // Only genuine transitions are written and published. Each write persists the same state to the
         // configuration file the row came from, so a bulk action over hidden rules cannot occur: hidden
         // rows are never part of the collection.
+        List<(DiagnosticItemViewModel Item, DiagnosticRuleStateUpdate Update)> changes = [];
         foreach (DiagnosticItemViewModel item in items)
         {
             bool before = item.IsActive;
             bool after = transform(before);
-            if (after != before)
-                item.IsActive = after;
+            if (after == before) continue;
+            if (item.CreateStateUpdate(after) is { } update)
+                changes.Add((item, update));
+        }
+
+        // One batch per configuration file: a bulk action rewrites each file once instead of once per
+        // row, and the rows of a failed file keep their previous state.
+        foreach (var file in changes.GroupBy(
+                     change => change.Item.ConfigurationPath!,
+                     StringComparer.OrdinalIgnoreCase))
+        {
+            DiagnosticRuleStateUpdate[] updates = file.Select(change => change.Update).ToArray();
+            try
+            {
+                _configurationWriter.UpdateStates(file.Key, updates);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "Failed to persist the state of {DiagnosticCount} diagnostics to {ConfigurationPath}",
+                    updates.Length, file.Key);
+                continue;
+            }
+
+            foreach (var change in file)
+                change.Item.ApplyPersistedState(change.Update.IsActive, change.Update.Severity);
         }
     }
 
-    private void InitializeCollectionView()
-    {
-        CollectionViewSource = new()
-        {
-            Source = Collection
-        };
+    private FilteredRowCollection<DiagnosticItemViewModel> Rows => _rows ??=
+        new(
+            [
+                new SortDescription(nameof(DiagnosticItemViewModel.IsTour), ListSortDirection.Descending),
+                new SortDescription(nameof(DiagnosticItemViewModel.IsDebug), ListSortDirection.Descending),
+                new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending),
+            ],
+            IsRowVisible,
+            OnFilterToggled);
 
-        CollectionViewSource.Filter += CollectionViewSource_Filter;
-
-        CollectionViewSource.SortDescriptions.Clear();
-        CollectionViewSource.SortDescriptions.Add(
-            new SortDescription(nameof(DiagnosticItemViewModel.IsTour), ListSortDirection.Descending));
-        CollectionViewSource.SortDescriptions.Add(
-            new SortDescription(nameof(DiagnosticItemViewModel.IsDebug), ListSortDirection.Descending));
-        CollectionViewSource.SortDescriptions.Add(
-            new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending));
-
-    }
-    private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
-
-    private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-        => args.Accepted = args.Item is DiagnosticItemViewModel viewModel
-        && Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
+    private bool IsRowVisible(DiagnosticItemViewModel viewModel)
+        => Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && (viewModel.Description.ToString().Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
         || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
         || DiagnosticTags.Matches(viewModel.Tags, SearchField));
+
+    private void OnFilterToggled()
+    {
+        if (!_isResettingFilters)
+            _activityStream.Publish(new DiagnosticListFilteredActivity());
+    }
 
     private void RefreshFilters()
     {

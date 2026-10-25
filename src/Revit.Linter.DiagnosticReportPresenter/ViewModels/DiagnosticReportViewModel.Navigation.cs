@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Revit.Linter.Core.Abstractions.Models;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Windows.Data;

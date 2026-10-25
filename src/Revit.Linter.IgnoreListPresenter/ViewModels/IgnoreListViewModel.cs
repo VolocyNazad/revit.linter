@@ -30,6 +30,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
     private readonly ILogger<IgnoreListViewModel> _logger;
+    private FilteredRowCollection<IgnoreListItemViewModel>? _rows;
     private Dispatcher? _dispatcher;
 
     private static readonly DocumentationPage PanePage = new("Ignoring pane", "Панель игнорирования");
@@ -61,14 +62,17 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     [ObservableProperty]
     public partial ObservableCollection<IgnoreListItemViewModel> Collection { get; private set; }
     partial void OnCollectionChanged(ObservableCollection<IgnoreListItemViewModel> value)
-        => InitializeCollectionView();
+    {
+        Rows.Attach(value);
+        CollectionViewSource = Rows.ViewSource;
+    }
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => RefreshCollectionView();
+    partial void OnSearchFieldChanged(string value) => Rows.Refresh();
 
     [ObservableProperty]
     public partial string? ActiveDocumentTitle { get; set; }
@@ -192,28 +196,14 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         _ = ReloadAsync(purgeMissing: revitEventType != RevitEventType.DocumentChanged);
     }
 
-    private void InitializeCollectionView()
-    {
-        CollectionViewSource = new()
-        {
-            Source = Collection
-        };
+    private FilteredRowCollection<IgnoreListItemViewModel> Rows => _rows ??=
+        new(
+            [new SortDescription(nameof(IgnoreListItemViewModel.Code), ListSortDirection.Ascending)],
+            IsRowVisible);
 
-        CollectionViewSource.Filter += CollectionViewSource_Filter;
-
-        CollectionViewSource.SortDescriptions.Clear();
-        CollectionViewSource.SortDescriptions.Add(
-            new SortDescription(nameof(IgnoreListItemViewModel.Code), ListSortDirection.Ascending));
-    }
-
-    private void RefreshCollectionView() => CollectionViewSource?.View.Refresh();
-
-    private void CollectionViewSource_Filter(object sender, FilterEventArgs args)
-    {
-        args.Accepted = args.Item is IgnoreListItemViewModel viewModel
-            && (viewModel.TargetText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-            || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
-    }
+    private bool IsRowVisible(IgnoreListItemViewModel viewModel)
+        => viewModel.TargetText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
+        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase);
 
     private async Task ReloadAsync(bool purgeMissing = false)
     {

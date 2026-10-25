@@ -19,7 +19,11 @@
   <data name="openConfigurationFolder_description" xml:space="preserve"><value>Opens the folder containing configuration files that define the linter rules.</value></data>
   <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>The configuration folder could not be opened.&#xA;&#xA;{0}</value></data>
   <data name="openConfigurationTitle_text" xml:space="preserve"><value>Open rule configuration</value></data>
-  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Opens the YAML file that defines this rule.</value></data>
+  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Opens the YAML file that defines this rule; the menu also offers the Windows "Open with" dialog, Notepad and showing the file in File Explorer.</value></data>
+  <data name="openConfiguration_text" xml:space="preserve"><value>Open</value></data>
+  <data name="openConfigurationWith_text" xml:space="preserve"><value>Open with…</value></data>
+  <data name="openConfigurationInNotepad_text" xml:space="preserve"><value>Open in Notepad</value></data>
+  <data name="revealConfigurationInExplorer_text" xml:space="preserve"><value>Show in File Explorer</value></data>
   <data name="openDocumentation_text" xml:space="preserve"><value>Rule documentation</value></data>
   <data name="openHelp_text" xml:space="preserve"><value>Documentation</value></data><data name="openHelp_description" xml:space="preserve"><value>Opens the documentation in the default browser. Hovering any control and pressing F1 while its tooltip is shown does the same.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Severity</value></data>

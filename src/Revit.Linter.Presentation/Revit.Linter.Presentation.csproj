@@ -1,9 +1,11 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
   <PropertyGroup>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Humanizer.Core.ru" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
     <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
@@ -14,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+    <ProjectReference Include="..\Revit.Linter.ReportMessaging\Revit.Linter.ReportMessaging.csproj" />
   </ItemGroup>
 </Project>
 

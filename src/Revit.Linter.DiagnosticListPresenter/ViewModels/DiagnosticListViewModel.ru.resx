@@ -19,7 +19,11 @@
   <data name="openConfigurationFolder_description" xml:space="preserve"><value>Открывает папку с файлами конфигурации, определяющими правила линтера.</value></data>
   <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value></data>
   <data name="openConfigurationTitle_text" xml:space="preserve"><value>Открыть конфигурацию правила</value></data>
-  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Открывает YAML-файл, которым задано это правило.</value></data>
+  <data name="openConfigurationDescription_text" xml:space="preserve"><value>Открывает YAML-файл, которым задано это правило; в меню также доступны «Открыть с помощью», Блокнот и показ файла в проводнике.</value></data>
+  <data name="openConfiguration_text" xml:space="preserve"><value>Открыть</value></data>
+  <data name="openConfigurationWith_text" xml:space="preserve"><value>Открыть с помощью…</value></data>
+  <data name="openConfigurationInNotepad_text" xml:space="preserve"><value>Открыть в Блокноте</value></data>
+  <data name="revealConfigurationInExplorer_text" xml:space="preserve"><value>Показать в проводнике</value></data>
   <data name="openDocumentation_text" xml:space="preserve"><value>Документация по проверке</value></data>
   <data name="openHelp_text" xml:space="preserve"><value>Документация</value></data><data name="openHelp_description" xml:space="preserve"><value>Открывает документацию в браузере. То же делает наведение на любой элемент и F1 при видимой подсказке.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Серьезность</value></data>
