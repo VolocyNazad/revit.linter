@@ -10,7 +10,7 @@ rules:
   code: "TOUR001"
   description: "Practical tour: review a model collision"
   tags: ["Project"]
-  message: "Сollision: element '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
+  message: "Collision: element '{elementName}' ({elementId}) intersects {intersection.count} element(s): '{intersection.elementNames}' ({intersection.elementIds})."
   severity: "Message"
   isActive: false
   takeDocument: "!property('IsFamilyDocument')"
