@@ -1,4 +1,4 @@
-namespace Revit.Linter.Presentation.ViewModels;
+namespace Revit.Linter.Core.Abstractions.Services;
 
 /// <summary>
 /// Identifies a Revit application event observed by an interaction view model.
@@ -21,5 +21,4 @@ public enum RevitEventType
     DocumentChanged,
     /// <summary>A family was loaded into a document.</summary>
     FamilyLoadedIntoDocument,
-
 }

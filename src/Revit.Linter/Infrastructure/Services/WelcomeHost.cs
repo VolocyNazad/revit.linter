@@ -36,6 +36,7 @@ internal sealed class WelcomeHost : IWelcomeHost
     private readonly IDialog _dialog;
     private readonly IDiagnosticListFilterReset _diagnosticListFilterReset;
     private readonly IConfigurationPaths _paths;
+    private readonly IShellLauncher _shellLauncher;
 
     public WelcomeHost(
         IRevitContext revitContext,
@@ -46,7 +47,8 @@ internal sealed class WelcomeHost : IWelcomeHost
         IRevitIdlingScheduler idlingScheduler,
         IDialog dialog,
         IDiagnosticListFilterReset diagnosticListFilterReset,
-        IConfigurationPaths paths)
+        IConfigurationPaths paths,
+        IShellLauncher shellLauncher)
     {
         _revitContext = revitContext;
         _localizer = localizer;
@@ -57,6 +59,7 @@ internal sealed class WelcomeHost : IWelcomeHost
         _dialog = dialog;
         _diagnosticListFilterReset = diagnosticListFilterReset;
         _paths = paths;
+        _shellLauncher = shellLauncher;
     }
 
     public string RibbonTabName => _localizer["ribbonTab_name"];
@@ -184,9 +187,9 @@ internal sealed class WelcomeHost : IWelcomeHost
         }
     }
 
-    public void OpenQuickStart() => ExternalPageLauncher.Open<WelcomeHost>(QuickStartPage.GetUrl());
+    public void OpenQuickStart() => _shellLauncher.OpenUrl(QuickStartPage.GetUrl());
 
-    public void OpenDocumentation() => ExternalPageLauncher.Open<WelcomeHost>(DocumentationUrl);
+    public void OpenDocumentation() => _shellLauncher.OpenUrl(DocumentationUrl);
 
-    public void OpenSupport() => ExternalPageLauncher.Open<WelcomeHost>(SupportUrl);
+    public void OpenSupport() => _shellLauncher.OpenUrl(SupportUrl);
 }

@@ -40,6 +40,10 @@ internal sealed partial class InitExternalApplication : ExternalApplication
     private DiagnosticCatalogNotifier? _diagnosticCatalogNotifier;
     private ValueStoreNotifier? _valueStoreNotifier;
 
+    // Cached at startup: the document-changed handler runs very often, so it must not resolve a service
+    // through the host provider on every model change.
+    private static RevitEventSource? _revitEvents;
+
     public override void OnStartup()
     {
         try
@@ -65,6 +69,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         InitializeRevitTransactionCache();
         _diagnosticCatalogNotifier = GetService<DiagnosticCatalogNotifier>();
         _valueStoreNotifier = GetService<ValueStoreNotifier>();
+        InitializeRevitEvents();
         RegisterDockablePanes();
         HidePracticalTourPaneWithoutSession();
 
@@ -91,6 +96,8 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         app.DocumentOpened += App_DocumentOpened;
         app.DocumentClosing += App_DocumentClosing;
         app.DocumentClosed += App_DocumentClosed;
+        app.DocumentChanged += App_DocumentChanged;
+        app.FamilyLoadedIntoDocument += App_FamilyLoadedIntoDocument;
         Application.ViewActivated += App_ViewActivated;
 
         GetService<ITutorialSampleCopyService>().CleanupAbandonedCopies(GetService<IConfigurationPaths>().RevitVersion);
@@ -132,6 +139,8 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             app.DocumentOpened -= App_DocumentOpened;
             app.DocumentClosing -= App_DocumentClosing;
             app.DocumentClosed -= App_DocumentClosed;
+            app.DocumentChanged -= App_DocumentChanged;
+            app.FamilyLoadedIntoDocument -= App_FamilyLoadedIntoDocument;
             Application.ViewActivated -= App_ViewActivated;
 
 #if !BEFORE2024
@@ -178,6 +187,8 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         GetService<IRevitTransactionMemoryCacheInitializer>().Initialize();
         DocumentElementCollectorCache.Initialize(GetService<IDocumentQueryService>());
     }
+
+    private static void InitializeRevitEvents() => _revitEvents = GetService<RevitEventSource>();
 
 
     private static T GetService<T>() where T : notnull => Program.Provider.GetRequiredService<T>();

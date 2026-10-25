@@ -54,12 +54,22 @@ them through `AddFormulaFactories`; a formula that cannot be compiled is logged,
 use it only at module composition boundaries, not as a general service locator.
 The project also holds what the presenter modules would otherwise each repeat: the view-model bases in
 `ViewModels` (`InitializableObservableObject` with the initialize and deinitialize commands, and
-`RevitInteractionViewModel`, which subscribes to Revit document and view events and reports them as
+`RevitInteractionViewModel`, which observes the host-published `IRevitEventSource` events and reports them as
 `RevitEventType`), `ReportRowViewModel` for the row state shared by the diagnostic and fix reports,
 `FilteredRowCollection` for the collection-view, sort and filter plumbing shared by the list panes, and
-`BindingProxy` for bindings outside the visual tree. Because of the Revit event subscriptions it references
-`Revit.Linter.Core` and the Revit API, and it references `Revit.Linter.ReportMessaging` for the shared
+`BindingProxy` for bindings outside the visual tree. Its row type works with Revit element identifiers, so it
+references `Revit.Linter.Core` and the Revit API, and it references `Revit.Linter.ReportMessaging` for the shared
 report message parser.
+`Revit.Linter.Core/Abstractions` owns the cross-project interaction contracts that the add-in host implements for
+the modules: `IRevitIdlingScheduler` and `IRevitEventSource` schedule work and publish Revit events,
+`IClipboardService`, `IShellLauncher` and `IDocumentationLauncher` reach the Windows desktop, and
+`IUserInterfaceActivityStream` publishes completed UI workflow facts. Implementations live in
+`src/Revit.Linter/Infrastructure/Services` and are registered by the host; modules depend only on the contracts.
+`Revit.Linter.DiagnosticReportPresenter.Interactions` is the interaction project of the diagnostic report
+presenter: it holds the contracts other modules and the host use for that presenter
+(`IDiagnosticReportPresenter`, `IVisualizationViewActivator`), so no consumer has to reference the presenter
+project for them. A presenter that needs such an outward contract gets a matching `<Module>.Interactions` project
+instead of exposing it from its implementation assembly.
 Each presenter project keeps the design-time data of its views next to them in `DesignData/`
 (`<ViewName>DesignData` classes wired through `d:DataContext` with `IsDesignTimeCreatable`); they exist for the XAML designer only,
 mirror the binding paths of their view and read the same localized resources, so the preview never

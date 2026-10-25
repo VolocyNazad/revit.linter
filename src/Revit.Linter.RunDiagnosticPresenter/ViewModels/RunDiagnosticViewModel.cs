@@ -23,6 +23,7 @@ namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, IDisposable
 {
     private readonly IRevitContext _revitContext;
+    private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticReportPresenter _diagnosticReportPresenter;
@@ -39,6 +40,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, 
     /// </summary>
     /// <param name="revitContext">Provides the current Revit document and application.</param>
     /// <param name="idlingScheduler">Schedules subscription work in a valid Revit API context.</param>
+    /// <param name="revitEventSource">Publishes the Revit application events the view model reacts to.</param>
     /// <param name="diagnosticService">Executes registered diagnostics.</param>
     /// <param name="diagnosticCatalog">Provides the catalog snapshot that lists the enabled diagnostics.</param>
     /// <param name="diagnosticReportViewModel">Presents and refreshes diagnostic results.</param>
@@ -47,16 +49,17 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, 
     /// <param name="store">Persists diagnostic-run settings.</param>
     /// <param name="dialog">Displays diagnostic execution failures.</param>
     public RunDiagnosticViewModel(
-            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
+            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler, IRevitEventSource revitEventSource,
             IDiagnosticService diagnosticService,
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticReportPresenter diagnosticReportViewModel,
             IDiagnosticReportPaneActivator diagnosticReportPaneActivator,
             IUserInterfaceActivityStream activityStream,
             IValueStore<RunDiagnosticSettings> store,
-            IDialog dialog) : base(idlingScheduler)
+            IDialog dialog) : base(revitEventSource)
     {
         _revitContext = revitContext;
+        _idlingScheduler = idlingScheduler;
         _diagnosticService = diagnosticService;
         _diagnosticCatalog = diagnosticCatalog;
         _diagnosticReportPresenter = diagnosticReportViewModel;

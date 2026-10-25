@@ -1,7 +1,8 @@
 using Autodesk.Revit.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using Revit.Linter.Core.Abstractions;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Infrastructure.ExternalCommands;
-using Revit.Linter.Infrastructure.Utils;
 
 namespace Revit.Linter;
 
@@ -11,5 +12,6 @@ namespace Revit.Linter;
 public sealed class OpenSupportCommand : ExternalCommand
 {
     /// <inheritdoc />
-    public override void Execute() => ExternalPageLauncher.Open<OpenSupportCommand>(ProductIdentity.SupportUrl);
+    public override void Execute() =>
+        Program.Provider.GetRequiredService<IShellLauncher>().OpenUrl(ProductIdentity.SupportUrl);
 }

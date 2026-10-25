@@ -98,6 +98,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IDiagnosticReportExportService _exportService;
+    private readonly IClipboardService _clipboardService;
+    private readonly IRevitIdlingScheduler _idlingScheduler;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
@@ -115,7 +117,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
 
     public DiagnosticReportViewModel(
-            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler,
+            IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler, IRevitEventSource revitEventSource,
             IEnumerable<IAccentElementsService> accentElementsServices,
             IFixReportSender fixReportSender,
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
@@ -125,14 +127,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
             IVisualizationViewActivator visualizationViewActivator,
-            IDiagnosticReportExportService exportService,
+            IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             OpenedDocumentsViewModel openedDocumentsViewModel,
-            ILogger<DiagnosticReportViewModel> logger) : base(idlingScheduler)
+            ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
         _accentElementsServices = accentElementsServices;
         _diagnosticReportReceiver = diagnosticReportReceiver;
         _elementChangesReceiver = elementChangesReceiver;
         _revitContext = revitContext;
+        _idlingScheduler = idlingScheduler;
         _fixReportSender = fixReportSender;
         _diagnosticCatalog = diagnosticCatalog;
         _diagnosticService = diagnosticService;
@@ -144,6 +147,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
+        _clipboardService = clipboardService;
         OpenedDocumentsViewModel = openedDocumentsViewModel;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();

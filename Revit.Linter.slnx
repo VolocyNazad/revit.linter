@@ -184,6 +184,9 @@
     <Project Path="tests/Revit.Linter.Localization.Artifact.Tests/Revit.Linter.Localization.Artifact.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.Presentation.Tests/Revit.Linter.Presentation.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.ProjectParameterManaging.RevitTests/Revit.Linter.ProjectParameterManaging.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>

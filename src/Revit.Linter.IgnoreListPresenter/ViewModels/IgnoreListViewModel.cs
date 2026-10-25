@@ -37,7 +37,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
 
     public IgnoreListViewModel(
         IRevitContext revitContext,
-        IRevitIdlingScheduler idlingScheduler,
+        IRevitEventSource revitEventSource,
         IIgnoreListManager ignoreListManager,
         IEnumerable<IAccentElementsService> accentElementsServices,
         IDialog dialog,
@@ -45,7 +45,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         IDocumentationLauncher documentationLauncher,
         IUserInterfaceActivityStream activityStream,
         ILogger<IgnoreListViewModel> logger)
-        : base(idlingScheduler)
+        : base(revitEventSource)
     {
         _revitContext = revitContext;
         _ignoreListManager = ignoreListManager;

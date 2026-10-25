@@ -228,5 +228,6 @@
 
 {0}</value></data>
   <data name="configuration_openFailed_message" xml:space="preserve"><value>Не удалось открыть файл конфигурации.&#xA;&#xA;{0}</value></data>
+  <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>Не удалось открыть папку конфигурации.&#xA;&#xA;{0}</value></data>
   <data name="visualizationView_create_transaction" xml:space="preserve"><value>Создание вида визуализации Revit Linter</value></data>
 </root>

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
-using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Localization;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
@@ -12,7 +11,7 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 internal sealed partial class DiagnosticItemViewModel(
     IUserInterfaceActivityStream activityStream,
     IDiagnosticConfigurationWriter configurationWriter,
-    IConfigurationFileLauncher configurationFileLauncher,
+    IShellLauncher shellLauncher,
     ILogger<DiagnosticItemViewModel> logger) : ObservableObject
 {
     private const string ResourceBaseName =
@@ -106,11 +105,11 @@ internal sealed partial class DiagnosticItemViewModel(
     private void OpenDocumentation() => OpenDocumentationDelegate?.Invoke();
 
     private void LaunchConfiguration(
-        Func<IConfigurationFileLauncher, string, bool> launch,
+        Func<IShellLauncher, string, bool> launch,
         bool publishOpenedActivity)
     {
         if (ConfigurationPath is not { Length: > 0 } path) return;
-        if (!launch(configurationFileLauncher, path)) return;
+        if (!launch(shellLauncher, path)) return;
         // Showing the file in Explorer is not opening it, so the tour does not see it as opening the rule.
         if (publishOpenedActivity)
             activityStream.Publish(new RuleConfigurationOpenedActivity(Code));

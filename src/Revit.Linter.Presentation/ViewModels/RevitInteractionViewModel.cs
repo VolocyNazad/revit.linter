@@ -1,75 +1,49 @@
-using Autodesk.Revit.DB.Events;
-using Autodesk.Revit.UI.Events;
 using Revit.Linter.Core.Abstractions.Services;
 
 namespace Revit.Linter.Presentation.ViewModels;
 
 /// <summary>
-/// Maintains Revit event subscriptions for view models that react to document and view changes.
+/// Maintains the Revit event subscription state of view models that react to document and view changes.
 /// </summary>
+/// <remarks>
+/// The add-in host owns the Revit subscription and publishes the events through
+/// <see cref="IRevitEventSource"/>. A view model only observes that source while it is initialized, so it
+/// never needs a Revit API context to subscribe and its reaction can be tested without Revit.
+/// </remarks>
 [XamlConstructor]
 public abstract partial class RevitInteractionViewModel : InitializableObservableObject
 {
-    /// <summary>
-    /// Schedules work in a valid Revit API context.
-    /// </summary>
-    protected readonly IRevitIdlingScheduler _idlingScheduler;
+    private readonly IRevitEventSource _revitEventSource;
 
     /// <summary>
-    /// Initializes the view model with a scheduler for Revit API work.
+    /// Initializes the view model with the source of the Revit application events it observes.
     /// </summary>
-    /// <param name="idlingScheduler">Schedules work in a valid Revit API context.</param>
-    protected RevitInteractionViewModel(IRevitIdlingScheduler idlingScheduler)
+    /// <param name="revitEventSource">Publishes the Revit application events the view model reacts to.</param>
+    protected RevitInteractionViewModel(IRevitEventSource revitEventSource)
     {
-        _idlingScheduler = idlingScheduler;
+        _revitEventSource = revitEventSource;
     }
 
     /// <inheritdoc />
-    protected override async Task OnInitializing(CancellationToken cancellationToken = default)
+    protected override Task OnInitializing(CancellationToken cancellationToken = default)
     {
-        await _idlingScheduler.RunAsync(uiapp => {
-            uiapp.ViewActivated += ViewActivated;
-            uiapp.ViewActivated += DocumentFocusChanged;
-            var app = uiapp.Application;
-            app.DocumentClosed += DocumentClosed;
-            app.DocumentOpened += DocumentOpened;
-            app.DocumentCreated += DocumentCreated;
-            app.DocumentChanged += DocumentChanged;
-            app.FamilyLoadedIntoDocument += FamilyLoadedIntoDocument;
-        }, cancellationToken);
-
+        _revitEventSource.Changed += OnRevitEventSourceChanged;
+        return Task.CompletedTask;
     }
+
     /// <inheritdoc />
-    protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
+    protected override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
-        await _idlingScheduler.RunAsync(uiapp => {
-            uiapp.ViewActivated -= ViewActivated;
-            uiapp.ViewActivated -= DocumentFocusChanged;
-            var app = uiapp.Application;
-            app.DocumentClosed -= DocumentClosed;
-            app.DocumentOpened -= DocumentOpened;
-            app.DocumentCreated -= DocumentCreated;
-            app.DocumentChanged -= DocumentChanged;
-            app.FamilyLoadedIntoDocument -= FamilyLoadedIntoDocument;
-        }, cancellationToken);
+        _revitEventSource.Changed -= OnRevitEventSourceChanged;
+        return Task.CompletedTask;
     }
 
-    private void FamilyLoadedIntoDocument(object? sender, FamilyLoadedIntoDocumentEventArgs e) => OnRevitChanged(RevitEventType.FamilyLoadedIntoDocument);
-    private void DocumentChanged(object? sender, DocumentChangedEventArgs e) => OnRevitChanged(RevitEventType.DocumentChanged);
-    private void ViewActivated(object? sender, ViewActivatedEventArgs e) => OnRevitChanged(RevitEventType.ViewActivated);
-    private void DocumentCreated(object? sender, DocumentCreatedEventArgs e) => OnRevitChanged(RevitEventType.DocumentCreated);
-    private void DocumentOpened(object? sender, DocumentOpenedEventArgs e) => OnRevitChanged(RevitEventType.DocumentOpened);
-    private void DocumentClosed(object? sender, DocumentClosedEventArgs e) => OnRevitChanged(RevitEventType.DocumentClosed);
-    private void DocumentFocusChanged(object? sender, ViewActivatedEventArgs e)
-    {
-        if (e.CurrentActiveView is null || e.PreviousActiveView is null) return;
-        if (e.CurrentActiveView.Document.Equals(e.PreviousActiveView.Document)) return;
-        OnRevitChanged(RevitEventType.DocumentFocusChanged);
-    }
+    private void OnRevitEventSourceChanged(RevitEventType revitEventType) => OnRevitChanged(revitEventType);
 
     /// <summary>
     /// Responds to a subscribed Revit application event.
     /// </summary>
     /// <param name="revitEventType">The kind of Revit change that occurred.</param>
+    /// <remarks>The host raises the event on the Revit thread, once for every initialized view model.</remarks>
     protected abstract void OnRevitChanged(RevitEventType revitEventType);
 }

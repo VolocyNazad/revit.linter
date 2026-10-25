@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
@@ -18,12 +18,12 @@ public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
     private readonly IRevitContext _revitContext;
 
     /// <summary>
-    /// Initializes the view model with the current Revit context and API scheduler.
+    /// Initializes the view model with the current Revit context and the observed Revit events.
     /// </summary>
     /// <param name="revitContext">Provides access to the current Revit application.</param>
-    /// <param name="idlingScheduler">Schedules subscription work in a valid Revit API context.</param>
+    /// <param name="revitEventSource">Publishes the Revit application events the view model reacts to.</param>
     public OpenedDocumentsViewModel(
-        IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler) : base(idlingScheduler)
+        IRevitContext revitContext, IRevitEventSource revitEventSource) : base(revitEventSource)
     {
         _revitContext = revitContext;
     }

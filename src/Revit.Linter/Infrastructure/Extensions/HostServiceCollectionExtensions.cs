@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
-using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.RunDiagnosticPresenter.Abstractions;
@@ -31,8 +30,11 @@ internal static class HostServiceCollectionExtensions
             .AddSingleton<ITutorialSampleCatalog, AutodeskTutorialSampleCatalog>()
             .AddSingleton<TutorialSampleOpenRequest>()
             .AddSingleton<IDocumentationLauncher, DocumentationLauncher>()
-            .AddSingleton<IConfigurationFileLauncher, ConfigurationFileLauncher>()
+            .AddSingleton<IShellLauncher, ShellLauncher>()
+            .AddSingleton<IClipboardService, ClipboardService>()
             .AddSingleton<IUserInterfaceActivityStream, UserInterfaceActivityStream>()
+            .AddSingleton<RevitEventSource>()
+            .AddSingleton<IRevitEventSource>(provider => provider.GetRequiredService<RevitEventSource>())
             .AddSingleton<IDiagnosticReportPaneActivator, DiagnosticReportPaneActivator>()
             .AddSingleton<IVisualizationViewActivator, VisualizationViewActivator>()
             .AddSingleton<DiagnosticCatalogNotifier>()

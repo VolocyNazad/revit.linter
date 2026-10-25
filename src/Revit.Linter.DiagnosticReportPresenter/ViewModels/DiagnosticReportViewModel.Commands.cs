@@ -6,7 +6,6 @@ using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.Localization;
 using System.Globalization;
 using System.Reflection;
-using System.Windows;
 
 namespace Revit.Linter.DiagnosticReportPresenter.ViewModels;
 
@@ -14,9 +13,16 @@ internal sealed partial class DiagnosticReportViewModel
 {
     #region [CopyToClipboard] Command - Copy text to clipboard
 
-    /// <summary> Copy text to clipboard </summary>
+    /// <summary>
+    /// Copies the text of a report row to the clipboard.
+    /// </summary>
+    /// <param name="item">The row whose text is copied.</param>
+    /// <remarks>
+    /// A refused or busy clipboard is reported by <see cref="IClipboardService"/>; the command has no
+    /// further effect to undo, so the failure stays silent for the user.
+    /// </remarks>
     [RelayCommand]
-    private void CopyToClipboard(object item) => Clipboard.SetText(item.ToString() ?? string.Empty);
+    private void CopyToClipboard(object item) => _clipboardService.TrySetText(item.ToString() ?? string.Empty);
 
     #endregion
 

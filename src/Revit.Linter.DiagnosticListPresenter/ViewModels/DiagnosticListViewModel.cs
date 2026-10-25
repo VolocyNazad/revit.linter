@@ -11,7 +11,6 @@ using Revit.Linter.Localization;
 using Revit.Linter.Presentation.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Data;
 using System.Windows.Threading;
@@ -32,6 +31,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly ILogger<DiagnosticListViewModel> _logger;
     private readonly IDiagnosticConfigurationWriter _configurationWriter;
     private readonly IConfigurationPaths _configurationPaths;
+    private readonly IShellLauncher _shellLauncher;
     private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
@@ -138,15 +138,14 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = directory,
-                UseShellExecute = true,
-            });
-            _activityStream.Publish(new ConfigurationFolderOpenedActivity());
+            // The shell launcher reports a refused launch itself; the command only records the completed
+            // user action, so an opening failure does not also raise a second dialog here.
+            if (_shellLauncher.OpenFolder(directory))
+                _activityStream.Publish(new ConfigurationFolderOpenedActivity());
         }
         catch (Exception exception)
         {
+            _logger.LogError(exception, "Failed to prepare the diagnostic configuration folder");
             await _dialog.Show(
                 new DialogRequest(GetLocalizedString("configurationFolder_openFailed_message", exception.Message)),
                 cancellationToken);
