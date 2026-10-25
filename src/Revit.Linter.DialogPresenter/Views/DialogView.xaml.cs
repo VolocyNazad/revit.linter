@@ -1,5 +1,6 @@
-﻿namespace Revit.Linter.DialogPresenter.Views;
+namespace Revit.Linter.DialogPresenter.Views;
 
+/// <summary>Displays a modal informational dialog.</summary>
 public sealed partial class DialogView
 {
     /// <summary>

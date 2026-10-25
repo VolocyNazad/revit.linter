@@ -60,32 +60,25 @@ internal sealed class RevitIdlingScheduler : IRevitIdlingScheduler, IDisposable
         if (_disposed) throw new ObjectDisposedException(nameof(RevitIdlingScheduler));
     }
 
-    private sealed class ScheduledAction
+    private sealed class ScheduledAction(
+        Action<UIApplication> action, CancellationToken cancellationToken)
     {
-        private readonly Action<UIApplication> _action;
-        private readonly CancellationToken _cancellationToken;
         private readonly TaskCompletionSource<object?> _completionSource =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        public ScheduledAction(Action<UIApplication> action, CancellationToken cancellationToken)
-        {
-            _action = action;
-            _cancellationToken = cancellationToken;
-        }
 
         public Task Task => _completionSource.Task;
 
         public void Execute(UIApplication uiApplication)
         {
-            if (_cancellationToken.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
             {
-                _completionSource.TrySetCanceled(_cancellationToken);
+                _completionSource.TrySetCanceled(cancellationToken);
                 return;
             }
 
             try
             {
-                _action(uiApplication);
+                action(uiApplication);
                 _completionSource.TrySetResult(null);
             }
             catch (Exception exception)

@@ -6,6 +6,9 @@ using Revit.Linter.Localization;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
 
+/// <summary>
+/// Presents the current practical-tour step, the visible step list and the commands the tour pane offers.
+/// </summary>
 [GenerateLocalizedProperties]
 internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine stateMachine) : ObservableObject
 {
@@ -217,6 +220,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     }
 }
 
+/// <summary>Describes one visible row of the practical-tour step list.</summary>
 internal sealed record PracticalTourStepRow(
     string Title,
     string Instruction,

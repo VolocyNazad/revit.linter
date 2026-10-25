@@ -15,6 +15,11 @@ using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
+/// <summary>
+/// Controls the modeless practical-tour session: installs the managed training configuration, advances the
+/// tour from observed UI facts and persists the progress per Revit version.
+/// </summary>
+/// <remarks>A failure closes the session and leaves the add-in, the document and the other panes unaffected.</remarks>
 internal sealed class PracticalTour(
     IThemeService themeService,
     IUserInterfaceActivityStream activityStream,

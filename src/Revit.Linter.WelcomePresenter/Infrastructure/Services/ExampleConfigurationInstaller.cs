@@ -9,7 +9,13 @@ using System.Text;
 
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
-internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInstaller
+/// <summary>
+/// Installs the shipped example configuration and the managed practical-tour configuration for the running
+/// Revit version without overwriting user files.
+/// </summary>
+internal sealed class ExampleConfigurationInstaller(
+    ILogger<ExampleConfigurationInstaller> logger,
+    IConfigurationPaths paths) : IExampleConfigurationInstaller
 {
     internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
     internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
@@ -28,16 +34,7 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
     private const string ResourcePrefix = "Revit.Linter.WelcomePresenter.Examples.";
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
-    private readonly ILogger<ExampleConfigurationInstaller> _logger;
-    private readonly IConfigurationPaths _paths;
-
-    public ExampleConfigurationInstaller(ILogger<ExampleConfigurationInstaller> logger, IConfigurationPaths paths)
-    {
-        _logger = logger;
-        _paths = paths;
-    }
-
-    public string TargetDirectory => _paths.Directory;
+    public string TargetDirectory => paths.Directory;
 
     public ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines)
     {
@@ -46,9 +43,9 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
             TargetDirectory,
             disciplines,
             fileName => ReadTemplate(language, fileName),
-            _paths.RevitVersion < FirstRevitVersionWithGroupTypeIds);
+            paths.RevitVersion < FirstRevitVersionWithGroupTypeIds);
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "Installed the example configuration for {Disciplines} into {Directory}: {Files}",
             disciplines, TargetDirectory, result.Files.Select(file => file.Path));
         return result;
@@ -61,15 +58,15 @@ internal sealed class ExampleConfigurationInstaller : IExampleConfigurationInsta
         bool hadStaleConfiguration = File.Exists(stalePath);
         string path = InstallPracticalTour(TargetDirectory, fileName => ReadTemplate(language, fileName));
         if (hadStaleConfiguration)
-            _logger.LogInformation("Removed the superseded practical-tour configuration at {ConfigurationPath}", stalePath);
-        _logger.LogInformation("Installed practical-tour diagnostic configuration into {ConfigurationPath}", path);
+            logger.LogInformation("Removed the superseded practical-tour configuration at {ConfigurationPath}", stalePath);
+        logger.LogInformation("Installed practical-tour diagnostic configuration into {ConfigurationPath}", path);
         return path;
     }
 
     public void RemovePracticalTour()
     {
         if (RemovePracticalTour(TargetDirectory))
-            _logger.LogInformation("Removed the practical-tour diagnostic configuration.");
+            logger.LogInformation("Removed the practical-tour diagnostic configuration.");
     }
 
     /// <summary>

@@ -2,6 +2,7 @@ using Revit.Linter.ThemeManaging.Abstractions.Services;
 
 namespace Revit.Linter.DiagnosticReportPresenter.Views;
 
+/// <summary>Displays the diagnostic findings of the active document inside a dockable pane.</summary>
 public sealed partial class DiagnosticReportView
 {
     /// <summary>

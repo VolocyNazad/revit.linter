@@ -13,8 +13,23 @@ using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
 
+/// <summary>
+/// Presents the welcome wizard: it decides which steps are pending, navigates between them and starts the
+/// practical tour when the user finishes.
+/// </summary>
 [GenerateLocalizedProperties]
-internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizard
+internal sealed partial class WelcomeViewModel(
+    IValueStore<WelcomeSettings> settingsStore,
+    IWelcomeHost host,
+    IPracticalTour practicalTour,
+    ILogger<WelcomeViewModel> logger,
+    WelcomeIntroStepViewModel introStep,
+    WelcomeRulesStepViewModel rulesStep,
+    WelcomeExamplesStepViewModel examplesStep,
+    WelcomePracticalStepViewModel practicalStep,
+    WelcomeFinishStepViewModel finishStep,
+    WelcomeWindowFactory windowFactory,
+    IConfigurationPaths paths) : ObservableObject, IWelcomeWizard
 {
     /// <summary>
     /// The version of the wizard content. Increase it when a new step or new important information must be
@@ -22,44 +37,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     /// </summary>
     internal const int CurrentWizardVersion = 3;
 
-    private readonly IValueStore<WelcomeSettings> _settingsStore;
-    private readonly IWelcomeHost _host;
-    private readonly ILogger<WelcomeViewModel> _logger;
-    private readonly IPracticalTour _practicalTour;
-    private readonly WelcomeIntroStepViewModel _introStep;
-    private readonly WelcomeRulesStepViewModel _rulesStep;
-    private readonly WelcomeExamplesStepViewModel _examplesStep;
-    private readonly WelcomePracticalStepViewModel _practicalStep;
-    private readonly WelcomeFinishStepViewModel _finishStep;
-    private readonly WelcomeWindowFactory _windowFactory;
-    private readonly IConfigurationPaths _paths;
     private int _currentIndex;
-
-    public WelcomeViewModel(
-        IValueStore<WelcomeSettings> settingsStore,
-        IWelcomeHost host,
-        IPracticalTour practicalTour,
-        ILogger<WelcomeViewModel> logger,
-        WelcomeIntroStepViewModel introStep,
-        WelcomeRulesStepViewModel rulesStep,
-        WelcomeExamplesStepViewModel examplesStep,
-        WelcomePracticalStepViewModel practicalStep,
-        WelcomeFinishStepViewModel finishStep,
-        WelcomeWindowFactory windowFactory,
-        IConfigurationPaths paths)
-    {
-        _settingsStore = settingsStore;
-        _host = host;
-        _practicalTour = practicalTour;
-        _logger = logger;
-        _introStep = introStep;
-        _rulesStep = rulesStep;
-        _examplesStep = examplesStep;
-        _practicalStep = practicalStep;
-        _finishStep = finishStep;
-        _windowFactory = windowFactory;
-        _paths = paths;
-    }
 
     public ObservableCollection<WelcomeStepViewModel> Steps { get; } = [];
 
@@ -85,7 +63,7 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
     public bool ShowIfNeeded()
     {
         WelcomeWizardPlan plan = WelcomeWizardState.GetPendingPlan(
-            _settingsStore.CurrentValue, CurrentWizardVersion, _paths.RevitVersion);
+            settingsStore.CurrentValue, CurrentWizardVersion, paths.RevitVersion);
         if (!plan.HasSteps) return false;
 
         ShowSteps(plan);
@@ -99,48 +77,48 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
         Steps.Clear();
         if (plan.IncludeIntro)
         {
-            Steps.Add(_introStep);
-            Steps.Add(_rulesStep);
+            Steps.Add(introStep);
+            Steps.Add(rulesStep);
         }
-        if (plan.IncludeExamples) Steps.Add(_examplesStep);
-        Steps.Add(_practicalStep);
-        Steps.Add(_finishStep);
+        if (plan.IncludeExamples) Steps.Add(examplesStep);
+        Steps.Add(practicalStep);
+        Steps.Add(finishStep);
         for (int index = 0; index < Steps.Count; index++)
             Steps[index].Number = index + 1;
         MoveTo(0);
 
-        Window window = _windowFactory.Create(this);
+        Window window = windowFactory.Create(this);
         DialogResult = null;
 
         bool finished = window.ShowDialog() == true;
         DialogResult = null;
 
         // Closing the window in any way counts as shown; the ribbon command reopens the wizard.
-        _settingsStore.Update(settings => WelcomeWizardState.MarkShown(
-            settings, plan, CurrentWizardVersion, _paths.RevitVersion));
-        _logger.LogInformation(
+        settingsStore.Update(settings => WelcomeWizardState.MarkShown(
+            settings, plan, CurrentWizardVersion, paths.RevitVersion));
+        logger.LogInformation(
             "Welcome wizard closed (finished: {Finished}, examples installed: {ExamplesInstalled})",
-            finished, _examplesStep.IsInstalled);
+            finished, examplesStep.IsInstalled);
 
         if (finished)
         {
-            bool sampleQueued = _practicalStep.StartPracticalTour
-                && _practicalStep.PrepareTutorialSample(_paths.RevitVersion);
-            if (_practicalStep.StartPracticalTour && _host.HasOpenDocument) _host.ShowPanes();
+            bool sampleQueued = practicalStep.StartPracticalTour
+                && practicalStep.PrepareTutorialSample(paths.RevitVersion);
+            if (practicalStep.StartPracticalTour && host.HasOpenDocument) host.ShowPanes();
             if (sampleQueued)
-                _practicalTour.Start(hasOpenDocument: false, restart: true, tutorialSampleQueued: true);
-            else if (_practicalStep.StartPracticalTour)
-                _practicalTour.Start(_host.HasOpenDocument);
+                practicalTour.Start(hasOpenDocument: false, restart: true, tutorialSampleQueued: true);
+            else if (practicalStep.StartPracticalTour)
+                practicalTour.Start(host.HasOpenDocument);
             else
                 // The user refused the tour: no session starts, so a restored pane would stay
                 // visible with no content. Hide it; the ribbon command resumes the tour later.
-                _practicalTour.HidePaneIfInactive();
+                practicalTour.HidePaneIfInactive();
         }
         else
         {
             // The wizard was cancelled without starting the tour: same as a refusal, there is
             // no session to fill a restored pane.
-            _practicalTour.HidePaneIfInactive();
+            practicalTour.HidePaneIfInactive();
         }
     }
 
@@ -170,13 +148,13 @@ internal sealed partial class WelcomeViewModel : ObservableObject, IWelcomeWizar
             Steps[stepIndex].IsCurrent = stepIndex == index;
         CurrentStep = Steps[index];
 
-        if (ReferenceEquals(CurrentStep, _practicalStep))
+        if (ReferenceEquals(CurrentStep, practicalStep))
         {
             List<ExampleDiscipline> disciplines = [];
-            if (_examplesStep.IsMepSelected) disciplines.Add(ExampleDiscipline.Mep);
-            if (_examplesStep.IsArchitectureSelected) disciplines.Add(ExampleDiscipline.Architecture);
-            if (_examplesStep.IsStructureSelected) disciplines.Add(ExampleDiscipline.Structure);
-            _practicalStep.RefreshTutorialSamples(disciplines);
+            if (examplesStep.IsMepSelected) disciplines.Add(ExampleDiscipline.Mep);
+            if (examplesStep.IsArchitectureSelected) disciplines.Add(ExampleDiscipline.Architecture);
+            if (examplesStep.IsStructureSelected) disciplines.Add(ExampleDiscipline.Structure);
+            practicalStep.RefreshTutorialSamples(disciplines);
         }
 
         OnPropertyChanged(nameof(IsLastStep));

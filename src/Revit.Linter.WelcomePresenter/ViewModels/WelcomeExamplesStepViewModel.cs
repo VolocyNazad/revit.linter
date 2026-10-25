@@ -9,25 +9,19 @@ using System.IO;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
 
+/// <summary>
+/// Presents the optional example-configuration step and installs the example for the selected disciplines.
+/// </summary>
 [GenerateLocalizedProperties]
-internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewModel
+internal sealed partial class WelcomeExamplesStepViewModel(
+    IExampleConfigurationInstaller installer,
+    ILogger<WelcomeExamplesStepViewModel> logger) : WelcomeStepViewModel
 {
-    private readonly IExampleConfigurationInstaller _installer;
-    private readonly ILogger<WelcomeExamplesStepViewModel> _logger;
-
-    public WelcomeExamplesStepViewModel(
-        IExampleConfigurationInstaller installer,
-        ILogger<WelcomeExamplesStepViewModel> logger)
-    {
-        _installer = installer;
-        _logger = logger;
-    }
-
     public override string Title => TitleText;
 
     public override string Caption => CaptionText;
 
-    public string TargetInfo => GetLocalizedString("target_format", _installer.TargetDirectory);
+    public string TargetInfo => GetLocalizedString("target_format", installer.TargetDirectory);
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
@@ -69,19 +63,19 @@ internal sealed partial class WelcomeExamplesStepViewModel : WelcomeStepViewMode
 
         try
         {
-            ExampleInstallationResult result = _installer.Install(disciplines);
+            ExampleInstallationResult result = installer.Install(disciplines);
 
             IsInstalled = true;
             InstallationFeedback = GetLocalizedString(
                 "installed_format",
                 result.Files.Count,
-                Path.Combine(_installer.TargetDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
+                Path.Combine(installer.TargetDirectory, ExampleConfigurationInstaller.ExamplesFolderName));
             StatusMessage = null;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            _logger.LogError(
-                exception, "Failed to install example configurations into {Directory}", _installer.TargetDirectory);
+            logger.LogError(
+                exception, "Failed to install example configurations into {Directory}", installer.TargetDirectory);
             StatusMessage = GetLocalizedString("failed_format", exception.Message);
             InstallationFeedback = null;
         }

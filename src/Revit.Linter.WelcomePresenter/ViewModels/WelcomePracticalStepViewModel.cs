@@ -12,29 +12,13 @@ namespace Revit.Linter.WelcomePresenter.ViewModels;
 
 /// <summary>Configures the optional practical tour and its Autodesk sample.</summary>
 [GenerateLocalizedProperties]
-internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewModel
+internal sealed partial class WelcomePracticalStepViewModel(
+    IWelcomeHost host,
+    ITutorialSampleCatalog sampleCatalog,
+    ITutorialSampleCopyService sampleCopyService,
+    IPracticalTour practicalTour,
+    ILogger<WelcomePracticalStepViewModel> logger) : WelcomeStepViewModel
 {
-    private readonly IWelcomeHost _host;
-    private readonly ITutorialSampleCatalog _sampleCatalog;
-    private readonly ITutorialSampleCopyService _sampleCopyService;
-    private readonly ILogger<WelcomePracticalStepViewModel> _logger;
-    private readonly IPracticalTour _practicalTour;
-
-    public WelcomePracticalStepViewModel(
-        IWelcomeHost host,
-        ITutorialSampleCatalog sampleCatalog,
-        ITutorialSampleCopyService sampleCopyService,
-        IPracticalTour practicalTour,
-        ILogger<WelcomePracticalStepViewModel> logger)
-    {
-        _host = host;
-        _sampleCatalog = sampleCatalog;
-        _sampleCopyService = sampleCopyService;
-        _practicalTour = practicalTour;
-        _logger = logger;
-        StartPracticalTour = true;
-    }
-
     public override string Title => TitleText;
 
     public override string Caption => CaptionText;
@@ -45,7 +29,7 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
         get
         {
             if (!StartPracticalTour) return SkipTourText;
-            if (_host.HasOpenDocument) return StartWithOpenDocumentText;
+            if (host.HasOpenDocument) return StartWithOpenDocumentText;
             return UseTutorialSample && SelectedTutorialSample is not null
                 ? PrepareSampleText
                 : WaitForDocumentText;
@@ -54,7 +38,7 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
 
     public ObservableCollection<TutorialSampleCandidate> TutorialSamples { get; } = [];
 
-    public bool CanUseTutorialSample => !_host.HasOpenDocument && TutorialSamples.Count > 0;
+    public bool CanUseTutorialSample => !host.HasOpenDocument && TutorialSamples.Count > 0;
 
     public bool CanSelectTutorialSample => StartPracticalTour && UseTutorialSample;
 
@@ -62,7 +46,7 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
     {
         get
         {
-            if (_host.HasOpenDocument)
+            if (host.HasOpenDocument)
                 return OpenDocumentHintText;
             return CanUseTutorialSample ? TutorialSampleHintText : TutorialSampleUnavailableText;
         }
@@ -76,7 +60,7 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
 
     /// <summary>Gets or sets whether the practical tour starts after the wizard closes.</summary>
     [ObservableProperty]
-    public partial bool StartPracticalTour { get; set; }
+    public partial bool StartPracticalTour { get; set; } = true;
 
     /// <summary>Gets or sets an optional remark about the example-installation step.</summary>
     [ObservableProperty]
@@ -101,7 +85,7 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
     internal void RefreshTutorialSamples(IReadOnlyCollection<ExampleDiscipline> preferredDisciplines)
     {
         TutorialSamples.Clear();
-        foreach (TutorialSampleCandidate sample in _sampleCatalog.Find(preferredDisciplines))
+        foreach (TutorialSampleCandidate sample in sampleCatalog.Find(preferredDisciplines))
             TutorialSamples.Add(sample);
         SelectedTutorialSample = TutorialSamples.FirstOrDefault();
         UseTutorialSample = StartPracticalTour && CanUseTutorialSample;
@@ -117,13 +101,13 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
 
         try
         {
-            string path = _sampleCopyService.CreateCopy(SelectedTutorialSample, revitVersion);
-            _host.QueueTutorialSample(path);
+            string path = sampleCopyService.CreateCopy(SelectedTutorialSample, revitVersion);
+            host.QueueTutorialSample(path);
             return true;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            _logger.LogError(exception, "Failed to prepare tutorial sample {SamplePath}", SelectedTutorialSample.SourcePath);
+            logger.LogError(exception, "Failed to prepare tutorial sample {SamplePath}", SelectedTutorialSample.SourcePath);
             Note = TutorialSampleFailedText;
             return false;
         }
@@ -138,13 +122,13 @@ internal sealed partial class WelcomePracticalStepViewModel : WelcomeStepViewMod
             // Start over command: the saved progress is forgotten, the managed configuration
             // is reinstalled and the training check selection is cleared. Resetting only the
             // saved progress would leave a live session running with no visible effect.
-            _practicalTour.Start(_host.HasOpenDocument, restart: true);
+            practicalTour.Start(host.HasOpenDocument, restart: true);
             StartPracticalTour = true;
             Note = PracticalTourResetText;
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Failed to reset the practical tour");
+            logger.LogError(exception, "Failed to reset the practical tour");
             Note = PracticalTourResetFailedText;
         }
     }

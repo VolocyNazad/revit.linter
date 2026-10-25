@@ -20,58 +20,33 @@ namespace Revit.Linter.Infrastructure.Services;
 /// <summary>
 /// Gives the onboarding experiences the ribbon, pane, notification and link actions that only the add-in host owns.
 /// </summary>
-internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
+internal sealed class WelcomeHost(
+    IRevitContext revitContext,
+    IStringLocalizer<GlobalLocalizations> localizer,
+    ILogger<WelcomeHost> logger,
+    TutorialSampleOpenRequest tutorialSampleOpenRequest,
+    ITutorialSampleCopyService tutorialSampleCopyService,
+    IRevitIdlingScheduler idlingScheduler,
+    IDialog dialog,
+    IDiagnosticListFilterReset diagnosticListFilterReset,
+    IConfigurationPaths paths,
+    IShellLauncher shellLauncher) : IWelcomeHost, IPracticalTourHost
 {
     private static string DocumentationUrl => ProductIdentity.DocumentationUrl;
     private static string SupportUrl => ProductIdentity.SupportUrl;
 
     private static readonly DocumentationPage QuickStartPage = new("Quick start", "Быстрый старт");
 
-    private readonly IRevitContext _revitContext;
-    private readonly IStringLocalizer<GlobalLocalizations> _localizer;
-    private readonly ILogger<WelcomeHost> _logger;
-    private readonly TutorialSampleOpenRequest _tutorialSampleOpenRequest;
-    private readonly ITutorialSampleCopyService _tutorialSampleCopyService;
-    private readonly IRevitIdlingScheduler _idlingScheduler;
-    private readonly IDialog _dialog;
-    private readonly IDiagnosticListFilterReset _diagnosticListFilterReset;
-    private readonly IConfigurationPaths _paths;
-    private readonly IShellLauncher _shellLauncher;
+    public string RibbonTabName => localizer["ribbonTab_name"];
 
-    public WelcomeHost(
-        IRevitContext revitContext,
-        IStringLocalizer<GlobalLocalizations> localizer,
-        ILogger<WelcomeHost> logger,
-        TutorialSampleOpenRequest tutorialSampleOpenRequest,
-        ITutorialSampleCopyService tutorialSampleCopyService,
-        IRevitIdlingScheduler idlingScheduler,
-        IDialog dialog,
-        IDiagnosticListFilterReset diagnosticListFilterReset,
-        IConfigurationPaths paths,
-        IShellLauncher shellLauncher)
-    {
-        _revitContext = revitContext;
-        _localizer = localizer;
-        _logger = logger;
-        _tutorialSampleOpenRequest = tutorialSampleOpenRequest;
-        _tutorialSampleCopyService = tutorialSampleCopyService;
-        _idlingScheduler = idlingScheduler;
-        _dialog = dialog;
-        _diagnosticListFilterReset = diagnosticListFilterReset;
-        _paths = paths;
-        _shellLauncher = shellLauncher;
-    }
-
-    public string RibbonTabName => _localizer["ribbonTab_name"];
-
-    public bool HasOpenDocument => _revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
+    public bool HasOpenDocument => revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
 
     public void ShowPanes()
     {
-        UIApplication? application = _revitContext.UIApplication;
+        UIApplication? application = revitContext.UIApplication;
         if (application is null)
         {
-            _logger.LogWarning("The panes were not shown because the Revit application is unavailable");
+            logger.LogWarning("The panes were not shown because the Revit application is unavailable");
             return;
         }
 
@@ -90,7 +65,7 @@ internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
         catch (Exception exception)
         {
             // Showing the panes is a convenience of the wizard; the user can still open them from the ribbon.
-            _logger.LogError(exception, "Failed to show the panes after the welcome wizard");
+            logger.LogError(exception, "Failed to show the panes after the welcome wizard");
         }
     }
 
@@ -98,7 +73,7 @@ internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
         => QueuePracticalTourPaneVisibility(visible: true);
 
     public void ShowPane(WelcomePane pane)
-        => _ = _idlingScheduler.RunAsync(application =>
+        => _ = idlingScheduler.RunAsync(application =>
         {
             try
             {
@@ -107,7 +82,7 @@ internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Failed to show the {WelcomePane} pane for onboarding", pane);
+                logger.LogError(exception, "Failed to show the {WelcomePane} pane for onboarding", pane);
             }
         });
 
@@ -125,12 +100,12 @@ internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
         => QueuePracticalTourPaneVisibility(visible: false);
 
     public void ShowPracticalTourCompletedNotification()
-        => _ = _dialog.Show(new DialogRequest(_localizer["practicalTour_completed_message"]));
+        => _ = dialog.Show(new DialogRequest(localizer["practicalTour_completed_message"]));
 
-    public void ResetDiagnosticsSearchAndFilters() => _diagnosticListFilterReset.ResetSearchAndFilters();
+    public void ResetDiagnosticsSearchAndFilters() => diagnosticListFilterReset.ResetSearchAndFilters();
 
     private void QueuePracticalTourPaneVisibility(bool visible)
-        => _ = _idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));
+        => _ = idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));
 
     private void SetPracticalTourPaneVisibility(UIApplication application, bool visible)
     {
@@ -144,50 +119,50 @@ internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
         {
             // The pane registers on first use: hiding it before that is a no-op, not a failure.
             // Note this is the Revit exception type, unrelated to System.ArgumentException.
-            _logger.LogDebug(exception, "Practical-tour pane is not created yet; nothing to hide");
+            logger.LogDebug(exception, "Practical-tour pane is not created yet; nothing to hide");
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Failed to change practical-tour pane visibility to {Visible}", visible);
+            logger.LogError(exception, "Failed to change practical-tour pane visibility to {Visible}", visible);
         }
     }
 
     public void QueueTutorialSample(string path)
     {
-        string? replacedPath = _tutorialSampleOpenRequest.Set(path);
+        string? replacedPath = tutorialSampleOpenRequest.Set(path);
         if (replacedPath is not null)
-            _tutorialSampleCopyService.DeleteCopy(replacedPath, _paths.RevitVersion);
+            tutorialSampleCopyService.DeleteCopy(replacedPath, paths.RevitVersion);
         InitExternalApplication.SetTutorialSampleButtonVisible(true);
-        _logger.LogInformation("Queued tutorial sample copy {TutorialSamplePath} for opening", path);
-        _ = _idlingScheduler.RunAsync(OpenQueuedTutorialSample);
+        logger.LogInformation("Queued tutorial sample copy {TutorialSamplePath} for opening", path);
+        _ = idlingScheduler.RunAsync(OpenQueuedTutorialSample);
     }
 
     private void OpenQueuedTutorialSample(UIApplication application)
     {
-        if (!_tutorialSampleOpenRequest.TryTake(out string? path) || path is null) return;
+        if (!tutorialSampleOpenRequest.TryTake(out string? path) || path is null) return;
 
         try
         {
             application.OpenAndActivateDocument(path);
-            _tutorialSampleOpenRequest.TrackOpened(path);
+            tutorialSampleOpenRequest.TrackOpened(path);
             ShowPanes();
             InitExternalApplication.SetTutorialSampleButtonVisible(false);
-            _logger.LogInformation("Automatically opened tutorial sample copy {TutorialSamplePath}", path);
+            logger.LogInformation("Automatically opened tutorial sample copy {TutorialSamplePath}", path);
         }
         catch (Exception exception) when (exception is IOException or Autodesk.Revit.Exceptions.ApplicationException)
         {
-            _tutorialSampleOpenRequest.Set(path);
+            tutorialSampleOpenRequest.Set(path);
             InitExternalApplication.SetTutorialSampleButtonVisible(true);
-            _logger.LogWarning(
+            logger.LogWarning(
                 exception,
                 "Automatic opening of tutorial sample {TutorialSamplePath} failed; the ribbon command remains available",
                 path);
         }
     }
 
-    public void OpenQuickStart() => _shellLauncher.OpenUrl(QuickStartPage.GetUrl());
+    public void OpenQuickStart() => shellLauncher.OpenUrl(QuickStartPage.GetUrl());
 
-    public void OpenDocumentation() => _shellLauncher.OpenUrl(DocumentationUrl);
+    public void OpenDocumentation() => shellLauncher.OpenUrl(DocumentationUrl);
 
-    public void OpenSupport() => _shellLauncher.OpenUrl(SupportUrl);
+    public void OpenSupport() => shellLauncher.OpenUrl(SupportUrl);
 }
