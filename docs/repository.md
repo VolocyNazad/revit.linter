@@ -35,7 +35,10 @@ definitions. It targets `netstandard2.0` and is referenced by the add-in build, 
 type-specific rule validation and the comment-preserving text editor used to write configuration
 changes. It is Revit-independent for the same reason; `Revit.Linter.ConfigurationPath` keeps the
 Revit-version-aware paths behind `IConfigurationPaths`, file discovery and change watching, and delegates
-the format work to it.
+the format work to it. Before any configuration is read, its startup migration service moves the legacy
+split files of every Revit version folder into a `legacy` subfolder; the files are never deleted, and the
+host shows one warning per product version that opens the migration guide. There is no persistent banner
+in the Diagnostics pane and no notice per Revit version.
 `Revit.Linter.DocumentQueries` owns the document queries shared by diagnostics (all elements, elements of a
 class, element types, element geometry) and the typed `DocumentQueryKey` under which their results are kept
 in the transaction cache. Diagnostic modules, the diagnostic service and the dependency definers reach
@@ -110,10 +113,12 @@ installed example is the `diagnostics.config.yaml` file under `wiki/examples/con
 `ru/` subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
 ribbon tab name, pane and link actions through `IWelcomeHost`, and the tour's pane, notification and
 diagnostics-filter actions through `IPracticalTourHost`. The wizard's headless rules
-(example composition, installation without overwriting, first-run state) are covered by
+(example composition, installation into `examples\` with a different existing file backed up to a `.bak-<timestamp>`
+copy, first-run state) are covered by
 `Revit.Linter.WelcomePresenter.Tests`, and the tour's state machine and managed configuration by
-`Revit.Linter.PracticalTourPresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on
-every Revit start; release builds show only the steps the user has not seen.
+`Revit.Linter.PracticalTourPresenter.Tests`; the WPF views themselves are not. The wizard content version
+is raised so an upgraded user is offered the examples step again once per Revit version. Debug builds show
+the whole wizard on every Revit start; release builds show only the steps the user has not seen.
 The optional practical tour observes neutral completed UI facts published through `IUserInterfaceActivityStream`;
 diagnostic presenters do not reference welcome or practical-tour presenter types. Its WPF emphasis is owned by a disposable
 highlight session, so closing or restarting the tour restores every affected control. A non-blocking spotlight dims
@@ -124,7 +129,8 @@ takes an accent frame on the button itself, while rows, text and other surfaces 
 so their inner text never casts accent shadows. The host also brings the required pane to the foreground.
 The tour is hosted in a right-side Revit dockable pane; its registration and visibility remain host actions
 behind `IPracticalTourHost`.
-Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where
+Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file in the current format, and a
+stale old-format copy is refreshed automatically at startup without a user action or an error dialog, where
 `TOUR001` declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or
 opting out removes the managed file, so no training configuration is left behind; starting the tour
 again reinstalls it. Its `TOUR001` diagnostic owns
@@ -155,11 +161,11 @@ choice). The presenter supplies plain finding data with cultures and labels and 
 `DiagnosticReportExportedActivity` publishing; the modal save-file dialog stays behind
 `ISaveFileDialogService`, keeping `Microsoft.Win32` calls out of the presenter. The project has
 no Revit API dependency, so its snapshot-covered formats stay headless-testable.
-`Revit.Linter.CollisionTestModels` owns test tooling that builds a host document with two
-shared-coordinates links whose walls, floors and system runs overlap the host content, covering
-volumetric hits as well as touch-only and isolated no-collision controls, so collision rules
-with link checks enabled can be verified; its ribbon button is added to its own panel on the diagnostics tab by the host when
-`CollisionTestRibbon.IsEnabled` allows it (development builds, or `REVIT_LINTER_TEST_TOOLS=1`).
+`tests/Revit.Linter.CollisionDiagnostics.RevitTests` owns the collision fixture builder: it creates a host
+document with two shared-coordinates links whose walls, floors and system runs overlap the host content,
+covering volumetric hits as well as touch-only and isolated no-collision controls, so collision rules with
+link checks enabled can be verified. The builder lives in the test project instead of a product module, so the
+add-in ships no test code and the diagnostics tab has no test-tooling panel.
 The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`
 replaces the root central package versions for everything under `updater/` (MSBuild uses the nearest file and it
 does not import the root one), so updater dependencies can be versioned independently of the Revit add-in.
@@ -225,7 +231,7 @@ location, updater synchronization name) is owned by `ProductIdentity` in `Revit.
 same file as a source link, so they stay independent build units without a project reference to the
 Revit API. Path composition stays with the owning module: `IConfigurationPaths` for user
 configurations (`Documents\Revit Linter\<year>\`, `diagnostics.config.yaml`, `examples\`,
-`debug\`, `tour\`), `UpdaterPaths` in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`
+`debug\`, `tour\`, `legacy\`, and the `VersionsDirectory` that the startup migration enumerates), `UpdaterPaths` in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`
 (`logs/`, `state.json`, `downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the
 composition root for add-in logs (`...\\logs\\`) and the ValueStore settings directory
 (`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`). Renaming the vendor, product or repository requires editing
@@ -283,6 +289,11 @@ composition root for add-in logs (`...\\logs\\`) and the ValueStore settings dir
 - `docs/repository.md` describes the project, repository structure, and technology stack.
 - `docs/architecture.md` records stable module boundaries and design decisions.
 - `docs/FEATURES.md` summarizes the current product scope and compatibility contract.
+- `docs/migrations/README.md` defines the migration registry: lifecycle, version window, index and entry template.
+  Every user-visible breaking migration gets one numbered entry, for example
+  `docs/migrations/0001-single-configuration-file.md` for the split-to-single configuration migration (`MIG-0001`).
+  An entry records the versions on both sides, why the change is breaking, the user action, the data-safety
+  guarantees and the exact cleanup checklist with the release that removes the transition.
 - `wiki/Home.md` is the entry point for user documentation. Wiki pages use Obsidian-compatible links and are published to GitHub Wiki by `.github/workflows/publish-wiki.yml`.
 - `wiki/getting-started/` contains installation, quick-start, and configuration setup.
 - `wiki/diagnostics/` contains diagnostic modules and their configuration.

@@ -420,6 +420,10 @@
     <File Path="wiki/ru/Справочник/Формулы/Синтаксис формул.md" />
     <File Path="wiki/ru/Справочник/Формулы/Функции формул.md" />
   </Folder>
+  <Folder Name="/docs/migrations/">
+    <File Path="docs/migrations/README.md" />
+    <File Path="docs/migrations/0001-single-configuration-file.md" />
+  </Folder>
   <Folder Name="/docs/policies/">
     <File Path="docs/policies/development.md" />
   </Folder>

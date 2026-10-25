@@ -65,4 +65,4 @@ Revit Linter reads the working `diagnostics.config.yaml` in the [[Diagnostic con
 
 The easiest way to open this folder is the [[Diagnostic configuration path button|configuration folder button]] on the Diagnostics pane. To use the example by hand, copy it to that folder as `diagnostics.config.yaml`.
 
-`examples\diagnostics.config.yaml` and `debug\diagnostics.config.yaml` are read too, in that order after the user file. A file must declare `version: 2`; older split files are not read, and a file with a newer version than the running product is ignored. See [[Configuration file]] and [[Migrating configuration]].
+`examples\diagnostics.config.yaml` and `debug\diagnostics.config.yaml` are read too, in that order after the user file. A file must declare `version: 2`; older split files are moved into a `legacy` folder at startup and are no longer read, and a file with a newer version than the running product is ignored. See [[Configuration file]] and [[Migrating configuration]].

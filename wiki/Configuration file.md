@@ -31,7 +31,7 @@ rules:
     ...
 ```
 
-`version` must be `2`. A file with a newer version than the running product is ignored; a file without a supported version is ignored and reported. Old `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml` files are not read — see [[Migrating configuration]].
+`version` must be `2`. A file with a newer version than the running product is ignored; a file without a supported version is ignored and reported. Old `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml` files are moved into a `legacy` folder at startup and are no longer read — see [[Migrating configuration]].
 
 ## Rule types
 

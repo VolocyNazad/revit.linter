@@ -10,11 +10,26 @@ Run this checklist in a debug build for every supported Revit generation that is
 - Disable the practical tour. Verify that the sample controls are disabled and that the panels can be enabled or disabled independently.
 - Reopen **Getting started** and verify that reset clears practical-tour progress, reinstalls the managed `TOUR001` check and restarts the tour at the first step, without removing installed examples.
 
+## Upgrade from 2.0.0
+
+Prepare configuration folders of at least two Revit versions (for example 2023 and 2025) from the previous 2.0.0 release. Each folder must contain top-level `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml`, copies of them in `examples\` and `debug\`, its installed examples and a stale `tour\practical-tour.config.yaml` in the old format. Add a file with a name that already exists in a `legacy` folder to check the collision case, and hold one legacy file open in another program so that the product cannot move it.
+
+- Start Revit. Verify that **one** warning appears for the installed product, not one per Revit version. It must say that the old files were moved into the `legacy` folder, that their rules are no longer read, that the rules must be moved into `diagnostics.config.yaml` by hand and that installed examples must be reinstalled from **Getting started**; its button opens the migration guide.
+- Verify that no banner appears in the Diagnostics pane and that no separate per-Revit-version notice appears.
+- Verify that every version folder was migrated, not only the running one: the top-level files are in `<year>\legacy\`, the `examples\` copies in `<year>\legacy\examples\`, the `debug\` copies in `<year>\legacy\debug\`, the subfolder layout is preserved and a name collision received a numeric suffix.
+- Verify that `<year>\legacy\README.txt` was written for every migrated folder, explains what happened and links to the migration guide.
+- Verify that the file held open stayed where it was, that the application log records that it could not be moved, and that the warning still appeared.
+- Restart Revit. Verify that the warning does not repeat, no further files are moved and the `legacy\README.txt` files are unchanged.
+- Complete the **Getting started** wizard and verify that it offers the examples step again (content version 4), installs `examples\diagnostics.config.yaml`, keeps a previous example as a `.bak-<timestamp>` file, and does not move obsolete example copies because the startup migration already did. Press **Load examples** again without changes and verify that no second backup appears.
+- Start Revit with the stale old-format `tour\practical-tour.config.yaml` and verify that the product refreshes it without a user action, no configuration error or error dialog appears and the tour starts in the current format.
+- Move one rule from each old file into `diagnostics.config.yaml` with the matching `type`. Verify that the rules appear in the Diagnostics pane and run, then add an invalid rule and verify that the notification names the skipped rule while the other rules stay in use.
+- Verify that moving a file back from `legacy\` to its original location restores what an older product version expects, and that nothing was deleted by the migration.
+
 ## Practical tour
 
 - Start or resume the tour and verify that the Diagnostics pane is brought forward, `tour/practical-tour.config.yaml` is installed for the running Revit version and `TOUR001` appears pinned at the top of the Diagnostics pane with the `Tour` tag in the **Tags** column.
 - In the `TOUR001` row, press the document button. Verify that the rule configuration opens in an editor and only this action advances the corresponding task.
-- On the diagnostic-selection step, verify that `TOUR001` starts cleared at the top of the list; toggle another check and verify that the tour does not advance; then press Uncheck all, enable only `TOUR001`, and verify that it does.
+- On the diagnostic-selection step, verify that `TOUR001` starts cleared at the top of the list. With other diagnostics already enabled before the step, enable `TOUR001` first and verify that the tour does not advance while they remain enabled; then press Uncheck all, enable only `TOUR001`, and verify that it does. Toggling another check also does not advance.
 - On the search step, type text into the Diagnostics search box and verify that **Search and filters** does not complete; toggle a filter with the box empty and verify that it does not complete either; then combine non-empty text with a filter change, in any order, and verify that the combination completes the step. Clear the box and verify that the text half is disarmed.
 - Run diagnostics with `TOUR001` and other checks enabled and verify that the tour does not advance; uncheck everything except `TOUR001`, run again, and verify that it does.
 - Open the Fix list pane from the ribbon. Verify that showing it completes **Fix list pane**.

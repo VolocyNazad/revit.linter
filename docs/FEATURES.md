@@ -23,7 +23,7 @@ This document is the concise contract for the product's current scope. Detailed 
 ## Compatibility contract
 
 - Serialized diagnostic codes, configuration keys and message placeholders are user-facing contracts.
-- Diagnostic configuration uses one `diagnostics.config.yaml` per Revit version with a `type` discriminator; split files from earlier versions are not read and are left untouched for the migration guide.
+- Diagnostic configuration uses one `diagnostics.config.yaml` per Revit version with a `type` discriminator; at startup the legacy split files of every Revit version are moved into a `legacy` folder and never read again, one warning per product version links to the migration guide, there is no persistent banner or per-version notice, and nothing is deleted. The managed practical-tour file is refreshed automatically when it is not in the current format, and installing examples backs up an existing, different `examples\diagnostics.config.yaml` to `.bak-<timestamp>` before replacing it; an identical file is left untouched.
 - The in-document ignore list is persisted user data with its own schema version; a list written by a newer product version is read as empty instead of being reinterpreted.
 - Revit-version-specific API differences stay behind compatibility boundaries.
 - Headless logic must remain usable without a running Revit process; operations on live Revit objects use the dedicated Revit test infrastructure.

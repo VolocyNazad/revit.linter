@@ -16,8 +16,11 @@ Create `diagnostics.config.yaml`, or open the existing file. If you loaded the w
 
 ## 2. Add the rule
 
+Add this entry to the `rules:` list of `diagnostics.config.yaml`:
+
 ```yaml
-- code: "CSTM201"
+- type: "custom"
+  code: "CSTM201"
   description: "Doors without a mark"
   message: "'{elementName}' ({elementId}) has an empty mark."
   severity: "Warning"

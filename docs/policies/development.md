@@ -41,6 +41,21 @@ Use `global using` only when most files in that project need the namespace. Keep
 
 Before creating a release tag `vMAJOR.MINOR.PATCH`, compose a new `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section in `CHANGELOG.md` directly below the (empty) `## [Unreleased]` section, from the changes since the previous stable tag (for example, `git log <previous-tag>..HEAD`, using the Conventional Commit types and scopes). Commit that change and create the tag on that commit, so the changelog at the tagged commit names the released version and carries no unreleased entries. While composing the section, keep changes a user of that release can observe, merge related entries, and drop fixes for behavior that was never released. The publish-release workflow enforces this before building: it refuses to publish when `## [Unreleased]` contains any entry or when the changelog has no section for the tagged version. Empty category headings under `Unreleased` are tolerated. The version section is published verbatim as the GitHub release description, so write it for users.
 
+## Migration tracking
+
+Every user-visible breaking migration is recorded in `docs/migrations/` when it is designed, not when it ships. The
+registry defines the lifecycle, the version window, the entry template and the removal gate in
+[docs/migrations/README.md](../migrations/README.md); follow it.
+
+An entry states the product versions on both sides, why the change is breaking, the exact user action, what the
+product does automatically, the data-safety guarantees, the removal gate and the exact cleanup checklist. A change
+that introduces, revises or ends a migration updates its entry in the same change. The release that ships the
+migration sets the entry to `Active` with the actual tag and describes the migration and its removal plan in the
+release changelog section. Transitional behaviour is removed only through the entry's removal gate, and that
+change also updates the entry, the architecture decision, the compatibility contract, the manual checklist and the
+`TODO.md` task. A Wiki migration guide is never deleted: after retirement it stays as historical documentation for
+users who skip several versions.
+
 ## .NET SDK selection
 
 Use the repository-root `global.json` for local builds and CI: SDK `10.0.103` or a later stable SDK in the `10.0` major/minor line (`rollForward: latestFeature`, `allowPrerelease: false`). Do not roll forward to another major/minor line without updating this policy and `global.json` together. GitHub Actions setup steps must read `global-json-file: global.json` after checkout. Additional SDKs may be installed to supply runtimes for older test targets; they do not replace the SDK selected by `global.json`. This policy does not change project target frameworks.

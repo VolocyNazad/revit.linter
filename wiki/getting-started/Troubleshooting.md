@@ -20,7 +20,7 @@ Useful records include add-in startup and shutdown, configuration loads, diagnos
 
 > **Note:** A malformed configuration file is loaded as an empty list. This prevents stale rules from continuing to run, but it can make the diagnostics list appear empty until the file is corrected. A single invalid rule is skipped on its own and described in the notification.
 
-> **Note:** Old `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml` files are not read by version 2. See [[Migrating configuration]].
+> **Note:** Old `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml` files are moved into a `legacy` folder at startup and are no longer read. See [[Migrating configuration]].
 
 > **Note:** Routine cancellations and documented benign fallbacks may not produce an error entry. Capture the operation, document, diagnostic code, element id, and relevant formula or YAML fragment when reporting a problem.
 
