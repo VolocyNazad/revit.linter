@@ -16,4 +16,7 @@ public sealed partial class DiagnosticListView
         InitializeComponent();
         themeService.Register(this);
     }
+
+    /// <summary>Initializes the view for the XAML designer, which has no application services.</summary>
+    public DiagnosticListView() => InitializeComponent();
 }

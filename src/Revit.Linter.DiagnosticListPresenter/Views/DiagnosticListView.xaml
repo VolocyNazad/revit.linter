@@ -7,6 +7,7 @@
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:core="clr-namespace:Revit.Linter.Core.Abstractions.Models;assembly=Revit.Linter.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:designData="clr-namespace:Revit.Linter.DiagnosticListPresenter.DesignData"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticListPresenter.Infrastructure"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
@@ -15,8 +16,7 @@
     xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
     xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:viewModels="clr-namespace:Revit.Linter.DiagnosticListPresenter.ViewModels"
-    d:DataContext="{d:DesignInstance Type={x:Type viewModels:DiagnosticListViewModel}}"
+    d:DataContext="{d:DesignInstance Type={x:Type designData:DiagnosticListDesignData}, IsDesignTimeCreatable=True}"
     d:DesignHeight="450"
     d:DesignWidth="600"
     Style="{DynamicResource LinterViewRoot}"
@@ -101,7 +101,6 @@
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <!-- The configuration button column stays frozen so row refreshes on a narrow pane never scroll it partially out of view. -->
             <DataGrid
-                d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 FrozenColumnCount="1"
@@ -157,11 +156,23 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
-                                    behaviors:HelpToolTip.Description="{Binding DataContext.OpenConfigurationDescription, Source={StaticResource proxy}, Mode=OneWay}"
-                                    behaviors:HelpToolTip.Title="{Binding DataContext.OpenConfigurationTitle, Source={StaticResource proxy}, Mode=OneWay}"
-                                    Command="{Binding OpenConfigurationCommand}"
+                                    behaviors:HelpToolTip.Description="{Binding DataContext.OpenConfigurationDescriptionText, Source={StaticResource proxy}, Mode=OneWay}"
+                                    behaviors:HelpToolTip.Title="{Binding DataContext.OpenConfigurationTitleText, Source={StaticResource proxy}, Mode=OneWay}"
                                     Content="{controls:Icon Kind=FileDocumentOutline}"
                                     Visibility="{Binding HasConfiguration, Converter={StaticResource BooleanToVisibility}}">
+                                    <!--  A click opens the menu of every available way to open the file, like the fix and visualization menus do.  -->
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:OpenContextMenuOnClickBehavior OpenOnClick="True" />
+                                    </i:Interaction.Behaviors>
+                                    <Button.ContextMenu>
+                                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                            <MenuItem Command="{Binding OpenConfigurationCommand}" Header="{Binding OpenConfigurationText}" />
+                                            <MenuItem Command="{Binding OpenConfigurationWithCommand}" Header="{Binding OpenConfigurationWithText}" />
+                                            <MenuItem Command="{Binding OpenConfigurationInNotepadCommand}" Header="{Binding OpenConfigurationInNotepadText}" />
+                                            <Separator />
+                                            <MenuItem Command="{Binding RevealConfigurationInExplorerCommand}" Header="{Binding RevealConfigurationInExplorerText}" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource LinterGridIconButton}" TargetType="Button">
                                             <Style.Triggers>

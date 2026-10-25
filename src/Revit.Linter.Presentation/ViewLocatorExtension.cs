@@ -38,15 +38,52 @@ public sealed class ViewLocatorExtension(Type viewModelType) : MarkupExtension
     /// <param name="serviceProvider">The XAML service provider for the current markup-extension invocation.</param>
     /// <returns>The registered view corresponding to <see cref="ViewModelType"/>.</returns>
     /// <exception cref="T:System.InvalidOperationException">
-    /// The locator is not initialized, the view-model type does not follow the naming convention,
-    /// or the corresponding view type cannot be found.
+    /// The view-model type does not follow the naming convention or the corresponding view type cannot be found.
     /// </exception>
+    /// <remarks>
+    /// The XAML designer runs without the application service provider. It receives the view built directly from
+    /// its type with the matching design-time data applied, so the preview shows the composed sub-view instead of
+    /// failing the designer; a view that cannot be built without application services resolves to
+    /// <see cref="DependencyProperty.UnsetValue"/>.
+    /// </remarks>
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        IServiceProvider provider = _serviceProvider
-            ?? throw new InvalidOperationException("The view locator has not been initialized.");
         Type viewType = ResolveViewType(ViewModelType);
-        return provider.GetRequiredService(viewType);
+        IServiceProvider? provider = _serviceProvider;
+        return provider is null
+            ? CreateDesignTimeView(viewType, ViewModelType)
+            : provider.GetRequiredService(viewType);
+    }
+
+    private static object CreateDesignTimeView(Type viewType, Type viewModelType)
+    {
+        try
+        {
+            if (ResolveDesignDataType(viewModelType) is not Type designDataType
+                || Activator.CreateInstance(viewType) is not FrameworkElement view
+                || Activator.CreateInstance(designDataType) is not object designData)
+                return DependencyProperty.UnsetValue;
+
+            view.DataContext = designData;
+            return view;
+        }
+        catch (Exception)
+        {
+            // The designer must survive a sub-view that cannot be composed without the application services.
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    private static Type? ResolveDesignDataType(Type viewModelType)
+    {
+        const string viewModelSuffix = "ViewModel";
+        string? viewModelNamespace = viewModelType.Namespace;
+        if (viewModelNamespace is null || viewModelNamespace.IndexOf(".ViewModels", StringComparison.Ordinal) < 0)
+            return null;
+
+        string designDataNamespace = viewModelNamespace.Replace(".ViewModels", ".DesignData");
+        string viewName = viewModelType.Name.Substring(0, viewModelType.Name.Length - viewModelSuffix.Length);
+        return viewModelType.Assembly.GetType($"{designDataNamespace}.{viewName}DesignData");
     }
 
     private static Type ResolveViewType(Type viewModelType)

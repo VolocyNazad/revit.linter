@@ -1,15 +1,15 @@
-﻿<UserControl
+<UserControl
     x:Class="Revit.Linter.RunDiagnosticPresenter.Views.RunDiagnosticView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:designData="clr-namespace:Revit.Linter.RunDiagnosticPresenter.DesignData"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
-    xmlns:viewModels="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels"
-    d:DataContext="{d:DesignInstance Type={x:Type viewModels:RunDiagnosticViewModel}}"
+    d:DataContext="{d:DesignInstance Type={x:Type designData:RunDiagnosticDesignData}, IsDesignTimeCreatable=True}"
     Style="{DynamicResource LinterViewRoot}"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -50,7 +50,6 @@
             behaviors:HelpToolTip.Description="{Binding RunDescription, Mode=OneWay}"
             behaviors:HelpToolTip.Note="{Binding DiagnosticTime}"
             behaviors:HelpToolTip.Title="{Binding RunTitle, Mode=OneWay}"
-            d:Command="{x:Null}"
             Command="{Binding RunDiagnosticCommand}"
             behaviors:OnboardingHighlight.Key="RunDiagnostics"
             Content="{controls:Icon Kind=Play}"

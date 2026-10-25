@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:designData="clr-namespace:Revit.Linter.FixReportPresenter.DesignData"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -12,8 +13,7 @@
     xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
     xmlns:runDiagnostic="clr-namespace:Revit.Linter.RunDiagnosticPresenter.ViewModels;assembly=Revit.Linter.RunDiagnosticPresenter"
     xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
-    xmlns:viewModels="clr-namespace:Revit.Linter.FixReportPresenter.ViewModels"
-    d:DataContext="{d:DesignInstance Type={x:Type viewModels:FixReportViewModel}}"
+    d:DataContext="{d:DesignInstance Type={x:Type designData:FixReportDesignData}, IsDesignTimeCreatable=True}"
     d:DesignHeight="400"
     d:DesignWidth="2000"
     Style="{DynamicResource LinterViewRoot}"
@@ -86,7 +86,6 @@
             <Rectangle DockPanel.Dock="Top" Style="{StaticResource LinterHorizontalDivider}" />
             <DataGrid
                 x:Name="FixesGrid"
-                d:ItemsSource="{d:SampleData ItemCount=2}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 ItemsSource="{Binding CollectionViewSource.View}"
