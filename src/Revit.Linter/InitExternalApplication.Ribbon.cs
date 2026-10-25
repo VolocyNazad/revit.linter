@@ -1,7 +1,6 @@
-// Ribbon tab, product buttons and development test-tooling buttons.
+// Ribbon tab and product buttons.
 
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.CollisionTestModels.Infrastructure.Ribbon;
 #if BEFORE2024
 using Revit.Sugar;
 #endif
@@ -35,28 +34,6 @@ internal sealed partial class InitExternalApplication
             "OpenTutorialSampleButton", "openTutorialSample", typeof(OpenTutorialSampleCommand),
             new("Getting started button", "Кнопка начала работы")));
         _tutorialSampleButton.Visible = false;
-    }
-
-    /// <summary>
-    /// Creates the test-tooling panel on the diagnostics tab.
-    /// </summary>
-    /// <remarks>
-    /// Test tooling lives on the same diagnostics tab as product commands but in its own panel,
-    /// so it never crowds the product diagnostics panel. Visible in development builds or with
-    /// <c>REVIT_LINTER_TEST_TOOLS=1</c>. The button uses the same shared icon as product buttons;
-    /// the icon is applied here because the image resource belongs to the host.
-    /// </remarks>
-    private void AddTestToolingButtons(string tabName)
-    {
-        if (!CollisionTestRibbon.IsEnabled)
-            return;
-
-        RibbonPanel testPanel = Application.CreateRibbonPanel(tabName, CollisionTestRibbon.PanelName);
-        PushButtonData buttonData = CollisionTestRibbon.CreateButtonData(AssemblyPath);
-        buttonData.Image = Icon;
-        buttonData.LargeImage = Icon;
-        buttonData.ToolTipImage = Icon;
-        testPanel.AddItem(buttonData);
     }
 
     internal static void SetTutorialSampleButtonVisible(bool visible)

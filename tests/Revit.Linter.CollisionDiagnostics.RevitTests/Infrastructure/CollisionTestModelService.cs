@@ -1,12 +1,11 @@
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.DB.Plumbing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Revit.Linter.CollisionTestModels.Abstractions.Models;
-using Revit.Linter.CollisionTestModels.Abstractions.Services;
 
-namespace Revit.Linter.CollisionTestModels.Infrastructure.Services;
+namespace Revit.Linter.CollisionDiagnostics.RevitTests.Infrastructure;
 
 /// <summary>
 /// Creates a host document with two shared-coordinates links for collision-diagnostic testing.
@@ -59,7 +58,6 @@ namespace Revit.Linter.CollisionTestModels.Infrastructure.Services;
 /// the creation with a describing error instead of building a partial model silently.</para>
 /// </remarks>
 internal sealed class CollisionTestModelService(ILogger<CollisionTestModelService>? logger = null)
-    : ICollisionTestModelService
 {
     private static readonly XYZ HostWall1Start = new(0, 0, 0);
     private static readonly XYZ HostWall1End = new(10, 0, 0);
@@ -117,7 +115,7 @@ internal sealed class CollisionTestModelService(ILogger<CollisionTestModelServic
 
     private readonly ILogger<CollisionTestModelService> _logger = logger ?? NullLogger<CollisionTestModelService>.Instance;
 
-    /// <inheritdoc />
+    /// <summary>Builds and saves the host with its two links and returns the file paths.</summary>
     public CollisionTestModelResult CreateHostWithTwoLinks(Autodesk.Revit.ApplicationServices.Application application)
     {
         if (application is null) throw new ArgumentNullException(nameof(application));

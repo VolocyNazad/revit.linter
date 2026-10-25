@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.CollisionDiagnostics.Tests</_Parameter1>
@@ -10,7 +10,7 @@
 			<_Parameter1>Revit.Linter.Diagnostic.RevitTests</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-			<_Parameter1>Revit.Linter.CollisionTestModels.RevitTests</_Parameter1>
+			<_Parameter1>Revit.Linter.CollisionDiagnostics.RevitTests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup>

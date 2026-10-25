@@ -68,7 +68,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
-		<ProjectReference Include="..\Revit.Linter.CollisionTestModels\Revit.Linter.CollisionTestModels.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.DiagnosticListPresenter\Revit.Linter.DiagnosticListPresenter.csproj" />

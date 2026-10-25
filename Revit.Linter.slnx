@@ -67,9 +67,6 @@
     </Project>
   </Folder>
   <Folder Name="/others/">
-    <Project Path="src/Revit.Linter.CollisionTestModels/Revit.Linter.CollisionTestModels.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>
@@ -134,7 +131,7 @@
     <Project Path="tests/Revit.Linter.Architecture.Tests/Revit.Linter.Architecture.Tests.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="tests/Revit.Linter.CollisionTestModels.RevitTests/Revit.Linter.CollisionTestModels.RevitTests.csproj">
+    <Project Path="tests/Revit.Linter.CollisionDiagnostics.RevitTests/Revit.Linter.CollisionDiagnostics.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.ConfigurationPath.Tests/Revit.Linter.ConfigurationPath.Tests.csproj">

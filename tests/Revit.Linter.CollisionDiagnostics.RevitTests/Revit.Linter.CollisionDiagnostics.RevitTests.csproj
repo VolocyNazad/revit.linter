@@ -11,7 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Revit.Linter.CollisionDiagnostics\Revit.Linter.CollisionDiagnostics.csproj" />
-    <ProjectReference Include="..\..\src\Revit.Linter.CollisionTestModels\Revit.Linter.CollisionTestModels.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.Core\Revit.Linter.Core.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />

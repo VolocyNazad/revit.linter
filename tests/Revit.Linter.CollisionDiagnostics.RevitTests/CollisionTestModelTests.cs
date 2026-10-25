@@ -7,8 +7,7 @@ using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Extensions;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
-using Revit.Linter.CollisionTestModels.Abstractions.Models;
-using Revit.Linter.CollisionTestModels.Infrastructure.Services;
+using Revit.Linter.CollisionDiagnostics.RevitTests.Infrastructure;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
@@ -18,7 +17,7 @@ using Revit.Sugar;
 using TUnit.Core.Executors;
 using CollisionElementDiagnostic = Revit.Linter.CollisionDiagnostics.ElementDiagnostic;
 
-namespace Revit.Linter.CollisionTestModels.RevitTests;
+namespace Revit.Linter.CollisionDiagnostics.RevitTests;
 
 /// <summary>
 /// Covers the collision-testing documents built by <c>CollisionTestModelService</c>:

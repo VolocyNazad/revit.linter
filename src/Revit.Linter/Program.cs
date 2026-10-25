@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
-using Revit.Linter.CollisionTestModels.DI;
 using Revit.Linter.ConfigurationPath.DI;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Diagnostic.DI;
@@ -132,7 +131,6 @@ internal sealed class Program
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
                 .AddCollisionDiagnostics()
-                .AddCollisionTestModels()
                 .AddParameterElementDiagnostics()
                 .AddDiagnosticReportProviderModule().AddFixReportProviderModule().AddElementChangesProviderModule()
                 .AddRunDiagnosticModule().AddDiagnosticReportExportingModule().AddDiagnosticReportPresenterModule()
