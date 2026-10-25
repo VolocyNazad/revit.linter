@@ -55,7 +55,7 @@ Rejected alternatives:
 | On startup, before any configuration is read, scans every version folder under `Documents\Revit Linter\<year>\` and moves the legacy top-level files, their `examples` copies and their `debug` copies into the `legacy` subfolder of the same version folder | Files are **moved**, never deleted; the subfolder layout is preserved (`legacy\examples\`, `legacy\debug\`), and a name collision gets a numeric suffix |
 | Writes `<year>\legacy\README.txt` when it moved files from that version folder | Explains what happened and links to the user guide |
 | Leaves a file that cannot be moved (locked, no permission) where it is and logs it | The product does not read it either way; the warning still appears because legacy files were found |
-| Shows one warning dialog per product version when legacy files were found, whether they were moved or left in place, with a button to the Wiki guide | Not one per Revit version; the warning is recorded as shown only **after** it was actually displayed, so a failure retries on the next start |
+| Shows one warning dialog per product version when legacy files were found, whether they were moved or left in place, with a button to the Wiki guide | Not one per Revit version. It is queued before the modal welcome wizard and is recorded as shown only **after** it was actually displayed; if Revit closes before that, the pending flag is kept and the next start shows the warning even though the files are already moved |
 | Reads no legacy file after the migration and shows no persistent banner in the **Diagnostic list** pane and no per-Revit-version notice | The old rules, switches and ignores are inert; the warning is the only in-product signal |
 | Creates a new `diagnostics.config.yaml` with the normal format header only | There is no migration comment in the file |
 | Refreshes the managed `tour\practical-tour.config.yaml` when it is not in the current format, before the catalog reads it | The file is product-managed and reproducible; it is excluded from configuration-error reporting, so a stale copy never raises a false error or shows a dialog |
@@ -114,8 +114,8 @@ Headless coverage (all in the release that ships the migration):
 * `ConfigurationPathUtilsTests` — the legacy paths are computed from a version folder rather than static state,
   and a newly created configuration file carries only the format header.
 * The migration warning runs in the add-in host, which has no headless test project; its behaviour (one warning
-  per product version, only when the result has findings, recorded as shown only after it was displayed) is
-  covered by the manual checklist.
+  per product version, shown when the result has findings or a previous start left it pending, queued before the
+  wizard, recorded as shown only after it was displayed) is covered by the manual checklist.
 * `tests/Revit.Linter.WelcomePresenter.Tests/ExampleConfigurationInstallerTests.cs` — an existing example file
   is backed up, and the shipped example is installed.
 * `tests/Revit.Linter.PracticalTourPresenter.Tests/PracticalTourConfigurationInstallerTests.cs` — an old-format

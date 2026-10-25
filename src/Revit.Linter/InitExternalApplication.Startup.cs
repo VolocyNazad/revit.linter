@@ -16,8 +16,10 @@ internal sealed partial class InitExternalApplication
     /// Queues the configuration migration warning for the first Idling event.
     /// </summary>
     /// <remarks>
-    /// The warning is shown only when the startup migration found legacy files and this product version has not
-    /// warned yet. A failure is logged inside the warning service and never affects add-in startup.
+    /// The warning is shown when the startup migration found legacy files or when a previous start moved them but
+    /// could not display the warning, and this product version has not warned yet. It is queued before the modal
+    /// welcome wizard, so an open wizard cannot hold it back. A failure is logged inside the warning service and
+    /// never affects add-in startup.
     /// </remarks>
     private static void ScheduleConfigurationMigrationWarning(
         ConfigurationMigrationWarning warning, string productVersion) =>

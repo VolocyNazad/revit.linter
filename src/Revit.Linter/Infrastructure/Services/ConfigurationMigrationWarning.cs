@@ -44,6 +44,8 @@ internal sealed class ConfigurationMigrationWarning(
         try
         {
             _result = migrationService.Migrate();
+            if (_result.HasFindings)
+                settingsStore.Update(settings => settings.PendingWarning = true);
         }
         catch (Exception exception)
         {
@@ -59,15 +61,21 @@ internal sealed class ConfigurationMigrationWarning(
     {
         try
         {
-            if (!_result.HasFindings) return;
+            if (!_result.HasFindings && !settingsStore.CurrentValue.PendingWarning) return;
             if (string.Equals(settingsStore.CurrentValue.NotifiedVersion, productVersion, StringComparison.Ordinal))
+            {
+                // Defensive: a previous run recorded the version but could not clear the pending flag.
+                if (settingsStore.CurrentValue.PendingWarning)
+                    settingsStore.Update(settings => settings.PendingWarning = false);
                 return;
+            }
 
             logger.LogInformation(
-                "Showing the configuration migration warning for product version {ProductVersion}; {MovedCount} files were moved, {RemainingCount} remain",
+                "Showing the configuration migration warning for product version {ProductVersion}; {MovedCount} files were moved, {RemainingCount} remain, pending from an earlier start: {Pending}",
                 productVersion,
                 _result.MovedFiles.Count,
-                _result.RemainingFiles.Count);
+                _result.RemainingFiles.Count,
+                !_result.HasFindings);
 
             string message = _result.RemainingFiles.Count == 0
                 ? localizer["configurationMigration_warning_message"]
@@ -79,7 +87,11 @@ internal sealed class ConfigurationMigrationWarning(
                 new ConfirmationDialogRequest(message, localizer["configurationMigration_warning_openGuide"]),
                 cancellationToken);
 
-            settingsStore.Update(settings => settings.NotifiedVersion = productVersion);
+            settingsStore.Update(settings =>
+            {
+                settings.NotifiedVersion = productVersion;
+                settings.PendingWarning = false;
+            });
 
             if (openGuide)
                 documentationLauncher.Open(MigrationPage);

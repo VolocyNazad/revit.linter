@@ -122,8 +122,10 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             productVersion,
             Application.ControlledApplication.VersionNumber);
 
-        ScheduleWelcomeWizard();
+        // The warning is queued before the wizard: the wizard is modal, so leaving it open would hold the
+        // queued warning back until Revit closes, and the next start would have no files left to report.
         ScheduleConfigurationMigrationWarning(migrationWarning, productVersion);
+        ScheduleWelcomeWizard();
     }
 
 
