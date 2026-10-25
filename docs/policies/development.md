@@ -29,6 +29,8 @@ Abstractions live in a top-level `Abstractions/` folder inside their owning proj
 
 Avoid application state and business logic in WPF code-behind. Prefer bindings, commands, converters, behaviors and `DynamicResource`. Code-behind is reserved for view mechanics with no practical declarative equivalent. Reusable mechanics belong in `Microsoft.Xaml.Behaviors.Wpf` behaviors; mechanics intimate to one view may remain local. Do not repeat a XAML-declared base type in code-behind.
 
+Every WPF view and window must render representative content in the XAML designer instead of empty fields. Design-time data lives in a `DesignData/` folder of the owning presenter project: a `<ViewName>DesignData` class whose instance properties mirror every binding path the view reads through its data context, including item templates, converters and behaviors, with sample values and no-op commands. The view root declares `d:DataContext="{d:DesignInstance Type={x:Type designData:<ViewName>DesignData}, IsDesignTimeCreatable=True}"`, and item templates receive sample rows through the collection the design data exposes. Localized text is read through `LocalizationResourceReader` with the same resource base name the view model uses, not copied as literals into the design class. A view composed through `ViewLocatorExtension` shows its sub-view with that sub-view's own design data. Change the design data together with any binding change; an empty field, an unresolved binding or a designer exception is a defect, not an acceptable preview state. For a step-driven or mode-driven view it is enough to preview one representative state. A view, window or dialog whose runtime constructor needs application services also exposes a public parameterless constructor for the designer that only loads its XAML; the runtime composition keeps the service constructor.
+
 XML documentation is mandatory for public APIs in production projects; test projects are exempt. Documentation must explain the observable contract rather than restating the identifier. Use `<remarks>` for behavior that is not evident from the signature, including implicit fallback, inferred defaults, side effects, ordering, caching, thread or Revit-context requirements, transaction ownership, and intentionally ignored failures. Keep the note next to the affected API or configuration; do not rely on a distant architecture document as the only explanation. If a type is public only accidentally and has no external or cross-project consumer, reduce its visibility instead of documenting it as an API. Run a strict audit with `dotnet build Revit.Linter.slnx --configuration <configuration> -p:EnforcePublicApiDocumentation=true` and, for the updater, `dotnet build updater/Revit.Linter.Updater.slnx --configuration Release -p:EnforcePublicApiDocumentation=true`; it promotes `CS1591` to an error. Keep the switch opt-in until the existing public API baseline is documented, then make strict enforcement the default.
 
 Do not invent abbreviations in identifiers, file names or documentation. Use complete words such as `ViewModel` and `Configuration`; established terms such as `API`, `WPF`, `XML`, `Guid`, `Id` and `Uri` remain valid.
@@ -51,8 +53,9 @@ Keep the root solution in sync with existing repository-level documentation, lic
 Run `./scripts/Validate-Repository.ps1` after changing repository-level files,
 documentation or the solution. CI runs the same validator. It checks the required
 files and navigation links and verifies that managed repository files are present
-exactly once in Solution Items. Update the solution together with added, renamed or
-removed managed files. Solution templates follow the same contract.
+exactly once in Solution Items. It also fails when build output (`bin/` or `obj/`)
+is tracked by Git. Update the solution together with added, renamed or removed
+managed files. Solution templates follow the same contract.
 
 ## Formatting baseline
 
@@ -60,7 +63,7 @@ Keep the root `.editorconfig` in the solution and apply its repository-wide enco
 
 ## Warnings
 
-Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why. The release publish enforces this: the build pipeline compiles the add-in with `TreatWarningsAsErrors=true`, so any warning in a release configuration fails the publish. Keep every release configuration warning-free; verify with a plain `dotnet build` before tagging.
+Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why. The release publish enforces this: the build pipeline compiles the add-in with `TreatWarningsAsErrors=true`, so any warning in a release configuration fails the publish. The build-and-test workflow also compiles the root, updater, build pipeline and installer solutions with `-warnaserror`, so a warning in any of them fails a pull request. Keep every release configuration warning-free; verify with a plain `dotnet build` before tagging.
 
 ## Updater build unit
 

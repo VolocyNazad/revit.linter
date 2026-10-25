@@ -19,13 +19,13 @@ version: 2
 rules:
 - type: "custom"
   code: "CSTM001"
-  description: "Generic model instances"
-  tags: ["Modeling", "Categories", "Project"]
-  message: "'{elementName}' ({elementId}) is a generic model. Move it to a proper category or add it to the ignore list."
+  description: "Generic models with an empty Comments parameter"
+  tags: ["Modeling", "Parameters", "Project"]
+  message: "'{elementName}' ({elementId}) is a generic model with an empty Comments parameter. Fill it in to describe the element."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_GenericModel')"
-  check: "isnull(property('Id'))"
+  check: "!isnullorempty(parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS'))"
   visualizations:
     # Single-step examples: every supported visualization operation.
     - name: "Focus on the element"

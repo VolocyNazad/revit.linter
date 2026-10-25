@@ -19,13 +19,13 @@ version: 2
 rules:
 - type: "custom"
   code: "CSTM001"
-  description: "Экземпляры обобщённых моделей"
-  tags: ["Моделирование", "Категории", "Project"]
-  message: "'{elementName}' ({elementId}) — обобщённая модель. Перенесите элемент в подходящую категорию или добавьте в список игнорирования."
+  description: "Обобщённые модели с незаполненным параметром «Комментарии»"
+  tags: ["Моделирование", "Параметры", "Project"]
+  message: "'{elementName}' ({elementId}) — у обобщённой модели не заполнен параметр «Комментарии». Заполните его, чтобы описать элемент."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_GenericModel')"
-  check: "isnull(property('Id'))"
+  check: "!isnullorempty(parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS'))"
   visualizations:
     # Одиночные примеры: все поддерживаемые операции визуализации.
     - name: "Сфокусироваться на элементе"

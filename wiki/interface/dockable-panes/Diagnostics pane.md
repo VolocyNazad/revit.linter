@@ -11,7 +11,7 @@ Actions:
 - View the code and description of a diagnostic
 - Enable/disable a diagnostic (diagnostics)
 - Change the severity level of a diagnostic (diagnostics)
-- Open the YAML rule configuration of a row with the document button of that row; the change is saved to `diagnostics.config.yaml` when you toggle a diagnostic or change its severity
+- Open the YAML rule configuration of a row with the document button of that row; the button opens a menu with **Open**, **Open with…** (the Windows application chooser), **Open in Notepad** and **Show in File Explorer**. The change is saved to `diagnostics.config.yaml` when you toggle a diagnostic or change its severity
 - Open the documentation of a row with the question-mark button of that row
 - Open the configuration folder with the folder button at the right edge of the tool bar
 - Reset the saved settings with the refresh button of the tool bar, after confirmation: this removes built-in overrides and `isHidden` fields but keeps your own rules' `isActive` and `severity`

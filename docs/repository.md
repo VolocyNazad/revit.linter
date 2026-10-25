@@ -30,12 +30,12 @@ projects (diagnostics, presenters, state managers, etc.) — most are
  extensions, separate from `Revit.Linter.*`.
 `Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration
 contracts: rule models, rule types, severity, parameters and fix/visualization pipeline
-definitions. It targets `netstandard2.0` and is referenced by the add-in build and by the
-standalone diagnostics editor, so it must not reference the Revit API, WPF or the Revit SDK.
+definitions. It targets `netstandard2.0` and is referenced by the add-in build, so it must not reference the Revit API, WPF or the Revit SDK.
 `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading,
 type-specific rule validation and the comment-preserving text editor used to write configuration
 changes. It is Revit-independent for the same reason; `Revit.Linter.ConfigurationPath` keeps the
-Revit-version-aware paths, file discovery and change watching and delegates the format work to it.
+Revit-version-aware paths behind `IConfigurationPaths`, file discovery and change watching, and delegates
+the format work to it.
 `Revit.Linter.DocumentQueries` owns the document queries shared by diagnostics (all elements, elements of a
 class, element types, element geometry) and the typed `DocumentQueryKey` under which their results are kept
 in the transaction cache. Diagnostic modules, the diagnostic service and the dependency definers reach
@@ -55,8 +55,17 @@ use it only at module composition boundaries, not as a general service locator.
 The project also holds what the presenter modules would otherwise each repeat: the view-model bases in
 `ViewModels` (`InitializableObservableObject` with the initialize and deinitialize commands, and
 `RevitInteractionViewModel`, which subscribes to Revit document and view events and reports them as
-`RevitEventType`) and `BindingProxy` for bindings outside the visual tree. Because of the Revit event
-subscriptions it references `Revit.Linter.Core` and the Revit API.
+`RevitEventType`), `ReportRowViewModel` for the row state shared by the diagnostic and fix reports,
+`FilteredRowCollection` for the collection-view, sort and filter plumbing shared by the list panes, and
+`BindingProxy` for bindings outside the visual tree. Because of the Revit event subscriptions it references
+`Revit.Linter.Core` and the Revit API, and it references `Revit.Linter.ReportMessaging` for the shared
+report message parser.
+Each presenter project keeps the design-time data of its views next to them in `DesignData/`
+(`<ViewName>DesignData` classes wired through `d:DataContext` with `IsDesignTimeCreatable`); they exist for the XAML designer only,
+mirror the binding paths of their view and read the same localized resources, so the preview never
+shows empty fields. `ViewLocatorExtension` resolves the design-time view and its data for a composed
+sub-view when the designer has no service provider, and views, windows and dialogs whose runtime
+constructor needs services keep a public parameterless design-time constructor.
 `Revit.Linter.ThemeManaging` owns the look shared by all views and depends on no control library.
 `SharedThemeResources` is the single resource dictionary with the palette and the style and template of every
 control the add-in uses, drawn flat and dense like the Revit palettes; each root view merges it instead of
@@ -173,11 +182,11 @@ The download transport disables automatic redirects and follows at most five val
 through GitHub-owned hosts. Release metadata requests pin the GitHub API version and reject bodies larger
 than one megabyte. Connection timeouts are independent from the overall download-operation timeout.
 
-Release packaging produces one per-user MSI containing every supported Revit build and the shared
-updater. It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific
-manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current
-user's `Run` key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with
-the stable product version.
+Release packaging produces one per-user MSI containing every supported Revit build and the shared updater. It installs under
+`%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific manifests under
+`%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current user's `Run`
+key. The MSI has one stable `UpgradeCode`; its product
+code changes deterministically with the stable product version.
 The feature-tree installer UI keeps the per-user installation directory fixed. Manifest assembly paths still
 use the effective MSI `INSTALLDIR`, keeping silent and administrative invocations internally consistent.
 The first unified installation also detects and removes older per-Revit-version products by their
@@ -194,7 +203,7 @@ Product-wide identity (vendor, product and repository names, GitHub destinations
 location, updater synchronization name) is owned by `ProductIdentity` in `Revit.Linter.Core`
 (`src/Revit.Linter.Core/Abstractions/ProductIdentity.cs`). The updater and the installer compile the
 same file as a source link, so they stay independent build units without a project reference to the
-Revit API. Path composition stays with the owning module: `ConfigurationPathUtils` for user
+Revit API. Path composition stays with the owning module: `IConfigurationPaths` for user
 configurations (`Documents\Revit Linter\<year>\`, `diagnostics.config.yaml`, `examples\`,
 `debug\`, `tour\`), `UpdaterPaths` in `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\`
 (`logs/`, `state.json`, `downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the
@@ -312,7 +321,7 @@ Generated report formats are pinned with snapshot tests in `Revit.Linter.Diagnos
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Another job builds `build/Revit.Linter.Build.slnx` and `installer/Revit.Linter.Installer.slnx` in `Release` with `-warnaserror`, so pipeline and installer compile errors fail a pull request instead of surfacing only during a release. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 ## Versioning and release tags
 

@@ -6,13 +6,13 @@ This document records stable architectural rules. Implementation details belong 
 
 - Projects are small modules with one primary responsibility. A module owns its contracts, implementation and composition extensions.
 - `Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration contracts
-  (`netstandard2.0`) and must not reference the Revit API, WPF or the Revit SDK. The add-in and the
-  standalone diagnostics editor both consume it, so it is the single definition of a rule, its type,
-  severity, parameters and fix/visualization pipeline shape.
+  (`netstandard2.0`) and must not reference the Revit API, WPF or the Revit SDK. The add-in build consumes
+  it, so it is the single definition of a rule, its type, severity, parameters and fix/visualization
+  pipeline shape.
 - `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading, rule
   validation and the comment-preserving text editor. It is Revit-independent for the same reason.
-  `Revit.Linter.ConfigurationPath` keeps the Revit-version-aware paths, source precedence, change
-  watching and the service surface, and delegates format work to this module.
+  `Revit.Linter.ConfigurationPath` keeps the Revit-version-aware paths behind `IConfigurationPaths`,
+  source precedence, change watching and the service surface, and delegates format work to this module.
 - The configuration file is hand-documented: comments, `section` markers, key order and quoting are
   part of the user-facing file. Changes are therefore written by patching the affected text spans, not
   by serializing the parsed model; the shared editor guarantees that invariant for both writers.
@@ -27,6 +27,9 @@ This document records stable architectural rules. Implementation details belong 
 - Revit API access stays behind narrow services or command/event boundaries so domain and presentation code can remain testable without a live Revit process.
 - Keep services that use `RevitAPIUI` (`UIApplication`, `UIDocument`, `UIView`, `Selection`) as thin adapters over logic that depends only on `RevitAPI` or plain data whenever that logic is substantial enough to test. Do not let a UI-only call make document operations, selection rules, state calculation or restoration logic unavailable to `Nice3point.TUnit.Revit` tests.
 - Work that modifies a Revit document runs in an explicit transaction. UI-triggered asynchronous work enters the Revit API through the repository's external-event infrastructure.
+- The add-in host is built once per Revit session and does not rebuild its service graph after shutdown; background
+  logging probes the live host through `TryGetService` instead of creating one. A failed startup therefore cannot
+  resurrect the container from the shutdown path.
 - Version differences are isolated in compatibility extensions or adapters. Conditional compilation belongs inside those boundaries rather than at call sites.
 - Code that needs live Revit objects is tested in `*.RevitTests` with `Nice3point.TUnit.Revit`. Headless behavior stays in `*.Tests`.
 
@@ -39,17 +42,25 @@ This document records stable architectural rules. Implementation details belong 
 - `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
 - View-model bases shared by presenter modules (`InitializableObservableObject`, `RevitInteractionViewModel`) and `BindingProxy` live in `Revit.Linter.Presentation`; a presenter module does not keep its own copy.
 - Shared styles and resources are defined once and consumed through resource references. Theme-dependent values use `DynamicResource`.
+- Every view carries design-time data in `DesignData/` next to the view, so the XAML designer shows representative content instead of empty fields. The design class mirrors the binding paths of the view and its item templates, reuses the localized resources through `LocalizationResourceReader` and is attached with `d:DataContext`/`IsDesignTimeCreatable`. `ViewLocatorExtension` resolves the matching design data for a composed sub-view at design time, and a view whose runtime constructor needs services keeps a public parameterless design-time constructor.
 - Control styles, fonts, sizes and paddings live in `SharedThemeResources` of `Revit.Linter.ThemeManaging`. Views keep layout and bindings and refer to `Linter*` style keys; they do not reference third-party style keys or repeat sizes that a shared style defines. A style specific to one view is still declared there, based on a shared one.
 
 ## Diagnostics and reports
 
 - Diagnostic projects discover or calculate findings. Presenters render and interact with them; providers transport or retain report state. These roles remain separate.
+- A run is described by `DiagnosticRunOptions` (full or incremental: duration logging and report batching) and
+  measured by `DiagnosticRunMetrics`, which owns timings, garbage-collection counters and query-cache statistics.
+  The diagnostic service only decides what to run and how to report findings.
 - `Revit.Linter.DiagnosticReportExporting` owns the report export contract and file writing. The diagnostic report presenter supplies plain finding data with cultures and labels through `IDiagnosticReportExportService` and keeps activity publishing; the save-file dialog stays behind `ISaveFileDialogService`, and the module has no Revit API dependency so the formats stay headless-testable.
 - `Revit.Linter.ReportMessaging` owns the shared message-template contract and typed message view. Feature modules supply data and element-link adapters rather than duplicating parsing or rendering.
 - Configuration is validated when it is loaded, not when a diagnostic runs. A module skips an invalid rule,
   keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;
-  the application shows them once per distinct description. Validation logic stays free of Revit API types
-  so it is covered by headless tests; Revit-version knowledge is passed in from the compatibility boundary.
+  file-level problems travel as structured `DiagnosticConfigurationFileProblem` values through
+  `IDiagnosticConfigurationProblemSource` and the host localizes them, while rule schema problems are
+  formatted through `IDiagnosticConfigurationRuleTextFormatter`; the plain descriptions remain available
+  for logs and legacy callers; the application shows all of them once per distinct problem.
+  Validation logic stays free of Revit API types so it is covered by headless tests; Revit-version knowledge
+  is passed in from the compatibility boundary.
 - Every diagnostic module reads the same `diagnostics.config.yaml` through
   `IDiagnosticConfigurationService`; the file is parsed once per catalog revision and each rule is dispatched
   by its `type` (`custom`, `collision`, `parameter`, `builtIn`). Providers do not watch their own files.
