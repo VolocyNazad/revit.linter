@@ -8,6 +8,10 @@ The vocabulary this repository shares between its code, its documentation and it
 The first-use experience that introduces Revit Linter and offers its optional setup; it spans the welcome wizard and the practical tour.
 _Avoid_: Welcome experience, first-run flow, tutorial flow
 
+**Onboarding state**:
+The per-user record of which onboarding steps a user has seen, which examples were offered and how far the practical tour progressed.
+_Avoid_: Welcome settings, tour progress file
+
 **Welcome wizard**:
 The modal, one-shot flow that shows the setup steps a user has not seen yet, installs the optional example configuration and decides whether the practical tour starts.
 _Avoid_: Welcome window, welcome dialog, intro wizard

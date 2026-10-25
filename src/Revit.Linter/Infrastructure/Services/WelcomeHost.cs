@@ -4,11 +4,7 @@ using Revit.Context.Abstractions.Services;
 using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
-using Revit.Linter.DialogPresenter.Abstractions;
-using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Infrastructure.Utils;
-using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
-using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
@@ -17,7 +13,7 @@ using System.IO;
 namespace Revit.Linter.Infrastructure.Services;
 
 /// <summary>
-/// Gives the onboarding experiences the ribbon, pane, notification and link actions that only the add-in host owns.
+/// Gives the welcome wizard the ribbon, pane and link actions that only the add-in host owns.
 /// </summary>
 internal sealed class WelcomeHost(
     IRevitContext revitContext,
@@ -26,10 +22,8 @@ internal sealed class WelcomeHost(
     TutorialSampleOpenRequest tutorialSampleOpenRequest,
     ITutorialSampleCopyService tutorialSampleCopyService,
     IRevitIdlingScheduler idlingScheduler,
-    IDialog dialog,
-    IDiagnosticListFilterReset diagnosticListFilterReset,
     IConfigurationPaths paths,
-    IShellLauncher shellLauncher) : IWelcomeHost, IPracticalTourHost
+    IShellLauncher shellLauncher) : IWelcomeHost
 {
     private static string DocumentationUrl => ProductIdentity.DocumentationUrl;
     private static string SupportUrl => ProductIdentity.SupportUrl;
@@ -40,91 +34,7 @@ internal sealed class WelcomeHost(
 
     public bool HasOpenDocument => revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
 
-    public void ShowPanes()
-    {
-        UIApplication? application = revitContext.UIApplication;
-        if (application is null)
-        {
-            logger.LogWarning("The panes were not shown because the Revit application is unavailable");
-            return;
-        }
-
-        try
-        {
-            foreach (DockablePaneId paneId in new[]
-                     {
-                         DiagnosticReportPaneUtils.PaneId, FixReportPaneUtils.PaneId, DiagnosticListPaneUtils.PaneId,
-                         IgnoreListPaneUtils.PaneId,
-                     })
-            {
-                DockablePane pane = application.GetDockablePane(paneId);
-                if (!pane.IsShown()) pane.Show();
-            }
-        }
-        catch (Exception exception)
-        {
-            // Showing the panes is a convenience of the wizard; the user can still open them from the ribbon.
-            logger.LogError(exception, "Failed to show the panes after the welcome wizard");
-        }
-    }
-
-    public void ShowPracticalTourPane()
-        => QueuePracticalTourPaneVisibility(visible: true);
-
-    public void ShowPane(OnboardingPane pane)
-        => _ = idlingScheduler.RunAsync(application =>
-        {
-            try
-            {
-                DockablePaneId paneId = GetPaneId(pane);
-                application.GetDockablePane(paneId).Show();
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Failed to show the {OnboardingPane} pane for onboarding", pane);
-            }
-        });
-
-    private static DockablePaneId GetPaneId(OnboardingPane pane)
-        => pane switch
-        {
-            OnboardingPane.Diagnostics => DiagnosticListPaneUtils.PaneId,
-            OnboardingPane.Warnings => DiagnosticReportPaneUtils.PaneId,
-            OnboardingPane.FixList => FixReportPaneUtils.PaneId,
-            OnboardingPane.IgnoreList => IgnoreListPaneUtils.PaneId,
-            _ => throw new ArgumentOutOfRangeException(nameof(pane), pane, null),
-        };
-
-    public void HidePracticalTourPane()
-        => QueuePracticalTourPaneVisibility(visible: false);
-
-    public void ShowPracticalTourCompletedNotification()
-        => _ = dialog.Show(new DialogRequest(localizer["practicalTour_completed_message"]));
-
-    public void ResetDiagnosticsSearchAndFilters() => diagnosticListFilterReset.ResetSearchAndFilters();
-
-    private void QueuePracticalTourPaneVisibility(bool visible)
-        => _ = idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));
-
-    private void SetPracticalTourPaneVisibility(UIApplication application, bool visible)
-    {
-        try
-        {
-            DockablePane pane = application.GetDockablePane(PracticalTourPaneUtils.PaneId);
-            if (visible && !pane.IsShown()) pane.Show();
-            if (!visible && pane.IsShown()) pane.Hide();
-        }
-        catch (Autodesk.Revit.Exceptions.ArgumentException exception)
-        {
-            // The pane registers on first use: hiding it before that is a no-op, not a failure.
-            // Note this is the Revit exception type, unrelated to System.ArgumentException.
-            logger.LogDebug(exception, "Practical-tour pane is not created yet; nothing to hide");
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Failed to change practical-tour pane visibility to {Visible}", visible);
-        }
-    }
+    public void ShowPanes() => OnboardingPanes.ShowAll(revitContext.UIApplication, logger);
 
     public void QueueTutorialSample(string path)
     {

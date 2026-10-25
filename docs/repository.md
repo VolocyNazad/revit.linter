@@ -99,18 +99,23 @@ it for F1 help, and the report and diagnostics rows open it; a renamed Wiki page
 pressed while a tooltip is open; the key is caught by a thread keyboard hook that exists only while the tooltip is
 shown, because a dockable pane does not have the keyboard focus on hover. View models open pages through
 `IDocumentationLauncher`, implemented by the add-in host.
-`Revit.Linter.WelcomePresenter` is the onboarding module: it holds the first-run welcome wizard and the optional
-practical tour with their shared per-user state (`welcomeSettings.yml` in the settings value store), the resumable
-practical-tour progress stored separately for each Revit version, and the example configuration installer. The
+`Revit.Linter.WelcomePresenter` owns the first-run welcome wizard, its example configuration installation and the
+tutorial sample handling. `Revit.Linter.PracticalTourPresenter` owns the optional practical tour, its managed
+`TOUR001` configuration and its dockable pane; its contracts live in
+`Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend on `IPracticalTour` without
+referencing the presenter implementation. Both presenters share the per-user onboarding state
+(`welcomeSettings.yml` in the settings value store) owned by `Revit.Linter.OnboardingState`; it keeps the completed
+wizard version, the example offers per Revit version and the resumable practical-tour progress per Revit version. The
 installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/` (English) and its
 `ru/` subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
 ribbon tab name, pane and link actions through `IWelcomeHost`, and the tour's pane, notification and
-diagnostics-filter actions through `IPracticalTourHost`. Its headless rules
+diagnostics-filter actions through `IPracticalTourHost`. The wizard's headless rules
 (example composition, installation without overwriting, first-run state) are covered by
-`Revit.Linter.WelcomePresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on every
-Revit start; release builds show only the steps the user has not seen.
+`Revit.Linter.WelcomePresenter.Tests`, and the tour's state machine and managed configuration by
+`Revit.Linter.PracticalTourPresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on
+every Revit start; release builds show only the steps the user has not seen.
 The optional practical tour observes neutral completed UI facts published through `IUserInterfaceActivityStream`;
-diagnostic presenters do not reference welcome or onboarding types. Its WPF emphasis is owned by a disposable
+diagnostic presenters do not reference welcome or practical-tour presenter types. Its WPF emphasis is owned by a disposable
 highlight session, so closing or restarting the tour restores every affected control. A non-blocking spotlight dims
 the surrounding pane, outlines the active target with a soft pulsing halo and labels it as the next step; both
 pulse while Windows client-area animations are enabled. A target that is a button
@@ -118,7 +123,7 @@ pulse while Windows client-area animations are enabled. A target that is a butto
 takes an accent frame on the button itself, while rows, text and other surfaces take no element effect,
 so their inner text never casts accent shadows. The host also brings the required pane to the foreground.
 The tour is hosted in a right-side Revit dockable pane; its registration and visibility remain host actions
-behind `IWelcomeHost`.
+behind `IPracticalTourHost`.
 Starting the tour refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where
 `TOUR001` declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or
 opting out removes the managed file, so no training configuration is left behind; starting the tour

@@ -41,15 +41,15 @@ This document records stable architectural rules. Implementation details belong 
 - Views contain layout and view-only mechanics. View models own state and commands; application and diagnostic behavior lives in services.
 - Presenter modules publish completed, product-level UI facts through `IUserInterfaceActivityStream`; event types describe the action and result without naming an observer. Optional observers such as onboarding translate those facts in their own module. Observer failures are isolated by the host stream and never change the originating command's result.
 - The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where the rule declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or opting out removes the managed file. Step advancement itself stays purely observational — only observed UI facts move the tour state machine, and resumed tours keep the current selection. Tour rules carry the reserved `Tour` tag and are sorted above the rest of the diagnostics list.
-- `Revit.Linter.WelcomePresenter` owns onboarding as one module with one primary responsibility, realized by two
-  experiences: the modal one-shot welcome wizard and the optional modeless practical tour. They have different
-  lifecycles but share the per-user onboarding state (`welcomeSettings.yml`) and the managed configuration
-  installation; each experience has its own host contract (`IWelcomeHost` for the wizard, `IPracticalTourHost`
-  for the tour), implemented by one host class, and the dependency goes only from the wizard to the tour through
-  `IPracticalTour`.
-  Splitting them into separate projects is an architectural decision of its own: it needs a tour contract project
-  (`<Module>.Interactions`), a split or shared onboarding state store, and an update to the UI coupling test and the
-  recorded composition points.
+- Onboarding is realized by two presenter modules with one primary responsibility each:
+  `Revit.Linter.WelcomePresenter` owns the modal one-shot welcome wizard and the example configuration installation,
+  and `Revit.Linter.PracticalTourPresenter` owns the optional modeless practical tour. The tour publishes its
+  contracts from `Revit.Linter.PracticalTourPresenter.Interactions`; the wizard and the host depend only on that
+  contract (`IPracticalTour`), so `WelcomePresenter` never references the tour presenter implementation. Both
+  presenters share the per-user onboarding state (`welcomeSettings.yml`) through `Revit.Linter.OnboardingState`,
+  and each experience has its own host contract (`IWelcomeHost` for the wizard, `IPracticalTourHost` for the tour)
+  implemented by a separate host class. `Revit.Linter.Architecture.Tests` records both presenter modules and the
+  wizard's reference to the tour contract.
 - Reusable WPF mechanics live in `Revit.Linter.Behaviors`. Prefer bindings, converters, commands and behaviors over event handlers.
 - `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
 - View-model bases shared by presenter modules (`InitializableObservableObject`, `RevitInteractionViewModel`) and `BindingProxy` live in `Revit.Linter.Presentation`; a presenter module does not keep its own copy.
