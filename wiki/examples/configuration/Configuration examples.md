@@ -10,7 +10,7 @@ The files next to this page are working example configurations stored with the d
 
 | File | Contents |
 | --- | --- |
-| [`diagnostics.config.yaml`](diagnostics.config.yaml) | The single configuration file: six element checks (`type: custom`), eleven collision rules (`type: collision`) and three project-parameter rules (`type: parameter`). MEP (`CLSN1xx`) has host-only, linked-model (`CLSN104`) and connected-run (`CLSN105`) variants; architecture (`CLSN2xx`) and structure (`CLSN3xx`) follow. |
+| [`diagnostics.config.yaml`](diagnostics.config.yaml) | The single configuration file: six element checks (`type: custom`), eleven collision rules (`type: collision`) and three project-parameter rules (`type: parameter`). MEP (`CLSN1xx`) has host-only, linked-model (`CLSN104`) and connected-run (`CLSN105`) variants; architecture (`CLSN2xx`) and structure (`CLSN3xx`) follow. Every collision rule sets `ignoreNestedFamilies: true`, so pairs inside one placed family are not reported. |
 | [`practical-tour.config.yaml`](practical-tour.config.yaml) | The managed `TOUR001` collision rule with the visualizations and fix menu required by the guided workflow. It is installed automatically when the tour starts. |
 
 The same file with Russian message texts is in the [`ru`](ru/diagnostics.config.yaml) subfolder. Formulas reference parameters by `BuiltInParameter` name, so the rules work in any Revit language.

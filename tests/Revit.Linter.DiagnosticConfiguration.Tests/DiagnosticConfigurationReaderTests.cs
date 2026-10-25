@@ -30,6 +30,27 @@ public sealed class DiagnosticConfigurationReaderTests
     }
 
     [Fact]
+    public void Read_reads_the_collision_flags()
+    {
+        const string yaml = """
+            version: 2
+            rules:
+              - type: collision
+                code: "CLSN001"
+                includeLinks: true
+                ignoreConnectedElements: true
+                ignoreNestedFamilies: true
+            """;
+
+        DiagnosticConfigurationFile? file = DiagnosticConfigurationReader.Read(yaml);
+
+        DiagnosticRule rule = Assert.Single(Assert.IsType<DiagnosticConfigurationFile>(file).Rules);
+        Assert.True(rule.IncludeLinks);
+        Assert.True(rule.IgnoreConnectedElements);
+        Assert.True(rule.IgnoreNestedFamilies);
+    }
+
+    [Fact]
     public void Read_returns_null_for_empty_text()
         => Assert.Null(DiagnosticConfigurationReader.Read(" "));
 

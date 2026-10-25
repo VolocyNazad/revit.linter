@@ -80,6 +80,7 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                         GroupByFormula = rule.GroupBy,
                         IncludeLinks = rule.IncludeLinks,
                         IgnoreConnectedElements = rule.IgnoreConnectedElements,
+                        IgnoreNestedFamilies = rule.IgnoreNestedFamilies,
                     },
                 new ElementDiagnosticFilter(elementFilterFactory) { Identity = identity, Formula = rule.Take },
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
@@ -131,6 +132,7 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
             GroupBy = rule.GroupBy ?? string.Empty,
             IncludeLinks = rule.IncludeLinks ?? false,
             IgnoreConnectedElements = rule.IgnoreConnectedElements ?? false,
+            IgnoreNestedFamilies = rule.IgnoreNestedFamilies ?? false,
             Description = rule.Description ?? string.Empty,
             Message = rule.Message,
             Severity = rule.Severity ?? DiagnosticSeverity.Message,

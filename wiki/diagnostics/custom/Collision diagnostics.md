@@ -125,17 +125,19 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 | `groupBy`             | string          | `string`            | `object`                         | [[Formula Revit\|Element grouping formula]]. Collision detection runs within groups                                                         |
 | `includeLinks`          | boolean         | `bool`              | `-`                              | Whether loaded Revit links contribute read-only candidates (default: `false`) (optional)                                                      |
 | `ignoreConnectedElements` | boolean   | `bool`              | `-`                              | Whether elements joined by MEP connectors are excluded from the check (default: `false`) (optional)                                          |
+| `ignoreNestedFamilies` | boolean     | `bool`              | `-`                              | Whether elements that belong to one placed family are excluded from the check (default: `false`) (optional)                                  |
 | `tags`                | sequence of strings | `string`         | `-`                              | Tags used to find the diagnostic in the panes and shown in the reports (default: none) (optional)                                                |
 
 ---
 
-## Linked models and connected elements
+## Linked models, connected elements and nested families
 
 - Links take part only when a rule sets `includeLinks: true` (default `false`), so existing configurations behave as before.
 - All loaded links participate; there is no per-link selection. Only direct links are supported, unloaded links are skipped with a warning, and findings stay on host elements: link-versus-link pairs are never checked.
 - Linked hits are text-only in the report: they never enter the dependency list, so visualizations highlight the host target alone and fixes stay host-only. Linked element names appear as `Name [Link]` in `{intersection.elementNames}`.
 - A link whose transform is not conformal is reported by bounding boxes only, without the solids check.
 - `ignoreConnectedElements: true` skips elements joined to the target by MEP connectors: they touch by design while their family geometry overlaps at the joint. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
+- `ignoreNestedFamilies: true` skips a pair whose elements resolve to one top-level family instance: a parent and its nested family, nested families of one parent, and any deeper pair of the same family tree. Their overlap is decided inside the family, so the pair is skipped even when it genuinely intersects. The relation comes from `FamilyInstance.SuperComponent`, not from the formulas, so it also holds when the parent is not selected by the rule. Only nested families marked as shared become separate project elements; a non-shared nested component is a part of the parent's geometry and never takes part in the check as its own element, so the flag changes results for shared nested families. The flag removes family-internal pairs only: a nested component still takes part in the check against everything else, and a third-party element that crosses a nested component can still be reported for both the component and its parent. The flag applies to host pairs only, and it has almost no effect in a family document, where a top-level nested component has no parent element. The nested component must pass `take`/`andTake` as well for the flag to make any visible difference.
 
 **Notes:**
 - If the `message` field is not specified, it defaults to the localized generic template
@@ -144,4 +146,5 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - If the `isObsolete` field is not specified, it defaults to `false`
 - If the `includeLinks` field is not specified, it defaults to `false`: linked models take part only when explicitly enabled, and their hits stay text-only in the report.
 - If the `ignoreConnectedElements` field is not specified, it defaults to `false`. Set it to `true` to skip joined elements: they touch by design while their family geometry overlaps at the joint, so they would otherwise be reported as collisions. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
+- If the `ignoreNestedFamilies` field is not specified, it defaults to `false`. Set it to `true` to skip pairs inside one placed family: a parent and its nested family, and nested families of one parent overlap by family design and would otherwise be reported as collisions. The flag applies to host pairs only and does not remove duplicate hits on one third-party element; see the section above.
 - Tags are free text; the search and the tag matching ignore case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags.

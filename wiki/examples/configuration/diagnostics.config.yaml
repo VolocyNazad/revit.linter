@@ -264,6 +264,7 @@ rules:
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
   andTake: "instance and (builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -346,6 +347,7 @@ rules:
   take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -428,6 +430,7 @@ rules:
   take: "instance and (builtincategory('OST_MechanicalEquipment') or builtincategory('OST_DuctTerminal') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_ElectricalEquipment'))"
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory') or builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -511,6 +514,7 @@ rules:
   andTake: "instance and (builtincategory('OST_PipeCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeAccessory'))"
   groupBy: "'all'"
   includeLinks: true
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -594,6 +598,7 @@ rules:
   andTake: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
   groupBy: "'all'"
   ignoreConnectedElements: true
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -679,6 +684,7 @@ rules:
   take: "instance and (builtincategory('OST_Walls'))"
   andTake: "instance and (builtincategory('OST_Walls'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -761,6 +767,7 @@ rules:
   take: "instance and (builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_Casework') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SpecialityEquipment'))"
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Columns'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -843,6 +850,7 @@ rules:
   take: "instance and (builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing'))"
   andTake: "instance and (builtincategory('OST_Walls') or builtincategory('OST_Floors'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -928,6 +936,7 @@ rules:
   take: "instance and (builtincategory('OST_StructuralColumns'))"
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -1010,6 +1019,7 @@ rules:
   take: "instance and (builtincategory('OST_StructuralFraming'))"
   andTake: "instance and (builtincategory('OST_StructuralFraming'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:
@@ -1092,6 +1102,7 @@ rules:
   take: "instance and (builtincategory('OST_StructuralFoundation'))"
   andTake: "instance and (builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralColumns'))"
   groupBy: "'all'"
+  ignoreNestedFamilies: true
   visualizations:
     - name: "Isolate and inspect"
       steps:

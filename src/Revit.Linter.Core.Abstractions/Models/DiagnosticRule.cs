@@ -63,6 +63,15 @@ public sealed class DiagnosticRule
     /// <summary>Gets whether a collision rule skips elements joined by connectors.</summary>
     public bool? IgnoreConnectedElements { get; init; }
 
+    /// <summary>Gets whether a collision rule skips two elements that belong to one placed family.</summary>
+    /// <remarks>
+    /// A parent instance and its nested families, and nested families of the same parent instance,
+    /// form one family tree: their overlap is decided inside the family, so the pair is not reported.
+    /// The relation comes from <c>FamilyInstance.SuperComponent</c> and therefore does not depend on
+    /// the rule's formulas or on whether the parent itself is selected.
+    /// </remarks>
+    public bool? IgnoreNestedFamilies { get; init; }
+
     /// <summary>Gets the project parameters of a parameter rule.</summary>
     public DiagnosticParameter[]? Parameters { get; init; }
 

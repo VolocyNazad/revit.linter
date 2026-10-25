@@ -33,6 +33,10 @@ namespace Revit.Linter.CollisionDiagnostics;
 /// instance instead of moving every overlapping linked solid. Pair keys carry
 /// which document side each identifier comes from, and linked hits stay text-only in the
 /// report message without entering the dependency list.</para>
+/// <para>When nested-family skipping is enabled, a pair is skipped when both elements resolve to
+/// one top-level family instance: a parent and its nested family, and nested families of one parent,
+/// overlap by family design. The relation is read from the model, so it does not depend on the
+/// rule's formulas or on whether the parent itself is selected.</para>
 /// </remarks>
 internal sealed class ElementDiagnostic(
     ElementFilterFactory elementFilterFactory,
@@ -58,6 +62,8 @@ internal sealed class ElementDiagnostic(
     public bool IncludeLinks { get; init; }
     /// <summary>Gets whether elements joined to the target by MEP connectors are skipped.</summary>
     public bool IgnoreConnectedElements { get; init; } = false;
+    /// <summary>Gets whether elements that belong to one placed family are skipped.</summary>
+    public bool IgnoreNestedFamilies { get; init; } = false;
     public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
     {
         IReadOnlyCollection<Solid> targetSolids = getElementGeometry.Execute(targetElement, view);
@@ -71,8 +77,10 @@ internal sealed class ElementDiagnostic(
         HashSet<long>? connectedIds = IgnoreConnectedElements
             ? getConnectedElementIds.Execute(targetElement)
             : null;
+        FamilyTrees? familyTrees = IgnoreNestedFamilies ? new() : null;
         List<Element> intersections = FindIntersections(
-            document, view, spatialIndex, targetElement, targetBoundingBox, targetSolids, connectedIds);
+            document, view, spatialIndex, targetElement, targetBoundingBox, targetSolids, connectedIds,
+            familyTrees);
         List<LinkHit> linkHits = FindLinkIntersections(
             document, view, targetElement, targetBoundingBox, targetSolids, group);
 
@@ -113,7 +121,8 @@ internal sealed class ElementDiagnostic(
         Element targetElement,
         BoundingBoxXYZ targetBoundingBox,
         IReadOnlyCollection<Solid> targetSolids,
-        HashSet<long>? connectedIds)
+        HashSet<long>? connectedIds,
+        FamilyTrees? familyTrees)
     {
         long targetElementId = targetElement.Id.Value();
         List<Element> intersections = [];
@@ -128,6 +137,11 @@ internal sealed class ElementDiagnostic(
             // the bounding-box, geometry and Boolean work below on a certain false positive.
             // Connector references are mutual, so the target set covers both check directions.
             if (connectedIds?.Contains(elementId) == true) continue;
+
+            // A parent and its nested components, and nested components of one parent, belong to
+            // one placed family: their overlap is decided inside the family, so the pair is
+            // skipped even when the parent itself is not selected by the rule.
+            if (familyTrees?.AreRelated(targetElement, element) == true) continue;
 
             BoundingBoxXYZ boundingBox = getElementBoundingBox.Execute(element, view);
 

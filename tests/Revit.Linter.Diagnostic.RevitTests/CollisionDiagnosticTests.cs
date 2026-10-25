@@ -1,4 +1,5 @@
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
 using Microsoft.Extensions.Logging.Abstractions;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
@@ -18,7 +19,9 @@ namespace Revit.Linter.Diagnostic.RevitTests;
 /// Covers the collision diagnostic and its spatial index on boxes whose overlaps are known in advance:
 /// <c>_center</c> intersects <c>_first</c> and <c>_second</c>, which do not intersect each other,
 /// <c>_distant</c> intersects nothing, and <c>_long</c> is far from all of them and too long to be
-/// stored in grid cells.
+/// stored in grid cells. The nested-family test builds a placed family whose components are nested
+/// but not shared, and pins the boundary of <c>ignoreNestedFamilies</c>: such components are not
+/// project elements and therefore never reach the collision check.
 /// </summary>
 public sealed class CollisionDiagnosticTests : RevitApiTest
 {
@@ -198,11 +201,123 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         await Assert.That(count).IsEqualTo(5);
     }
 
+    [Test]
+    public async Task Non_shared_nested_components_are_not_project_elements()
+    {
+        (FamilyInstance parent, DirectShape thirdParty) = CreateNestedFamilyFixture();
+        CollisionElementDiagnostic enabled = CreateDiagnostic(ignoreNestedFamilies: true);
+        CollisionElementDiagnostic disabled = CreateDiagnostic();
+
+        DiagnosticFeedback enabledFeedback = enabled.Execute(_document!, null, parent);
+        DiagnosticFeedback disabledFeedback = disabled.Execute(_document!, null, parent);
+
+        // A nested component that is not shared stays inside the parent family definition: it is
+        // not a project element, so it never becomes a collision candidate and the flag cannot
+        // change the result. Shared nested families - the only form the flag serves in a project -
+        // can be produced only in the family editor, not through the API, so they stay on the
+        // manual checklist while this test pins the boundary the check relies on.
+        await Assert.That(parent.GetSubComponentIds()).IsEmpty();
+        int projectFamilyInstances = new FilteredElementCollector(_document!)
+            .OfClass(typeof(FamilyInstance)).GetElementCount();
+        await Assert.That(projectFamilyInstances).IsEqualTo(1);
+        await Assert.That(DependencyIds(enabledFeedback)).IsEquivalentTo([thirdParty.Id]);
+        await Assert.That(DependencyIds(disabledFeedback)).IsEquivalentTo([thirdParty.Id]);
+    }
+
+    private static ElementId[] DependencyIds(DiagnosticFeedback feedback) =>
+        [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id)];
+
+    // A placed family with two nested components inside a parent body, and one third-party box
+    // crossing the parent. Placed far from the other test elements so this test never depends on
+    // them. The family instances are rebuilt per test because the test document is recreated for
+    // every test.
+    private (FamilyInstance Parent, DirectShape ThirdParty) CreateNestedFamilyFixture()
+    {
+        Document projectDocument = _document!;
+        Document innerDocument = FamilyTestDocuments.OpenModelFamilyTemplate(Application);
+        Document outerDocument = FamilyTestDocuments.OpenModelFamilyTemplate(Application);
+        try
+        {
+            using (Transaction inner = new(innerDocument, "Create nested test cube"))
+            {
+                inner.Start();
+                CreateFamilyCube(innerDocument, 0.5);
+                inner.Commit();
+            }
+
+            Family innerFamily = innerDocument.LoadFamily(outerDocument);
+            FamilySymbol innerSymbol = FindSymbol(outerDocument, innerFamily);
+            using (Transaction outer = new(outerDocument, "Create outer test family"))
+            {
+                outer.Start();
+                if (!innerSymbol.IsActive) innerSymbol.Activate();
+                CreateFamilyCube(outerDocument, 2);
+                // Two components of one parent: they overlap each other and the parent body.
+                outerDocument.FamilyCreate.NewFamilyInstance(
+                    new XYZ(0, 0, 0.5), innerSymbol, StructuralType.NonStructural);
+                outerDocument.FamilyCreate.NewFamilyInstance(
+                    new XYZ(0.5, 0.5, 0.5), innerSymbol, StructuralType.NonStructural);
+                outerDocument.Regenerate();
+                outer.Commit();
+            }
+
+            Family family = outerDocument.LoadFamily(projectDocument);
+
+            FamilyInstance parent;
+            using (Transaction place = new(projectDocument, "Place nested-family test instance"))
+            {
+                place.Start();
+                FamilySymbol symbol = FindSymbol(projectDocument, family);
+                if (!symbol.IsActive) symbol.Activate();
+                parent = projectDocument.Create.NewFamilyInstance(
+                    new XYZ(200, 200, 0), symbol, StructuralType.NonStructural);
+                projectDocument.Regenerate();
+                place.Commit();
+            }
+
+            DirectShape thirdParty;
+            using (Transaction third = new(projectDocument, "Seed nested-family third party"))
+            {
+                third.Start();
+                thirdParty = CreateBox(projectDocument, 200.2, 200.2, 1, 1);
+                third.Commit();
+            }
+
+            return (parent, thirdParty);
+        }
+        finally
+        {
+            innerDocument.Close(false);
+            outerDocument.Close(false);
+        }
+    }
+
+    private static void CreateFamilyCube(Document familyDocument, double halfSize)
+    {
+        Plane plane = Plane.CreateByNormalAndOrigin(XYZ.BasisZ, XYZ.Zero);
+        SketchPlane sketchPlane = SketchPlane.Create(familyDocument, plane);
+        CurveArray rectangle = new();
+        rectangle.Append(Line.CreateBound(new XYZ(-halfSize, -halfSize, 0), new XYZ(halfSize, -halfSize, 0)));
+        rectangle.Append(Line.CreateBound(new XYZ(halfSize, -halfSize, 0), new XYZ(halfSize, halfSize, 0)));
+        rectangle.Append(Line.CreateBound(new XYZ(halfSize, halfSize, 0), new XYZ(-halfSize, halfSize, 0)));
+        rectangle.Append(Line.CreateBound(new XYZ(-halfSize, halfSize, 0), new XYZ(-halfSize, -halfSize, 0)));
+        CurveArrArray profile = new();
+        profile.Append(rectangle);
+        familyDocument.FamilyCreate.NewExtrusion(true, profile, sketchPlane, halfSize * 2);
+    }
+
+    private static FamilySymbol FindSymbol(Document document, Family family) =>
+        new FilteredElementCollector(document)
+            .OfClass(typeof(FamilySymbol))
+            .Cast<FamilySymbol>()
+            .First(candidate => candidate.Family.Id == family.Id);
+
     private BoundingBoxGridIndex BuildIndex() => BoundingBoxGridIndex.Build(
         [_center!, _first!, _second!, _distant!, _long!],
         element => element.get_BoundingBox(null));
 
-    private static CollisionElementDiagnostic CreateDiagnostic(bool includeLinks = false)
+    private static CollisionElementDiagnostic CreateDiagnostic(
+        bool includeLinks = false, bool ignoreNestedFamilies = false)
     {
         // A new query service per diagnostic: the test cache never invalidates on transactions.
         IDocumentQueryService queries = TestDocumentQueries.Create();
@@ -221,6 +336,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
             TakeFormula = "builtincategory('OST_GenericModel')",
             GroupByFormula = "property('ViewSpecific')",
             IncludeLinks = includeLinks,
+            IgnoreNestedFamilies = ignoreNestedFamilies,
         };
     }
 
