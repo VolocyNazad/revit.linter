@@ -91,6 +91,136 @@ public sealed class DiagnosticConfigurationEditorTests
     }
 
     [Fact]
+    public void SetScalars_inserts_missing_fields_after_a_nested_block()
+    {
+        const string text = """
+            version: 2
+            rules:
+              - type: parameter
+                code: "PAR001"
+                take: "instance"
+                parameters:
+                  - name: "P1"
+                    isInstance: true
+              - type: builtIn
+                code: "SHRD003"
+            """;
+
+        string updated = DiagnosticConfigurationEditor.Parse(text).SetScalars(
+            new DiagnosticRuleLocation(DiagnosticRuleType.Parameter, "PAR001"),
+            [
+                new("severity", "\"Warning\""),
+                new("isActive", "false"),
+            ]);
+
+        // A nested block reports an end mark at its first child; the inserted fields must follow the
+        // whole block instead of landing inside it, and the next rule must stay intact.
+        int block = updated.IndexOf("isInstance: true", StringComparison.Ordinal);
+        int severity = updated.IndexOf("severity: \"Warning\"", StringComparison.Ordinal);
+        int active = updated.IndexOf("isActive: false", StringComparison.Ordinal);
+        Assert.True(block >= 0);
+        Assert.True(severity > block);
+        Assert.True(active > severity);
+        List<DiagnosticRule> rules = DiagnosticConfigurationReader.Read(updated)!.Rules;
+        Assert.Equal(2, rules.Count);
+        Assert.Equal(DiagnosticSeverity.Warning, rules[0].Severity);
+        Assert.False(rules[0].IsActive);
+        Assert.Single(rules[0].Parameters!);
+        Assert.Equal("SHRD003", rules[1].Code);
+    }
+
+    [Fact]
+    public void SetScalars_inserts_missing_fields_after_a_flow_sequence()
+    {
+        const string text = """
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                description: "Generic models"
+                severity: "Message"
+                visualizations:
+                  - name: "Show and select"
+                    steps:
+                      - type: "Show"
+                        elementSets: ["Target"]
+              - type: builtIn
+                code: "SHRD003"
+            """;
+
+        string updated = DiagnosticConfigurationEditor.Parse(text).SetScalars(
+            CustomRule,
+            [
+                new("isActive", "false"),
+                new("isHidden", "false"),
+            ]);
+
+        // The flow sequence must keep its closing bracket on the same line; the inserted fields follow
+        // the whole rule block instead of landing inside the sequence and corrupting the YAML.
+        int closing = updated.IndexOf("\"Target\"]", StringComparison.Ordinal);
+        int active = updated.IndexOf("isActive: false", StringComparison.Ordinal);
+        int hidden = updated.IndexOf("isHidden: false", StringComparison.Ordinal);
+        Assert.True(closing >= 0);
+        Assert.True(active > closing);
+        Assert.True(hidden > active);
+        List<DiagnosticRule> rules = DiagnosticConfigurationReader.Read(updated)!.Rules;
+        Assert.Equal(2, rules.Count);
+        Assert.False(rules[0].IsActive);
+        Assert.Equal(false, rules[0].IsHidden);
+        Assert.Equal("SHRD003", rules[1].Code);
+    }
+
+    [Fact]
+    public void SetScalars_updates_several_rules_in_one_pass()
+    {
+        const string text = """
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                take: "instance"
+              - type: builtIn
+                code: "SHRD003"
+                isActive: true
+                severity: "Message"
+            """;
+
+        string updated = DiagnosticConfigurationEditor.Parse(text).SetScalars(
+        [
+            new DiagnosticRuleScalarUpdate(
+                CustomRule,
+                [new("isActive", "false"), new("isHidden", "false")]),
+            new DiagnosticRuleScalarUpdate(
+                new DiagnosticRuleLocation(DiagnosticRuleType.BuiltIn, "SHRD003"),
+                [new("isActive", "false")]),
+        ]);
+
+        List<DiagnosticRule> rules = DiagnosticConfigurationReader.Read(updated)!.Rules;
+        Assert.Equal(2, rules.Count);
+        Assert.False(rules[0].IsActive);
+        Assert.Equal(false, rules[0].IsHidden);
+        Assert.False(rules[1].IsActive);
+        Assert.Equal(DiagnosticSeverity.Message, rules[1].Severity);
+    }
+
+    [Fact]
+    public void SetScalars_rejects_the_same_rule_twice()
+    {
+        const string text = """
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+            """;
+
+        Assert.Throws<ArgumentException>(() => DiagnosticConfigurationEditor.Parse(text).SetScalars(
+        [
+            new DiagnosticRuleScalarUpdate(CustomRule, [new("isActive", "false")]),
+            new DiagnosticRuleScalarUpdate(CustomRule, [new("isHidden", "true")]),
+        ]));
+    }
+
+    [Fact]
     public void RemoveField_removes_the_line_and_keeps_the_other_fields()
     {
         const string text = """
@@ -149,12 +279,12 @@ public sealed class DiagnosticConfigurationEditorTests
     [Fact]
     public void AppendRule_uses_the_existing_indentation_and_writes_the_marker_once()
     {
-        const string text = """
+        string text = """
             version: 2
             rules:
               - type: custom
                 code: "CSTM001"
-            """;
+            """.Replace("\r\n", "\n").Replace("\r", "\n");
 
         string updated = DiagnosticConfigurationEditor.Parse(text).AppendRule(
             "- type: builtIn\n  code: \"SHRD003\"\n  isActive: false",

@@ -1,5 +1,5 @@
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.DiagnosticConfiguration.Models;
-using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Services;
 using Revit.Linter.Core.Abstractions.Models;
 
@@ -110,6 +110,94 @@ public sealed class DiagnosticConfigurationWriterTests : IDisposable
         Assert.False(rule.IsActive);
         Assert.Equal(DiagnosticSeverity.Warning, rule.Severity);
         Assert.True(rule.IsHidden);
+    }
+
+    [Fact]
+    public void UpdateStates_persists_a_batch_of_rules_in_one_file()
+    {
+        string path = WriteConfiguration("""
+            # Keep this comment.
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                take: "instance"
+                visualizations:
+                  - name: "Show"
+                    steps:
+                      - type: "Show"
+                        elementSets: ["Target"]
+              - type: builtIn
+                code: "SHRD003"
+                isActive: true
+                severity: "Message"
+            """);
+        using DiagnosticConfigurationService service = CreateService(path, out _);
+        var writer = new DiagnosticConfigurationWriter(service);
+
+        writer.UpdateStates(
+            path,
+            [
+                new DiagnosticRuleStateUpdate(
+                    "CSTM001", DiagnosticRuleType.Custom, IsActive: false, Severity: DiagnosticSeverity.Warning, IsHidden: false),
+                new DiagnosticRuleStateUpdate(
+                    "SHRD003", DiagnosticRuleType.BuiltIn, IsActive: false, Severity: DiagnosticSeverity.Warning, IsHidden: true),
+            ]);
+
+        string content = File.ReadAllText(path);
+        Assert.Contains("# Keep this comment.", content, StringComparison.Ordinal);
+        DiagnosticConfigurationFile? file = ConfigurationPathUtils.GetDiagnosticConfiguration(path);
+        Assert.NotNull(file);
+        Assert.Equal(2, file.Rules.Count);
+        Assert.False(file.Rules[0].IsActive);
+        Assert.Equal(DiagnosticSeverity.Warning, file.Rules[0].Severity);
+        Assert.False(file.Rules[1].IsActive);
+        Assert.True(file.Rules[1].IsHidden);
+    }
+
+    [Fact]
+    public void UpdateStates_appends_several_built_in_overrides_in_one_batch()
+    {
+        string path = WriteConfiguration("""
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                take: "instance"
+            """);
+        using DiagnosticConfigurationService service = CreateService(path, out _);
+        var writer = new DiagnosticConfigurationWriter(service);
+
+        writer.UpdateStates(
+            path,
+            [
+                new DiagnosticRuleStateUpdate(
+                    "SHRD003", DiagnosticRuleType.BuiltIn, IsActive: false, Severity: DiagnosticSeverity.Warning, IsHidden: false),
+                new DiagnosticRuleStateUpdate(
+                    "SHRD004", DiagnosticRuleType.BuiltIn, IsActive: false, Severity: DiagnosticSeverity.Warning, IsHidden: false),
+            ]);
+
+        string content = File.ReadAllText(path);
+        Assert.Equal(
+            1,
+            content.Split(new[] { "# Built-in overrides" }, StringSplitOptions.None).Length - 1);
+        DiagnosticConfigurationFile? file = ConfigurationPathUtils.GetDiagnosticConfiguration(path);
+        Assert.NotNull(file);
+        Assert.Equal(3, file.Rules.Count);
+        Assert.Equal("SHRD003", file.Rules[1].Code);
+        Assert.Equal("SHRD004", file.Rules[2].Code);
+    }
+
+    [Fact]
+    public void UpdateStates_with_an_empty_batch_does_not_create_the_file()
+    {
+        string path = Path.Combine(_directory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        using DiagnosticConfigurationService service = CreateService(path, out _);
+        var writer = new DiagnosticConfigurationWriter(service);
+
+        writer.UpdateStates(path, []);
+
+        Assert.False(File.Exists(path));
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Models;
 
 namespace Revit.Linter.ConfigurationPath.Abstractions.Services;
@@ -25,6 +26,21 @@ public interface IDiagnosticConfigurationWriter
         bool isActive,
         DiagnosticSeverity severity,
         bool isHidden);
+
+    /// <summary>
+    /// Writes the effective state of several diagnostics into one configuration file in one write.
+    /// </summary>
+    /// <param name="path">The configuration file path shared by the diagnostics.</param>
+    /// <param name="updates">The diagnostics whose state changes must be persisted.</param>
+    /// <remarks>
+    /// The file is read, parsed, edited and written once for the whole batch, so a bulk action such as
+    /// clearing every check does not rewrite the same file once per diagnostic. Every diagnostic keeps
+    /// the same replacement, append and comment-preservation rules as <see cref="UpdateState"/>. An empty
+    /// batch changes nothing and does not create a missing file.
+    /// </remarks>
+    /// <exception cref="T:System.ArgumentException">The path is missing, or a diagnostic code is missing.</exception>
+    /// <exception cref="T:System.InvalidOperationException">The file does not exist, or it does not contain a non-built-in rule of the batch.</exception>
+    void UpdateStates(string path, IReadOnlyCollection<DiagnosticRuleStateUpdate> updates);
 
     /// <summary>
     /// Removes every built-in override entry and every <c>isHidden</c> field from the user-readable files.

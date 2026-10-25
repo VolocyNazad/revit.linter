@@ -1,5 +1,5 @@
+using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
-using Revit.Linter.ConfigurationPath.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DiagnosticConfiguration.Editing;
 using Revit.Linter.DiagnosticConfiguration.Infrastructure;
@@ -35,47 +35,68 @@ public sealed class DiagnosticConfigurationWriter : IDiagnosticConfigurationWrit
         DiagnosticRuleType ruleType,
         bool isActive,
         DiagnosticSeverity severity,
-        bool isHidden)
+        bool isHidden) =>
+        UpdateStates(
+            path,
+            [new DiagnosticRuleStateUpdate(code, ruleType, isActive, severity, isHidden)]);
+
+    /// <inheritdoc />
+    public void UpdateStates(string path, IReadOnlyCollection<DiagnosticRuleStateUpdate> updates)
     {
         if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("The path is required.", nameof(path));
-        if (string.IsNullOrWhiteSpace(code)) throw new ArgumentException("The code is required.", nameof(code));
+        if (updates is null) throw new ArgumentNullException(nameof(updates));
+        if (updates.Count == 0) return;
+        if (updates.Any(update => string.IsNullOrWhiteSpace(update.Code)))
+            throw new ArgumentException("The code is required.", nameof(updates));
 
         _configurationService.SuppressWatcherChanges(_watcherSuppression);
         try
         {
             if (!File.Exists(path))
             {
-                if (ruleType != DiagnosticRuleType.BuiltIn)
+                if (updates.Any(update => update.RuleType != DiagnosticRuleType.BuiltIn))
                     throw new InvalidOperationException($"The configuration file '{path}' does not exist.");
                 ConfigurationPathUtils.EnsureConfigurationFile(path);
             }
 
             string text = File.ReadAllText(path);
             DiagnosticConfigurationEditor editor = DiagnosticConfigurationEditor.Parse(text);
-            var location = new DiagnosticRuleLocation(ruleType, code);
-            string updated;
-            if (editor.ContainsRule(location))
+            List<DiagnosticRuleScalarUpdate> existing = [];
+            List<DiagnosticRuleStateUpdate> appended = [];
+            foreach (DiagnosticRuleStateUpdate update in updates)
             {
-                updated = editor.SetScalars(
-                    location,
-                    [
-                        new("isActive", isActive ? "true" : "false"),
-                        new("severity", $"\"{severity}\""),
-                        new("isHidden", isHidden ? "true" : "false"),
-                    ]);
+                var location = new DiagnosticRuleLocation(update.RuleType, update.Code);
+                if (editor.ContainsRule(location))
+                {
+                    existing.Add(new DiagnosticRuleScalarUpdate(location, BuildStateFields(update)));
+                }
+                else if (update.RuleType == DiagnosticRuleType.BuiltIn)
+                {
+                    appended.Add(update);
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"The configuration file '{path}' does not contain the rule '{update.Code}'.");
+                }
             }
-            else if (ruleType == DiagnosticRuleType.BuiltIn)
+
+            // One text edit pass for every existing rule, so a bulk action rewrites the file once. The
+            // appended overrides form one block, which keeps their order and writes the marker once.
+            string updated = existing.Count > 0 ? editor.SetScalars(existing) : text;
+            if (appended.Count > 0)
             {
-                updated = editor.AppendRule(
-                    BuildBuiltInEntry(code, isActive, severity, isHidden), BuiltInOverridesMarker);
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    $"The configuration file '{path}' does not contain the rule '{code}'.");
+                updated = DiagnosticConfigurationEditor.Parse(updated).AppendRule(
+                    string.Join(Environment.NewLine, appended.Select(BuildBuiltInEntry)),
+                    BuiltInOverridesMarker);
             }
 
             if (string.Equals(updated, text, StringComparison.Ordinal)) return;
+
+            // A span edit that would produce invalid YAML must never replace the user's file: the next
+            // state write could not parse it, so every later check toggle would fail to persist. The
+            // validation reuses the same parse path as the edit itself.
+            DiagnosticConfigurationEditor.Parse(updated);
 
             DiagnosticConfigurationFileWriter.WriteAtomically(path, updated);
             _configurationService.Invalidate();
@@ -85,6 +106,13 @@ public sealed class DiagnosticConfigurationWriter : IDiagnosticConfigurationWrit
             _configurationService.SuppressWatcherChanges(_watcherSuppression);
         }
     }
+
+    private static List<KeyValuePair<string, string>> BuildStateFields(DiagnosticRuleStateUpdate update) =>
+    [
+        new("isActive", update.IsActive ? "true" : "false"),
+        new("severity", $"\"{update.Severity}\""),
+        new("isHidden", update.IsHidden ? "true" : "false"),
+    ];
 
     /// <inheritdoc />
     public void ResetBuiltInOverrides()
@@ -118,14 +146,10 @@ public sealed class DiagnosticConfigurationWriter : IDiagnosticConfigurationWrit
         }
     }
 
-    private static string BuildBuiltInEntry(
-        string code,
-        bool isActive,
-        DiagnosticSeverity severity,
-        bool isHidden) =>
+    private static string BuildBuiltInEntry(DiagnosticRuleStateUpdate update) =>
         "- type: builtIn" + Environment.NewLine +
-        $"  code: \"{code}\"" + Environment.NewLine +
-        $"  isActive: {(isActive ? "true" : "false")}" + Environment.NewLine +
-        $"  severity: \"{severity}\"" + Environment.NewLine +
-        $"  isHidden: {(isHidden ? "true" : "false")}";
+        $"  code: \"{update.Code}\"" + Environment.NewLine +
+        $"  isActive: {(update.IsActive ? "true" : "false")}" + Environment.NewLine +
+        $"  severity: \"{update.Severity}\"" + Environment.NewLine +
+        $"  isHidden: {(update.IsHidden ? "true" : "false")}";
 }

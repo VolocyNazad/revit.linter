@@ -101,12 +101,42 @@ public sealed class DiagnosticConfigurationEditor
     /// </remarks>
     public string SetScalars(
         DiagnosticRuleLocation location,
-        IReadOnlyList<KeyValuePair<string, string>> values)
-    {
-        if (values.Count == 0) return Text;
+        IReadOnlyList<KeyValuePair<string, string>> values) =>
+        SetScalars([new DiagnosticRuleScalarUpdate(location, values)]);
 
-        YamlMappingNode rule = FindRequiredRule(location);
+    /// <summary>Replaces the values of the given rule fields for several rules in one edit pass.</summary>
+    /// <param name="updates">The rules to edit and their replacement fields.</param>
+    /// <returns>The edited document text.</returns>
+    /// <exception cref="ArgumentException">A rule appears more than once in <paramref name="updates"/>.</exception>
+    /// <exception cref="InvalidOperationException">A rule is not present in the document.</exception>
+    /// <remarks>
+    /// The patches of every rule are applied to the original text in one pass, so a caller that changes
+    /// many rules rewrites the file once. Every rule and every field follows the same replacement and
+    /// insertion rules as <see cref="SetScalars(DiagnosticRuleLocation, IReadOnlyList{KeyValuePair{string, string}})"/>.
+    /// </remarks>
+    public string SetScalars(IReadOnlyList<DiagnosticRuleScalarUpdate> updates)
+    {
+        if (updates is null) throw new ArgumentNullException(nameof(updates));
+        if (updates.Count == 0) return Text;
+
         List<TextPatch> patches = [];
+        HashSet<DiagnosticRuleLocation> locations = [];
+        foreach (DiagnosticRuleScalarUpdate update in updates)
+        {
+            if (!locations.Add(update.Location))
+                throw new ArgumentException(
+                    $"The rule '{update.Location.Code}' is updated more than once.", nameof(updates));
+            CollectScalarPatches(FindRequiredRule(update.Location), update.Values, patches);
+        }
+
+        return ApplyPatches(patches);
+    }
+
+    private void CollectScalarPatches(
+        YamlMappingNode rule,
+        IReadOnlyList<KeyValuePair<string, string>> values,
+        List<TextPatch> patches)
+    {
         List<KeyValuePair<string, string>> missing = [];
 
         foreach (KeyValuePair<string, string> pair in values)
@@ -122,18 +152,17 @@ public sealed class DiagnosticConfigurationEditor
             missing.Add(pair);
         }
 
-        if (missing.Count > 0)
-        {
-            int indent = FieldIndent(rule);
-            YamlNode? last = rule.Children.Count == 0 ? null : rule.Children.Last().Value;
-            long insertAt = last?.End.Index ?? rule.End.Index;
-            var builder = new StringBuilder();
-            foreach (KeyValuePair<string, string> pair in missing)
-                builder.Append(NewLine).Append(' ', indent).Append(pair.Key).Append(": ").Append(pair.Value);
-            patches.Add(new TextPatch(insertAt, 0, builder.ToString()));
-        }
+        if (missing.Count == 0) return;
 
-        return ApplyPatches(patches);
+        int indent = FieldIndent(rule);
+        YamlNode? last = rule.Children.Count == 0 ? null : rule.Children.Last().Value;
+        // A nested block collection reports an end mark at its first child, so inserting after its
+        // raw end would write the new fields into the middle of the block and corrupt the YAML.
+        long insertAt = LineBreakStart(last is null ? rule.End.Index : NodeEndIndex(last));
+        var builder = new StringBuilder();
+        foreach (KeyValuePair<string, string> pair in missing)
+            builder.Append(NewLine).Append(' ', indent).Append(pair.Key).Append(": ").Append(pair.Value);
+        patches.Add(new TextPatch(insertAt, 0, builder.ToString()));
     }
 
     /// <summary>Removes one field from the rule.</summary>
@@ -148,13 +177,18 @@ public sealed class DiagnosticConfigurationEditor
         if (keyNode is null || value is null) return Text;
 
         int lineStart = LineStart(keyNode.Start.Index);
-        int lineEnd = LineEnd(value.End.Index);
+        int lineEnd = LineEnd(NodeEndIndex(value));
         return ApplyPatches([new TextPatch(lineStart, lineEnd - lineStart, string.Empty)]);
     }
 
     /// <summary>Removes the rule together with its fields.</summary>
     /// <param name="location">The rule to remove.</param>
     /// <returns>The edited document text; unchanged when the rule does not exist.</returns>
+    /// <remarks>
+    /// The end of the last field is resolved through <see cref="NodeEndIndex"/>: a nested block sequence
+    /// (for example <c>visualizations</c> with <c>steps</c>) reports an end mark at its first child, so
+    /// using the raw end would leave the rest of the block behind and corrupt the following YAML.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">The document has no rule list.</exception>
     public string RemoveRule(DiagnosticRuleLocation location)
     {
@@ -164,8 +198,33 @@ public sealed class DiagnosticConfigurationEditor
 
         int lineStart = LineStart(rule.Start.Index);
         YamlNode? lastValue = rule.Children.Count == 0 ? null : rule.Children.Last().Value;
-        int lineEnd = LineEnd(lastValue?.End.Index ?? rule.End.Index);
+        int lineEnd = LineEnd(lastValue is null ? rule.End.Index : NodeEndIndex(lastValue));
         return ApplyPatches([new TextPatch(lineStart, lineEnd - lineStart, string.Empty)]);
+    }
+
+    /// <summary>Finds the text range of one rule block.</summary>
+    /// <param name="location">The rule to locate.</param>
+    /// <param name="start">The offset of the first character of the rule's first line.</param>
+    /// <param name="length">The length of the block, including the trailing line break.</param>
+    /// <returns><see langword="true"/> when the rule exists; otherwise <see langword="false"/> and a zero range.</returns>
+    /// <remarks>
+    /// The range starts at the rule item itself and covers its whole nested content, so a view can
+    /// select or scroll to the complete block. Section comments around the rule are not included.
+    /// </remarks>
+    public bool TryGetRuleSpan(DiagnosticRuleLocation location, out int start, out int length)
+    {
+        start = 0;
+        length = 0;
+        if (_rules is null) return false;
+
+        YamlMappingNode? rule = FindRule(location);
+        if (rule is null) return false;
+
+        int lineStart = LineStart(rule.Start.Index);
+        int lineEnd = LineEnd(NodeEndIndex(rule));
+        start = lineStart;
+        length = Math.Max(0, lineEnd - lineStart);
+        return true;
     }
 
     /// <summary>Appends a new rule block to the end of the rule list.</summary>
@@ -207,6 +266,48 @@ public sealed class DiagnosticConfigurationEditor
         string separator = Text.Length == 0 || Text[Text.Length - 1] == '\n' ? string.Empty : NewLine;
         patches.Add(new TextPatch(Text.Length, 0, separator + prefix + entry));
         return ApplyPatches(patches);
+    }
+
+    /// <summary>Replaces the whole mapping value of a rule field with a block value.</summary>
+    /// <param name="location">The rule to edit.</param>
+    /// <param name="key">The field key as written in the file.</param>
+    /// <param name="yamlBlock">
+    /// The new value block, indented relative to the key. Its first non-empty line starts at the key's
+    /// child indentation; for example a sequence starts with <c>- name: ...</c>. Comments inside the
+    /// replaced block are replaced together with it.
+    /// </param>
+    /// <returns>The edited document text.</returns>
+    /// <exception cref="InvalidOperationException">The rule is not present in the document.</exception>
+    /// <remarks>
+    /// This operation replaces one field value; it is intended for nested lists such as
+    /// <c>fixes</c>, <c>visualizations</c> and <c>parameters</c>, whose whole block is rebuilt by the
+    /// type-specific editors. Fields outside the replaced value and comments around it are untouched.
+    /// </remarks>
+    public string SetMappingBlock(DiagnosticRuleLocation location, string key, string yamlBlock)
+    {
+        YamlMappingNode rule = FindRequiredRule(location);
+        string normalized = NormalizeBlock(yamlBlock, NewLine);
+        int indent = FieldIndent(rule);
+        string indented = IndentBlock(normalized, indent + 2, NewLine);
+        YamlNode? keyNode = FindKey(rule, key);
+        YamlNode? valueNode = FindValue(rule, key);
+
+        if (keyNode is null || valueNode is null)
+        {
+            YamlNode? last = rule.Children.Count == 0 ? null : rule.Children.Last().Value;
+            long insertAt = last is null
+                ? LineEnd(NodeEndIndex(rule))
+                : LineEnd(NodeEndIndex(last));
+            string insertion =
+                new string(' ', indent) + key + ":" + NewLine + indented;
+            return ApplyPatches([new TextPatch(insertAt, 0, insertion)]);
+        }
+
+        int lineStart = LineStart(keyNode.Start.Index);
+        int lineEnd = LineEnd(NodeEndIndex(valueNode));
+        string replacement =
+            new string(' ', indent) + key + ":" + NewLine + indented;
+        return ApplyPatches([new TextPatch(lineStart, lineEnd - lineStart, replacement)]);
     }
 
     private YamlMappingNode FindRequiredRule(DiagnosticRuleLocation location)
@@ -282,6 +383,19 @@ public sealed class DiagnosticConfigurationEditor
         return lineEnd < 0 ? Text.Length : lineEnd + 1;
     }
 
+    // Inserted fields start with a line break, so they must land before the break of the last content
+    // line: the original break then terminates the last inserted field instead of leaving a gap.
+    private int LineBreakStart(long index)
+    {
+        int position;
+        if (index <= 0) position = 0;
+        else if (index >= Text.Length) position = Text.Length;
+        else position = (int)index;
+        int lineBreak = Text.IndexOf('\n', Math.Min(Text.Length, position));
+        if (lineBreak < 0) return Text.Length;
+        return lineBreak > 0 && Text[lineBreak - 1] == '\r' ? lineBreak - 1 : lineBreak;
+    }
+
     private static string NormalizeBlock(string yaml, string newLine)
     {
         if (yaml is null) throw new ArgumentNullException(nameof(yaml));
@@ -344,6 +458,27 @@ public sealed class DiagnosticConfigurationEditor
 
     private static string? Scalar(YamlMappingNode mapping, string key)
         => FindValue(mapping, key) is YamlScalarNode scalar ? scalar.Value : null;
+
+    // A block collection reports an end mark that can stop at its first child, while a flow collection
+    // ends after its closing bracket and its last child ends before it. The furthest end mark of the
+    // node and its descendants is therefore the only reliable end of the whole value, which is needed
+    // for multiline replacements and for inserting fields after the last one.
+    private static long NodeEndIndex(YamlNode node)
+    {
+        long end = node.End.Index;
+        switch (node)
+        {
+            case YamlSequenceNode sequence:
+                foreach (YamlNode child in sequence.Children) end = Math.Max(end, NodeEndIndex(child));
+                break;
+            case YamlMappingNode mapping:
+                foreach (KeyValuePair<YamlNode, YamlNode> pair in mapping.Children)
+                    end = Math.Max(end, NodeEndIndex(pair.Value));
+                break;
+        }
+
+        return end;
+    }
 
     private readonly record struct TextPatch(long Start, long Length, string Replacement);
 }
