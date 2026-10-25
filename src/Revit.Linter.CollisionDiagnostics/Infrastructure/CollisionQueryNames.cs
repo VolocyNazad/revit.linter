@@ -13,4 +13,5 @@ internal static class CollisionQueryNames
     public const string LinkGroups = "collision-diagnostics:link-groups";
     public const string LinkGroupsByInstance = "collision-diagnostics:link-groups-by-instance";
     public const string LinkSpatialIndex = "collision-diagnostics:link-spatial-index";
+    public const string FamilyTreeRoots = "collision-diagnostics:family-tree-roots";
 }
