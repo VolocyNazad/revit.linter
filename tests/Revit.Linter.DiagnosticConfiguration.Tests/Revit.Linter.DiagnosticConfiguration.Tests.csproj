@@ -1,0 +1,27 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Revit.Linter.DiagnosticConfiguration\Revit.Linter.DiagnosticConfiguration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The helper is a source link, like ProductIdentity in independent build units: it keeps the tests
+         independent of the Revit API projects in Revit.Linter.Testing. -->
+    <Compile Include="..\Revit.Linter.Testing\RepositoryRoot.cs" Link="RepositoryRoot.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,10 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
   <ItemGroup>
     <PackageReference Include="YamlDotNet" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+    <ProjectReference Include="..\Revit.Linter.Core.Abstractions\Revit.Linter.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\Revit.Linter.DiagnosticConfiguration\Revit.Linter.DiagnosticConfiguration.csproj" />
   </ItemGroup>
 </Project>

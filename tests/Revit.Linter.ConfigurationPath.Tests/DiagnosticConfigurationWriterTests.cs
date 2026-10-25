@@ -1,4 +1,4 @@
-using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Services;
 using Revit.Linter.Core.Abstractions.Models;

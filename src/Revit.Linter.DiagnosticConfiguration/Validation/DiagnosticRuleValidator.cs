@@ -1,9 +1,15 @@
 using Revit.Linter.Core.Abstractions.Models;
 
-namespace Revit.Linter.ConfigurationPath.Services;
+namespace Revit.Linter.DiagnosticConfiguration.Validation;
 
 /// <summary>Validates one configuration entry against the schema of its declared rule type.</summary>
-internal static class DiagnosticRuleValidator
+/// <remarks>
+/// The validator is Revit-independent, so the same rules protect the add-in loader and the standalone
+/// diagnostics editor. It reports the problems a rule has before it can be registered; it does not
+/// validate formulas, pipeline step semantics or Revit-specific identifiers, which require the
+/// runtime that owns the corresponding module.
+/// </remarks>
+public static class DiagnosticRuleValidator
 {
     /// <summary>
     /// Validates the entry and reports every problem that prevents it from being registered.

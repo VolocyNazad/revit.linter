@@ -1,8 +1,7 @@
-using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Core;
+using Revit.Linter.DiagnosticConfiguration;
+using Revit.Linter.DiagnosticConfiguration.Models;
+using Revit.Linter.DiagnosticConfiguration.Parsing;
 
 namespace Revit.Linter.ConfigurationPath;
 
@@ -12,7 +11,7 @@ namespace Revit.Linter.ConfigurationPath;
 public static class ConfigurationPathUtils
 {
     /// <summary>Gets the single diagnostic configuration file name used by the current format.</summary>
-    public const string DiagnosticsConfigFileName = "diagnostics.config.yaml";
+    public const string DiagnosticsConfigFileName = DiagnosticConfigurationFormat.FileName;
 
     /// <summary>Gets the legacy element diagnostic configuration file name, read only to detect an unmigrated folder.</summary>
     public const string LegacyConfigFileName = "config.yaml";
@@ -113,40 +112,18 @@ public static class ConfigurationPathUtils
     /// Gets the header written into a newly created configuration file.
     /// </summary>
     /// <remarks>
-    /// The comments explain the format to a user who opens the file for the first time, so the product
-    /// never creates an unexplained empty file.
+    /// The text is owned by the shared configuration format, so the add-in and the diagnostics editor
+    /// create identical files. It explains the format to a user who opens the file for the first time,
+    /// so the product never creates an unexplained empty file.
     /// </remarks>
-    public const string ConfigurationHeader = """
-        # Revit Linter diagnostics configuration (format version 2).
-        # This single file holds every configured check. The "type" field selects the module:
-        #   custom    - a user-defined element check;
-        #   collision - a check that compares elements with each other;
-        #   parameter - a project-parameter check;
-        #   builtIn   - an override of a check that ships with the product. Such an entry may
-        #               contain only code, isActive, severity and isHidden.
-        #
-        # Settings changed in the Diagnostics pane are written back to this file; comments and
-        # the order of the rules are preserved. A rule with isHidden: true is not shown in the
-        # interface, does not run and does not appear in reports.
-        #
-        # File format version for compatibility checks.
-
-        version: 2
-        rules: []
-        """;
+    public static string ConfigurationHeader => DiagnosticConfigurationFormat.Header;
 
     /// <summary>Gets the diagnostic configuration file format version this product reads.</summary>
     /// <remarks>
     /// Configuration files are versioned so that an older product never tries to interpret a file written
     /// for a newer one. Version 2 is the single-file format with a per-rule <c>type</c> discriminator.
     /// </remarks>
-    public const int SupportedConfigurationVersion = 2;
-
-    // DeserializerBuilder builds the type graph via reflection: build once and reuse.
-    // The built deserializer is used only for reading configuration files.
-    private static readonly IDeserializer ConfigurationDeserializer = new DeserializerBuilder()
-        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-        .Build();
+    public const int SupportedConfigurationVersion = DiagnosticConfigurationFormat.SupportedVersion;
 
     /// <summary>
     /// Creates the parent directory and a configuration file with the format header when the file does not exist.
@@ -170,15 +147,10 @@ public static class ConfigurationPathUtils
     /// <returns>The parsed file, or <see langword="null"/> when the file is missing or empty.</returns>
     /// <remarks>
     /// The format version is returned as written; the caller decides whether this product supports it.
-    /// A file that is not valid YAML throws <see cref="YamlException"/>.
+    /// A file that is not valid YAML throws <see cref="T:YamlDotNet.Core.YamlException"/>.
     /// </remarks>
-    public static DiagnosticConfigurationFile? GetDiagnosticConfiguration(string path)
-    {
-        if (!File.Exists(path)) return null;
-        string configContent = File.ReadAllText(path);
-        if (string.IsNullOrWhiteSpace(configContent)) return null;
-        return ConfigurationDeserializer.Deserialize<DiagnosticConfigurationFile>(configContent);
-    }
+    public static DiagnosticConfigurationFile? GetDiagnosticConfiguration(string path) =>
+        DiagnosticConfigurationReader.ReadFile(path);
 
     /// <summary>
     /// Attempts to read a diagnostic configuration file and converts YAML parsing failures into a failed result.
@@ -188,19 +160,8 @@ public static class ConfigurationPathUtils
     /// <param name="error">The YAML parsing error when reading failed; otherwise, <see langword="null"/>.</param>
     /// <returns><see langword="true"/> when the file was read successfully; otherwise, <see langword="false"/>.</returns>
     public static bool TryGetDiagnosticConfiguration(
-        string path, out DiagnosticConfigurationFile? configuration, out Exception? error)
-    {
-        try
-        {
-            configuration = GetDiagnosticConfiguration(path);
-            error = null;
-            return true;
-        }
-        catch (YamlException exception)
-        {
-            configuration = null;
-            error = exception;
-            return false;
-        }
-    }
+        string path,
+        out DiagnosticConfigurationFile? configuration,
+        out Exception? error) =>
+        DiagnosticConfigurationReader.TryReadFile(path, out configuration, out error);
 }

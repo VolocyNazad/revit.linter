@@ -1,5 +1,5 @@
 using Revit.Linter.ConfigurationPath;
-using Revit.Linter.ConfigurationPath.Abstractions.Models;
+using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.Core.Abstractions.Models;
 
 namespace Revit.Linter.UserDiagnostics.Tests;

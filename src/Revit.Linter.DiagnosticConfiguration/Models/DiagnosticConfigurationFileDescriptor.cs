@@ -1,4 +1,4 @@
-namespace Revit.Linter.ConfigurationPath.Abstractions.Models;
+namespace Revit.Linter.DiagnosticConfiguration.Models;
 
 /// <summary>Describes one configuration file location and its provenance.</summary>
 /// <param name="Path">The configuration file path.</param>

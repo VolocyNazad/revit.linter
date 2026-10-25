@@ -28,6 +28,14 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 projects (diagnostics, presenters, state managers, etc.) — most are
  named `Revit.Linter.<Area>`. `VolocyNazad.Revit.Sugar` is Revit API
  extensions, separate from `Revit.Linter.*`.
+`Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration
+contracts: rule models, rule types, severity, parameters and fix/visualization pipeline
+definitions. It targets `netstandard2.0` and is referenced by the add-in build and by the
+standalone diagnostics editor, so it must not reference the Revit API, WPF or the Revit SDK.
+`Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading,
+type-specific rule validation and the comment-preserving text editor used to write configuration
+changes. It is Revit-independent for the same reason; `Revit.Linter.ConfigurationPath` keeps the
+Revit-version-aware paths, file discovery and change watching and delegates the format work to it.
 `Revit.Linter.DocumentQueries` owns the document queries shared by diagnostics (all elements, elements of a
 class, element types, element geometry) and the typed `DocumentQueryKey` under which their results are kept
 in the transaction cache. Diagnostic modules, the diagnostic service and the dependency definers reach
@@ -231,7 +239,10 @@ composition root for add-in logs (`...\\logs\\`) and the ValueStore settings dir
   missing culture files, and satellites without a neutral resource (`RESX001`-`RESX007`)
 - Central package management via `Directory.Packages.props` (`installer/`, `build/`, `benchmark/`, `sandbox/` and `updater/` have their own);
   AutoConstructor, PolySharp, SonarAnalyzer.CSharp are wired in globally
-  via `GlobalPackageReference` for all projects
+  via `GlobalPackageReference` for all projects. Revit-versioned package versions use
+  `$(MajorRevitVersion)` and are conditional on that property being defined, because the
+  Revit-independent `netstandard2.0` projects are evaluated without a Revit configuration and
+  an empty version would fail the whole restore.
 
 ## Documentation layout
 

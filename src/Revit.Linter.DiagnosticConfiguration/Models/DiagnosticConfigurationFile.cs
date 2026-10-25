@@ -1,6 +1,6 @@
 using Revit.Linter.Core.Abstractions.Models;
 
-namespace Revit.Linter.ConfigurationPath.Abstractions.Models;
+namespace Revit.Linter.DiagnosticConfiguration.Models;
 
 /// <summary>
 /// Diagnostic configuration file envelope: the file format version plus the diagnostic rules.

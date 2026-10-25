@@ -5,6 +5,17 @@ This document records stable architectural rules. Implementation details belong 
 ## Module boundaries
 
 - Projects are small modules with one primary responsibility. A module owns its contracts, implementation and composition extensions.
+- `Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration contracts
+  (`netstandard2.0`) and must not reference the Revit API, WPF or the Revit SDK. The add-in and the
+  standalone diagnostics editor both consume it, so it is the single definition of a rule, its type,
+  severity, parameters and fix/visualization pipeline shape.
+- `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading, rule
+  validation and the comment-preserving text editor. It is Revit-independent for the same reason.
+  `Revit.Linter.ConfigurationPath` keeps the Revit-version-aware paths, source precedence, change
+  watching and the service surface, and delegates format work to this module.
+- The configuration file is hand-documented: comments, `section` markers, key order and quoting are
+  part of the user-facing file. Changes are therefore written by patching the affected text spans, not
+  by serializing the parsed model; the shared editor guarantees that invariant for both writers.
 - Product-wide identity segments (vendor, product, repository, registry policy, updater synchronization) are owned by `ProductIdentity` in `Revit.Linter.Core`; path composition stays with the owning module. Independent build units (`updater/`, `installer/`) compile the same source file via link instead of taking a project reference.
 - Cross-project consumers depend on contracts under the owning project's `Abstractions/` namespace, not on its infrastructure implementation.
 - `Infrastructure/` contains implementation details and external adapters. It must not become a second public contract surface.

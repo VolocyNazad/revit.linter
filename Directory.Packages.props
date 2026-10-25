@@ -14,9 +14,15 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
     <PackageVersion Include="System.Text.Json" Version="10.0.12" />
-    <PackageVersion Include="VolocyNazad.Revit.Async" Version="$(MajorRevitVersion).0.10" />
-    <PackageVersion Include="Nice3point.Revit.Api.RevitAPI" Version="$(MajorRevitVersion).*" />
-    <PackageVersion Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(MajorRevitVersion).*" />
+    <!--
+      Revit-versioned package versions exist only for projects built by VolocyNazad.Revit.Sdk,
+      which defines MajorRevitVersion from the build configuration. Revit-independent projects
+      (Revit.Linter.Core.Abstractions, Revit.Linter.DiagnosticConfiguration) are evaluated
+      without that property, and an empty version would make NuGet fail the whole restore.
+    -->
+    <PackageVersion Include="VolocyNazad.Revit.Async" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPI" Version="$(MajorRevitVersion).*" Condition="'$(MajorRevitVersion)' != ''" />
+    <PackageVersion Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(MajorRevitVersion).*" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="YamlDotNet" Version="18.1.0" />
     <PackageVersion Include="StringToExpression" Version="2.2.0" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
@@ -25,13 +31,13 @@
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
     <PackageVersion Include="VolocyNazad.MVVM.DependencyInjection" Version="1.1.0" />
     <PackageVersion Include="VolocyNazad.AssemblyResolver" Version="1.0.1" />
-    <PackageVersion Include="VolocyNazad.Revit.TransactionMemoryCache" Version="$(MajorRevitVersion).0.10" />
-    <PackageVersion Include="VolocyNazad.Revit.Sugar" Version="$(MajorRevitVersion).0.10" />
-    <PackageVersion Include="VolocyNazad.Revit.Context" Version="$(MajorRevitVersion).0.10" />
-    <PackageVersion Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.10" />
+    <PackageVersion Include="VolocyNazad.Revit.TransactionMemoryCache" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
+    <PackageVersion Include="VolocyNazad.Revit.Sugar" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
+    <PackageVersion Include="VolocyNazad.Revit.Context" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
+    <PackageVersion Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="VolocyNazad.ValueStore" Version="1.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
-    <PackageVersion Include="Nice3point.TUnit.Revit" Version="$(MajorRevitVersion).*" />
+    <PackageVersion Include="Nice3point.TUnit.Revit" Version="$(MajorRevitVersion).*" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="XamlConstructor" Version="1.4.1" />
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />

@@ -37,7 +37,7 @@ public static class DiagnosticRuleTypes
         type = default;
         if (string.IsNullOrWhiteSpace(value)) return false;
 
-        string trimmed = value.Trim();
+        string trimmed = value!.Trim();
         if (string.Equals(trimmed, "custom", StringComparison.OrdinalIgnoreCase))
         {
             type = DiagnosticRuleType.Custom;

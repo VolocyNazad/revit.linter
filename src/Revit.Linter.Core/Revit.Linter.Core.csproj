@@ -1,10 +1,13 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="VolocyNazad.ValueStore" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.Core.Abstractions\Revit.Linter.Core.Abstractions.csproj" />
 	</ItemGroup>
 </Project>
 

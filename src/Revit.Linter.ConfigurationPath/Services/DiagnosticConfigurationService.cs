@@ -1,6 +1,7 @@
-using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
+using Revit.Linter.DiagnosticConfiguration.Models;
+using Revit.Linter.DiagnosticConfiguration.Validation;
 
 namespace Revit.Linter.ConfigurationPath.Services;
 

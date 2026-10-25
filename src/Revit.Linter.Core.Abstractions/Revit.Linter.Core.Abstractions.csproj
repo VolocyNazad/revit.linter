@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Revit-independent configuration and diagnostic contracts. This project is compiled into the
+    versioned add-in build and is referenced by the standalone diagnostics editor, so it must not
+    reference the Revit API, WPF or the version-specific Revit SDK.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Revit.Linter.Core.Abstractions</RootNamespace>
+    <AssemblyName>Revit.Linter.Core.Abstractions</AssemblyName>
+  </PropertyGroup>
+</Project>
