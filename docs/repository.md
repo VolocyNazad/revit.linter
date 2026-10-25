@@ -360,7 +360,7 @@ Generated report formats are pinned with snapshot tests in `Revit.Linter.Diagnos
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. Another job builds `build/Revit.Linter.Build.slnx` and `installer/Revit.Linter.Installer.slnx` in `Release` with `-warnaserror`, so pipeline and installer compile errors fail a pull request instead of surfacing only during a release. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. The workflow does not build `build/Revit.Linter.Build.slnx` or `installer/Revit.Linter.Installer.slnx` and does not pass `-warnaserror`; those solutions are compiled by the release publish, so their compile errors surface during release preparation rather than on a pull request. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 ## Versioning and release tags
 

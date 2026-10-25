@@ -18,7 +18,7 @@ This document is the concise contract for the product's current scope. Detailed 
 - Offer disposable copies of the official Autodesk samples of the running Revit version as tour starting points, with a ribbon fallback when automatic opening fails.
 - Check for new stable releases through the standalone updater at sign-in or on demand, and announce them with a Windows notification offering a verified download of the release MSI.
 - Provide English and Russian UI resources, theme-aware WPF presentation and structured diagnostic logs.
-- Package the supported Revit 2021, 2023 and 2025 variants and the shared updater as one per-user MSI release.
+- Package the supported Revit 2021–2027 variants and the shared updater as one per-user MSI release.
 
 ## Compatibility contract
 

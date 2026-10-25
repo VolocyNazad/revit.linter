@@ -1,6 +1,6 @@
 # Revit.Linter
 
-[![Revit 2021, 2023, 2025](https://img.shields.io/badge/Revit-2021%20%7C%202023%20%7C%202025-green.svg)](https://www.autodesk.com/products/revit/overview)
+[![Revit 2021–2027](https://img.shields.io/badge/Revit-2021%E2%80%932027-green.svg)](https://www.autodesk.com/products/revit/overview)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/VolocyNazad/revit.linter)](https://github.com/VolocyNazad/revit.linter/releases)
 
@@ -22,7 +22,7 @@ Revit.Linter is an extension for Autodesk Revit that helps find issues in projec
 
 ## Supported versions
 
-Ready-made builds are released for Revit 2021, 2023, and 2025.
+Ready-made builds are released for Revit 2021 through 2027.
 
 ## Installation
 

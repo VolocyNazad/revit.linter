@@ -78,7 +78,7 @@ Keep the root `.editorconfig` in the solution and apply its repository-wide enco
 
 ## Warnings
 
-Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why. The release publish enforces this: the build pipeline compiles the add-in with `TreatWarningsAsErrors=true`, so any warning in a release configuration fails the publish. The build-and-test workflow also compiles the root, updater, build pipeline and installer solutions with `-warnaserror`, so a warning in any of them fails a pull request. Keep every release configuration warning-free; verify with a plain `dotnet build` before tagging.
+Treat compiler and analyzer warnings as errors-in-waiting: do not leave new warnings in code you touch. Fix them as part of the same change. When a warning is a deliberate false positive, suppress it as narrowly as possible and add a nearby comment explaining why. The release publish enforces this: the build pipeline compiles the add-in with `TreatWarningsAsErrors=true`, so any warning in a release configuration fails the publish. The build-and-test workflow builds the root and updater solutions; the build pipeline and installer are compiled by the release publish, so a warning there is caught during release preparation instead of on a pull request. Keep every release configuration warning-free; verify with a plain `dotnet build` before tagging.
 
 ## Updater build unit
 
