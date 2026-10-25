@@ -141,7 +141,9 @@ internal sealed class PracticalTour(
 
             if (activity is DiagnosticSelectionChangedActivity selection)
             {
-                if (selection.IsActive && IsPracticalTourDiagnostic(selection.DiagnosticCode))
+                // The step asks the user to leave only the training check enabled. Any other enabled
+                // diagnostic keeps the step open, so pre-existing selections cannot complete it.
+                if (IsSinglePracticalTourDiagnostic(selection.ActiveDiagnosticCodes))
                     _viewModel?.Observe(PracticalTourStep.SelectDiagnostic);
                 return;
             }
@@ -244,6 +246,15 @@ internal sealed class PracticalTour(
 
     private static bool IsPracticalTourDiagnostic(string diagnosticCode)
         => string.Equals(diagnosticCode, DiagnosticCode, StringComparison.Ordinal);
+
+    /// <summary>Returns whether the training diagnostic is the only enabled diagnostic.</summary>
+    /// <param name="activeDiagnosticCodes">The enabled diagnostics after a selection change.</param>
+    /// <remarks>
+    /// The diagnostic-selection step completes only when every other check is off: a user who already had
+    /// checks enabled cannot complete it by enabling the training check alongside them.
+    /// </remarks>
+    internal static bool IsSinglePracticalTourDiagnostic(IReadOnlyList<string> activeDiagnosticCodes) =>
+        activeDiagnosticCodes.Count == 1 && IsPracticalTourDiagnostic(activeDiagnosticCodes[0]);
 
     // Findings, visualizations and fixes observed so far belong to the previous document, and the
     // shared TOUR001 check exists in every document, so continuing would advance the tour on

@@ -359,7 +359,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
                 viewModel.Initialize(
                     registration,
-                    () => OpenDocumentation(registration.Identity.Code));
+                    () => OpenDocumentation(registration.Identity.Code),
+                    PublishSelectionChanged);
                 items.Add(viewModel);
             }
             foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
@@ -368,7 +369,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
                 var viewModel = _serviceProvider.GetRequiredService<DiagnosticItemViewModel>();
                 viewModel.Initialize(
                     registration,
-                    () => OpenDocumentation(registration.Identity.Code));
+                    () => OpenDocumentation(registration.Identity.Code),
+                    PublishSelectionChanged);
                 items.Add(viewModel);
             }
 
@@ -381,5 +383,22 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             lease.Dispose();
             throw;
         }
+    }
+
+    /// <summary>Publishes a selection change together with the complete set of enabled diagnostics.</summary>
+    /// <remarks>
+    /// The activity carries every enabled code so an observer can require one specific diagnostic to be the
+    /// only enabled check, without counting the separate per-row events itself.
+    /// </remarks>
+    private void PublishSelectionChanged(DiagnosticItemViewModel changed)
+    {
+        string[] activeCodes = Collection
+            .Where(item => item.IsActive)
+            .Select(item => item.Code)
+            .ToArray();
+        _activityStream.Publish(new DiagnosticSelectionChangedActivity(
+            changed.Code,
+            changed.IsActive,
+            activeCodes));
     }
 }

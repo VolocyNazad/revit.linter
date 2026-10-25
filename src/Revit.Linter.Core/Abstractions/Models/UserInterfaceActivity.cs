@@ -19,9 +19,14 @@ public sealed record ConfigurationFolderOpenedActivity : UserInterfaceActivity;
 /// <summary>Indicates that the user changed whether a diagnostic is active.</summary>
 /// <param name="DiagnosticCode">The stable code of the changed diagnostic.</param>
 /// <param name="IsActive">The new enabled state.</param>
+/// <param name="ActiveDiagnosticCodes">
+/// The stable codes of every enabled diagnostic after the change, in list order. Observers that need to know
+/// whether one diagnostic is the only enabled check read this list instead of inferring it from a single event.
+/// </param>
 public sealed record DiagnosticSelectionChangedActivity(
     string DiagnosticCode,
-    bool IsActive) : UserInterfaceActivity;
+    bool IsActive,
+    string[] ActiveDiagnosticCodes) : UserInterfaceActivity;
 
 /// <summary>Describes a completed diagnostic run and the findings it produced.</summary>
 /// <param name="DocumentTitle">The title of the document that was checked.</param>

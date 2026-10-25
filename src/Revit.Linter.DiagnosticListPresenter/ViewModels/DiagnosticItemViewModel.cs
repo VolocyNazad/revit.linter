@@ -28,6 +28,14 @@ internal sealed partial class DiagnosticItemViewModel(
     public string? ConfigurationPath { get; private set; }
     public bool HasConfiguration => ConfigurationPath is not null;
     public Action? OpenDocumentationDelegate { get; private set; }
+
+    /// <summary>Gets the callback that tells the owning list which row changed its enabled state.</summary>
+    /// <remarks>
+    /// The row does not publish the selection activity itself: only the owning list knows every enabled
+    /// diagnostic, so the list publishes one activity with the complete enabled set after each change.
+    /// </remarks>
+    public Action<DiagnosticItemViewModel>? SelectionChangedDelegate { get; private set; }
+
     public string ObsoleteDescription { get; private set; } = string.Empty;
     public TargetType TargetType { get; private set; }
     public IReadOnlyList<string> Tags { get; private set; } = DiagnosticTags.None;
@@ -70,18 +78,24 @@ internal sealed partial class DiagnosticItemViewModel(
         }
     }
 
-    public void Initialize(ElementDiagnosticRegistration registration, Action? openDocumentation = null)
+    public void Initialize(
+        ElementDiagnosticRegistration registration,
+        Action? openDocumentation = null,
+        Action<DiagnosticItemViewModel>? selectionChanged = null)
     {
         TargetType = TargetType.Element;
         Initialize(registration.Identity, registration.State, registration.RuleType,
-            registration.ConfigurationPath, openDocumentation);
+            registration.ConfigurationPath, openDocumentation, selectionChanged);
     }
 
-    public void Initialize(DocumentDiagnosticRegistration registration, Action? openDocumentation = null)
+    public void Initialize(
+        DocumentDiagnosticRegistration registration,
+        Action? openDocumentation = null,
+        Action<DiagnosticItemViewModel>? selectionChanged = null)
     {
         TargetType = TargetType.Document;
         Initialize(registration.Identity, registration.State, registration.RuleType,
-            registration.ConfigurationPath, openDocumentation);
+            registration.ConfigurationPath, openDocumentation, selectionChanged);
     }
 
     [RelayCommand(CanExecute = nameof(HasConfiguration))]
@@ -120,7 +134,8 @@ internal sealed partial class DiagnosticItemViewModel(
         DiagnosticState state,
         DiagnosticRuleType? ruleType,
         string? configurationPath,
-        Action? openDocumentation)
+        Action? openDocumentation,
+        Action<DiagnosticItemViewModel>? selectionChanged)
     {
         _state = state;
         _ruleType = ruleType;
@@ -133,6 +148,7 @@ internal sealed partial class DiagnosticItemViewModel(
         Tags = identity.Tags;
         ConfigurationPath = configurationPath;
         OpenDocumentationDelegate = openDocumentation;
+        SelectionChangedDelegate = selectionChanged;
     }
 
     /// <summary>Creates the state change a bulk command persists for this row.</summary>
@@ -155,7 +171,7 @@ internal sealed partial class DiagnosticItemViewModel(
         {
             _state.IsActive = isActive;
             OnPropertyChanged(nameof(IsActive));
-            activityStream.Publish(new DiagnosticSelectionChangedActivity(Code, isActive));
+            SelectionChangedDelegate?.Invoke(this);
         }
 
         if (_state.Severity != severity)
