@@ -64,7 +64,7 @@ internal sealed partial class InitExternalApplication
     {
         try
         {
-            GetService<IWelcomeHost>().HidePracticalTourPane();
+            GetService<IPracticalTour>().HidePaneIfInactive();
         }
         catch (Exception exception)
         {

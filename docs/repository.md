@@ -99,12 +99,13 @@ it for F1 help, and the report and diagnostics rows open it; a renamed Wiki page
 pressed while a tooltip is open; the key is caught by a thread keyboard hook that exists only while the tooltip is
 shown, because a dockable pane does not have the keyboard focus on hover. View models open pages through
 `IDocumentationLauncher`, implemented by the add-in host.
-`Revit.Linter.WelcomePresenter` holds the first-run welcome wizard: its steps, the per-user state
-(`welcomeSettings.yml` in the settings value store), resumable practical-tour progress stored separately for
-each Revit version, and the example configuration installer. The
+`Revit.Linter.WelcomePresenter` is the onboarding module: it holds the first-run welcome wizard and the optional
+practical tour with their shared per-user state (`welcomeSettings.yml` in the settings value store), the resumable
+practical-tour progress stored separately for each Revit version, and the example configuration installer. The
 installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/` (English) and its
 `ru/` subfolder, embedded as resources, so the Wiki and the product share one source. The host supplies the
-ribbon tab name, the log folder and the pane and link actions through `IWelcomeHost`. Its headless rules
+ribbon tab name, pane and link actions through `IWelcomeHost`, and the tour's pane, notification and
+diagnostics-filter actions through `IPracticalTourHost`. Its headless rules
 (example composition, installation without overwriting, first-run state) are covered by
 `Revit.Linter.WelcomePresenter.Tests`; the WPF views themselves are not. Debug builds show the whole wizard on every
 Revit start; release builds show only the steps the user has not seen.
@@ -271,6 +272,7 @@ composition root for add-in logs (`...\\logs\\`) and the ValueStore settings dir
 
 - `AGENTS.md` links to the required repository guidance.
 - `TODO.md` records agreed future work that is not yet implemented.
+- `GLOSSARY.md` records the product vocabulary shared by the code, the documentation and the tests.
 - `docs/policies/development.md` contains the development policy.
 - `docs/diagnostics/adding.md` describes the end-to-end workflow for adding a built-in diagnostic.
 - `docs/repository.md` describes the project, repository structure, and technology stack.

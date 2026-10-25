@@ -26,7 +26,9 @@ internal static class HostServiceCollectionExtensions
         public IServiceCollection AddLinterHostServices() => services
             .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
             .AddSingleton<IDiagnosticConfigurationRuleTextFormatter, GlobalDiagnosticConfigurationRuleTextFormatter>()
-            .AddSingleton<IWelcomeHost, WelcomeHost>()
+            .AddSingleton<WelcomeHost>()
+            .AddSingleton<IWelcomeHost>(provider => provider.GetRequiredService<WelcomeHost>())
+            .AddSingleton<IPracticalTourHost>(provider => provider.GetRequiredService<WelcomeHost>())
             .AddSingleton<ITutorialSampleCatalog, AutodeskTutorialSampleCatalog>()
             .AddSingleton<TutorialSampleOpenRequest>()
             .AddSingleton<IDocumentationLauncher, DocumentationLauncher>()

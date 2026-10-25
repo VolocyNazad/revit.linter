@@ -18,9 +18,9 @@ using System.IO;
 namespace Revit.Linter.Infrastructure.Services;
 
 /// <summary>
-/// Gives the welcome wizard the ribbon, log and pane facts that only the add-in host owns.
+/// Gives the onboarding experiences the ribbon, pane, notification and link actions that only the add-in host owns.
 /// </summary>
-internal sealed class WelcomeHost : IWelcomeHost
+internal sealed class WelcomeHost : IWelcomeHost, IPracticalTourHost
 {
     private static string DocumentationUrl => ProductIdentity.DocumentationUrl;
     private static string SupportUrl => ProductIdentity.SupportUrl;
@@ -63,8 +63,6 @@ internal sealed class WelcomeHost : IWelcomeHost
     }
 
     public string RibbonTabName => _localizer["ribbonTab_name"];
-
-    public string LogDirectory => ServiceCollectionExtensions.LogDirectory;
 
     public bool HasOpenDocument => _revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
 

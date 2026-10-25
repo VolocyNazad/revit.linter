@@ -12,7 +12,7 @@ public sealed class ShowPracticalTourCommand : ExternalCommand
     /// <inheritdoc />
     public override void Execute()
     {
-        IWelcomeHost host = Program.Provider.GetRequiredService<IWelcomeHost>();
+        IPracticalTourHost host = Program.Provider.GetRequiredService<IPracticalTourHost>();
         Program.Provider.GetRequiredService<IPracticalTour>().Start(host.HasOpenDocument);
     }
 }

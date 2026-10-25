@@ -111,6 +111,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="AGENTS.md" />
+    <File Path="GLOSSARY.md" />
     <File Path="global.json" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />

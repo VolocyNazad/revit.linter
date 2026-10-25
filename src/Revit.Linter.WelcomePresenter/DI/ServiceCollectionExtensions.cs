@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         /// </summary>
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         /// <remarks>
-        /// The host must also register <see cref="IWelcomeHost"/> and the settings value store.
+        /// The host must also register <see cref="IWelcomeHost"/>, <see cref="IPracticalTourHost"/> and the settings value store.
         /// The wizard and its steps are transient, so every show starts from a clean state.
         /// </remarks>
         public IServiceCollection AddWelcomePresenterModule()

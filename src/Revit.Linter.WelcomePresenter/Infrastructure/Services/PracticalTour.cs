@@ -19,7 +19,7 @@ internal sealed class PracticalTour(
     IThemeService themeService,
     IUserInterfaceActivityStream activityStream,
     IValueStore<WelcomeSettings> settingsStore,
-    IWelcomeHost welcomeHost,
+    IPracticalTourHost tourHost,
     IExampleConfigurationInstaller exampleConfigurationInstaller,
     PracticalTourView view,
     IConfigurationPaths paths,
@@ -76,7 +76,7 @@ internal sealed class PracticalTour(
             viewModel.Start(hasOpenDocument, savedProgress, tutorialSampleQueued);
             SaveProgress(viewModel.CurrentStep, viewModel.CurrentStep == PracticalTourStep.Completed, isOptedOut: false);
             UpdateGuidance(viewModel.CurrentStep);
-            welcomeHost.ShowPracticalTourPane();
+            tourHost.ShowPracticalTourPane();
         }
         catch (Exception exception)
         {
@@ -220,7 +220,7 @@ internal sealed class PracticalTour(
             };
             if (activity is DocumentOpenedActivity)
             {
-                welcomeHost.ShowPanes();
+                tourHost.ShowPanes();
                 if (EndOnDocumentChange())
                 {
                     logger.LogInformation(
@@ -260,7 +260,7 @@ internal sealed class PracticalTour(
         ResetDiagnosticsSearchAndFilters();
         try
         {
-            welcomeHost.ShowPracticalTourCompletedNotification();
+            tourHost.ShowPracticalTourCompletedNotification();
             logger.LogInformation(
                 "Practical tour completed for Revit {RevitVersion}", paths.RevitVersion);
         }
@@ -282,7 +282,7 @@ internal sealed class PracticalTour(
     {
         // Start discards the current session and saved progress when restarted,
         // reinstalls the managed configuration and resumes at the first applicable step.
-        Start(welcomeHost.HasOpenDocument, restart: true);
+        Start(tourHost.HasOpenDocument, restart: true);
     }
 
     private void RemovePracticalTourConfiguration()
@@ -301,7 +301,7 @@ internal sealed class PracticalTour(
     {
         try
         {
-            welcomeHost.ResetDiagnosticsSearchAndFilters();
+            tourHost.ResetDiagnosticsSearchAndFilters();
         }
         catch (Exception exception)
         {
@@ -372,19 +372,19 @@ internal sealed class PracticalTour(
             or PracticalTourStep.SelectDiagnostic
             or PracticalTourStep.RunDiagnostics)
         {
-            welcomeHost.ShowPane(WelcomePane.Diagnostics);
+            tourHost.ShowPane(WelcomePane.Diagnostics);
             return;
         }
 
         if (step is PracticalTourStep.FixList)
         {
-            welcomeHost.ShowPane(WelcomePane.FixList);
+            tourHost.ShowPane(WelcomePane.FixList);
             return;
         }
 
         if (step is PracticalTourStep.IgnoreList)
         {
-            welcomeHost.ShowPane(WelcomePane.IgnoreList);
+            tourHost.ShowPane(WelcomePane.IgnoreList);
             return;
         }
 
@@ -397,7 +397,7 @@ internal sealed class PracticalTour(
             or PracticalTourStep.NavigateFindings
             or PracticalTourStep.UnderstandFix
             or PracticalTourStep.UnderstandIgnore)
-            welcomeHost.ShowPane(WelcomePane.Warnings);
+            tourHost.ShowPane(WelcomePane.Warnings);
     }
 
     public void ResetProgress()
@@ -419,7 +419,7 @@ internal sealed class PracticalTour(
 
         try
         {
-            welcomeHost.HidePracticalTourPane();
+            tourHost.HidePracticalTourPane();
         }
         catch (Exception exception)
         {
@@ -469,7 +469,7 @@ internal sealed class PracticalTour(
             _highlightSession = null;
             _viewModel = null;
             view.DataContext = null;
-            if (hidePane) welcomeHost.HidePracticalTourPane();
+            if (hidePane) tourHost.HidePracticalTourPane();
         }
     }
 
