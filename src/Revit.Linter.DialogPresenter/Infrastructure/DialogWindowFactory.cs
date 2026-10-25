@@ -1,8 +1,8 @@
 using Revit.Context.Abstractions.Services;
+using Revit.Linter.Behaviors;
 using Revit.Linter.DialogPresenter.Views;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using System.Windows;
-using System.Windows.Interop;
 
 namespace Revit.Linter.DialogPresenter.Infrastructure;
 
@@ -11,9 +11,9 @@ namespace Revit.Linter.DialogPresenter.Infrastructure;
 /// </summary>
 /// <remarks>
 /// Window creation stays here, on the module composition boundary, so view models never reference
-/// concrete views. Showing, cancellation and result cleanup stay with the caller. A new dialog is
-/// owned by the currently active window when there is one, so stacked dialogs keep a working
-/// Z-order instead of stranding an older dialog on top of a blocking modal loop.
+/// concrete views. Showing, cancellation and result cleanup stay with the caller. The shared
+/// <see cref="WindowOwner"/> mechanic keeps a new dialog above the window the user works in, so stacked
+/// dialogs keep a working Z-order instead of stranding an older dialog on top of a blocking modal loop.
 /// </remarks>
 internal sealed class DialogWindowFactory(IThemeService themeService, IRevitContext revitContext)
 {
@@ -27,16 +27,7 @@ internal sealed class DialogWindowFactory(IThemeService themeService, IRevitCont
     {
         window.DataContext = dataContext;
         themeService.Register(window);
-
-        Window? activeWindow = Application.Current?.Windows
-            .OfType<Window>()
-            .FirstOrDefault(candidate => candidate.IsActive);
-        if (activeWindow is not null)
-            window.Owner = activeWindow;
-        else
-            _ = new WindowInteropHelper(window) {
-                Owner = revitContext.UIApplication!.MainWindowHandle
-            };
+        WindowOwner.Apply(window, revitContext.UIApplication?.MainWindowHandle ?? IntPtr.Zero);
 
         return window;
     }

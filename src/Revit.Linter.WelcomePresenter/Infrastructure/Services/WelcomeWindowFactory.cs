@@ -1,8 +1,8 @@
 using Revit.Context.Abstractions.Services;
+using Revit.Linter.Behaviors;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Views;
 using System.Windows;
-using System.Windows.Interop;
 
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
@@ -11,7 +11,8 @@ namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 /// </summary>
 /// <remarks>
 /// Window creation stays here, on the module composition boundary, so the view model never
-/// references the concrete view. Showing and result handling stay with the caller.
+/// references the concrete view. Showing and result handling stay with the caller. The shared
+/// <see cref="WindowOwner"/> mechanic keeps the wizard above the window the user works in.
 /// </remarks>
 internal sealed class WelcomeWindowFactory(IThemeService themeService, IRevitContext revitContext)
 {
@@ -20,12 +21,7 @@ internal sealed class WelcomeWindowFactory(IThemeService themeService, IRevitCon
     {
         WelcomeView window = new() { DataContext = dataContext };
         themeService.Register(window);
-
-        IntPtr owner = revitContext.UIApplication?.MainWindowHandle ?? IntPtr.Zero;
-        if (owner == IntPtr.Zero)
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        else
-            _ = new WindowInteropHelper(window) { Owner = owner };
+        WindowOwner.Apply(window, revitContext.UIApplication?.MainWindowHandle ?? IntPtr.Zero);
 
         return window;
     }
