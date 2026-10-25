@@ -6,6 +6,42 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-25
+
+### Added
+
+- Check the model with Revit's own health rules: the built-in Revit Performance Adviser rules run as the `RVT002` document diagnostic for projects and families.
+- Add built-in checks for families and model hygiene: reference planes and lines without locked dimensions (`SHRD0024`, `SHRD0029`), unfilled family parameters (`SHRD0025`), duplicate family types and symbols (`SHRD0026`, `SHRD0028`), group presence (`SHRD0027`) and purgeable elements (`RVT003`), with select and show visualizations and safe delete fixes where possible.
+- Add array checks: associated arrays (`SHRD0031`), excessive member counts in linear (`SHRD0032`) and radial (`SHRD0034`) arrays, and arrays driven by a family parameter (`SHRD0033`), with visualizations, a delete fix and an unbind fix.
+- Add document checks for unused family size tables (`DOC002`) and a missing preview view (`DOC003`), including a fix that sets the active view as the preview. The applicable built-in checks now also run in family documents.
+- Give every diagnostic tags: the diagnostics and report panes show a clickable **Tags** column, search and report exports use it, and a rule accepts an optional `tags` list. The product adds trusted system tags (`BuiltIn`, `Example`, `Tour`, `Debug` and the rule type) that a rule cannot set.
+- Store ignores inside the model: element and document ignores live in one Extensible Storage data storage and are skipped before a run visits elements. Ignore from a report row, in bulk or for the whole document; the new **Ignore list** pane lists, removes and clears the entries, and a document-level entry suppresses every finding of that diagnostic in that document.
+- Check loaded Revit links in collision rules: with `includeLinks: true` linked elements take part in the collision with their own spatial indexes and conformal transforms, and a linked hit names its element as `Name [Link]`. New rule flags exclude MEP-connected elements (`ignoreConnectedElements`) and parent/nested pairs of one family tree (`ignoreNestedFamilies`).
+- Support negated filter leaves in formulas, for example `!category(...)`, through inverted native filter overloads.
+- Convert `Double` parameters with the parameter's own unit instead of the length unit.
+- Add visualization pipeline steps for detail level, display style and category visibility.
+- Open the rule configuration from the diagnostics pane with **Open With**, reveal it in Explorer or open it in Notepad, reset persisted check settings behind a confirmation, open a module's documentation from its rows and mark debug configurations with a debug badge.
+- Offer element, bulk and document ignore actions on report rows with applied notifications, and mark the active visualization on report rows and menus.
+- Restart the practical tour after completion or opt-out, keep a restored tour pane hidden without an active session, install, refresh and remove the managed `TOUR001` configuration with the session, and polish the spotlight pulse, button glow and halo.
+- Report the actual example installation outcome in the welcome wizard — created, left untouched, or replaced with a backup — and offer the examples step again once per Revit version (wizard content version 4).
+
+### Changed
+
+- **Breaking:** configuration moved to one `diagnostics.config.yaml` per Revit version in file format version 2, with a per-rule `type` (`custom`, `collision`, `parameter`, `builtIn`), sparse built-in overrides and `isHidden` in the same file. The split `config.yaml`, `collision.config.yaml` and `parameter-element.config.yaml` files and the per-user diagnostic settings are no longer read. On startup the product moves those legacy files, their `examples` and `debug` copies, into a `legacy` folder of every Revit version folder without deleting anything, refreshes the managed practical-tour file, and shows one warning per product version with a link to the migration guide. Rules, switches and ignores are migrated by hand; the migration support is kept through the 3.x line and removed in 4.0.0 once the removal gate in the migration registry is met.
+- **Breaking:** ignores are no longer stored in the `Linter_Ignored` and `Linter_IgnoredType` project parameters but in the model itself, so findings ignored by an older version appear again until they are ignored in the **Ignore list** pane.
+- **Breaking:** the Revit-warning check code `RVT` is now `RVT001`; update `builtIn` overrides and configured rules that use the old code.
+- One per-user MSI ships builds for Revit 2021, 2022, 2023, 2024, 2025, 2026 and 2027 and preselects the versions installed on the computer.
+- Report configuration problems once per distinct problem with localized messages, including a configuration file written by a newer product version and rules skipped by validation.
+- Refresh the English and Russian example configurations for the one-file format: 20 rules (6 custom, 11 collision and 3 parameter), with collision link, connected-element and nested-family flags, the array checks and the tags field; the welcome wizard installs the same files.
+- Speed up diagnostic runs further: share collectors and lookup maps through the document queries, cache family-symbol signatures, level elevations and dimension-reference maps per run, and reduce per-element and cold-start allocations. Bulk check actions write the configuration file in one pass instead of once per rule.
+- Document the one-file configuration format and its migration in both languages, add the built-in check and visualization pipeline references, and refresh the manual checklists.
+
+### Fixed
+
+- The practical tour no longer completes the selection step when other diagnostics were enabled before it, and an identical example configuration is no longer rewritten with another backup.
+- Stacked dialogs are owned by the active window, and their default and close buttons pass real boolean results.
+- Report rows whose target element was deleted or undone stay visible as stale rows without fixes or visualizations instead of failing.
+
 ## [2.0.0] - 2026-10-06
 
 ### Added

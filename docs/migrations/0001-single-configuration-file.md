@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | Id | `MIG-0001` |
-| Status | `Planned` |
+| Status | `Active` |
 | Kind | Breaking configuration format (user data and rule state) |
 | Migrates from | Any product version up to and including the last released split-file version, `2.0.0` (`config.yaml`, `collision.config.yaml`, `parameter-element.config.yaml` plus the per-user override settings) |
-| Migrates to | The release that ships configuration format 2 (planned as `3.0.0`, the first major release after the breaking change); see [Version rules](README.md#version-rules) |
-| Introduced | Planned `3.0.0`; confirm the actual tag when the release is prepared and record it here |
+| Migrates to | Configuration format 2, shipped in `3.0.0` (tag `v3.0.0`); see [Version rules](README.md#version-rules) |
+| Introduced | `3.0.0` (tag `v3.0.0`) |
 | User action | `manual` for rules, switches and ignores; `automatic` for the startup move of the legacy files and for product-managed files (see below) |
 | User guide | [Migrating configuration](../../wiki/Migrating%20configuration.md) (EN) · [Миграция конфигурации](../../wiki/ru/Миграция%20конфигурации.md) (RU) |
 | Removal target | First major release after the introducing line, planned `4.0.0`, only after the [removal gate](#removal-gate) is met |

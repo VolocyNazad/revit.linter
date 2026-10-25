@@ -76,7 +76,7 @@ recorded history of a shipped migration.
 
 | Id | Status | Migrates from → to | Introduced | Support removed | User guide |
 |---|---|---|---|---|---|
-| [MIG-0001](0001-single-configuration-file.md) | `Planned` | product ≤ 2.0.0 (split YAML files) → the release with configuration format 2 (planned 3.0.0); the product moves the legacy files into `legacy` folders automatically | planned 3.0.0 | planned 4.0.0, gated | [Migrating configuration](../../wiki/Migrating%20configuration.md) |
+| [MIG-0001](0001-single-configuration-file.md) | `Active` | product ≤ 2.0.0 (split YAML files) → configuration format 2 (`3.0.0`); the product moves the legacy files into `legacy` folders automatically | `3.0.0` | planned 4.0.0, gated | [Migrating configuration](../../wiki/Migrating%20configuration.md) |
 
 Statuses in this table are repeated in every entry; the table is the quick overview, the entry is the detail.
 
