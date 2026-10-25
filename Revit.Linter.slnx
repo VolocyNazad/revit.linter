@@ -44,6 +44,9 @@
     <Project Path="src/Revit.Linter.DiagnosticReportPresenter.Interactions/Revit.Linter.DiagnosticReportPresenter.Interactions.csproj" Id="82e25b80-70d3-4253-badb-6fbaf24e5721">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.PracticalTourPresenter.Interactions/Revit.Linter.PracticalTourPresenter.Interactions.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.DiagnosticReportProvider/Revit.Linter.DiagnosticReportProvider.csproj">
       <Platform Project="x64" />
     </Project>
@@ -98,6 +101,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.Localization/Revit.Linter.Localization.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.OnboardingState/Revit.Linter.OnboardingState.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.SerilogEnrichers/Revit.Linter.SerilogEnrichers.csproj">
@@ -206,6 +212,9 @@
     <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/Revit.Linter.PracticalTourPresenter.Tests/Revit.Linter.PracticalTourPresenter.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/Revit.Linter.WelcomePresenter.Tests/Revit.Linter.WelcomePresenter.Tests.csproj">
       <Platform Project="x64" />
     </Project>
@@ -230,6 +239,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.OpenedDocuments/Revit.Linter.OpenedDocuments.csproj" Id="d3b29ecb-d6af-46c9-894a-3467ea471a90">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Revit.Linter.PracticalTourPresenter/Revit.Linter.PracticalTourPresenter.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="src/Revit.Linter.Presentation/Revit.Linter.Presentation.csproj">

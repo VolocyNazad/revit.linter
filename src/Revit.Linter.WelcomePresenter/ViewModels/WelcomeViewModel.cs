@@ -1,9 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.OnboardingState.Models;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Infrastructure.Services;
@@ -19,7 +20,7 @@ namespace Revit.Linter.WelcomePresenter.ViewModels;
 /// </summary>
 [GenerateLocalizedProperties]
 internal sealed partial class WelcomeViewModel(
-    IValueStore<WelcomeSettings> settingsStore,
+    IValueStore<OnboardingSettings> settingsStore,
     IWelcomeHost host,
     IPracticalTour practicalTour,
     ILogger<WelcomeViewModel> logger,

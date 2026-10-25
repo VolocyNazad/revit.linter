@@ -23,19 +23,4 @@ public interface IExampleConfigurationInstaller
     /// written in the format of the running Revit version. File-system failures are not caught.
     /// </remarks>
     ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines);
-
-    /// <summary>Installs the managed diagnostic used by the practical tour.</summary>
-    /// <returns>The full path of the installed configuration file.</returns>
-    /// <remarks>
-    /// The file is owned by Revit Linter and is refreshed on every tour start. It is stored in the
-    /// <c>tour</c> subfolder and does not overwrite the user's main configuration.
-    /// </remarks>
-    string InstallPracticalTour();
-
-    /// <summary>Removes the managed diagnostic used by the practical tour, if it is installed.</summary>
-    /// <remarks>
-    /// Called when the tour is completed or dismissed, so no training configuration is left behind.
-    /// Starting the tour again reinstalls the file.
-    /// </remarks>
-    void RemovePracticalTour();
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 
 	<PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -92,7 +92,10 @@
 		<ProjectReference Include="..\Revit.Linter.FixReportProvider\Revit.Linter.FixReportProvider.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.OpenedDocuments\Revit.Linter.OpenedDocuments.csproj" />
+		<ProjectReference Include="..\Revit.Linter.OnboardingState\Revit.Linter.OnboardingState.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ParameterElementDiagnostics\Revit.Linter.ParameterElementDiagnostics.csproj" />
+		<ProjectReference Include="..\Revit.Linter.PracticalTourPresenter.Interactions\Revit.Linter.PracticalTourPresenter.Interactions.csproj" />
+		<ProjectReference Include="..\Revit.Linter.PracticalTourPresenter\Revit.Linter.PracticalTourPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Presentation\Revit.Linter.Presentation.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ProjectParameterManaging\Revit.Linter.ProjectParameterManaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.SerilogEnrichers\Revit.Linter.SerilogEnrichers.csproj" />

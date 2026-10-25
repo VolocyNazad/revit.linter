@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions;
 #if BEFORE2024
 using Revit.Sugar;

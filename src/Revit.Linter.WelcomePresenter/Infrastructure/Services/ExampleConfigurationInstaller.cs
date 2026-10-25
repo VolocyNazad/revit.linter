@@ -10,16 +10,13 @@ using System.Text;
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
 /// <summary>
-/// Installs the shipped example configuration and the managed practical-tour configuration for the running
-/// Revit version without overwriting user files.
+/// Installs the shipped example configuration for the running Revit version without overwriting user files.
 /// </summary>
 internal sealed class ExampleConfigurationInstaller(
     ILogger<ExampleConfigurationInstaller> logger,
     IConfigurationPaths paths) : IExampleConfigurationInstaller
 {
     internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
-    internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
-    internal const string PracticalTourFileName = ConfigurationPathUtils.PracticalTourFileName;
     private const string ExampleFileName = ConfigurationPathUtils.DiagnosticsConfigFileName;
 
     // Obsolete example files are removed from the product-owned examples folder so the user
@@ -49,53 +46,6 @@ internal sealed class ExampleConfigurationInstaller(
             "Installed the example configuration for {Disciplines} into {Directory}: {Files}",
             disciplines, TargetDirectory, result.Files.Select(file => file.Path));
         return result;
-    }
-
-    public string InstallPracticalTour()
-    {
-        string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
-        string stalePath = Path.Combine(TargetDirectory, ExamplesFolderName, PracticalTourFileName);
-        bool hadStaleConfiguration = File.Exists(stalePath);
-        string path = InstallPracticalTour(TargetDirectory, fileName => ReadTemplate(language, fileName));
-        if (hadStaleConfiguration)
-            logger.LogInformation("Removed the superseded practical-tour configuration at {ConfigurationPath}", stalePath);
-        logger.LogInformation("Installed practical-tour diagnostic configuration into {ConfigurationPath}", path);
-        return path;
-    }
-
-    public void RemovePracticalTour()
-    {
-        if (RemovePracticalTour(TargetDirectory))
-            logger.LogInformation("Removed the practical-tour diagnostic configuration.");
-    }
-
-    /// <summary>
-    /// Removes the practical-tour configuration from an explicit directory.
-    /// </summary>
-    /// <returns><see langword="true"/> when a file was removed.</returns>
-    /// <remarks>Separated from the configuration folder lookup so it can be exercised headlessly.</remarks>
-    internal static bool RemovePracticalTour(string targetDirectory)
-    {
-        string path = Path.Combine(targetDirectory, TourFolderName, PracticalTourFileName);
-        if (!File.Exists(path)) return false;
-        File.Delete(path);
-        return true;
-    }
-
-    /// <summary>
-    /// Installs the practical-tour configuration into an explicit directory from an explicit template source.
-    /// </summary>
-    /// <remarks>Separated from the Revit-version and culture lookup so it can be exercised headlessly.</remarks>
-    internal static string InstallPracticalTour(string targetDirectory, Func<string, string> readTemplate)
-    {
-        string tourDirectory = Path.Combine(targetDirectory, TourFolderName);
-        Directory.CreateDirectory(tourDirectory);
-        string path = Path.Combine(tourDirectory, PracticalTourFileName);
-        UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
-        File.WriteAllText(path, readTemplate(PracticalTourFileName), encoding);
-        string stalePath = Path.Combine(targetDirectory, ExamplesFolderName, PracticalTourFileName);
-        if (File.Exists(stalePath)) File.Delete(stalePath);
-        return path;
     }
 
     /// <summary>

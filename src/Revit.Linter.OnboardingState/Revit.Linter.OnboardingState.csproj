@@ -1,0 +1,8 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+	<ItemGroup>
+		<PackageReference Include="VolocyNazad.ValueStore" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.PracticalTourPresenter.Interactions\Revit.Linter.PracticalTourPresenter.Interactions.csproj" />
+	</ItemGroup>
+</Project>

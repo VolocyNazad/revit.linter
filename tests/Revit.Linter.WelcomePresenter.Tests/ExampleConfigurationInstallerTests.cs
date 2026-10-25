@@ -143,35 +143,6 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
     }
 
     [Fact]
-    public void Practical_tour_is_installed_and_removed_as_a_managed_file()
-    {
-        string staleExample = Path.Combine(
-            _tempDirectory, ConfigurationPathUtils.ExamplesFolderName, ConfigurationPathUtils.PracticalTourFileName);
-        Directory.CreateDirectory(Path.GetDirectoryName(staleExample)!);
-        File.WriteAllText(staleExample, "stale");
-
-        string path = ExampleConfigurationInstaller.InstallPracticalTour(
-            _tempDirectory,
-            fileName => File.ReadAllText(Path.Combine(
-                RepositoryRoot.Find(), "wiki", "examples", "configuration", fileName)));
-
-        Assert.Equal(Path.Combine(_tempDirectory, ConfigurationPathUtils.TourFolderName,
-            ConfigurationPathUtils.PracticalTourFileName), path);
-        Assert.False(File.Exists(staleExample));
-        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
-            ConfigurationPathUtils.GetDiagnosticConfiguration(path));
-        DiagnosticRule rule = Assert.Single(file.Rules);
-        Assert.Equal("TOUR001", rule.Code);
-        Assert.Equal("collision", rule.Type);
-        Assert.False(rule.IsActive);
-        Assert.Equal(3, rule.Visualizations.Length);
-
-        Assert.True(ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory));
-        Assert.False(File.Exists(path));
-        Assert.False(ExampleConfigurationInstaller.RemovePracticalTour(_tempDirectory));
-    }
-
-    [Fact]
     public void Every_example_is_embedded_per_language()
     {
         string[] resources = typeof(ExampleConfigurationInstaller).Assembly.GetManifestResourceNames();
@@ -179,9 +150,6 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
         {
             Assert.Contains(
                 $"Revit.Linter.WelcomePresenter.Examples.{language}.{ConfigurationPathUtils.DiagnosticsConfigFileName}",
-                resources);
-            Assert.Contains(
-                $"Revit.Linter.WelcomePresenter.Examples.{language}.{ConfigurationPathUtils.PracticalTourFileName}",
                 resources);
         }
     }

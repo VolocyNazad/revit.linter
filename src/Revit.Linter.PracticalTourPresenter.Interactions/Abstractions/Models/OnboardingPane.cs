@@ -1,7 +1,7 @@
-namespace Revit.Linter.WelcomePresenter.Abstractions.Models;
+namespace Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 
 /// <summary>Identifies a Revit Linter pane that the onboarding experience may bring to the foreground.</summary>
-public enum WelcomePane
+public enum OnboardingPane
 {
     /// <summary>The pane used to select and run diagnostics.</summary>
     Diagnostics,

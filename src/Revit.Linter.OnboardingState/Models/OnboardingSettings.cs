@@ -1,10 +1,12 @@
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 using Toolkit.ValueStore.Abstractions;
 
-namespace Revit.Linter.WelcomePresenter.Abstractions.Models;
+namespace Revit.Linter.OnboardingState.Models;
 
-/// <summary>Stores which parts of the welcome wizard the current user has already seen.</summary>
+/// <summary>Stores which parts of the onboarding experience the current user has already seen.</summary>
+/// <remarks>The store file keeps its original name so existing user settings remain valid.</remarks>
 [StoreFile("welcomeSettings.yml")]
-public sealed class WelcomeSettings
+public sealed class OnboardingSettings
 {
     /// <summary>Gets or sets the version of the wizard the user has seen; <c>0</c> means never.</summary>
     public int CompletedWizardVersion { get; set; }

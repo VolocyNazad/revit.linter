@@ -1,4 +1,4 @@
-namespace Revit.Linter.WelcomePresenter.Views;
+namespace Revit.Linter.PracticalTourPresenter.Views;
 
 /// <summary>Displays the practical tour inside a Revit dockable pane.</summary>
 /// <remarks>

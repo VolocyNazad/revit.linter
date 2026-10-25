@@ -1,10 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
-using Revit.Linter.WelcomePresenter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
+using Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 using Revit.Linter.Localization;
 
-namespace Revit.Linter.WelcomePresenter.ViewModels;
+namespace Revit.Linter.PracticalTourPresenter.ViewModels;
 
 /// <summary>
 /// Presents the current practical-tour step, the visible step list and the commands the tour pane offers.

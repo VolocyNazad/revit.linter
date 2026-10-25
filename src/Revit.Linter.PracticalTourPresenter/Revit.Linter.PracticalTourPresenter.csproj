@@ -1,0 +1,43 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.PracticalTourPresenter.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Revit.Linter.WelcomePresenter.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="VolocyNazad.Revit.Context" />
+		<PackageReference Include="VolocyNazad.ValueStore" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Remove="ViewModels\PracticalTourViewModel*.resx" />
+		<None Include="ViewModels\PracticalTourViewModel.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
+		<None Include="ViewModels\PracticalTourViewModel.ru.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
+		<AdditionalFiles Include="ViewModels\PracticalTourViewModel.resx" />
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The managed tour configuration is the Wiki example file itself, so documentation and product cannot drift apart. -->
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\practical-tour.config.yaml" LogicalName="Revit.Linter.PracticalTourPresenter.Examples.en.practical-tour.config.yaml" Link="Examples\en\practical-tour.config.yaml" />
+		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\practical-tour.config.yaml" LogicalName="Revit.Linter.PracticalTourPresenter.Examples.ru.practical-tour.config.yaml" Link="Examples\ru\practical-tour.config.yaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Revit.Linter.OnboardingState\Revit.Linter.OnboardingState.csproj" />
+		<ProjectReference Include="..\Revit.Linter.PracticalTourPresenter.Interactions\Revit.Linter.PracticalTourPresenter.Interactions.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
+	</ItemGroup>
+</Project>

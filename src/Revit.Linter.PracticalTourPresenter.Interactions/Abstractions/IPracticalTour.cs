@@ -1,4 +1,4 @@
-namespace Revit.Linter.WelcomePresenter.Abstractions;
+namespace Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 
 /// <summary>Controls the optional modeless practical-tour session.</summary>
 public interface IPracticalTour

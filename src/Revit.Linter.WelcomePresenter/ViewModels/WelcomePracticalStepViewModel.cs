@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Localization;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;

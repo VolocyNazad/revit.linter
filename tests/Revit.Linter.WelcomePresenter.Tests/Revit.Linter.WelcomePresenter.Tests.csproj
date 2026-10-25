@@ -14,6 +14,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\..\src\Revit.Linter.OnboardingState\Revit.Linter.OnboardingState.csproj" />
 		<ProjectReference Include="..\..\src\Revit.Linter.WelcomePresenter\Revit.Linter.WelcomePresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
 	</ItemGroup>

@@ -1,0 +1,23 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="xunit.v3" />
+		<PackageReference Include="xunit.runner.visualstudio">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
+		<ProjectReference Include="..\..\src\Revit.Linter.Core.Abstractions\Revit.Linter.Core.Abstractions.csproj" />
+		<ProjectReference Include="..\..\src\Revit.Linter.DiagnosticConfiguration\Revit.Linter.DiagnosticConfiguration.csproj" />
+		<ProjectReference Include="..\..\src\Revit.Linter.PracticalTourPresenter.Interactions\Revit.Linter.PracticalTourPresenter.Interactions.csproj" />
+		<ProjectReference Include="..\..\src\Revit.Linter.PracticalTourPresenter\Revit.Linter.PracticalTourPresenter.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Testing\Revit.Linter.Testing.csproj" />
+	</ItemGroup>
+</Project>

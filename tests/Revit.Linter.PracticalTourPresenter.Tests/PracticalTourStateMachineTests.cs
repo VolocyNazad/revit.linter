@@ -1,7 +1,7 @@
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
-using Revit.Linter.WelcomePresenter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 
-namespace Revit.Linter.WelcomePresenter.Tests;
+namespace Revit.Linter.PracticalTourPresenter.Tests;
 
 public sealed class PracticalTourStateMachineTests
 {

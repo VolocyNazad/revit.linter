@@ -28,8 +28,8 @@
 		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\ConfirmationDialogViewModel.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.ConfirmationDialogViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.DialogPresenter\ViewModels\ConfirmationDialogViewModel.ru.resx" LogicalName="Revit.Linter.Localization.DialogPresenter.ViewModels.ConfirmationDialogViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeViewModel.resources" />
-		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\PracticalTourViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.PracticalTourViewModel.resources" />
-		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\PracticalTourViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.PracticalTourViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.PracticalTourPresenter\ViewModels\PracticalTourViewModel.resx" LogicalName="Revit.Linter.Localization.PracticalTourPresenter.ViewModels.PracticalTourViewModel.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.PracticalTourPresenter\ViewModels\PracticalTourViewModel.ru.resx" LogicalName="Revit.Linter.Localization.PracticalTourPresenter.ViewModels.PracticalTourViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeIntroStepViewModel.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeIntroStepViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.WelcomePresenter\ViewModels\WelcomeIntroStepViewModel.ru.resx" LogicalName="Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeIntroStepViewModel.resources" />

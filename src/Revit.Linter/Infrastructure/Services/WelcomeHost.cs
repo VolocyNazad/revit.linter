@@ -6,12 +6,11 @@ using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
-using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.Infrastructure.Utils;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions;
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
-using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using System.IO;
 
@@ -72,7 +71,7 @@ internal sealed class WelcomeHost(
     public void ShowPracticalTourPane()
         => QueuePracticalTourPaneVisibility(visible: true);
 
-    public void ShowPane(WelcomePane pane)
+    public void ShowPane(OnboardingPane pane)
         => _ = idlingScheduler.RunAsync(application =>
         {
             try
@@ -82,17 +81,17 @@ internal sealed class WelcomeHost(
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Failed to show the {WelcomePane} pane for onboarding", pane);
+                logger.LogError(exception, "Failed to show the {OnboardingPane} pane for onboarding", pane);
             }
         });
 
-    private static DockablePaneId GetPaneId(WelcomePane pane)
+    private static DockablePaneId GetPaneId(OnboardingPane pane)
         => pane switch
         {
-            WelcomePane.Diagnostics => DiagnosticListPaneUtils.PaneId,
-            WelcomePane.Warnings => DiagnosticReportPaneUtils.PaneId,
-            WelcomePane.FixList => FixReportPaneUtils.PaneId,
-            WelcomePane.IgnoreList => IgnoreListPaneUtils.PaneId,
+            OnboardingPane.Diagnostics => DiagnosticListPaneUtils.PaneId,
+            OnboardingPane.Warnings => DiagnosticReportPaneUtils.PaneId,
+            OnboardingPane.FixList => FixReportPaneUtils.PaneId,
+            OnboardingPane.IgnoreList => IgnoreListPaneUtils.PaneId,
             _ => throw new ArgumentOutOfRangeException(nameof(pane), pane, null),
         };
 

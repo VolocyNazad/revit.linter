@@ -1,6 +1,6 @@
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 
-namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
+namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 
 /// <summary>
 /// Advances the practical tour without observing Revit, WPF controls or diagnostic implementations.

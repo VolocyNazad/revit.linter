@@ -22,6 +22,7 @@ public sealed class UiModuleCouplingTests
         ["Revit.Linter.RunDiagnosticPresenter"] = ["Revit.Linter.DialogPresenter"],
         ["Revit.Linter.OpenedDocuments"] = [],
         ["Revit.Linter.DialogPresenter"] = [],
+        ["Revit.Linter.PracticalTourPresenter"] = [],
         ["Revit.Linter.WelcomePresenter"] = [],
     };
 
@@ -34,7 +35,8 @@ public sealed class UiModuleCouplingTests
         ["Revit.Linter.RunDiagnosticPresenter"] = ["RunDiagnosticViewModel"],
         ["Revit.Linter.OpenedDocuments"] = ["OpenedDocumentsViewModel"],
         ["Revit.Linter.DialogPresenter"] = ["DialogViewModel", "ConfirmationDialogViewModel"],
-        ["Revit.Linter.WelcomePresenter"] = ["WelcomeViewModel", "PracticalTourViewModel"],
+        ["Revit.Linter.PracticalTourPresenter"] = ["PracticalTourViewModel"],
+        ["Revit.Linter.WelcomePresenter"] = ["WelcomeViewModel"],
     };
 
     // The only allowed cross-module view-model composition: every pane view hosts the shared run control.

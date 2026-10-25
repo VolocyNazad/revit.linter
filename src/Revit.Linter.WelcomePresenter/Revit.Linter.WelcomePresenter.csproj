@@ -18,10 +18,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Remove="ViewModels\Welcome*ViewModel*.resx" />
-		<EmbeddedResource Remove="ViewModels\PracticalTourViewModel*.resx" />
-		<None Include="ViewModels\PracticalTourViewModel.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\PracticalTourViewModel.ru.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\PracticalTourViewModel.resx" />
 		<None Include="ViewModels\WelcomeViewModel.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
 		<None Include="ViewModels\WelcomeViewModel.ru.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
 		<AdditionalFiles Include="ViewModels\WelcomeViewModel.resx" />
@@ -45,15 +41,15 @@
 	<ItemGroup>
 		<!-- The installed examples are the Wiki example files themselves, so the documentation and the product cannot drift apart. -->
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.diagnostics.config.yaml" Link="Examples\en\diagnostics.config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.practical-tour.config.yaml" Link="Examples\en\practical-tour.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.diagnostics.config.yaml" Link="Examples\ru\diagnostics.config.yaml" />
-		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\practical-tour.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.practical-tour.config.yaml" Link="Examples\ru\practical-tour.config.yaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
+		<ProjectReference Include="..\Revit.Linter.OnboardingState\Revit.Linter.OnboardingState.csproj" />
+		<ProjectReference Include="..\Revit.Linter.PracticalTourPresenter.Interactions\Revit.Linter.PracticalTourPresenter.Interactions.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 	</ItemGroup>
 </Project>

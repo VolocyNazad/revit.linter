@@ -4,9 +4,9 @@ namespace Revit.Linter.WelcomePresenter.Abstractions;
 /// Supplies the facts and actions of the hosting add-in that the welcome wizard presents but does not own.
 /// </summary>
 /// <remarks>
-/// The host implements this contract together with <see cref="IPracticalTourHost"/>. A wizard step depends only
-/// on the actions it uses, so the practical tour's pane, notification and diagnostics-filter actions do not
-/// appear here.
+/// The host implements this contract together with the separate practical-tour host contract. A wizard step
+/// depends only on the actions it uses, so the practical tour's pane, notification and diagnostics-filter
+/// actions do not appear here.
 /// </remarks>
 public interface IWelcomeHost
 {

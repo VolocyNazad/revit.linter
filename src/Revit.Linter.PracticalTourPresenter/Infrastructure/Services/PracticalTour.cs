@@ -1,19 +1,18 @@
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Behaviors;
-using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ThemeManaging.Abstractions.Services;
-using Revit.Linter.WelcomePresenter.Abstractions;
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
-using Revit.Linter.WelcomePresenter.Abstractions.Services;
-using Revit.Linter.WelcomePresenter.ViewModels;
-using Revit.Linter.WelcomePresenter.Views;
+using Revit.Linter.OnboardingState.Models;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
+using Revit.Linter.PracticalTourPresenter.ViewModels;
+using Revit.Linter.PracticalTourPresenter.Views;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Toolkit.ValueStore.Abstractions;
 
-namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
+namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 
 /// <summary>
 /// Controls the modeless practical-tour session: installs the managed training configuration, advances the
@@ -23,9 +22,9 @@ namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 internal sealed class PracticalTour(
     IThemeService themeService,
     IUserInterfaceActivityStream activityStream,
-    IValueStore<WelcomeSettings> settingsStore,
+    IValueStore<OnboardingSettings> settingsStore,
     IPracticalTourHost tourHost,
-    IExampleConfigurationInstaller exampleConfigurationInstaller,
+    PracticalTourConfigurationInstaller configurationInstaller,
     PracticalTourView view,
     IConfigurationPaths paths,
     ILogger<PracticalTour> logger) : IPracticalTour
@@ -58,7 +57,7 @@ internal sealed class PracticalTour(
                 savedProgress = null;
             }
 
-            exampleConfigurationInstaller.InstallPracticalTour();
+            configurationInstaller.Install();
 
             if (savedProgress is null)
             {
@@ -294,7 +293,7 @@ internal sealed class PracticalTour(
     {
         try
         {
-            exampleConfigurationInstaller.RemovePracticalTour();
+            configurationInstaller.Remove();
         }
         catch (Exception exception)
         {
@@ -377,19 +376,19 @@ internal sealed class PracticalTour(
             or PracticalTourStep.SelectDiagnostic
             or PracticalTourStep.RunDiagnostics)
         {
-            tourHost.ShowPane(WelcomePane.Diagnostics);
+            tourHost.ShowPane(OnboardingPane.Diagnostics);
             return;
         }
 
         if (step is PracticalTourStep.FixList)
         {
-            tourHost.ShowPane(WelcomePane.FixList);
+            tourHost.ShowPane(OnboardingPane.FixList);
             return;
         }
 
         if (step is PracticalTourStep.IgnoreList)
         {
-            tourHost.ShowPane(WelcomePane.IgnoreList);
+            tourHost.ShowPane(OnboardingPane.IgnoreList);
             return;
         }
 
@@ -402,7 +401,7 @@ internal sealed class PracticalTour(
             or PracticalTourStep.NavigateFindings
             or PracticalTourStep.UnderstandFix
             or PracticalTourStep.UnderstandIgnore)
-            tourHost.ShowPane(WelcomePane.Warnings);
+            tourHost.ShowPane(OnboardingPane.Warnings);
     }
 
     public void ResetProgress()

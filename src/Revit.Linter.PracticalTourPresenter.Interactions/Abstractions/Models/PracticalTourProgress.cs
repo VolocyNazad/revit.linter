@@ -1,4 +1,4 @@
-namespace Revit.Linter.WelcomePresenter.Abstractions.Models;
+namespace Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 
 /// <summary>Stores resumable practical-tour state for one Revit release.</summary>
 public sealed class PracticalTourProgress

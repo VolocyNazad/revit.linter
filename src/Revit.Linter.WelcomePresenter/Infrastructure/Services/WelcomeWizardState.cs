@@ -1,4 +1,4 @@
-using Revit.Linter.WelcomePresenter.Abstractions.Models;
+using Revit.Linter.OnboardingState.Models;
 
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
@@ -26,7 +26,7 @@ internal static class WelcomeWizardState
     /// Returns the steps the user has not seen: the introduction until the current wizard version is
     /// completed, and the examples until they were offered for the given Revit version.
     /// </summary>
-    public static WelcomeWizardPlan GetPendingPlan(WelcomeSettings settings, int currentWizardVersion, int revitVersion) =>
+    public static WelcomeWizardPlan GetPendingPlan(OnboardingSettings settings, int currentWizardVersion, int revitVersion) =>
         new(
             IncludeIntro: settings.CompletedWizardVersion < currentWizardVersion,
             IncludeExamples: !settings.ExamplesOfferedRevitVersions.Contains(revitVersion));
@@ -35,7 +35,7 @@ internal static class WelcomeWizardState
     /// Records the shown steps. The completed version never decreases and a Revit version is stored once.
     /// </summary>
     public static void MarkShown(
-        WelcomeSettings settings, WelcomeWizardPlan plan, int currentWizardVersion, int revitVersion)
+        OnboardingSettings settings, WelcomeWizardPlan plan, int currentWizardVersion, int revitVersion)
     {
         if (plan.IncludeIntro && settings.CompletedWizardVersion < currentWizardVersion)
             settings.CompletedWizardVersion = currentWizardVersion;

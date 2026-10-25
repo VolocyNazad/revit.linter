@@ -7,9 +7,8 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Infrastructure.Services;
-using Revit.Linter.WelcomePresenter.Abstractions;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
-using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 #if BEFORE2024
 using Revit.Sugar;

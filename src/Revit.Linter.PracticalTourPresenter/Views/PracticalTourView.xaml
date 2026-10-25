@@ -1,9 +1,9 @@
 <UserControl
-    x:Class="Revit.Linter.WelcomePresenter.Views.PracticalTourView"
+    x:Class="Revit.Linter.PracticalTourPresenter.Views.PracticalTourView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:designData="clr-namespace:Revit.Linter.WelcomePresenter.DesignData"
+    xmlns:designData="clr-namespace:Revit.Linter.PracticalTourPresenter.DesignData"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
     MinWidth="280"

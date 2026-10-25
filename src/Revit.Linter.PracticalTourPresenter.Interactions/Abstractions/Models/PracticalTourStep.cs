@@ -1,4 +1,4 @@
-namespace Revit.Linter.WelcomePresenter.Abstractions.Models;
+namespace Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 
 /// <summary>Names the user action currently explained by the optional practical tour.</summary>
 public enum PracticalTourStep

@@ -4,6 +4,7 @@ using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.RunDiagnosticPresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
