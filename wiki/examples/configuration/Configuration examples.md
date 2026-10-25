@@ -51,7 +51,7 @@ The welcome window keeps only the blocks of the selected disciplines (`mep`, `ar
 
 ## What to keep in mind
 
-- Collisions are searched inside one document; linked models do not take part. A rule selects elements by category and class, so it cannot tell a structural wall from an architectural one. Run a block in the model of its discipline, or narrow it with `takeDocument`.
+- Collisions are searched inside one document by default. Linked models take part only when a rule sets `includeLinks: true` (the shipped CLSN104 rule does), and linked hits stay text-only in the report. A rule selects elements by category and class, so it cannot tell a structural wall from an architectural one. Run a block in the model of its discipline, or narrow it with `takeDocument`.
 - `groupBy` is a constant in the examples, so every selected element is compared with every other one. Replace it with a formula to compare elements only inside a group.
 - The project parameter rules use names and GUIDs from the ADSK shared parameter file. The binding type, categories and group are an example of a company standard; adjust them to your template.
 - The project parameter rules use the `group` format of Revit 2024 and newer. For Revit 2021–2023 replace it with a `BuiltInParameterGroup` name such as `PG_DATA`; a rule whose `group` does not fit the running Revit version is skipped when the file is loaded. The welcome window converts the group automatically. See [[Project parameter diagnostics]].
