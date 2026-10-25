@@ -186,11 +186,14 @@
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
     <value>Конфигурацию диагностик не удалось разобрать, поэтому она считается пустой. Исправьте diagnostics.config.yaml и сохраните файл, чтобы перезагрузить правила.&#xA;&#xA;{0}</value>
   </data>
-  <data name="configurationMigration_notice_message" xml:space="preserve">
-    <value>Revit Linter теперь читает один файл diagnostics.config.yaml. Старые файлы config.yaml, collision.config.yaml и parameter-element.config.yaml больше не читаются и оставлены без изменений. Открыть инструкцию по миграции, чтобы перенести правила?</value>
+  <data name="configurationMigration_warning_message" xml:space="preserve">
+    <value>Revit Linter нашёл старые файлы конфигурации и перенёс их в папку «legacy» каждой версии Revit (например, Documents\Revit Linter\2025\legacy). Правила из них больше не читаются, поэтому перенесите нужные правила в diagnostics.config.yaml вручную. Установленные примеры переустанавливаются из раздела «Начало работы». Открыть инструкцию по миграции?</value>
   </data>
-  <data name="configurationMigration_notice_openGuide" xml:space="preserve">
-    <value>Открыть инструкцию</value>
+  <data name="configurationMigration_warning_remaining_message" xml:space="preserve">
+    <value>Часть старых файлов не удалось перенести: они заблокированы или недоступны для записи. Они остались на месте, но по-прежнему не читаются; их имена есть в журнале.</value>
+  </data>
+  <data name="configurationMigration_warning_openGuide" xml:space="preserve">
+    <value>Открыть инструкцию по миграции</value>
   </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">
     <value>Ошибка компиляции формулы. Исправьте файл конфигурации и перезапустите Revit.</value>

@@ -165,6 +165,10 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
                 if (!ConfigurationPathUtils.TryGetDiagnosticConfiguration(
                         path, out DiagnosticConfigurationFile? file, out Exception? readError))
                 {
+                    // The managed practical-tour configuration is refreshed from the product template on
+                    // the next tour start, so an outdated copy is a skipped source, not a user-facing error.
+                    if (descriptor.IsTour) continue;
+
                     // The first parse failure is published as the parse error so the notifier shows
                     // exactly one message for it; any further failure joins the skipped-rule summary.
                     if (readError is null)
@@ -183,6 +187,12 @@ public sealed class DiagnosticConfigurationService : IDiagnosticConfigurationSer
                     }
                     continue;
                 }
+
+                // An empty or outdated managed practical-tour file is refreshed when the tour starts;
+                // it is not a user configuration problem and must not raise a configuration error.
+                if (descriptor.IsTour
+                    && (file is null || file.Version != ConfigurationPathUtils.SupportedConfigurationVersion))
+                    continue;
 
                 if (file is null)
                 {

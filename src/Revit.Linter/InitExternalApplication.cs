@@ -9,6 +9,7 @@ using Revit.Linter.ElementChangesMonitor.Abstractions.Services;
 using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
+using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
@@ -67,6 +68,13 @@ internal sealed partial class InitExternalApplication : ExternalApplication
 
         InitializeRevitContext();
         InitializeRevitTransactionCache();
+
+        // Move the legacy configuration files of every Revit version before anything reads configuration,
+        // and refresh the managed tour file before the catalog reads it.
+        ConfigurationMigrationWarning migrationWarning = GetService<ConfigurationMigrationWarning>();
+        migrationWarning.Migrate();
+        GetService<IPracticalTour>().RefreshOutdatedConfiguration();
+
         _diagnosticCatalogNotifier = GetService<DiagnosticCatalogNotifier>();
         _valueStoreNotifier = GetService<ValueStoreNotifier>();
         InitializeRevitEvents();
@@ -87,7 +95,6 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         RibbonPanel panel = Application.CreateRibbonPanel(tabName, Localizer["ribbonPanel_diagnostics_name"]);
 
         AddRibbonButtons(panel);
-        AddTestToolingButtons(tabName);
 
         GetService<IElementChangesMonitor>().Run();
 
@@ -116,7 +123,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             Application.ControlledApplication.VersionNumber);
 
         ScheduleWelcomeWizard();
-        ScheduleConfigurationMigrationNotice();
+        ScheduleConfigurationMigrationWarning(migrationWarning, productVersion);
     }
 
 

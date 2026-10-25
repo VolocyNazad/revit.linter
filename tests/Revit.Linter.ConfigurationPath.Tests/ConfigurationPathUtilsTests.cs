@@ -107,11 +107,23 @@ public sealed class ConfigurationPathUtilsTests : IDisposable
     }
 
     [Fact]
-    public void Legacy_configured_files_are_kept_only_for_detection()
+    public void Legacy_configuration_paths_cover_the_top_level_examples_and_debug_folders()
     {
-        Assert.Equal(9, ConfigurationPathUtils.LegacyConfigurationPaths.Count);
-        Assert.Contains(ConfigurationPathUtils.LegacyConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
-        Assert.Contains(ConfigurationPathUtils.LegacyCollisionConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
-        Assert.Contains(ConfigurationPathUtils.LegacyParameterElementConfigPath, ConfigurationPathUtils.LegacyConfigurationPaths);
+        IReadOnlyList<string> legacyPaths = ConfigurationPathUtils.GetLegacyConfigurationPaths(@"C:\config\2025");
+
+        Assert.Equal(9, legacyPaths.Count);
+        Assert.Contains(Path.Combine(@"C:\config\2025", ConfigurationPathUtils.LegacyConfigFileName), legacyPaths);
+        Assert.Contains(
+            Path.Combine(
+                @"C:\config\2025",
+                ConfigurationPathUtils.ExamplesFolderName,
+                ConfigurationPathUtils.LegacyCollisionConfigFileName),
+            legacyPaths);
+        Assert.Contains(
+            Path.Combine(
+                @"C:\config\2025",
+                ConfigurationPathUtils.DebugFolderName,
+                ConfigurationPathUtils.LegacyParameterElementConfigFileName),
+            legacyPaths);
     }
 }

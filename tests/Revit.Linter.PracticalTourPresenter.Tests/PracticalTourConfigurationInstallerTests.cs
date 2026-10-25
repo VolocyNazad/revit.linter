@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DiagnosticConfiguration.Models;
 using Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
@@ -56,6 +58,40 @@ public sealed class PracticalTourConfigurationInstallerTests : IDisposable
         Assert.False(File.Exists(path));
         Assert.False(PracticalTourConfigurationInstaller.Remove(_tempDirectory));
     }
+
+    [Fact]
+    public void Refresh_outdated_replaces_a_tour_file_in_the_old_format()
+    {
+        ConfigurationPaths paths = CreatePaths();
+        Directory.CreateDirectory(Path.GetDirectoryName(paths.PracticalTourConfigPath)!);
+        File.WriteAllText(paths.PracticalTourConfigPath, "- code: \"TOUR001\"\n  description: \"old format\"\n");
+        PracticalTourConfigurationInstaller installer = CreateInstaller(paths);
+
+        Assert.True(installer.RefreshOutdated());
+
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            ConfigurationPathUtils.GetDiagnosticConfiguration(paths.PracticalTourConfigPath));
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, file.Version);
+        Assert.Contains(file.Rules, rule => rule.Code == "TOUR001");
+    }
+
+    [Fact]
+    public void Refresh_outdated_keeps_a_current_tour_file()
+    {
+        ConfigurationPaths paths = CreatePaths();
+        PracticalTourConfigurationInstaller installer = CreateInstaller(paths);
+        installer.Install();
+        string installed = File.ReadAllText(paths.PracticalTourConfigPath);
+
+        Assert.False(installer.RefreshOutdated());
+
+        Assert.Equal(installed, File.ReadAllText(paths.PracticalTourConfigPath));
+    }
+
+    private ConfigurationPaths CreatePaths() => new(2025, _tempDirectory);
+
+    private static PracticalTourConfigurationInstaller CreateInstaller(ConfigurationPaths paths) =>
+        new(NullLogger<PracticalTourConfigurationInstaller>.Instance, paths);
 
     [Fact]
     public void Every_language_embeds_the_managed_tour_configuration()

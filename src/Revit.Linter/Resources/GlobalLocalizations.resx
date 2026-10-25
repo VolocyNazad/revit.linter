@@ -186,10 +186,13 @@
   <data name="userDiagnosticConfiguration_parseFailed_message" xml:space="preserve">
     <value>The diagnostic configuration could not be parsed and is being treated as empty. Fix diagnostics.config.yaml and save it to reload the rules.&#xA;&#xA;{0}</value>
   </data>
-  <data name="configurationMigration_notice_message" xml:space="preserve">
-    <value>Revit Linter now reads one diagnostics.config.yaml file. The old config.yaml, collision.config.yaml and parameter-element.config.yaml files are no longer read and were left unchanged. Open the migration guide to move your rules?</value>
+  <data name="configurationMigration_warning_message" xml:space="preserve">
+    <value>Revit Linter found old configuration files and moved them into the "legacy" folder of each Revit version (for example Documents\Revit Linter\2025\legacy). Those rules are no longer read, so move the rules you still need into diagnostics.config.yaml by hand. Installed examples are reinstalled from Getting started. Open the migration guide?</value>
   </data>
-  <data name="configurationMigration_notice_openGuide" xml:space="preserve">
+  <data name="configurationMigration_warning_remaining_message" xml:space="preserve">
+    <value>Some old files could not be moved because they are locked or not writable. They stay where they are and are still not read; the log names them.</value>
+  </data>
+  <data name="configurationMigration_warning_openGuide" xml:space="preserve">
     <value>Open the migration guide</value>
   </data>
   <data name="formulaCompilation_failed_message" xml:space="preserve">

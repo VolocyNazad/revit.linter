@@ -431,6 +431,20 @@ internal sealed class PracticalTour(
         }
     }
 
+    public void RefreshOutdatedConfiguration()
+    {
+        if (_viewModel is not null) return;
+
+        try
+        {
+            configurationInstaller.RefreshOutdated();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to refresh the outdated practical-tour configuration");
+        }
+    }
+
     private void CloseAfterFailure()
     {
         try

@@ -14,13 +14,13 @@ public static class ConfigurationPathUtils
     /// <summary>Gets the single diagnostic configuration file name used by the current format.</summary>
     public const string DiagnosticsConfigFileName = DiagnosticConfigurationFormat.FileName;
 
-    /// <summary>Gets the legacy element diagnostic configuration file name, read only to detect an unmigrated folder.</summary>
+    /// <summary>Gets the legacy element diagnostic configuration file name, moved into the legacy folder once.</summary>
     public const string LegacyConfigFileName = "config.yaml";
 
-    /// <summary>Gets the legacy collision configuration file name, read only to detect an unmigrated folder.</summary>
+    /// <summary>Gets the legacy collision configuration file name, moved into the legacy folder once.</summary>
     public const string LegacyCollisionConfigFileName = "collision.config.yaml";
 
-    /// <summary>Gets the legacy project-parameter configuration file name, read only to detect an unmigrated folder.</summary>
+    /// <summary>Gets the legacy project-parameter configuration file name, moved into the legacy folder once.</summary>
     public const string LegacyParameterElementConfigFileName = "parameter-element.config.yaml";
 
     /// <summary>Gets the managed practical-tour configuration file name.</summary>
@@ -64,18 +64,26 @@ public static class ConfigurationPathUtils
     /// <summary>Gets the managed practical-tour configuration file path.</summary>
     public static string PracticalTourConfigPath => _defaultPaths.PracticalTourConfigPath;
 
-    /// <summary>Gets the legacy element configuration file path, used only to detect an unmigrated folder.</summary>
-    public static string LegacyConfigPath => Path.Combine(Directory, LegacyConfigFileName);
-
-    /// <summary>Gets the legacy collision configuration file path, used only to detect an unmigrated folder.</summary>
-    public static string LegacyCollisionConfigPath => Path.Combine(Directory, LegacyCollisionConfigFileName);
-
-    /// <summary>Gets the legacy project-parameter configuration file path, used only to detect an unmigrated folder.</summary>
-    public static string LegacyParameterElementConfigPath =>
-        Path.Combine(Directory, LegacyParameterElementConfigFileName);
-
-    /// <summary>Gets the legacy configuration files whose presence means the user has not migrated yet.</summary>
-    public static IReadOnlyList<string> LegacyConfigurationPaths => _defaultPaths.LegacyConfigurationPaths;
+    /// <summary>Gets the legacy split configuration files of one Revit version folder.</summary>
+    /// <param name="versionDirectory">The configuration folder of one Revit version.</param>
+    /// <returns>The top-level legacy files plus their copies in the <c>examples</c> and <c>debug</c> folders.</returns>
+    /// <remarks>
+    /// The startup migration moves these files into the <c>legacy</c> subfolder of the same version folder; the
+    /// product does not read them afterwards. The files that do not exist are simply absent from the result of
+    /// the caller's existence check.
+    /// </remarks>
+    public static IReadOnlyList<string> GetLegacyConfigurationPaths(string versionDirectory) =>
+    [
+        Path.Combine(versionDirectory, LegacyConfigFileName),
+        Path.Combine(versionDirectory, LegacyCollisionConfigFileName),
+        Path.Combine(versionDirectory, LegacyParameterElementConfigFileName),
+        Path.Combine(versionDirectory, ExamplesFolderName, LegacyConfigFileName),
+        Path.Combine(versionDirectory, ExamplesFolderName, LegacyCollisionConfigFileName),
+        Path.Combine(versionDirectory, ExamplesFolderName, LegacyParameterElementConfigFileName),
+        Path.Combine(versionDirectory, DebugFolderName, LegacyConfigFileName),
+        Path.Combine(versionDirectory, DebugFolderName, LegacyCollisionConfigFileName),
+        Path.Combine(versionDirectory, DebugFolderName, LegacyParameterElementConfigFileName),
+    ];
 
     /// <summary>
     /// Gets the header written into a newly created configuration file.

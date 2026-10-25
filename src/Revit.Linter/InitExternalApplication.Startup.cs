@@ -1,4 +1,4 @@
-// Queued startup notifications: the migration notice, the welcome wizard and the hidden tour pane.
+// Queued startup notifications: the configuration migration warning, the welcome wizard and the hidden tour pane.
 
 using Microsoft.Extensions.Logging;
 using Revit.Linter.Infrastructure.Services;
@@ -13,17 +13,18 @@ namespace Revit.Linter;
 internal sealed partial class InitExternalApplication
 {
     /// <summary>
-    /// Queues the one-time configuration migration notice for the first Idling event.
+    /// Queues the configuration migration warning for the first Idling event.
     /// </summary>
     /// <remarks>
-    /// The notice is shown only when a legacy configuration file exists and was not reported for this
-    /// Revit version. A failure is logged inside the notice service and never affects add-in startup.
+    /// The warning is shown only when the startup migration found legacy files and this product version has not
+    /// warned yet. A failure is logged inside the warning service and never affects add-in startup.
     /// </remarks>
-    private static void ScheduleConfigurationMigrationNotice() =>
+    private static void ScheduleConfigurationMigrationWarning(
+        ConfigurationMigrationWarning warning, string productVersion) =>
         _ = GetService<RevitIdlingScheduler>().RunAsync(application =>
         {
             _ = application;
-            _ = GetService<ConfigurationMigrationNotice>().ShowIfNeededAsync();
+            _ = warning.ShowIfNeededAsync(productVersion);
         });
 
     /// <summary>

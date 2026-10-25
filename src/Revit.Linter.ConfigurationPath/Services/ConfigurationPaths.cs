@@ -10,10 +10,6 @@ namespace Revit.Linter.ConfigurationPath.Services;
 /// </remarks>
 public sealed class ConfigurationPaths : IConfigurationPaths
 {
-    private const string LegacyConfigFileName = "config.yaml";
-    private const string LegacyCollisionConfigFileName = "collision.config.yaml";
-    private const string LegacyParameterElementConfigFileName = "parameter-element.config.yaml";
-
     /// <summary>Creates the paths for the running build and the current user.</summary>
     public ConfigurationPaths()
         : this(TargetRevitVersion, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
@@ -29,7 +25,8 @@ public sealed class ConfigurationPaths : IConfigurationPaths
             throw new ArgumentException("The documents directory is required.", nameof(documentsDirectory));
 
         RevitVersion = revitVersion;
-        Directory = Path.Combine(documentsDirectory, ProductIdentity.DocumentsFolderName, revitVersion.ToString());
+        VersionsDirectory = Path.Combine(documentsDirectory, ProductIdentity.DocumentsFolderName);
+        Directory = Path.Combine(VersionsDirectory, revitVersion.ToString());
         ConfigPath = Path.Combine(Directory, ConfigurationPathUtils.DiagnosticsConfigFileName);
         ExampleConfigPath = Path.Combine(
             Directory, ConfigurationPathUtils.ExamplesFolderName, ConfigurationPathUtils.DiagnosticsConfigFileName);
@@ -37,22 +34,13 @@ public sealed class ConfigurationPaths : IConfigurationPaths
             Directory, ConfigurationPathUtils.DebugFolderName, ConfigurationPathUtils.DiagnosticsConfigFileName);
         PracticalTourConfigPath = Path.Combine(
             Directory, ConfigurationPathUtils.TourFolderName, ConfigurationPathUtils.PracticalTourFileName);
-        LegacyConfigurationPaths =
-        [
-            Path.Combine(Directory, LegacyConfigFileName),
-            Path.Combine(Directory, LegacyCollisionConfigFileName),
-            Path.Combine(Directory, LegacyParameterElementConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.ExamplesFolderName, LegacyConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.ExamplesFolderName, LegacyCollisionConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.ExamplesFolderName, LegacyParameterElementConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.DebugFolderName, LegacyConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.DebugFolderName, LegacyCollisionConfigFileName),
-            Path.Combine(Directory, ConfigurationPathUtils.DebugFolderName, LegacyParameterElementConfigFileName),
-        ];
     }
 
     /// <inheritdoc />
     public int RevitVersion { get; }
+
+    /// <inheritdoc />
+    public string VersionsDirectory { get; }
 
     /// <inheritdoc />
     public string Directory { get; }
@@ -68,9 +56,6 @@ public sealed class ConfigurationPaths : IConfigurationPaths
 
     /// <inheritdoc />
     public string PracticalTourConfigPath { get; }
-
-    /// <inheritdoc />
-    public IReadOnlyList<string> LegacyConfigurationPaths { get; }
 
     private static int TargetRevitVersion =>
 #if IS2021

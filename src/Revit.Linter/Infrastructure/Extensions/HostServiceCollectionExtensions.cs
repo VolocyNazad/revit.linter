@@ -42,7 +42,7 @@ internal static class HostServiceCollectionExtensions
             .AddSingleton<IDiagnosticReportPaneActivator, DiagnosticReportPaneActivator>()
             .AddSingleton<IVisualizationViewActivator, VisualizationViewActivator>()
             .AddSingleton<DiagnosticCatalogNotifier>()
-            .AddSingleton<ConfigurationMigrationNotice>()
+            .AddSingleton<ConfigurationMigrationWarning>()
             .AddSingleton<ValueStoreNotifier>()
             .AddSingleton<RevitIdlingScheduler>()
             .AddSingleton<IRevitIdlingScheduler>(provider => provider.GetRequiredService<RevitIdlingScheduler>())

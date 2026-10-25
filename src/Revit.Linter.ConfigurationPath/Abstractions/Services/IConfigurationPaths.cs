@@ -25,6 +25,10 @@ public interface IConfigurationPaths
     /// <summary>Gets the managed practical-tour configuration file path.</summary>
     string PracticalTourConfigPath { get; }
 
-    /// <summary>Gets the legacy configuration files whose presence means the user has not migrated yet.</summary>
-    IReadOnlyList<string> LegacyConfigurationPaths { get; }
+    /// <summary>Gets the folder that contains one configuration folder per Revit version.</summary>
+    /// <remarks>
+    /// The startup migration uses it to move the legacy files of every Revit version at once, not only the
+    /// version that is running.
+    /// </remarks>
+    string VersionsDirectory { get; }
 }

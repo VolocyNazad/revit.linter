@@ -23,4 +23,13 @@ public interface IPracticalTour
     /// An active session keeps its pane; use <see cref="Start"/> to show it.
     /// </remarks>
     void HidePaneIfInactive();
+
+    /// <summary>Replaces the managed practical-tour configuration when it is not in the current format.</summary>
+    /// <remarks>
+    /// The file is owned by the product, so an outdated copy from a previous product version is refreshed
+    /// instead of being reported as a broken user configuration: without this, the old file would raise a
+    /// configuration error at startup and the training diagnostic would be missing until the tour starts
+    /// again. An active tour session keeps its file. A failure is logged and never affects the add-in.
+    /// </remarks>
+    void RefreshOutdatedConfiguration();
 }

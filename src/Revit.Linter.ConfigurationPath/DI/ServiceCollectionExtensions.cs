@@ -29,6 +29,9 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDiagnosticConfigurationProblemSource>(provider =>
                 provider.GetRequiredService<DiagnosticConfigurationErrorState>())
             .AddSingleton<IConfigurationPaths, ConfigurationPaths>()
+            .AddSingleton<ConfigurationMigrationService>()
+            .AddSingleton<IConfigurationMigrationService>(provider =>
+                provider.GetRequiredService<ConfigurationMigrationService>())
             .AddSingleton<DiagnosticConfigurationService>(provider => new DiagnosticConfigurationService(
                 provider.GetRequiredService<DiagnosticConfigurationErrorState>(),
                 provider.GetRequiredService<IConfigurationPaths>(),

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
+using Revit.Linter.DiagnosticConfiguration.Models;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -21,6 +22,8 @@ internal sealed class PracticalTourConfigurationInstaller(
     internal const string ExamplesFolderName = ConfigurationPathUtils.ExamplesFolderName;
     internal const string TourFolderName = ConfigurationPathUtils.TourFolderName;
     internal const string PracticalTourFileName = ConfigurationPathUtils.PracticalTourFileName;
+
+    private const string TourDiagnosticCode = "TOUR001";
 
     private const string ResourcePrefix = "Revit.Linter.PracticalTourPresenter.Examples.";
 
@@ -44,6 +47,31 @@ internal sealed class PracticalTourConfigurationInstaller(
     {
         if (Remove(paths.Directory))
             logger.LogInformation("Removed the practical-tour diagnostic configuration.");
+    }
+
+    /// <summary>Replaces the managed practical-tour configuration when it is missing from the current format.</summary>
+    /// <returns><see langword="true"/> when an outdated file was replaced.</returns>
+    /// <remarks>
+    /// The file belongs to the product, so a copy written by a previous product version is refreshed from the
+    /// embedded template. A file that already declares the current format and the training diagnostic is left
+    /// untouched, because the tour writes the user's selection into it.
+    /// </remarks>
+    public bool RefreshOutdated()
+    {
+        string path = Path.Combine(paths.Directory, TourFolderName, PracticalTourFileName);
+        if (!File.Exists(path)) return false;
+
+        bool isCurrent = ConfigurationPathUtils.TryGetDiagnosticConfiguration(
+                             path, out DiagnosticConfigurationFile? file, out _)
+                         && file is not null
+                         && file.Version == ConfigurationPathUtils.SupportedConfigurationVersion
+                         && file.Rules?.Any(rule => string.Equals(rule.Code, TourDiagnosticCode, StringComparison.Ordinal)) == true;
+        if (isCurrent) return false;
+
+        Install();
+        logger.LogInformation(
+            "Refreshed the outdated managed practical-tour configuration at {ConfigurationPath}", path);
+        return true;
     }
 
     /// <summary>Removes the practical-tour configuration from an explicit directory.</summary>
