@@ -1,22 +1,17 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Context.DI;
 using Revit.Events.DI;
 using Revit.Linter.CollisionDiagnostics.DI;
 using Revit.Linter.CollisionTestModels.DI;
-using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.DI;
 using Revit.Linter.Core.Abstractions;
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.DI;
-using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.DI;
 using Revit.Linter.DiagnosticReportExporting.DI;
 using Revit.Linter.DiagnosticReportPresenter.DI;
-using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportProvider.DI;
 using Revit.Linter.DialogPresenter.DI;
 using Revit.Linter.DocumentDiagnostics.DI;
@@ -32,17 +27,13 @@ using Revit.Linter.FixReportPresenter.DI;
 using Revit.Linter.FixReportProvider.DI;
 using Revit.Linter.IgnoreListPresenter.DI;
 using Revit.Linter.Infrastructure.Extensions;
-using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.Presentation;
 using Revit.Linter.ProjectParameterManaging.DI;
-using Revit.Linter.RunDiagnosticPresenter.Abstractions;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
 using Revit.Linter.UserDiagnostics.DI;
-using Revit.Linter.WelcomePresenter.Abstractions;
-using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.DI;
 using Revit.TransactionMemoryCache.DI;
 using System.IO;
@@ -54,11 +45,28 @@ namespace Revit.Linter;
 
 internal sealed class Program
 {
+    private static readonly object _hostSync = new();
     private static IHost? _host;
+    private static bool _shutdown;
 
     private Program() { }
 
-    private static IHost Host => _host ??= CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    // The host is built once per Revit session. After Shutdown no service is available again: a failed
+    // startup must not let a later call (for example the shutdown logger) rebuild the whole graph.
+    private static IHost Host
+    {
+        get
+        {
+            lock (_hostSync)
+            {
+                if (_shutdown)
+                    throw new ObjectDisposedException(nameof(Program), "The Revit Linter host has been shut down.");
+
+                return _host ??= CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+            }
+        }
+    }
+
     public static IServiceProvider Provider
     {
         get
@@ -73,9 +81,38 @@ internal sealed class Program
 
     internal static void Shutdown()
     {
-        IHost? host = _host;
-        _host = null;
+        IHost? host;
+        lock (_hostSync)
+        {
+            if (_shutdown) return;
+
+            _shutdown = true;
+            host = _host;
+            _host = null;
+        }
+
         host?.Dispose();
+    }
+
+    /// <summary>
+    /// Resolves a service only while the host is alive, without building it from a background caller.
+    /// </summary>
+    /// <typeparam name="T">The service type to resolve.</typeparam>
+    /// <returns>The service, or <see langword="null"/> before the host is built and after it is shut down.</returns>
+    /// <remarks>
+    /// Log enrichers run on arbitrary threads, including during host building and disposal, so they use this
+    /// probe instead of <see cref="Provider"/>, which intentionally builds the host on first use.
+    /// </remarks>
+    internal static T? TryGetService<T>() where T : class
+    {
+        IHost? host;
+        lock (_hostSync)
+        {
+            if (_shutdown) return null;
+            host = _host;
+        }
+
+        return host?.Services.GetService<T>();
     }
 
     private static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -84,18 +121,12 @@ internal sealed class Program
             .ConfigureLogging(logging => logging.ClearProviders())
             .ConfigureAppConfiguration((_, cfg) => cfg
                 .SetBasePath(Location))
-#if (DEBUG)
-            .UseEnvironment("Production")
-            //.UseEnvironment("Development")
-#endif
             .ConfigureServices((context, services) => services
                 .AddAndConfigureSerilog()
-                .AddSingleton<IStringLocalizer<GlobalLocalizations>, GlobalStringLocalizer>()
+                .AddLinterHostServices()
                 .AddRevitContext().AddEvents().AddTransactionMemoryCache().AddDocumentQueries()
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddConfigurationPathModule()
-                .AddSingleton<IDiagnosticConfigurationRuleTextFormatter, GlobalDiagnosticConfigurationRuleTextFormatter>()
-                .AddSingleton<IConfigurationFileLauncher, ConfigurationFileLauncher>()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
                 .AddElementDiagnostics().AddDocumentDiagnostics()
                 .AddUserDiagnostics()
@@ -106,19 +137,6 @@ internal sealed class Program
                 .AddRunDiagnosticModule().AddDiagnosticReportExportingModule().AddDiagnosticReportPresenterModule()
                 .AddDiagnosticListPresenterModule().AddFixReportPresenterModule().AddIgnoreListPresenterModule().AddDialogModule()
                 .AddWelcomePresenterModule()
-                .AddSingleton<IWelcomeHost, WelcomeHost>()
-                .AddSingleton<ITutorialSampleCatalog, AutodeskTutorialSampleCatalog>()
-                .AddSingleton<TutorialSampleOpenRequest>()
-                .AddSingleton<IDocumentationLauncher, DocumentationLauncher>()
-                .AddSingleton<IUserInterfaceActivityStream, UserInterfaceActivityStream>()
-                .AddSingleton<IDiagnosticReportPaneActivator, DiagnosticReportPaneActivator>()
-                .AddSingleton<IVisualizationViewActivator, VisualizationViewActivator>()
-                .AddSingleton<DiagnosticCatalogNotifier>()
-                .AddSingleton<ConfigurationMigrationNotice>()
-                .AddSingleton<ValueStoreNotifier>()
-                .AddSingleton<RevitIdlingScheduler>()
-                .AddSingleton<IRevitIdlingScheduler>(provider => provider.GetRequiredService<RevitIdlingScheduler>())
-                .AddSingleton<IFormulaCompilationNotifier, FormulaCompilationNotifier>()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
                 .AddValueStore<YamlValueStoreSerializer>(options =>

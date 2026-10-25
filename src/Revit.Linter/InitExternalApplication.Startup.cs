@@ -1,0 +1,75 @@
+// Queued startup notifications: the migration notice, the welcome wizard and the hidden tour pane.
+
+using Microsoft.Extensions.Logging;
+using Revit.Linter.Infrastructure.Services;
+using Revit.Linter.WelcomePresenter.Abstractions;
+#if BEFORE2024
+using Revit.Sugar;
+#endif
+
+namespace Revit.Linter;
+
+internal sealed partial class InitExternalApplication
+{
+    /// <summary>
+    /// Queues the one-time configuration migration notice for the first Idling event.
+    /// </summary>
+    /// <remarks>
+    /// The notice is shown only when a legacy configuration file exists and was not reported for this
+    /// Revit version. A failure is logged inside the notice service and never affects add-in startup.
+    /// </remarks>
+    private static void ScheduleConfigurationMigrationNotice() =>
+        _ = GetService<RevitIdlingScheduler>().RunAsync(application =>
+        {
+            _ = application;
+            _ = GetService<ConfigurationMigrationNotice>().ShowIfNeededAsync();
+        });
+
+    /// <summary>
+    /// Queues the first-run welcome wizard for the first Idling event, when the Revit main window exists.
+    /// </summary>
+    /// <remarks>
+    /// A failure is logged and never affects add-in startup; the ribbon command remains available.
+    /// Debug builds show every step on each start so the wizard can be worked on without resetting the
+    /// stored state; release builds show only the steps the user has not seen.
+    /// </remarks>
+    private static void ScheduleWelcomeWizard() =>
+        _ = GetService<RevitIdlingScheduler>().RunAsync(_ =>
+        {
+            try
+            {
+                var wizard = GetService<IWelcomeWizard>();
+#if DEBUG
+                wizard.Show();
+#else
+                wizard.ShowIfNeeded();
+#endif
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception, "Failed to show the welcome wizard on startup");
+            }
+        });
+
+    /// <summary>
+    /// Hides the practical-tour pane that Revit may have restored visible from the previous session.
+    /// </summary>
+    /// <remarks>
+    /// A fresh session has no tour view-model, so a restored pane would show no content (for example
+    /// after the user refused the tour in the wizard or opted out of it). The pane is queued hidden
+    /// before the wizard runs, so starting the tour afterwards shows it again. A failure is logged
+    /// and never affects add-in startup.
+    /// </remarks>
+    private static void HidePracticalTourPaneWithoutSession()
+    {
+        try
+        {
+            GetService<IWelcomeHost>().HidePracticalTourPane();
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, "Failed to hide the practical-tour pane on startup");
+        }
+    }
+}
+

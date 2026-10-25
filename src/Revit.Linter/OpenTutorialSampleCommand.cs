@@ -6,6 +6,7 @@ using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath;
+using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using System.IO;
 
 namespace Revit.Linter;
@@ -41,7 +42,7 @@ public sealed class OpenTutorialSampleCommand : ExternalCommand
             provider.GetRequiredService<ILogger<OpenTutorialSampleCommand>>()
                 .LogError(exception, "Failed to open tutorial sample copy {TutorialSamplePath}", path);
             provider.GetRequiredService<ITutorialSampleCopyService>()
-                .DeleteCopy(path, ConfigurationPathUtils.RevitVersion);
+                .DeleteCopy(path, provider.GetRequiredService<IConfigurationPaths>().RevitVersion);
             InitExternalApplication.SetTutorialSampleButtonVisible(false);
         }
     }

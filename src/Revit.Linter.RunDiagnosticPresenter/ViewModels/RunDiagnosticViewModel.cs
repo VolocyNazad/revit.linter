@@ -20,7 +20,7 @@ namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 /// </summary>
 [XamlConstructor]
 [GenerateLocalizedProperties]
-public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
+public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, IDisposable
 {
     private readonly IRevitContext _revitContext;
     private readonly IDiagnosticService _diagnosticService;
@@ -32,6 +32,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     private readonly IDialog _dialog;
     private readonly IDisposable _changeSubscription;
     private bool _applyingExternalChanges;
+    private int _disposed;
 
     /// <summary>
     /// Initializes the diagnostic-run view model and subscribes it to persisted setting changes.
@@ -167,8 +168,22 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel
     /// <inheritdoc />
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
-        _changeSubscription.Dispose();
+        Dispose();
         await base.OnDeinitializing(cancellationToken);
+    }
+
+    /// <summary>
+    /// Releases the settings subscription created in the constructor.
+    /// </summary>
+    /// <remarks>
+    /// The view model is a singleton, so the dependency-injection container also disposes it when the add-in
+    /// host shuts down. This keeps the constructor-owned subscription from outliving the host even though
+    /// no view raises <c>DeinitializeCommand</c>.
+    /// </remarks>
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        _changeSubscription.Dispose();
     }
 
     /// <inheritdoc />

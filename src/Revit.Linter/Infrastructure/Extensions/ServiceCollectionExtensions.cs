@@ -36,7 +36,7 @@ internal static class ServiceCollectionExtensions
                 .Enrich.WithProperty("isDebug", Debugger.IsAttached)
                 .Enrich.FromLogContext()
                 .Enrich.WithEnvironmentName()
-                .Enrich.WithRevitContext(() => Program.Provider.GetService<IRevitContext>());
+                .Enrich.WithRevitContext(() => Program.TryGetService<IRevitContext>());
 #if DEBUG
             loggerConfiguration
                 .WriteTo.Console()
