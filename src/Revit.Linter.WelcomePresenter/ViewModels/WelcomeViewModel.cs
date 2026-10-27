@@ -74,9 +74,9 @@ internal sealed partial class WelcomeViewModel(
             Assembly assembly = typeof(WelcomeViewModel).Assembly;
             string? informationalVersion = assembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            if (!string.IsNullOrWhiteSpace(informationalVersion))
+            string version = informationalVersion ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(version))
             {
-                string version = informationalVersion!;
                 // GitVersion appends the commit height and hash after '+': keep the numeric product version.
                 int metadataSeparator = version.IndexOf('+');
                 return metadataSeparator < 0
