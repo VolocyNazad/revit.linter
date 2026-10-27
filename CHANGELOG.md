@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-10-27
+
+### Added
+
+- Show the installed product version in the header of the welcome wizard, next to the step counter, in English and Russian.
+
+### Changed
+
+- Compile the formulas of every configured diagnostic when the configuration is loaded. A rule whose `takeDocument`, `take`, `andTake`, `groupBy` or `check` formula cannot be compiled is skipped, and the configuration notification names the rule code and the rejected formula; the other rules stay in use. Previously only a warning reached the application log and the affected stage silently used a fallback.
+
+### Fixed
+
+- `if(...)` expressions and boolean parameter values are accepted in `check`, `takeDocument` and the project-parameter `take`; a conditional no longer falls back to an always-valid check and silently reports no findings.
+- The search box height leaves room for descenders, so characters such as `y` are no longer clipped.
+
 ## [3.0.0] - 2026-10-25
 
 ### Added
