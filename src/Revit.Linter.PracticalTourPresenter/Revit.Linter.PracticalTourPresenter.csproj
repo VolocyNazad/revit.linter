@@ -1,5 +1,6 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
+		<UsesLocalizationGenerator>true</UsesLocalizationGenerator>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
@@ -18,12 +19,6 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.ValueStore" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Remove="ViewModels\PracticalTourViewModel*.resx" />
-		<None Include="ViewModels\PracticalTourViewModel.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\PracticalTourViewModel.ru.resx"><DependentUpon>PracticalTourViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\PracticalTourViewModel.resx" />
 	</ItemGroup>
 	<ItemGroup>
 		<!-- The managed tour configuration is the Wiki example file itself, so documentation and product cannot drift apart. -->

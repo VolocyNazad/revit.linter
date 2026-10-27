@@ -1,5 +1,6 @@
 ﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
+		<UsesLocalizationGenerator>true</UsesLocalizationGenerator>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
@@ -19,10 +20,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Remove="ViewModels\IgnoreListViewModel*.resx" />
-		<None Include="ViewModels\IgnoreListViewModel.resx"><DependentUpon>IgnoreListViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\IgnoreListViewModel.ru.resx"><DependentUpon>IgnoreListViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\IgnoreListViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>

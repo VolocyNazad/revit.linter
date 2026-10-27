@@ -26,10 +26,5 @@
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Remove="CollisionDiagnosticLocalizations*.resx" />
-		<None Include="CollisionDiagnosticLocalizations.resx" />
-		<None Include="CollisionDiagnosticLocalizations.ru.resx" />
-	</ItemGroup>
 </Project>
 

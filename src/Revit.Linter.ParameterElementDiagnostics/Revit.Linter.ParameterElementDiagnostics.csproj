@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.UserDiagnostics.Tests</_Parameter1>
@@ -23,11 +23,6 @@
 		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<PackageReference Include="VolocyNazad.Revit.Sugar" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Remove="ParameterElementDiagnosticLocalizations*.resx" />
-		<None Include="ParameterElementDiagnosticLocalizations.resx" />
-		<None Include="ParameterElementDiagnosticLocalizations.ru.resx" />
 	</ItemGroup>
 </Project>
 

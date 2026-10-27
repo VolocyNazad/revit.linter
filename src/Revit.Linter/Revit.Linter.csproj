@@ -15,7 +15,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="required-revit-project-parameters.txt" />
-	  <EmbeddedResource Remove="Resources\GlobalLocalizations*.resx" />
 	</ItemGroup>
 	<ItemGroup>
 		<ExternalApplication Include="Revit.Linter">

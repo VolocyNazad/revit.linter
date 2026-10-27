@@ -2,4 +2,17 @@
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+  <!--
+    Localization resources are embedded once by Revit.Linter.Localization. Every other project only
+    references them: keep the files visible in Solution Explorer and out of its own EmbeddedResource.
+    The nesting of the files under their class is configured in .filenesting.json.
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Revit.Linter.Localization'">
+    <EmbeddedResource Remove="**\*.resx" />
+    <None Include="**\*.resx" Exclude="**\obj\**;**\bin\**" />
+  </ItemGroup>
+  <!-- Projects that generate typed localization properties pass their base resources to the generator. -->
+  <ItemGroup Condition="'$(UsesLocalizationGenerator)' == 'true'">
+    <AdditionalFiles Include="**\*.resx" Exclude="**\*.ru.resx;**\obj\**;**\bin\**" />
+  </ItemGroup>
 </Project>

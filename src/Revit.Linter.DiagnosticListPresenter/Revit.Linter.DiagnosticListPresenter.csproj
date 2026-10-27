@@ -1,12 +1,9 @@
 ﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
+		<UsesLocalizationGenerator>true</UsesLocalizationGenerator>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
-		<EmbeddedResource Remove="ViewModels\DiagnosticListViewModel*.resx" />
-		<None Include="ViewModels\DiagnosticListViewModel.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\DiagnosticListViewModel.ru.resx"><DependentUpon>DiagnosticListViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\DiagnosticListViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>

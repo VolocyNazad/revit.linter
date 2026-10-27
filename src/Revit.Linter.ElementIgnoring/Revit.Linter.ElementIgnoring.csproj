@@ -11,10 +11,5 @@
 		<ProjectReference Include="..\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Remove="ElementIgnoringLocalizations*.resx" />
-		<None Include="ElementIgnoringLocalizations.resx" />
-		<None Include="ElementIgnoringLocalizations.ru.resx" />
-	</ItemGroup>
 </Project>
 

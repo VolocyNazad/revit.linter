@@ -1,5 +1,6 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
+		<UsesLocalizationGenerator>true</UsesLocalizationGenerator>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
@@ -17,25 +18,6 @@
 		<PackageReference Include="VolocyNazad.ValueStore" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Remove="ViewModels\Welcome*ViewModel*.resx" />
-		<None Include="ViewModels\WelcomeViewModel.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomeViewModel.ru.resx"><DependentUpon>WelcomeViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomeViewModel.resx" />
-		<None Include="ViewModels\WelcomeIntroStepViewModel.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomeIntroStepViewModel.ru.resx"><DependentUpon>WelcomeIntroStepViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomeIntroStepViewModel.resx" />
-		<None Include="ViewModels\WelcomeRulesStepViewModel.resx"><DependentUpon>WelcomeRulesStepViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomeRulesStepViewModel.ru.resx"><DependentUpon>WelcomeRulesStepViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomeRulesStepViewModel.resx" />
-		<None Include="ViewModels\WelcomeExamplesStepViewModel.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomeExamplesStepViewModel.ru.resx"><DependentUpon>WelcomeExamplesStepViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomeExamplesStepViewModel.resx" />
-		<None Include="ViewModels\WelcomePracticalStepViewModel.resx"><DependentUpon>WelcomePracticalStepViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomePracticalStepViewModel.ru.resx"><DependentUpon>WelcomePracticalStepViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomePracticalStepViewModel.resx" />
-		<None Include="ViewModels\WelcomeFinishStepViewModel.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\WelcomeFinishStepViewModel.ru.resx"><DependentUpon>WelcomeFinishStepViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\WelcomeFinishStepViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>

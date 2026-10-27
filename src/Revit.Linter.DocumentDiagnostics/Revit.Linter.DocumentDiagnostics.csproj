@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.Diagnostic.RevitTests</_Parameter1>
@@ -14,11 +14,6 @@
 	  <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Remove="DocumentDiagnosticLocalizations*.resx" />
-	  <None Include="DocumentDiagnosticLocalizations.resx" />
-	  <None Include="DocumentDiagnosticLocalizations.ru.resx" />
 	</ItemGroup>
 </Project>
 

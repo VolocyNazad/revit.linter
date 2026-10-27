@@ -24,6 +24,38 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
   local experiments, not part of the main build/tests
 - `wiki/` - user documentation published to GitHub Wiki; open this folder as an Obsidian vault (`Home.md` is the entry point)
 
+A partial type that is split into companion files keeps the `Type.Suffix.cs` file name and is nested
+under `Type.cs` in **Solution Explorer** automatically. Localization resources follow the same rule:
+`Type.resx` is nested under `Type.cs`, and the satellite `Type.ru.resx` is nested under `Type.resx`.
+The rules live once in the solution-root `.filenesting.json`, so a new companion file or a new
+language file needs no project-file change:
+
+```json
+{
+  "dependentFileProviders": {
+    "add": {
+      "pathSegment": { "add": { ".*": [ ".cs", ".resx" ] } },
+      "extensionToExtension": { "add": { ".resx": [ ".cs" ] } }
+    }
+  }
+}
+```
+
+Project files do not list `.resx` files at all. The root `Directory.Build.targets` removes them from
+`EmbeddedResource` and adds them as `None` for every project except `Revit.Linter.Localization`, which
+is the only project that embeds them (with a `LogicalName`). A project that generates typed localized
+properties only sets `<UsesLocalizationGenerator>true</UsesLocalizationGenerator>`; the same targets
+file passes its base `*.resx` files to the generator as `AdditionalFiles`, excluding the `*.ru.resx`
+satellites. Adding a new resource file therefore needs neither a project-file nor a nesting change.
+
+File nesting is a Visual Studio display setting, not a build rule: enable **File Nesting** (the
+**Default** preset is enough) in **Solution Explorer** and the solution-level file applies to the whole
+team. Use `<DependentUpon>` in a project only when a file must belong to a parent that the solution
+rules cannot infer, for example a generated code-behind file.
+
+Split a type into companion files only when the parts are large enough to read separately; otherwise
+keep the members in the file named after the type.
+
 `src/` contains dozens of small, single-responsibility-per-project
 projects (diagnostics, presenters, state managers, etc.) — most are
  named `Revit.Linter.<Area>`. `VolocyNazad.Revit.Sugar` is Revit API

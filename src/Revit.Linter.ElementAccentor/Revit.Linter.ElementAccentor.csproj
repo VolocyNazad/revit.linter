@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
@@ -8,11 +8,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Remove="ElementAccentorLocalizations*.resx" />
-	  <None Include="ElementAccentorLocalizations.resx" />
-	  <None Include="ElementAccentorLocalizations.ru.resx" />
 	</ItemGroup>
 
 </Project>

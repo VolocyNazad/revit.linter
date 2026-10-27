@@ -112,6 +112,7 @@
   </Folder>
   <Folder Name="/solutionItems/">
     <File Path=".editorconfig" />
+    <File Path=".filenesting.json" />
     <File Path=".gitignore" />
     <File Path="AGENTS.md" />
     <File Path="GLOSSARY.md" />

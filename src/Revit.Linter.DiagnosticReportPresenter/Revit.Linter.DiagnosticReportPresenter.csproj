@@ -1,5 +1,6 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<PropertyGroup>
+		<UsesLocalizationGenerator>true</UsesLocalizationGenerator>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 	<ItemGroup>
@@ -20,10 +21,6 @@
 		<PackageReference Include="VolocyNazad.Revit.Events" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Remove="ViewModels\DiagnosticReportViewModel*.resx" />
-		<None Include="ViewModels\DiagnosticReportViewModel.resx"><DependentUpon>DiagnosticReportViewModel.cs</DependentUpon></None>
-		<None Include="ViewModels\DiagnosticReportViewModel.ru.resx"><DependentUpon>DiagnosticReportViewModel.cs</DependentUpon></None>
-		<AdditionalFiles Include="ViewModels\DiagnosticReportViewModel.resx" />
 		<ProjectReference Include="..\Revit.Linter.Localization.Generator\Revit.Linter.Localization.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 	<ItemGroup>
