@@ -82,8 +82,10 @@ presenters. The project has no compile-time dependency on Revit API;
 presenters adapt `ElementId` values through the generic link factory.
 `Revit.Linter.Languages` owns the formula grammar and, in `Factories`, the factories that compile configuration
 formulas into document predicates, element functions and native element filters. The diagnostic modules share
-them through `AddFormulaFactories`; a formula that cannot be compiled is logged, reported through
-`IFormulaCompilationNotifier` and replaced by a fallback.
+them through `AddFormulaFactories` and compile the formulas of every configured rule while they register it:
+a rule whose formula is rejected is skipped and reported through the configuration error source. The runtime
+factories keep their fallback for any remaining compile failure, which is logged and reported through
+`IFormulaCompilationNotifier`.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocator` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.

@@ -10,7 +10,9 @@ internal enum ParameterConfigurationErrorKind
     /// <summary>The parameter group is not valid for the running Revit version.</summary>
     UnknownGroup,
     /// <summary>A category is not a known built-in category.</summary>
-    UnknownCategory
+    UnknownCategory,
+    /// <summary>The take formula cannot be compiled; the error value is the rejected formula text.</summary>
+    InvalidFormula
 }
 
 /// <summary>Describes one reason a parameter diagnostic rule was rejected.</summary>

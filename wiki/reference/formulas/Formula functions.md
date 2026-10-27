@@ -32,6 +32,9 @@ isnullorempty('')       // true
 isnullorempty(null)     // true
 ```
 
+> [!note]
+> `if` returns one of the two values as a generic result. Boolean positions accept a boxed `bool` as well: an element `check`, a `takeDocument` condition, and the document `take` of a [[Project parameter diagnostics|project parameter diagnostic]] may therefore be a conditional with boolean branches, for example `if(contains(property('Name'), 'Лоджия'), parameter(me, 'ADSK_Тип помещения') == 3, true)`. Nested `if` calls work at every level, and a `bool` value returned by `parameter(...)` is accepted too. A value of any other type fails when the condition runs.
+
 ## String functions
 
 Case checks (`contains`, `startwith`, `endwith`) are case-sensitive.

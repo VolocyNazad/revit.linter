@@ -39,6 +39,16 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
             if (rule is null || !codes.Add(rule.Code))
                 continue;
 
+            string? formulaError = FindFormulaError(rule);
+            if (formulaError is not null)
+            {
+                providerLogger.LogWarning(
+                    "Skipping collision rule {RuleCode} from {ConfigurationPath}: {FormulaError}",
+                    rule.Code, source.Path, formulaError);
+                errors.Add($"{Path.GetFileName(source.Path)}: rule '{rule.Code}' was skipped: {formulaError}");
+                continue;
+            }
+
             ElementDiagnosticRegistration? registration =
                 TryCreateRegistration(rule, source, providerLogger, errors);
             if (registration is not null)
@@ -52,6 +62,23 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
     }
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
+    private string? FindFormulaError(CollisionDiagnosticRule rule)
+    {
+        if (!documentFilterFactory.TryValidateBoolean(rule.TakeDocument))
+            return DescribeFormulaError("takeDocument", rule.TakeDocument);
+        if (!elementFilterFactory.TryValidate(rule.Take))
+            return DescribeFormulaError("take", rule.Take);
+        if (!elementFilterFactory.TryValidate(rule.AndTake))
+            return DescribeFormulaError("andTake", rule.AndTake);
+        if (!elementFunctionFactory.TryValidate<object>(rule.GroupBy))
+            return DescribeFormulaError("groupBy", rule.GroupBy);
+
+        return null;
+    }
+
+    private static string DescribeFormulaError(string field, string formula) =>
+        $"the {field} formula cannot be compiled: {formula}";
 
     private ElementDiagnosticRegistration? TryCreateRegistration(
         CollisionDiagnosticRule rule,

@@ -130,12 +130,23 @@ public abstract class DiagnosticTestBase : RevitApiTest
     private protected sealed class TestConfigurationErrorState : IDiagnosticConfigurationErrorState
     {
         public string? CurrentError { get; private set; }
+        public int RuleErrorCount { get; private set; }
         public event EventHandler? Changed;
-        public void BeginRefresh() => CurrentError = null;
+        public void BeginRefresh()
+        {
+            CurrentError = null;
+            RuleErrorCount = 0;
+        }
+
         public void SetFileErrors(IReadOnlyList<string> messages, Exception? parseError)
             => CurrentError = messages.Count == 0 ? null : string.Join(Environment.NewLine, messages);
         public void AddRuleErrors(IEnumerable<string> messages)
-            => CurrentError = string.Join(Environment.NewLine, messages);
+        {
+            string[] ruleMessages = messages.Where(message => !string.IsNullOrWhiteSpace(message)).ToArray();
+            RuleErrorCount += ruleMessages.Length;
+            CurrentError = string.Join(Environment.NewLine, ruleMessages);
+        }
+
         public void CompleteRefresh() => Changed?.Invoke(this, EventArgs.Empty);
     }
 

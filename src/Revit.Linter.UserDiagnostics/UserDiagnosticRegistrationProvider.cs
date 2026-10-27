@@ -30,6 +30,17 @@ internal sealed class UserDiagnosticRegistrationProvider(
             UserDiagnosticRule? rule = ToRule(source.Rule);
             if (rule is null || !codes.Add(rule.Code))
                 continue;
+
+            string? formulaError = FindFormulaError(rule);
+            if (formulaError is not null)
+            {
+                logger.LogWarning(
+                    "Skipping user rule {RuleCode} from {ConfigurationPath}: {FormulaError}",
+                    rule.Code, source.Path, formulaError);
+                errors.Add($"{Path.GetFileName(source.Path)}: rule '{rule.Code}' was skipped: {formulaError}");
+                continue;
+            }
+
             ElementDiagnosticRegistration? registration = TryCreateRegistration(rule, source, errors);
             if (registration is not null)
                 registrations.Add(registration);
@@ -42,6 +53,21 @@ internal sealed class UserDiagnosticRegistrationProvider(
     }
 
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics() => [];
+
+    private string? FindFormulaError(UserDiagnosticRule rule)
+    {
+        if (!documentFilterFactory.TryValidateBoolean(rule.TakeDocument))
+            return DescribeFormulaError("takeDocument", rule.TakeDocument);
+        if (!elementFilterFactory.TryValidate(rule.Take))
+            return DescribeFormulaError("take", rule.Take);
+        if (!elementFunctionFactory.TryValidateBoolean(rule.Check))
+            return DescribeFormulaError("check", rule.Check);
+
+        return null;
+    }
+
+    private static string DescribeFormulaError(string field, string formula) =>
+        $"the {field} formula cannot be compiled: {formula}";
 
     private ElementDiagnosticRegistration? TryCreateRegistration(
         UserDiagnosticRule rule,

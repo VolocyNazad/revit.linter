@@ -14,9 +14,19 @@ public sealed class DiagnosticConfigurationErrorState
     private IReadOnlyList<DiagnosticConfigurationFileProblem> _currentProblems = [];
     private string? _currentError;
     private string? _currentRuleError;
+    private int _currentRuleErrorCount;
     private Exception? _currentParseError;
     private Exception? _pendingParseError;
     private bool _refreshInProgress;
+
+    /// <inheritdoc />
+    public int RuleErrorCount
+    {
+        get
+        {
+            lock (_sync) return _currentRuleErrorCount;
+        }
+    }
 
     /// <inheritdoc />
     public string? CurrentError
@@ -136,10 +146,12 @@ public sealed class DiagnosticConfigurationErrorState
         DiagnosticConfigurationFileProblem[] problems = _pendingProblems.ToArray();
         bool changed = !string.Equals(_currentError, description, StringComparison.Ordinal)
                        || !string.Equals(_currentRuleError, ruleError, StringComparison.Ordinal)
+                       || _currentRuleErrorCount != _pendingRuleMessages.Count
                        || !ReferenceEquals(_currentParseError, _pendingParseError)
                        || !ProblemsEqual(_currentProblems, problems);
         _currentError = description;
         _currentRuleError = ruleError;
+        _currentRuleErrorCount = _pendingRuleMessages.Count;
         _currentParseError = _pendingParseError;
         _currentProblems = problems;
         return changed;

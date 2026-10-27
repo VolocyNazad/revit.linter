@@ -11,6 +11,10 @@ namespace Revit.Linter.Core.Abstractions.Services;
 /// </remarks>
 public interface IDiagnosticConfigurationErrorState : IDiagnosticConfigurationErrorSource
 {
+    /// <summary>Gets the number of rule problems reported for the current refresh.</summary>
+    /// <remarks>One rule can produce more than one problem; the value counts the reported problems, not the rules.</remarks>
+    int RuleErrorCount { get; }
+
     /// <summary>Starts a new catalog refresh and forgets the problems of the previous one.</summary>
     void BeginRefresh();
 

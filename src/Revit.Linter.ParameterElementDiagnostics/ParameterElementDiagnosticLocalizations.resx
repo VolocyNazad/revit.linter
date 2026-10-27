@@ -14,5 +14,6 @@
   <data name="configurationInvalidGuid_message" xml:space="preserve"><value>'{0}' is not a valid GUID.</value></data>
   <data name="configurationUnknownGroup_message" xml:space="preserve"><value>group '{0}' is not valid for this Revit version.</value></data>
   <data name="configurationUnknownCategory_message" xml:space="preserve"><value>category '{0}' is unknown.</value></data>
+  <data name="configurationInvalidFormula_message" xml:space="preserve"><value>The take formula cannot be compiled: {0}</value></data>
   <data name="Default_message" xml:space="preserve"><value>Document '{documentTitle}' does not follow the project parameter standard:&#xA;&#xA;{details}</value></data>
 </root>

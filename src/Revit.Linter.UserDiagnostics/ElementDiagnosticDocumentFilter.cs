@@ -1,4 +1,4 @@
-﻿using Revit.Linter.Languages.Factories;
+using Revit.Linter.Languages.Factories;
 
 namespace Revit.Linter.UserDiagnostics;
 
@@ -8,5 +8,5 @@ internal sealed class ElementDiagnosticDocumentFilter(
     public required ElementDiagnosticId Identity { get; init; }
     public required string Formula { get; init; }
     public bool IsRelevantFor(Document document) => FilterDelegate.Invoke(document);
-    private Func<Document, bool> FilterDelegate => field ??= documentFilterFactory.Create(Formula);
+    private Func<Document, bool> FilterDelegate => field ??= documentFilterFactory.CreateBoolean(Formula, fallback: false);
 }

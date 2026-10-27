@@ -24,5 +24,18 @@ public sealed class ElementFilterFactory(
     /// </remarks>
     public ElementFilter Create(string formula) => FormulaCompilation.CompileOrFallback<Func<ElementFilter>>(
         () => Expression.Lambda<Func<ElementFilter>>(Language.Parse(formula)).Compile(),
-        Revit.Sugar.ElementFilterUtils.EmptyFilter, formula, logger, notifier).Invoke();
+        Sugar.ElementFilterUtils.EmptyFilter, formula, logger, notifier).Invoke();
+
+    /// <summary>Determines whether <paramref name="formula"/> builds a native element filter.</summary>
+    /// <param name="formula">The formula in the element-filter grammar.</param>
+    /// <returns><see langword="true"/> when the formula compiles and builds a filter; otherwise <see langword="false"/>.</returns>
+    /// <remarks>
+    /// The configuration load path uses this check to skip a rule whose formula is invalid and to report
+    /// the problem with the rule code and formula text. A failure is only logged here, without the generic
+    /// notification that <see cref="Create"/> publishes for a fallback at runtime.
+    /// </remarks>
+    public bool TryValidate(string formula) =>
+        FormulaCompilation.TryCompile(
+            () => Expression.Lambda<Func<ElementFilter>>(Language.Parse(formula)).Compile().Invoke(),
+            formula, logger);
 }

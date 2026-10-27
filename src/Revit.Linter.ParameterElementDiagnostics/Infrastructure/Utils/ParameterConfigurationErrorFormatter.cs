@@ -31,6 +31,7 @@ internal static class ParameterConfigurationErrorFormatter
                 ParameterConfigurationErrorKind.MissingValue => "configurationMissingValue_message",
                 ParameterConfigurationErrorKind.InvalidGuid => "configurationInvalidGuid_message",
                 ParameterConfigurationErrorKind.UnknownGroup => "configurationUnknownGroup_message",
+                ParameterConfigurationErrorKind.InvalidFormula => "configurationInvalidFormula_message",
                 _ => "configurationUnknownCategory_message"
             },
             error.Value);

@@ -22,4 +22,21 @@ internal static class FormulaCompilation
             return fallback;
         }
     }
+
+    // The configuration load path reports a rejected formula through the rule error state, which names the
+    // rule and the formula, so it only logs the failure here and does not publish the generic notification.
+    public static bool TryCompile<TDelegate>(
+        Func<TDelegate> compile, string formula, ILogger logger)
+    {
+        try
+        {
+            _ = compile();
+            return true;
+        }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Failed to compile formula {Formula}", formula);
+            return false;
+        }
+    }
 }

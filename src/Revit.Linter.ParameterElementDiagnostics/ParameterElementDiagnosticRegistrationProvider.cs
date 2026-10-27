@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
@@ -12,7 +13,8 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
     DocumentFilterFactory documentFilterFactory,
     IDocumentQueryService documentQueries,
     IDiagnosticConfigurationService configurationService,
-    IDiagnosticConfigurationErrorState configurationErrorState)
+    IDiagnosticConfigurationErrorState configurationErrorState,
+    ILogger<ParameterElementDiagnosticRegistrationProvider> logger)
     : IDiagnosticRegistrationProvider
 {
     public IEnumerable<DocumentDiagnosticRegistration> GetDocumentDiagnostics()
@@ -36,6 +38,16 @@ internal sealed class ParameterElementDiagnosticRegistrationProvider(
             if (ruleErrors.Count > 0)
             {
                 errors.AddRange(ruleErrors);
+                continue;
+            }
+
+            if (!documentFilterFactory.TryValidateBoolean(rule.Take))
+            {
+                logger.LogWarning(
+                    "Skipping parameter rule {RuleCode} from {ConfigurationPath}: the take formula cannot be compiled",
+                    rule.Code, source.Path);
+                errors.Add(new ParameterConfigurationError(
+                    ParameterConfigurationErrorKind.InvalidFormula, rule.Code, null, rule.Take));
                 continue;
             }
 

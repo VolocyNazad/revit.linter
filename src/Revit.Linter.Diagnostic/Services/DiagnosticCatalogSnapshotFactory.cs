@@ -30,6 +30,7 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
             var snapshot = new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics);
             Validate(snapshot);
             configurationErrorState.CompleteRefresh();
+            LogRefreshSummary(elementDiagnostics.Count, documentDiagnostics.Count);
             return new DiagnosticCatalogSnapshotOwner(snapshot);
         }
         catch
@@ -90,6 +91,22 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
 
         if (errors.Count > 0)
             configurationErrorState.AddRuleErrors(errors);
+    }
+
+    private void LogRefreshSummary(int elementDiagnosticCount, int documentDiagnosticCount)
+    {
+        logger.LogInformation(
+            "Diagnostic catalog refreshed: {ElementDiagnosticCount} element and {DocumentDiagnosticCount} document diagnostics registered",
+            elementDiagnosticCount,
+            documentDiagnosticCount);
+
+        // The configuration notification already shows these problems to the user; the log keeps
+        // the same details for support reports where the notification was dismissed.
+        if (configurationErrorState.CurrentError is { } problems)
+            logger.LogWarning(
+                "Diagnostic configuration problems: {RuleErrorCount} rule problems. {Problems}",
+                configurationErrorState.RuleErrorCount,
+                problems);
     }
 
     private static void Validate(DiagnosticCatalogSnapshot snapshot)

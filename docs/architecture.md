@@ -66,13 +66,17 @@ This document records stable architectural rules. Implementation details belong 
 - `Revit.Linter.DiagnosticReportExporting` owns the report export contract and file writing. The diagnostic report presenter supplies plain finding data with cultures and labels through `IDiagnosticReportExportService` and keeps activity publishing; the save-file dialog stays behind `ISaveFileDialogService`, and the module has no Revit API dependency so the formats stay headless-testable.
 - `Revit.Linter.ReportMessaging` owns the shared message-template contract and typed message view. Feature modules supply data and element-link adapters rather than duplicating parsing or rendering.
 - Configuration is validated when it is loaded, not when a diagnostic runs. A module skips an invalid rule,
-  keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`;
-  file-level problems travel as structured `DiagnosticConfigurationFileProblem` values through
+  keeps the valid ones, and describes the skipped rules through `IDiagnosticConfigurationErrorSource`.
+  The formulas of a configured rule are compiled while the module registers it, so a rule whose formula
+  cannot be compiled is skipped and reported with its code and rejected formula text instead of silently
+  falling back to an always-valid check at run time. Unlike the schema check, formula compilation needs the
+  Revit API and stays in the module that owns the formulas.
+  File-level problems travel as structured `DiagnosticConfigurationFileProblem` values through
   `IDiagnosticConfigurationProblemSource` and the host localizes them, while rule schema problems are
   formatted through `IDiagnosticConfigurationRuleTextFormatter`; the plain descriptions remain available
   for logs and legacy callers; the application shows all of them once per distinct problem.
-  Validation logic stays free of Revit API types so it is covered by headless tests; Revit-version knowledge
-  is passed in from the compatibility boundary.
+  Rule schema validation stays free of Revit API types so it is covered by headless tests; Revit-version
+  knowledge is passed in from the compatibility boundary.
 - Every diagnostic module reads the same `diagnostics.config.yaml` through
   `IDiagnosticConfigurationService`; the file is parsed once per catalog revision and each rule is dispatched
   by its `type` (`custom`, `collision`, `parameter`, `builtIn`). Providers do not watch their own files.

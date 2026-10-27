@@ -68,4 +68,4 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 
 > **Note:** If `diagnostics.config.yaml` cannot be parsed, the whole file is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log. A structurally invalid rule is skipped on its own and the other rules stay in use.
 
-> **Note:** If `takeDocument`, `take`, or `check` cannot be compiled, the rule cannot perform that stage. The warning in the application log includes the rejected formula text so the failing expression can be identified.
+> **Note:** If `takeDocument`, `take`, or `check` cannot be compiled, the rule is skipped and the configuration notification names the rule code and the rejected formula; the application log contains the compilation exception. The other rules stay in use.
