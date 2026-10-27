@@ -398,4 +398,21 @@ The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90,
 
 ## Versioning and release tags
 
-Revit Linter uses GitVersion in Continuous Delivery mode with patch increments. GitHub releases are created manually from a commit carrying exactly one stable `vMAJOR.MINOR.PATCH` tag; the build uses the corresponding version without the `v` prefix for binaries and MSI installers. This repository publishes a GitHub release with installers rather than a NuGet package. The tagged commit must already contain the release section in `CHANGELOG.md` with an empty `Unreleased` section above it; the publish-release workflow stops otherwise, and the release pipeline publishes that section as the GitHub release description. The release section is composed at release time from the changes since the previous stable tag; regular changes do not add changelog entries. See the [release changelog policy](policies/development.md#release-changelog).
+Revit Linter uses GitVersion in Continuous Delivery mode with patch increments. GitHub releases are created manually from a commit carrying exactly one stable `vMAJOR.MINOR.PATCH` tag; the build uses the corresponding version without the `v` prefix for binaries and MSI installers. This repository publishes a GitHub release with installers rather than a NuGet package. The tagged commit must already contain the release section in `CHANGELOG.md` with an empty `Unreleased` section above it; the publish-release workflow stops otherwise, and the release pipeline publishes that section as the GitHub release description. The release section is composed at release time from the changes since the previous stable tag; regular changes do not add changelog entries. See the [release changelog policy](policies/development.md#release-changelog) and [release channels policy](policies/development.md#release-channels).
+
+### Update discovery and user notification
+
+The updater discovers releases through GitHub's `/releases/latest` endpoint
+(`ProductIdentity.DefaultReleaseApiUrl`). That endpoint returns only the latest published release that is
+neither a draft nor a pre-release, and the client additionally rejects draft and pre-release payloads.
+Only a newer **stable** version can produce an update, so a stable release carrying the pre-release flag is
+invisible to the updater even though its tag and MSI exist.
+
+Update discovery and the notification live in the separate updater process, not in Revit. The updater runs
+at Windows sign-in (at most once every 24 hours by default, subject to policy and user settings) and on
+demand from the ribbon command. It compares the installed product version with the release tag and shows
+one Windows notification per new stable version. The notification offers **Download**, **What's new**,
+**Later** and **Skip this version**; **Download** verifies the exact MSI asset name, URL, size and SHA-256
+digest before making the file available in Explorer, and never starts the installer. A version that was
+already notified, skipped or postponed is remembered in the updater state. The add-in itself never contacts
+GitHub and the command does not modify the model.

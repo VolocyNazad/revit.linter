@@ -41,6 +41,43 @@ Use `global using` only when most files in that project need the namespace. Keep
 
 Before creating a release tag `vMAJOR.MINOR.PATCH`, compose a new `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section in `CHANGELOG.md` directly below the (empty) `## [Unreleased]` section, from the changes since the previous stable tag (for example, `git log <previous-tag>..HEAD`, using the Conventional Commit types and scopes). Commit that change and create the tag on that commit, so the changelog at the tagged commit names the released version and carries no unreleased entries. While composing the section, keep changes a user of that release can observe, merge related entries, and drop fixes for behavior that was never released. The publish-release workflow enforces this before building: it refuses to publish when `## [Unreleased]` contains any entry or when the changelog has no section for the tagged version. Empty category headings under `Unreleased` are tolerated. The version section is published verbatim as the GitHub release description, so write it for users.
 
+## Release channels
+
+The product has two release channels that share one repository, changelog and build pipeline.
+
+A **stable release** is a `vMAJOR.MINOR.PATCH` tag. It is the only channel the updater offers. Publish
+its GitHub Release without the **Set as a pre-release** flag, so `/releases/latest` returns it and
+existing users can discover it; the Build pipeline creates the release without that flag. Push the tag
+only after the build is green for every supported Revit configuration, the working tree is clean and the
+release changelog section is committed, as described above. A push of the tag starts the publishing
+workflow; do not rebuild or move a pushed release tag.
+
+A **pre-release** is a `vMAJOR.MINOR.PATCH-<channel>.<number>` tag, for example `-beta.1` or `-rc.1`.
+Use it when a build should reach testers before the stable release: a risky migration, a new installer or
+a large diagnostic change that benefits from real-model feedback. Publish its GitHub Release with the
+**Set as a pre-release** flag. Pre-releases are downloaded from the Releases page by people who opt in;
+the updater never announces them, and GitHub does not treat them as `latest`.
+
+Current automation publishes stable releases only: the release workflow requires
+`GitVersion` to produce a stable version and `gh release create` is invoked without `--prerelease`.
+Publish a pre-release manually with `gh release create vX.Y.Z-beta.N --prerelease ...` (or extend the
+pipeline first) and do not use a stable number for it.
+
+The rules that prevent broken release metadata:
+
+- A stable version must never be marked as a pre-release. That hides it from `/releases/latest` and from
+  the updater, leaving users on the previous stable release even though the tag and installer exist.
+- A pre-release must never use a stable version number. Use `vX.Y.Z-beta.N`; `vX.Y.Z` is reserved for the
+  stable release that follows it.
+- A pushed tag is immutable. Do not delete it, move it to another commit or force-push it; publish the
+  next version instead. If a mistake is found before the tag is pushed and no release was published, fix
+  the commit, move the local tag and push it once.
+- If a stable release was published with the pre-release flag by mistake, correct the GitHub release
+  metadata (uncheck the flag) instead of moving or deleting the tag. Keep its assets: users may have
+  downloaded them, and the release page and changelog link to them.
+- Only the stable release has a `CHANGELOG.md` version section. Pre-release notes may summarise the
+  changes for testers, but they do not create a permanent changelog section.
+
 ## Migration tracking
 
 Every user-visible breaking migration is recorded in `docs/migrations/` when it is designed, not when it ships. The

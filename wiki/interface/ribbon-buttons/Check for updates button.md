@@ -20,6 +20,11 @@ running elevated.
 > installation is intentionally unavailable until the MSI can also be verified by an expected-publisher
 > Authenticode signature. Failed or mismatched downloads are deleted and recorded in the updater log.
 
+> [!note]
+> Only stable releases are offered. Pre-release builds are published on the GitHub Releases page for
+> manual download and are never announced by the updater, so a stable version must not be marked as a
+> pre-release.
+
 **Later** allows the same release to be offered after the next scheduled check. **Skip this version**
 suppresses that release until a newer stable version is published.
 
