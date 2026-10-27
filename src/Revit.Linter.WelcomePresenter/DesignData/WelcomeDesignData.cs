@@ -40,6 +40,12 @@ internal sealed class WelcomeDesignData
         2,
         5);
 
+    /// <summary>Gets the sample version of the installed product.</summary>
+    public string VersionText => string.Format(
+        CultureInfo.CurrentCulture,
+        LocalizationResourceReader.GetString(ResourceBaseName, "version_format"),
+        "3.0.0");
+
     /// <summary>Gets the localized close button text.</summary>
     public string CloseButtonText => LocalizationResourceReader.GetString(ResourceBaseName, "closeButton_text");
 

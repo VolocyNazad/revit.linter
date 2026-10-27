@@ -9,6 +9,7 @@ using Revit.Linter.WelcomePresenter.Abstractions;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Infrastructure.Services;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Windows;
 using Toolkit.ValueStore.Abstractions;
 
@@ -60,6 +61,31 @@ internal sealed partial class WelcomeViewModel(
     public bool HasNextStep => _currentIndex < Steps.Count - 1;
 
     public string Progress => GetLocalizedString("step_format", _currentIndex + 1, Steps.Count);
+
+    /// <summary>Gets the installed product version shown next to the progress caption.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S2325",
+        Justification = "XAML binds to instance members only.")]
+    public string VersionText => GetLocalizedString("version_format", ProductVersion);
+
+    private static string ProductVersion
+    {
+        get
+        {
+            Assembly assembly = typeof(WelcomeViewModel).Assembly;
+            string? informationalVersion = assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            if (!string.IsNullOrWhiteSpace(informationalVersion))
+            {
+                // GitVersion appends the commit height and hash after '+': keep the numeric product version.
+                int metadataSeparator = informationalVersion.IndexOf('+', StringComparison.Ordinal);
+                return metadataSeparator < 0
+                    ? informationalVersion
+                    : informationalVersion[..metadataSeparator];
+            }
+
+            return assembly.GetName().Version?.ToString(3) ?? string.Empty;
+        }
+    }
 
     public bool ShowIfNeeded()
     {

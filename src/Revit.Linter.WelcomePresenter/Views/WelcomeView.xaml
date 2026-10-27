@@ -375,6 +375,12 @@
                     DockPanel.Dock="Right"
                     Opacity="0.6"
                     Text="{Binding Progress, Mode=OneWay}" />
+                <TextBlock
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Opacity="0.6"
+                    Text="{Binding VersionText, Mode=OneWay}" />
                 <TextBlock Style="{StaticResource LinterDialogTitleText}" Text="{Binding WindowTitle, Mode=OneWay}" />
             </DockPanel>
             <ItemsControl
