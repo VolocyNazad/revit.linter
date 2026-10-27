@@ -76,11 +76,12 @@ internal sealed partial class WelcomeViewModel(
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             if (!string.IsNullOrWhiteSpace(informationalVersion))
             {
+                string version = informationalVersion!;
                 // GitVersion appends the commit height and hash after '+': keep the numeric product version.
-                int metadataSeparator = informationalVersion.IndexOf('+', StringComparison.Ordinal);
+                int metadataSeparator = version.IndexOf('+');
                 return metadataSeparator < 0
-                    ? informationalVersion
-                    : informationalVersion[..metadataSeparator];
+                    ? version
+                    : version.Substring(0, metadataSeparator);
             }
 
             return assembly.GetName().Version?.ToString(3) ?? string.Empty;
