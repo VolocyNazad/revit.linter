@@ -42,12 +42,12 @@ locally and on the remote.
   split before review.
 - Update a branch by merging its target branch into it. Do not rebase a branch that has
   been pushed and reviewed, and never force-push `main` or `dev`.
-- Commit messages follow Conventional Commits, as required by the
-  [development policy](development.md).
+- Commit messages follow Conventional Commits, as described in the
+  [commit message policy](commits.md).
 - `dev` stays buildable. A change that breaks the build or the tests is fixed or
   reverted immediately, not at the end of the release.
-- Update [CHANGELOG.md](../../CHANGELOG.md) as the development policy requires, in the
-  same branch as the change.
+- Update [CHANGELOG.md](../../CHANGELOG.md) as the [development policy](development.md)
+  requires, in the same branch as the change.
 
 ## Feature and fix branches
 

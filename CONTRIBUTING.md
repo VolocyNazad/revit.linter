@@ -9,6 +9,8 @@ the released state, `dev` integrates the next release, and every change arrives
 through a short-lived `feature/`, `fix/`, `release/` or `hotfix/` branch and a
 pull request.
 
+Commit messages follow the [commit message policy](docs/policies/commits.md).
+
 Keep changes focused. Regular development leaves `## [Unreleased]` in
 [CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
 since the previous stable tag when a release is prepared. See the
