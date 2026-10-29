@@ -16,6 +16,10 @@ Commit messages follow Conventional Commits (`<type>(<scope>): <description>`, e
 
 Do not `git push` — commit locally and leave the push to the user, unless they explicitly ask you to push.
 
+Branching follows the [branching policy](branching.md): `main` holds the released state,
+`dev` integrates the next release, and every change reaches them through a short-lived
+branch and a pull request.
+
 Tests that talk to live Revit API objects must use `Nice3point.TUnit.Revit` (see the [repository guide](../repository.md) for stack/testing for when this is needed versus when plain xunit is sufficient) — it launches a real Revit process, so it cannot be used to test code that uses `RevitAPIUI`.
 When a service needs both `RevitAPI` and `RevitAPIUI`, keep the `RevitAPIUI` interaction in a thin boundary and move meaningful document logic behind it so it can be covered with `Nice3point.TUnit.Revit`. Do this where it creates a real testable boundary; do not add interfaces around trivial private UI calls solely to satisfy the rule.
 

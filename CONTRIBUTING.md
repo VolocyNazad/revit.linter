@@ -4,6 +4,11 @@ Before making a change, read the [development policy](docs/policies/development.
 and the [repository guide](docs/repository.md). They define the repository-specific
 stack, testing expectations and maintenance rules.
 
+Branches follow the [branching policy](docs/policies/branching.md): `main` holds
+the released state, `dev` integrates the next release, and every change arrives
+through a short-lived `feature/`, `fix/`, `release/` or `hotfix/` branch and a
+pull request.
+
 Keep changes focused. Regular development leaves `## [Unreleased]` in
 [CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
 since the previous stable tag when a release is prepared. See the

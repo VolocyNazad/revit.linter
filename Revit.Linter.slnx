@@ -427,6 +427,7 @@
   </Folder>
   <Folder Name="/docs/policies/">
     <File Path="docs/policies/development.md" />
+    <File Path="docs/policies/branching.md" />
   </Folder>
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />
@@ -435,7 +436,9 @@
     <File Path="docs/testing/diagnostics-manual-checklist.md" />
     <File Path="docs/testing/onboarding-manual-checklist.md" />
   </Folder>
-  <Folder Name="/solutionItems/.github/" />
+  <Folder Name="/solutionItems/.github/">
+    <File Path=".github/pull_request_template.md" />
+  </Folder>
   <Folder Name="/solutionItems/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
     <File Path=".github/workflows/publish-release.yml" />

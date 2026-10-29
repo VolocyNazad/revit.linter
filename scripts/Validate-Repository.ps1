@@ -20,7 +20,7 @@ function Require-Link([string]$Document, [string]$Target) {
 }
 
 @('README.md', 'AGENTS.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'global.json',
-  'docs/policies/development.md', 'docs/repository.md',
+  'docs/policies/development.md', 'docs/policies/branching.md', 'docs/repository.md',
   'scripts/Validate-Repository.ps1') | ForEach-Object { Require-File $_ }
 Require-One 'NuGet configuration' @('NuGet.config', 'nuget.config')
 Require-One 'license' @('LICENSE', 'LICENSE.md', 'LICENSE.txt')
@@ -37,6 +37,11 @@ Require-Link 'CONTRIBUTING.md' 'docs/repository.md'
 Require-Link 'CONTRIBUTING.md' 'CHANGELOG.md'
 Require-Link 'docs/policies/development.md' '../repository.md'
 Require-Link 'docs/repository.md' 'policies/development.md'
+Require-Link 'AGENTS.md' 'docs/policies/branching.md'
+Require-Link 'README.md' 'docs/policies/branching.md'
+Require-Link 'CONTRIBUTING.md' 'docs/policies/branching.md'
+Require-Link 'docs/policies/development.md' 'branching.md'
+Require-Link 'docs/policies/branching.md' 'development.md'
 
 $managed = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 $rootNames = @('.gitignore', '.gitattributes', '.editorconfig', '.globalconfig', 'global.json',
