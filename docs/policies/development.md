@@ -12,7 +12,31 @@ If a change affects the folder structure or the technology stack (a new/removed 
 
 Before changing existing tests or writing new ones, ask the user first — clarify what and how it should be covered (or that the change is trivial enough that no clarification is needed), rather than deciding this on your own.
 
-Commit messages follow Conventional Commits (`<type>(<scope>): <description>`, e.g. `feat(manifest): ...`, `fix(...): ...`, `docs(agents): ...`, `test(...): ...`, `chore(...): ...`, `refactor(...): ...`) — the scope is optional but preferred when it clarifies what exactly changed.
+## Commit messages
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<type>(<scope>): <description>`.
+
+| Type | Use for |
+| --- | --- |
+| `feat` | New behaviour visible to a consumer of the library or add-in. |
+| `fix` | A defect fix. |
+| `docs` | Documentation only. |
+| `style` | Formatting, whitespace, unused usings - no change in behaviour. |
+| `refactor` | Code reshaped without new behaviour and without a defect fix. |
+| `perf` | A change that makes the code faster or lighter. |
+| `test` | Adding or updating tests. |
+| `build` | Build system, dependencies, package versions. |
+| `ci` | Continuous integration and delivery configuration. |
+| `chore` | Routine work outside source and tests: configs, ignore files, release scripts. |
+| `revert` | Rolling back an earlier commit. |
+
+- `<scope>` is optional but preferred when it clarifies what changed; use lowercase kebab-case (`feat(manifest): ...`, `fix(list): ...`).
+- Mark a breaking change with `!` after the type or the scope (`feat(sdk)!: ...`) and describe it in a `BREAKING CHANGE:` footer.
+- Write the description in the imperative mood, lowercase, without a trailing period: `fix(list): keep the selected row after a refresh`.
+- Keep the subject within 72 characters and put the reasoning in the body.
+- Write messages in English.
+- A revert names the commit it reverts: `revert: <subject of the reverted commit>`, with the hash in the body.
+- Merge commits created by GitHub are not validated; do not rewrite them.
 
 Do not `git push` — commit locally and leave the push to the user, unless they explicitly ask you to push.
 
