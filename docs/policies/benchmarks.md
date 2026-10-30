@@ -15,23 +15,37 @@ repeatable run on a stated environment.
 
 ## How
 
-- Benchmarks live in `benchmarks/<Project>.Benchmarks` and use
-  [BenchmarkDotNet](https://benchmarkdotnet.org/).
-- They are not part of the test run and never run in CI: a shared runner is too noisy for a
-  meaningful result.
-- Run in `Release`, without a debugger, on an otherwise idle machine, and add
-  `[MemoryDiagnoser]` when allocations matter.
-- Compare against the current `main`/`dev` baseline in the same session; a number from another
-  machine or day is not a comparison.
+Benchmarks live in `benchmarks/<Project>.Benchmarks` and use
+[BenchmarkDotNet](https://benchmarkdotnet.org/) together with
+[Nice3point.BenchmarkDotNet.Revit](https://www.nuget.org/packages/Nice3point.BenchmarkDotNet.Revit),
+which runs them inside Revit on its single-threaded API context.
 
-## Revit-bound code
+- Benchmark classes derive from `RevitApiBenchmark`; the package is referenced as
+  `Version="$(MajorRevitVersion).*"`, so each configuration gets the package built for its Revit
+  year.
+- Open and close documents in `OnGlobalSetup` and `OnGlobalCleanup`; `[GlobalSetup]` and
+  `[GlobalCleanup]` cannot be applied twice.
+- Run with the solution configuration instead of the default `Release`: use
+  `Job.Default.WithCurrentConfiguration()` and
+  `dotnet run -c Release_<version> -- --filter "*<Benchmarks>*"`.
+- A licensed Revit of the matching version must be installed. The package starts it with the
+  US English interface and the default installation path; the `RevitLanguage` and
+  `RevitInstallationPath` attributes override both.
+- Benchmarks are not part of the test run and never run in CI: a hosted runner has no Revit
+  and is too noisy for a meaningful result.
+- Run on an otherwise idle machine, add `[MemoryDiagnoser]` when allocations matter, and
+  compare against the current `main`/`dev` baseline in the same session.
 
-Revit API calls need a running Revit, so they are measured outside BenchmarkDotNet:
+## Revit versions
 
-- measure the part that can run headless with BenchmarkDotNet;
-- for the rest, run a fixed scenario on a fixed model in the Revit version under test, before
-  and after the change;
-- record the Revit version, the model, the hardware and the scenario in the pull request.
+Benchmarks use the same `Release_*` configurations as the tests, so a run always targets one
+Revit version and one Revit process.
+
+- A number from one version does not transfer to another: a claim that spans versions is
+  measured on each of them.
+- A pull request that changes version-specific code benchmarks the versions it touches; a
+  claim about the product as a whole benchmarks every supported version.
+- Record the Revit version, the model, the hardware and the scenario with the result.
 
 ## Reporting
 
