@@ -50,6 +50,7 @@ The project is distributed under the [Apache License 2.0](LICENSE).
 - [Changelog policy](docs/policies/changelog.md)
 - [Testing policy](docs/policies/testing.md)
 - [Benchmark policy](docs/policies/benchmarks.md)
+- [Wiki policy](docs/policies/wiki.md)
 
 ## Contributing
 

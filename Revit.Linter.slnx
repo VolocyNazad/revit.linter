@@ -432,6 +432,7 @@
     <File Path="docs/policies/changelog.md" />
     <File Path="docs/policies/testing.md" />
     <File Path="docs/policies/benchmarks.md" />
+    <File Path="docs/policies/wiki.md" />
   </Folder>
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />
