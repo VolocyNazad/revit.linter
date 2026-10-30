@@ -129,6 +129,7 @@ This document records stable architectural rules. Implementation details belong 
 
 - English is the neutral resource language. Russian resources use the parent `ru` culture.
 - User-facing strings are resolved through `LocalizationResourceReader`; feature-owned strings remain with their owning feature.
+- Revit transaction and transaction-group names are user-facing: Revit shows them in the Undo history and in the status bar while the transaction runs. Resolve them through `LocalizationResourceReader` like any other user-facing string instead of hard-coding English text; a name created only by a test fixture or a benchmark is not user-facing.
 - Resource keys and placeholders must remain compatible across cultures. Localization assemblies remain separate from ILRepack and are verified in final published artifacts.
 
 ## Logging and failures
