@@ -48,6 +48,8 @@ The project is distributed under the [Apache License 2.0](LICENSE).
 - [Branching policy](docs/policies/branching.md)
 - [Commit message policy](docs/policies/commits.md)
 - [Changelog policy](docs/policies/changelog.md)
+- [Testing policy](docs/policies/testing.md)
+- [Benchmark policy](docs/policies/benchmarks.md)
 
 ## Contributing
 

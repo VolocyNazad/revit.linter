@@ -11,6 +11,10 @@ pull request.
 
 Commit messages follow the [commit message policy](docs/policies/commits.md).
 
+Tests follow the [testing policy](docs/policies/testing.md): `*.Tests` run in CI on
+every supported Revit version, `*.RevitTests` run outside CI on a machine with Revit
+installed.
+
 Keep changes focused. Regular development leaves `## [Unreleased]` in
 [CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
 since the previous stable tag when a release is prepared. See the

@@ -430,6 +430,8 @@
     <File Path="docs/policies/branching.md" />
     <File Path="docs/policies/commits.md" />
     <File Path="docs/policies/changelog.md" />
+    <File Path="docs/policies/testing.md" />
+    <File Path="docs/policies/benchmarks.md" />
   </Folder>
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />
