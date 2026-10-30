@@ -14,7 +14,7 @@ Commit messages follow the [commit message policy](docs/policies/commits.md).
 Keep changes focused. Regular development leaves `## [Unreleased]` in
 [CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
 since the previous stable tag when a release is prepared. See the
-[release changelog policy](docs/policies/development.md#release-changelog).
+[changelog policy](docs/policies/changelog.md).
 Before submitting a pull request, check the items that apply to the change:
 
 - Assess whether automated tests or a manual Revit check are needed; add or update
@@ -43,6 +43,6 @@ Before submitting a pull request, check the items that apply to the change:
 - Verify the release tag and version against the release commit.
 - Compose the new `MAJOR.MINOR.PATCH` section from the changes since the previous
   stable tag and leave `Unreleased` empty, as described in the
-  [release changelog policy](docs/policies/development.md#release-changelog).
+  [changelog policy](docs/policies/changelog.md).
 - Confirm CI succeeds and inspect the release build, installer and published
   artifacts when the release pipeline completes.

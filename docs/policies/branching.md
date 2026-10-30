@@ -46,7 +46,7 @@ locally and on the remote.
   [commit message policy](commits.md).
 - `dev` stays buildable. A change that breaks the build or the tests is fixed or
   reverted immediately, not at the end of the release.
-- Update [CHANGELOG.md](../../CHANGELOG.md) as the [development policy](development.md)
+- Update [CHANGELOG.md](../../CHANGELOG.md) as the [changelog policy](changelog.md)
   requires, in the same branch as the change.
 
 ## Feature and fix branches
@@ -74,7 +74,7 @@ A release branch is cut when `dev` contains everything that should ship.
 
 1. Create `release/<version>` from `dev`.
 2. Prepare the release in it: compose the changelog section and commit it, as described
-   in the [release changelog policy](development.md#release-changelog). Only fixes are
+   in the [changelog policy](changelog.md). Only fixes are
    allowed here; new features wait for the next release.
 3. Open a pull request into `main` and merge it with a merge commit.
 4. Tag the merge commit on `main` with the release version and push the tag. The publish

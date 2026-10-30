@@ -41,9 +41,7 @@ Do not invent abbreviations in identifiers, file names or documentation. Use com
 
 Use `global using` only when most files in that project need the namespace. Keep specialized namespaces local, and do not repeat namespaces already supplied by `ImplicitUsings`. Apply this rule to new and touched code; clean up existing files only when doing so stays within the task scope.
 
-## Release changelog
-
-Before creating a release tag `vMAJOR.MINOR.PATCH`, compose a new `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section in `CHANGELOG.md` directly below the (empty) `## [Unreleased]` section, from the changes since the previous stable tag (for example, `git log <previous-tag>..HEAD`, using the Conventional Commit types and scopes). Commit that change and create the tag on that commit, so the changelog at the tagged commit names the released version and carries no unreleased entries. While composing the section, keep changes a user of that release can observe, merge related entries, and drop fixes for behavior that was never released. The publish-release workflow enforces this before building: it refuses to publish when `## [Unreleased]` contains any entry or when the changelog has no section for the tagged version. Empty category headings under `Unreleased` are tolerated. The version section is published verbatim as the GitHub release description, so write it for users.
+Keep [CHANGELOG.md](../../CHANGELOG.md) up to date as the [changelog policy](changelog.md) requires.
 
 ## Release channels
 

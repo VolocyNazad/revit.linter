@@ -47,6 +47,7 @@ The project is distributed under the [Apache License 2.0](LICENSE).
 - [Repository guide and technology stack](docs/repository.md)
 - [Branching policy](docs/policies/branching.md)
 - [Commit message policy](docs/policies/commits.md)
+- [Changelog policy](docs/policies/changelog.md)
 
 ## Contributing
 
