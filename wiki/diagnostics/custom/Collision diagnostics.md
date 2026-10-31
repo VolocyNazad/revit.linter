@@ -139,6 +139,14 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - `ignoreConnectedElements: true` skips elements joined to the target by MEP connectors: they touch by design while their family geometry overlaps at the joint. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
 - `ignoreNestedFamilies: true` skips a pair whose elements resolve to one top-level family instance: a parent and its nested family, nested families of one parent, and any deeper pair of the same family tree. Their overlap is decided inside the family, so the pair is skipped even when it genuinely intersects. The relation comes from `FamilyInstance.SuperComponent`, not from the formulas, so it also holds when the parent is not selected by the rule. Only nested families marked as shared become separate project elements; a non-shared nested component is a part of the parent's geometry and never takes part in the check as its own element, so the flag changes results for shared nested families. The flag removes family-internal pairs only: a nested component still takes part in the check against everything else, and a third-party element that crosses a nested component can still be reported for both the component and its parent. The flag applies to host pairs only, and it has almost no effect in a family document, where a top-level nested component has no parent element. The nested component must pass `take`/`andTake` as well for the flag to make any visible difference.
 
+## Unverified intersections
+
+Revit does not always compute the intersection of two solids: it rejects the operation for coincident faces and edges, which is exactly the geometry of elements that only touch, such as a curtain wall abutting a wall or two walls meeting end to end. A rejected operation says nothing about an overlap, so such a pair is never reported as a collision.
+
+- A target whose overlapping candidates could not be compared is still reported. Its message says that the intersection could not be determined, names the elements to check and explains that the elements usually only touch. The `message` of the rule does not apply to this finding, because it describes a collision.
+- When the same target also has a verified collision, the finding uses the rule `message` and lists the verified elements only; the unverified pairs stay in the application log with the Revit exception.
+- The log records `The solid intersection of elements ... could not be computed; the pair is reported as unverified.`, so a support case can tell a false collision from a missed one.
+
 **Notes:**
 - If the `message` field is not specified, it defaults to the localized generic template
 - If the `severity` field is not specified, it defaults to `Message`

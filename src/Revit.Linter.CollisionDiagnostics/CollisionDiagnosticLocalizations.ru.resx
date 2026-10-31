@@ -3,4 +3,5 @@
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Default_message" xml:space="preserve"><value>Элемент '{elementName}' ({elementId}) пересекает элементов: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds}).</value></data>
+  <data name="Unverified_message" xml:space="preserve"><value>Не удалось определить, пересекается ли элемент '{elementName}' ({elementId}) с элементами: {intersection.count} — '{intersection.elementNames}' ({intersection.elementIds}). Revit не смог вычислить пересечение геометрии, обычно так бывает, когда элементы только соприкасаются. Проверьте пару вручную.</value></data>
 </root>
