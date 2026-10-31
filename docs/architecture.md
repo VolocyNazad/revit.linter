@@ -19,7 +19,7 @@ This document records stable architectural rules. Implementation details belong 
 - Product-wide identity segments (vendor, product, repository, registry policy, updater synchronization) are owned by `ProductIdentity` in `Revit.Linter.Core`; path composition stays with the owning module. Independent build units (`updater/`, `installer/`) compile the same source file via link instead of taking a project reference.
 - Cross-project consumers depend on contracts under the owning project's `Abstractions/` namespace, not on its infrastructure implementation.
 - Interaction seams are owned explicitly. A contract a module publishes to other modules stays in its `Abstractions/` when consumers may reference the module; when a consumer must not reference the implementation project, the contract lives in a `<Module>.Interactions` project (`Revit.Linter.DiagnosticReportPresenter.Interactions`). Cross-cutting contracts implemented by the host live in `Revit.Linter.Core/Abstractions` (`IRevitIdlingScheduler`, `IRevitEventSource`, `IClipboardService`, `IShellLauncher`, `IDocumentationLauncher`) and their single implementation in `src/Revit.Linter/Infrastructure/Services`; modules receive them through constructor injection instead of starting shell processes, touching the clipboard or subscribing to Revit application events themselves.
-- View-model composition between UI modules is limited to the documented points: the four pane views compose `RunDiagnosticViewModel` through `ViewLocator`, and a pane receives the opened-document selector through the `IOpenedDocuments` contract of `Revit.Linter.OpenedDocuments`. A presenter consumes another UI module only through that module's contracts and shared infrastructure; `Revit.Linter.Architecture.Tests` fails when a presenter project references another UI module or uses its view-model type outside those points.
+- View-model composition between UI modules is limited to the documented points: the four pane views compose `RunDiagnosticViewModel` through `ViewLocatorExtension`, and a pane receives the opened-document selector through the `IOpenedDocuments` contract of `Revit.Linter.OpenedDocuments`. A presenter consumes another UI module only through that module's contracts and shared infrastructure; `Revit.Linter.Architecture.Tests` fails when a presenter project references another UI module or uses its view-model type outside those points.
 - `Infrastructure/` contains implementation details and external adapters. It must not become a second public contract surface.
 - New project references must follow the direction from composition and presentation toward abstractions and domain behavior. Do not introduce reference cycles or use a service locator to bypass them.
 - Concrete implementations are created by dependency injection at composition boundaries. Runtime-data objects may use explicit factories.
@@ -38,7 +38,11 @@ This document records stable architectural rules. Implementation details belong 
 
 ## Presentation
 
-- Views contain layout and view-only mechanics. View models own state and commands; application and diagnostic behavior lives in services.
+WPF rules — views and view models, design-time data, shared styles and resources, `ViewLocatorExtension` and the
+shared view-model bases — are in the [presentation policy](policies/presentation.md). This section
+records what the presentation modules own; the module inventory is in the
+[repository guide](repository.md).
+
 - Presenter modules publish completed, product-level UI facts through `IUserInterfaceActivityStream`; event types describe the action and result without naming an observer. Optional observers such as onboarding translate those facts in their own module. Observer failures are isolated by the host stream and never change the originating command's result.
 - The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup refreshes the managed `tour/practical-tour.config.yaml` file in the current format, where the rule declares `isActive: false`, so the user enables the check as the guided step asks. Completing the tour or opting out removes the managed file. Step advancement itself stays purely observational — only observed UI facts move the tour state machine, and resumed tours keep the current selection. Tour rules carry the reserved `Tour` tag and are sorted above the rest of the diagnostics list.
 - Onboarding is realized by two presenter modules with one primary responsibility each:
@@ -50,12 +54,6 @@ This document records stable architectural rules. Implementation details belong 
   and each experience has its own host contract (`IWelcomeHost` for the wizard, `IPracticalTourHost` for the tour)
   implemented by a separate host class. `Revit.Linter.Architecture.Tests` records both presenter modules and the
   wizard's reference to the tour contract.
-- Reusable WPF mechanics live in `Revit.Linter.Behaviors`. Prefer bindings, converters, commands and behaviors over event handlers.
-- `Revit.Linter.Presentation.ViewLocator` resolves embedded views from dependency injection only at module composition boundaries; it is not a general service locator.
-- View-model bases shared by presenter modules (`InitializableObservableObject`, `RevitInteractionViewModel`) and `BindingProxy` live in `Revit.Linter.Presentation`; a presenter module does not keep its own copy.
-- Shared styles and resources are defined once and consumed through resource references. Theme-dependent values use `DynamicResource`.
-- Every view carries design-time data in `DesignData/` next to the view, so the XAML designer shows representative content instead of empty fields. The design class mirrors the binding paths of the view and its item templates, reuses the localized resources through `LocalizationResourceReader` and is attached with `d:DataContext`/`IsDesignTimeCreatable`. `ViewLocatorExtension` resolves the matching design data for a composed sub-view at design time, and a view whose runtime constructor needs services keeps a public parameterless design-time constructor.
-- Control styles, fonts, sizes and paddings live in `SharedThemeResources` of `Revit.Linter.ThemeManaging`. Views keep layout and bindings and refer to `Linter*` style keys; they do not reference third-party style keys or repeat sizes that a shared style defines. A style specific to one view is still declared there, based on a shared one.
 
 ## Diagnostics and reports
 
@@ -127,33 +125,23 @@ This document records stable architectural rules. Implementation details belong 
 
 ## Localization
 
-- English is the neutral resource language. Russian resources use the parent `ru` culture.
-- User-facing strings are resolved through `LocalizationResourceReader`; feature-owned strings remain with their owning feature.
-- Revit transaction and transaction-group names are user-facing: Revit shows them in the Undo history and in the status bar while the transaction runs. Resolve them through `LocalizationResourceReader` like any other user-facing string instead of hard-coding English text; a name created only by a test fixture or a benchmark is not user-facing.
-- Resource keys and placeholders must remain compatible across cultures. Localization assemblies remain separate from ILRepack and are verified in final published artifacts.
+Language and culture rules, resource ownership, resolution through `LocalizationResourceReader`, the
+resource files and their build, and the localization validation are in the
+[localization policy](policies/localization.md).
 
 ## Logging and failures
 
-- Serilog is configured in the application composition root; modules use the Microsoft logging abstractions.
-- A diagnostic that throws is isolated by the diagnostic service: the failure is logged, published as an error
-  report under the diagnostic's code, and the remaining diagnostics still run.
-- A failure is logged once at the layer that understands its meaning. Higher layers may translate it into user-visible feedback without logging it again.
-- Logs contain useful model, document, diagnostic and operation context, but must not contain secrets or unnecessarily large element payloads.
+Logging — where Serilog is configured, what each level is for, logging a failure once, structured
+messages, privacy and the isolation of a failed diagnostic — is defined by the
+[logging policy](policies/logging.md).
 
-## Packaging and releases
+## Packaging, releases and updates
 
-- The root solution builds the add-in and tests. `installer/`, `build/`, `benchmark/`, `updater/` and `sandbox/` remain separate solutions with their own responsibilities.
-- The updater is an independent build unit: `updater/` owns its MSBuild settings and central package versions, uses
-  plain `Debug`/`Release` configurations and is not referenced by the root solution. The add-in couples to it only by
-  launching `Revit.Linter.Updater.exe`, and the release pipeline publishes it directly for the MSI.
-- ILRepack output and localization satellites are validated before MSI creation.
-- Stable releases originate from exactly one `vMAJOR.MINOR.PATCH` tag and are published through the repository release pipeline.
-- One per-user MSI owns every supported Revit build, the shared updater, version-specific manifests,
-  and updater startup registration. A stable `UpgradeCode` keeps upgrades within that single product line.
-- The updater is an immutable required MSI feature. Revit-version payloads are optional features,
-  preselected from installed Revit registry keys and synchronized with their per-user manifests.
-- Installer file changes require all Revit processes to be closed; the short-lived updater is stopped
-  before replacement begins.
+Build units and release mechanics — the separate solutions, the independent updater build unit, the
+MSI and its identity, release tags and channels — are defined by the
+[build and toolchain policy](policies/build.md) and the [release policy](policies/releases.md). This
+section records how the updater behaves at runtime.
+
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no
   Revit API dependency; the add-in may launch it but must not perform release HTTP requests or create
   Windows notifications itself.

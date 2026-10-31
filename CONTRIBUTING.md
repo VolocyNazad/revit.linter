@@ -1,13 +1,14 @@
 # Contributing
 
-Before making a change, read the [development policy](docs/policies/development.md)
-and the [repository guide](docs/repository.md). They define the repository-specific
-stack, testing expectations and maintenance rules.
+Before making a change, read the [repository policy index](docs/policies/README.md), the
+[development policy](docs/policies/development.md) and the [repository guide](docs/repository.md).
+They define the repository-specific stack, testing expectations and maintenance rules.
 
 Branches follow the [branching policy](docs/policies/branching.md): `main` holds
 the released state, `dev` integrates the next release, and every change arrives
 through a short-lived `feature/`, `fix/`, `release/` or `hotfix/` branch and a
-pull request.
+pull request. The [pull request policy](docs/policies/pull-requests.md) defines what a pull
+request must contain.
 
 Commit messages follow the [commit message policy](docs/policies/commits.md).
 
@@ -32,7 +33,7 @@ Before submitting a pull request, check the items that apply to the change:
 - Update user documentation and localized strings when user-visible behavior or
   text changes.
 - Review logging for significant operations, refusals and failures when behavior
-  changes; follow the [logging policy](docs/policies/development.md#logging).
+  changes; follow the [logging policy](docs/policies/logging.md).
 - Update the changelog and repository documentation when required by the
   development policy.
 - Run the repository policy validator after changing repository-level files,
@@ -43,6 +44,8 @@ Before submitting a pull request, check the items that apply to the change:
 ```
 
 ## Before publishing a release
+
+The [release policy](docs/policies/releases.md) defines the release channels, tags and metadata.
 
 - Verify the release tag and version against the release commit.
 - Compose the new `MAJOR.MINOR.PATCH` section from the changes since the previous

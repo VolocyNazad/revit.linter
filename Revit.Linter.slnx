@@ -426,6 +426,7 @@
     <File Path="docs/migrations/0001-single-configuration-file.md" />
   </Folder>
   <Folder Name="/docs/policies/">
+    <File Path="docs/policies/README.md" />
     <File Path="docs/policies/development.md" />
     <File Path="docs/policies/branching.md" />
     <File Path="docs/policies/commits.md" />
@@ -433,6 +434,15 @@
     <File Path="docs/policies/testing.md" />
     <File Path="docs/policies/benchmarks.md" />
     <File Path="docs/policies/wiki.md" />
+    <File Path="docs/policies/releases.md" />
+    <File Path="docs/policies/logging.md" />
+    <File Path="docs/policies/localization.md" />
+    <File Path="docs/policies/presentation.md" />
+    <File Path="docs/policies/migrations.md" />
+    <File Path="docs/policies/build.md" />
+    <File Path="docs/policies/repository-maintenance.md" />
+    <File Path="docs/policies/documentation.md" />
+    <File Path="docs/policies/pull-requests.md" />
   </Folder>
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />

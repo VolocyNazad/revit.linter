@@ -38,5 +38,8 @@ version. When the publish workflow also creates a GitHub release, the version se
 used verbatim as the release description.
 
 The rest of the workflow - tests, build and the message format - is defined by the
-[development policy](development.md) and the [commit message policy](commits.md).
-Release branches and tags are in the [branching policy](branching.md).
+[testing policy](testing.md), [build and toolchain policy](build.md) and the
+[commit message policy](commits.md). Release branches and tags are in the
+[branching policy](branching.md), and the release workflow in the [release policy](releases.md).
+
+The rest of the contributor workflow is defined by the [development policy](development.md).

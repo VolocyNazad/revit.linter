@@ -20,7 +20,7 @@ without `*.Tests` or `*.RevitTests` is not a test project. Prefer the product pr
 
 ## Revit versions
 
-Code that compiles differently per Revit version (`VERSION_2025`, `IS2025`, `BEFORE2026`, ...)
+Code that compiles differently per Revit version (`IS2025`, `AFTER2025`, `BEFORE2026`, ...)
 or calls the Revit API must be verified on every supported version. The supported set is the
 `Release_*` configurations of the solution; today that is `Release_2021.1.100`,
 `Release_2022.1.80`, `Release_2023.1.90`, `Release_2024.3.60`, `Release_2025.4.60`,
@@ -30,7 +30,7 @@ or calls the Revit API must be verified on every supported version. The supporte
 - `*.RevitTests` run outside CI. CI compiles them; they are executed on a machine with Revit
   installed.
 - Before a release tag the full matrix is executed: every `*.RevitTests` project on every
-  supported version, with the results recorded in the release checklist.
+  supported version, with the results recorded in the release pull request.
 - A pull request that changes version-specific code runs those tests on the versions it
   touches; the full matrix is still required before the release.
 - Every `#if` branch is behaviour: a test that compiles only one branch does not cover the
@@ -53,6 +53,10 @@ not supported and must not be published.
 - Analyzers and generators are tested through the diagnostic or the generated code.
 - Revit-bound logic is covered by `*.RevitTests`; a headless test is added wherever the logic
   can be detached from `Document`.
+- When a service needs both `RevitAPI` and `RevitAPIUI`, keep the `RevitAPIUI` interaction in a
+  thin boundary and move meaningful document logic behind it so it can be covered with
+  `Nice3point.TUnit.Revit`. Do this where it creates a real testable boundary; do not add
+  interfaces around trivial private UI calls solely to satisfy the rule.
 
 Documentation, formatting, dependency updates and purely visual XAML changes do not need a
 test, but the build must pass.
@@ -78,7 +82,20 @@ Revit integration: on a machine with the required Revit version installed and li
 dotnet test tests/<Project>.RevitTests/<Project>.RevitTests.csproj --configuration Release_<version>
 ```
 
-Record the version and the result in the pull request or the release checklist.
+Record the version and the result in the pull request.
+
+## Test infrastructure
+
+Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in `global.json`. CI
+invokes each headless test project explicitly and treats a run with no discovered tests as a
+failure. Tests that require a running Revit process use the `.RevitTests` suffix and are excluded
+from hosted headless test runs.
+
+The post-publish localization artifact project is an intentional exception: the build pipeline
+invokes its xUnit v3 executable through `dotnet run` after producing each ILRepack output.
+Microsoft.Testing.Platform does not discover this executable's test through `dotnet test`, while
+the in-process xUnit runner does. Do not replace this command with `dotnet test` unless discovery is
+verified for every supported target framework and configuration.
 
 ## Manual smoke check
 
@@ -86,6 +103,10 @@ For a change that affects the user interface or the add-in lifecycle, check in R
 add-in loads, the ribbon entry appears, the main scenario works, a second load and unload does
 not fail, and the Revit journal has no exceptions. Run it on at least one supported version,
 and on every version whose code path changed.
+
+Area-specific manual checklists live in [docs/testing/](../testing/). Keep them in step with the
+behaviour they verify, and add a section there when a workflow needs a live Revit and is not
+covered yet.
 
 ## Flaky and skipped tests
 
@@ -98,4 +119,5 @@ Every behaviour a consumer of the library or add-in can observe has a test. No n
 threshold is enforced: a percentage that moves without a behaviour change is not a goal.
 
 The workflow around tests - branches, commit messages and the changelog - is defined by the
-[development policy](development.md).
+[development policy](development.md), [branching policy](branching.md), [commit message
+policy](commits.md) and [changelog policy](changelog.md).

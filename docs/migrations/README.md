@@ -20,32 +20,11 @@ The registry complements the other documents instead of repeating them:
 The registry does not replace the release changelog and is not published to the Wiki: users read the Wiki
 page and the release notes, contributors read this folder.
 
-## Principles
+## Lifecycle rules
 
-1. **One entry per migration, append-only.** Entries are numbered (`0001`, `0002`, ...) and are never
-   deleted or renumbered. A finished migration stays as history and gets the status `Retired`.
-2. **A migration is a contract, not a code detail.** The entry names the product versions on both sides, the
-   user action and the data-safety guarantees *before* the release ships them.
-3. **No silent breaking change.** Every breaking migration reaches the user through the release notes plus an
-   in-product signal (a warning, a notice, or both). A user who dismissed the warning must still find the
-   migration explained in the release notes and in the Wiki guide.
-4. **User data is never destroyed.** The product never deletes user-authored files and never rewrites their
-   content. When a user-owned file must leave the place the product reads from, it is moved (for example into a
-   `legacy` folder) or backed up, and the entry states where it went and how to restore it.
-5. **Migration is manual unless the entry says otherwise.** Automatically rewriting user rules or settings is
-   a separate, explicitly approved decision recorded in the entry.
-6. **Rollback stays possible while support exists.** The entry states what remains on disk for a downgrade and
-   what is already changed beyond it.
-7. **Transitional code is disposable by design.** The entry lists every artifact that exists only for the
-   migration, so removal is a checklist instead of archaeology.
-8. **Support is time-boxed.** A migration is supported for the whole major line that introduced it, for at
-   least 12 months and at least two stable releases. It is removed only in a later major release, and the
-   removal is announced one stable release in advance.
-9. **Removal is decided from evidence.** The signal is the in-product migration log plus support reports;
-   support ends only when neither has indicated unmigrated data for two stable releases (see the entry's
-   removal gate).
-10. **Documentation outlives the code.** When the in-product support is removed, the Wiki guide stays as
-    historical documentation for users who skip several versions; only the product-side mentions are removed.
+The principles, the version window, the data-safety guarantees and the removal gate are defined by
+the [migration policy](../policies/migrations.md). This registry records the entries, their status and
+the operational steps for adding and retiring one.
 
 ## Status lifecycle
 
@@ -58,25 +37,11 @@ page and the release notes, contributors read this folder.
 Entries are edited while `Planned`, then only their status, dates and removal notes change. Never rewrite the
 recorded history of a shipped migration.
 
-## Version rules
-
-* The product follows SemVer for user-visible breaking changes, as recorded in
-  [the repository guide](../repository.md#versioning-and-release-tags). A migration is introduced by the
-  release that ships the break; the entry names that release.
-* Support stays for **every release of the major line** that introduced the migration.
-* Removal happens in the **first major release after that line**, never earlier than 12 months and two stable
-  releases after the introduction, and never without a release-note announcement in the previous stable
-  release.
-* If the planned release number changes or the release slips, update the entry in the same commit that prepares
-  the release; a tagged entry is historical.
-* Migrations that shipped before this registry existed are not backfilled. Only migrations that still have
-  in-product support are recorded.
-
 ## Index
 
 | Id | Status | Migrates from → to | Introduced | Support removed | User guide |
 |---|---|---|---|---|---|
-| [MIG-0001](0001-single-configuration-file.md) | `Active` | product ≤ 2.0.0 (split YAML files) → configuration format 2 (`3.0.0`); the product moves the legacy files into `legacy` folders automatically | `3.0.0` | planned 4.0.0, gated | [Migrating configuration](../../wiki/Migrating%20configuration.md) |
+| [MIG-0001](0001-single-configuration-file.md) | `Active` | product ≤ 2.0.0 (split YAML files) → configuration format 2 (`3.0.0`); the product moves the legacy files into `legacy` folders automatically | `3.0.0` | planned 4.0.0, gated | [Migrating configuration](../../wiki/Migrating%20configuration.md) (EN) · [Миграция конфигурации](../../wiki/ru/Миграция%20конфигурации.md) (RU) |
 
 Statuses in this table are repeated in every entry; the table is the quick overview, the entry is the detail.
 

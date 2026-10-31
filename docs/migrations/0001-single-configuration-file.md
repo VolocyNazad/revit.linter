@@ -6,7 +6,7 @@
 | Status | `Active` |
 | Kind | Breaking configuration format (user data and rule state) |
 | Migrates from | Any product version up to and including the last released split-file version, `2.0.0` (`config.yaml`, `collision.config.yaml`, `parameter-element.config.yaml` plus the per-user override settings) |
-| Migrates to | Configuration format 2, shipped in `3.0.0` (tag `v3.0.0`); see [Version rules](README.md#version-rules) |
+| Migrates to | Configuration format 2, shipped in `3.0.0` (tag `v3.0.0`); see the [migration policy](../policies/migrations.md) |
 | Introduced | `3.0.0` (tag `v3.0.0`) |
 | User action | `manual` for rules, switches and ignores; `automatic` for the startup move of the legacy files and for product-managed files (see below) |
 | User guide | [Migrating configuration](../../wiki/Migrating%20configuration.md) (EN) · [Миграция конфигурации](../../wiki/ru/Миграция%20конфигурации.md) (RU) |
