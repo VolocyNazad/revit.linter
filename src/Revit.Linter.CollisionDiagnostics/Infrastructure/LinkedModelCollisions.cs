@@ -12,6 +12,13 @@ namespace Revit.Linter.CollisionDiagnostics.Infrastructure;
 /// <remarks>Linked hits stay text-only in the report: only host elements enter the dependency list.</remarks>
 internal sealed record LinkHit(string Name, ElementId Id, string LinkName);
 
+/// <summary>The verified and unverified collisions of a host target with loaded Revit links.</summary>
+/// <remarks>
+/// An unverified hit is a bounding-box overlap whose solids could not be compared: Revit rejected the
+/// Boolean operation, so the overlap is unknown and the report must not call it a collision.
+/// </remarks>
+internal sealed record LinkCollisions(List<LinkHit> Hits, List<LinkHit> Unverified);
+
 /// <summary>Matches host targets against the elements of loaded Revit links.</summary>
 /// <remarks>
 /// Linked candidates are read-only and never act as targets, so link-versus-link pairs are never
@@ -36,8 +43,8 @@ internal sealed class LinkedModelCollisions(
     /// <param name="targetBoundingBox">The target bounding box in host coordinates.</param>
     /// <param name="targetSolids">The target solids in host coordinates.</param>
     /// <param name="group">The target group, whose linked candidates are compared.</param>
-    /// <returns>The linked hits, unordered.</returns>
-    internal List<LinkHit> Find(
+    /// <returns>The linked collisions, unordered, separated into verified and unverified hits.</returns>
+    internal LinkCollisions Find(
         Document document,
         View? view,
         Element targetElement,
@@ -50,6 +57,7 @@ internal sealed class LinkedModelCollisions(
         // identifiers repeat across documents, so the host connected set must never be
         // compared against linked identifiers.
         List<LinkHit> hits = [];
+        List<LinkHit> unverified = [];
         long targetElementId = targetElement.Id.IdValue();
 
         foreach (LinkInstancePartition partition in GetPartitions(document, group))
@@ -78,20 +86,28 @@ internal sealed class LinkedModelCollisions(
 
             IReadOnlyCollection<Solid> targetInLink = GetTargetSolidsInLink(targetSolids, partition.Transform);
 
-            bool Intersects(LinkedCandidate candidate)
+            // The check feeds two result lists, so the loop stays explicit: a LINQ pass would either
+            // run the cached pair check twice per candidate or materialize an intermediate list.
+#pragma warning disable S3267 // SonarAnalyzer: loops should be simplified with LINQ.
+            foreach (LinkedCandidate candidate in overlapping)
             {
                 long elementId = candidate.Element.Id.IdValue();
-                return pairIntersections.Intersects(
+                PairIntersectionResult result = pairIntersections.Intersects(
                     document, view, PairIntersections.LinkPair(partition.InstanceId, elementId, targetElementId),
                     getElementGeometry.Execute(candidate.Element, null), targetInLink, elementId, targetElementId);
-            }
 
-            hits.AddRange(overlapping
-                .Where(Intersects)
-                .Select(candidate => new LinkHit(candidate.Element.Name, candidate.Element.Id, partition.LinkName)));
+                if (result == PairIntersectionResult.None) continue;
+
+                LinkHit hit = new(candidate.Element.Name, candidate.Element.Id, partition.LinkName);
+                if (result == PairIntersectionResult.Intersects)
+                    hits.Add(hit);
+                else
+                    unverified.Add(hit);
+            }
+#pragma warning restore S3267
         }
 
-        return hits;
+        return new LinkCollisions(hits, unverified);
     }
 
     // Candidates of one group partitioned by link instance: element identifiers are unique only
