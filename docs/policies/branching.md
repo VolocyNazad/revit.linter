@@ -122,3 +122,5 @@ git push -u origin dev
 ```
 
 Then protect both branches as described above.
+
+The rest of the contributor workflow is defined by the [development policy](development.md).

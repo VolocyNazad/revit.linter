@@ -51,6 +51,9 @@ feat(sdk)!: drop the Revit 2021 target
 BREAKING CHANGE: the SDK no longer builds for Revit 2021.
 ```
 
-The changelog rules are in the [changelog policy](changelog.md); tests and the build are
-in the [development policy](development.md); branches and merge rules are in the
-[branching policy](branching.md).
+The changelog rules are in the [changelog policy](changelog.md); tests and the build are in the
+[testing policy](testing.md) and [build and toolchain policy](build.md); branches and merge rules
+are in the [branching policy](branching.md); the release workflow is in the
+[release policy](releases.md).
+
+The rest of the contributor workflow is defined by the [development policy](development.md).

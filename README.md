@@ -35,7 +35,7 @@ Ready-made builds are released for Revit 2021 through 2027.
 
 On the **Diagnostics** tab you can open the diagnostics, results, fixes and ignore-list panels. The configuration folder is opened from the Diagnostics pane toolbar.
 
-Diagnostics are configured with YAML files, separately for each version of Revit. See the [user documentation](wiki/Home.md) for the interface, built-in diagnostics, formulas, and configuration format. The `wiki/` folder contains English and Russian documentation and can also be opened directly as an Obsidian vault.
+Diagnostics are configured with one `diagnostics.config.yaml` per Revit version; a startup migration moves the legacy split files into a `legacy` folder. See the [user documentation](wiki/Home.md) for the interface, built-in diagnostics, formulas, and configuration format. The `wiki/` folder contains English and Russian documentation and can also be opened directly as an Obsidian vault.
 
 ## License
 
@@ -43,14 +43,9 @@ The project is distributed under the [Apache License 2.0](LICENSE).
 
 ## Development documentation
 
-- [Development policy](docs/policies/development.md)
+- [Repository policies](docs/policies/README.md) — the index of the policies a change must follow
 - [Repository guide and technology stack](docs/repository.md)
-- [Branching policy](docs/policies/branching.md)
-- [Commit message policy](docs/policies/commits.md)
-- [Changelog policy](docs/policies/changelog.md)
-- [Testing policy](docs/policies/testing.md)
-- [Benchmark policy](docs/policies/benchmarks.md)
-- [Wiki policy](docs/policies/wiki.md)
+- [Architecture decisions](docs/architecture.md)
 
 ## Contributing
 

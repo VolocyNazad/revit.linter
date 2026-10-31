@@ -30,6 +30,20 @@ This repository uses **page per file**: every `wiki/**/*.md` becomes a wiki page
   until then; after that the workflow maintains it.
 - When the wiki or its source is removed, the publish workflow is removed in the same change.
 
+## Page conventions
+
+- English pages live in the task-oriented folders directly under `wiki/`; Russian pages mirror that
+  structure under `wiki/ru/`. Keep a page and its counterpart in step in the same change.
+- `wiki/Home.md` is the language selector. Every localized page links to its counterpart and
+  declares `lang: en` or `lang: ru` in YAML front matter.
+- Page names must remain unique across both languages because GitHub Wiki addresses pages by name
+  rather than by language folder.
+- Sources use Obsidian's `[[Target|Label]]` alias order. Inside Markdown tables, escape the alias
+  separator as `\|`. `scripts/Prepare-Wiki.ps1` rejects malformed brackets, missing pages and
+  incorrect explicit paths, and converts aliased links to GitHub Wiki's `[[Label|Target]]` order in
+  a staging directory without changing the Obsidian sources.
+- Keep shared content and navigation in Markdown so the same files work in Obsidian and GitHub Wiki.
+
 ## Enabling the wiki in a new repository
 
 1. Enable Wiki in the repository settings.
