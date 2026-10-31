@@ -162,9 +162,13 @@ public abstract class ElementVisualizationPipelineBase(
                 "Sessions: {SessionCount}",
                 Value, Identity.Code, sessionCount);
 
-        using TransactionGroup? transactionGroup = _sessionDocument is null
-            ? null
-            : StartTransactionGroup(_sessionDocument, ElementVisualizationLocalizations.GetString("restoreVisualization_transactionGroup", Value));
+        // A closed document invalidates the stored Document wrapper, and starting a transaction
+        // group from it would throw before the sessions are classified. The sessions restore
+        // nothing without their document, so they are restored individually instead.
+        Document? sessionDocument = _sessionDocument;
+        using TransactionGroup? transactionGroup = sessionDocument is { IsValidObject: true }
+            ? StartTransactionGroup(sessionDocument, ElementVisualizationLocalizations.GetString("restoreVisualization_transactionGroup", Value))
+            : null;
         List<IRestoreSession> restoredSessions = [];
         List<Exception> errors = [];
         for (int index = _sessions.Count - 1; index >= 0; index--)
@@ -173,20 +177,46 @@ public abstract class ElementVisualizationPipelineBase(
             try
             {
                 session.Restore();
-                restoredSessions.Add(session);
+            }
+            catch (Autodesk.Revit.Exceptions.InvalidObjectException exception)
+            {
+                // The Revit objects this session compensates no longer exist: they were deleted, or
+                // their creation was undone (for example the user undid the visualization view
+                // creation). The state to restore went with them, so the session counts as restored
+                // instead of failing identically on every retry.
+                logger.LogWarning(
+                    exception,
+                    "Visualization session {SessionNumber} of pipeline {VisualizationName} for " +
+                    "diagnostic {DiagnosticCode} refers to deleted objects; treating it as restored",
+                    index + 1, Value, Identity.Code);
             }
             catch (Exception exception)
             {
                 errors.Add(new InvalidOperationException(
                     $"Failed to restore visualization session {index + 1}.", exception));
+                continue;
             }
+            restoredSessions.Add(session);
         }
         Assimilate(transactionGroup);
 
         foreach (IRestoreSession session in restoredSessions)
         {
             _sessions.Remove(session);
-            session.Dispose();
+            try
+            {
+                session.Dispose();
+            }
+            catch (Exception exception)
+            {
+                // A session classified as restored above keeps its delegate, so disposing it repeats
+                // the same failure. Disposal is best-effort, as in Dispose(bool).
+                logger.LogDebug(
+                    exception,
+                    "Failed to dispose a visualization session of pipeline {VisualizationName} for " +
+                    "diagnostic {DiagnosticCode}",
+                    Value, Identity.Code);
+            }
         }
 
         if (errors.Count > 0)
