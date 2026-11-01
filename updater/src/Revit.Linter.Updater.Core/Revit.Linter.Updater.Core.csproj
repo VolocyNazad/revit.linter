@@ -6,6 +6,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\src\Revit.Linter.Core\Abstractions\ProductIdentity.cs" Link="ProductIdentity.cs" />
+    <Compile Include="..\..\..\src\Revit.Linter.Core.Abstractions\ProductIdentity.cs" Link="ProductIdentity.cs" />
   </ItemGroup>
 </Project>
