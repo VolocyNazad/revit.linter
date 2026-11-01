@@ -70,9 +70,6 @@
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.Core.Abstractions/Revit.Linter.Core.Abstractions.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.DiagnosticConfiguration/Revit.Linter.DiagnosticConfiguration.csproj">
       <Platform Project="x64" />
     </Project>
@@ -255,6 +252,9 @@
       <Platform Project="x64" />
     </Project>
   </Folder>
+  <Project Path="src/Revit.Linter.Core.Abstractions/Revit.Linter.Core.Abstractions.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">
     <Platform Project="x64" />
   </Project>

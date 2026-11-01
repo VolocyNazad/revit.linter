@@ -60,9 +60,14 @@ keep the members in the file named after the type.
 projects (diagnostics, presenters, state managers, etc.) — most are
  named `Revit.Linter.<Area>`. `VolocyNazad.Revit.Sugar` is Revit API
  extensions, separate from `Revit.Linter.*`.
-`Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration
-contracts: rule models, rule types, severity, parameters and fix/visualization pipeline
-definitions. It targets `netstandard2.0` and is referenced by the add-in build, so it must not reference the Revit API, WPF or the Revit SDK.
+`Revit.Linter.Core.Abstractions` owns the part of the shared diagnostic surface that compiles
+without Revit: rule models, rule types, severity, parameters and fix/visualization pipeline
+definitions, the diagnostic identity, state, tags, verdict and feedback models, documentation
+pages, UI activity facts, product identity, the configuration-reading contracts and the host seams
+that carry no Revit type. It targets `netstandard2.0` and is referenced by the add-in build, so it
+must not reference the Revit API, WPF or the Revit SDK. `Revit.Linter.Core` owns the Revit-facing
+contracts of the same surface (diagnostics, filters, fixes, visualization, catalog and
+registrations); a Revit-free type stays there only when it belongs to one of those clusters.
 `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading,
 type-specific rule validation and the comment-preserving text editor used to write configuration
 changes. It is Revit-independent for the same reason; `Revit.Linter.ConfigurationPath` keeps the
@@ -97,10 +102,12 @@ The project also holds what the presenter modules would otherwise each repeat: t
 `BindingProxy` for bindings outside the visual tree. Its row type works with Revit element identifiers, so it
 references `Revit.Linter.Core` and the Revit API, and it references `Revit.Linter.ReportMessaging` for the shared
 report message parser.
-`Revit.Linter.Core/Abstractions` owns the cross-project interaction contracts that the add-in host implements for
-the modules: `IRevitIdlingScheduler` and `IRevitEventSource` schedule work and publish Revit events,
-`IClipboardService`, `IShellLauncher` and `IDocumentationLauncher` reach the Windows desktop, and
-`IUserInterfaceActivityStream` publishes completed UI workflow facts. Implementations live in
+`Revit.Linter.Core.Abstractions` owns the cross-project interaction contracts that the add-in host
+implements for the modules: `IRevitEventSource` publishes Revit events, `IClipboardService`,
+`IShellLauncher` and `IDocumentationLauncher` reach the Windows desktop, `IUserInterfaceActivityStream`
+publishes completed UI workflow facts and `IFormulaCompilationNotifier` requests a formula
+recompilation. `IRevitIdlingScheduler`, which takes `UIApplication`, stays with the Revit-facing
+contracts in `Revit.Linter.Core/Abstractions`. Implementations live in
 `src/Revit.Linter/Infrastructure/Services` and are registered by the host; modules depend only on the contracts.
 `Revit.Linter.DiagnosticReportPresenter.Interactions` is the interaction project of the diagnostic report
 presenter: it holds the contracts other modules and the host use for that presenter
@@ -128,7 +135,7 @@ registered element trees when the Revit theme changes. `Controls` holds what the
 `PathIcon` with its `IconKind` outlines (from Material Design Icons, Apache License 2.0) and the `Hint.Text`
 attached property for the text shown in an empty text box. The dictionaries are XAML-compiled classes that
 views reference by type rather than by a pack URI, which survives ILRepack.
-`DocumentationPage` in `Revit.Linter.Core` names a Wiki page by its English and Russian page names and builds its
+`DocumentationPage` in `Revit.Linter.Core.Abstractions` names a Wiki page by its English and Russian page names and builds its
 address for the current UI culture. Diagnostic registrations carry the page of their module, ribbon buttons use
 it for F1 help, and the report and diagnostics rows open it; a renamed Wiki page must be renamed in the code that refers to it.
 `HelpToolTip` in `Revit.Linter.Behaviors` gives a pane control a ribbon-like tooltip through attached properties
@@ -261,8 +268,8 @@ on install, repair and modify. Before any file change, setup stops the short-liv
 continue while a Revit process is running.
 
 Product-wide identity (vendor, product and repository names, GitHub destinations, registry policy
-location, updater synchronization name) is owned by `ProductIdentity` in `Revit.Linter.Core`
-(`src/Revit.Linter.Core/Abstractions/ProductIdentity.cs`). The updater and the installer compile the
+location, updater synchronization name) is owned by `ProductIdentity` in `Revit.Linter.Core.Abstractions`
+(`src/Revit.Linter.Core.Abstractions/ProductIdentity.cs`). The updater and the installer compile the
 same file as a source link, so they stay independent build units without a project reference to the
 Revit API. Path composition stays with the owning module: `IConfigurationPaths` for user
 configurations (`Documents\Revit Linter\<year>\`, `diagnostics.config.yaml`, `examples\`,

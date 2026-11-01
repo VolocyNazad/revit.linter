@@ -5,10 +5,17 @@ This document records stable architectural rules. Implementation details belong 
 ## Module boundaries
 
 - Projects are small modules with one primary responsibility. A module owns its contracts, implementation and composition extensions.
-- `Revit.Linter.Core.Abstractions` owns the Revit-independent diagnostic and configuration contracts
-  (`netstandard2.0`) and must not reference the Revit API, WPF or the Revit SDK. The add-in build consumes
-  it, so it is the single definition of a rule, its type, severity, parameters and fix/visualization
-  pipeline shape.
+- `Revit.Linter.Core.Abstractions` owns the part of the shared diagnostic surface that compiles without
+  Revit: rule models, rule types, severity, parameters and fix/visualization pipeline definitions, the
+  diagnostic identity, effective state, tags, verdict and feedback models, documentation pages, UI activity
+  facts, product identity, the configuration-reading contracts and the host seams that carry no Revit type.
+  It targets `netstandard2.0` and must not reference the Revit API, WPF or the Revit SDK. The add-in build
+  consumes it, so it is the single definition of a rule and its pipeline shape.
+- `Revit.Linter.Core` owns the Revit-facing contracts of that surface: element and document diagnostics,
+  their filters and fixes, visualization pipelines and contexts, catalog and registration types, and the
+  host seam that takes `UIApplication` (`IRevitIdlingScheduler`). A Revit-free type stays in this project
+  only when it belongs to one of those clusters; otherwise it belongs to `Revit.Linter.Core.Abstractions`,
+  so the split is the dependency on Revit, not the kind of type.
 - `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading, rule
   validation and the comment-preserving text editor. It is Revit-independent for the same reason.
   `Revit.Linter.ConfigurationPath` keeps the Revit-version-aware paths behind `IConfigurationPaths`,
@@ -16,9 +23,9 @@ This document records stable architectural rules. Implementation details belong 
 - The configuration file is hand-documented: comments, `section` markers, key order and quoting are
   part of the user-facing file. Changes are therefore written by patching the affected text spans, not
   by serializing the parsed model; the shared editor guarantees that invariant for both writers.
-- Product-wide identity segments (vendor, product, repository, registry policy, updater synchronization) are owned by `ProductIdentity` in `Revit.Linter.Core`; path composition stays with the owning module. Independent build units (`updater/`, `installer/`) compile the same source file via link instead of taking a project reference.
+- Product-wide identity segments (vendor, product, repository, registry policy, updater synchronization) are owned by `ProductIdentity` in `Revit.Linter.Core.Abstractions`; path composition stays with the owning module. Independent build units (`updater/`, `installer/`) compile the same source file via link instead of taking a project reference.
 - Cross-project consumers depend on contracts under the owning project's `Abstractions/` namespace, not on its infrastructure implementation.
-- Interaction seams are owned explicitly. A contract a module publishes to other modules stays in its `Abstractions/` when consumers may reference the module; when a consumer must not reference the implementation project, the contract lives in a `<Module>.Interactions` project (`Revit.Linter.DiagnosticReportPresenter.Interactions`). Cross-cutting contracts implemented by the host live in `Revit.Linter.Core/Abstractions` (`IRevitIdlingScheduler`, `IRevitEventSource`, `IClipboardService`, `IShellLauncher`, `IDocumentationLauncher`) and their single implementation in `src/Revit.Linter/Infrastructure/Services`; modules receive them through constructor injection instead of starting shell processes, touching the clipboard or subscribing to Revit application events themselves.
+- Interaction seams are owned explicitly. A contract a module publishes to other modules stays in its `Abstractions/` when consumers may reference the module; when a consumer must not reference the implementation project, the contract lives in a `<Module>.Interactions` project (`Revit.Linter.DiagnosticReportPresenter.Interactions`). Cross-cutting contracts implemented by the host live in `Revit.Linter.Core.Abstractions` (`IRevitEventSource`, `IClipboardService`, `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream`, `IFormulaCompilationNotifier`) and, because it takes `UIApplication`, `IRevitIdlingScheduler` in `Revit.Linter.Core`; their single implementation lives in `src/Revit.Linter/Infrastructure/Services`. Modules receive them through constructor injection instead of starting shell processes, touching the clipboard or subscribing to Revit application events themselves.
 - View-model composition between UI modules is limited to the documented points: the four pane views compose `RunDiagnosticViewModel` through `ViewLocatorExtension`, and a pane receives the opened-document selector through the `IOpenedDocuments` contract of `Revit.Linter.OpenedDocuments`. A presenter consumes another UI module only through that module's contracts and shared infrastructure; `Revit.Linter.Architecture.Tests` fails when a presenter project references another UI module or uses its view-model type outside those points.
 - `Infrastructure/` contains implementation details and external adapters. It must not become a second public contract surface.
 - New project references must follow the direction from composition and presentation toward abstractions and domain behavior. Do not introduce reference cycles or use a service locator to bypass them.
