@@ -24,6 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Verify the publication branch
+        shell: pwsh
+        run: |
+          if ('${{ github.ref }}' -ne 'refs/heads/main') {
+            throw "The wiki is published from main only; this run targets '${{ github.ref }}'."
+          }
+
       - name: Prepare wiki
         shell: pwsh
         run: ./scripts/Prepare-Wiki.ps1

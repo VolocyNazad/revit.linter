@@ -107,7 +107,24 @@ internal sealed partial class DiagnosticReportViewModel
                             return (true, true);
                         }
 
-                        RestoreActiveVisualization();
+                        // The previous visualization may no longer be restorable, for example after
+                        // the user deleted its view or undid it. The pipeline logs that failure, and
+                        // the request the user has just made must not be blocked by it.
+                        bool previousVisualizationRestored = true;
+                        try
+                        {
+                            RestoreActiveVisualization();
+                        }
+                        catch (Exception)
+                        {
+                            previousVisualizationRestored = false;
+                            ClearActiveVisualization();
+                        }
+                        if (!previousVisualizationRestored)
+                            _logger.LogWarning(
+                                "The active visualization could not be restored before showing " +
+                                "{VisualizationName}; applying the requested visualization anyway",
+                                pipeline.Value);
 
                         ElementId[] dependencyIds = dependencies
                             .Select(TryGetElementId)
@@ -171,11 +188,17 @@ internal sealed partial class DiagnosticReportViewModel
     {
         IElementVisualizationPipeline? pipeline = _activeVisualizationPipeline;
         if (pipeline is not null)
+        {
             _logger.LogInformation(
                 "Restoring active visualization {VisualizationName} for diagnostic {DiagnosticCode}",
                 pipeline.Value, pipeline.Identity.Code);
-        if (pipeline is not null)
             ExecuteVisualizationMutation(pipeline.Restore);
+        }
+        ClearActiveVisualization();
+    }
+
+    private void ClearActiveVisualization()
+    {
         _activeVisualizationPipeline = null;
         _activeVisualizationTargetId = null;
         RefreshVisualizationStates();

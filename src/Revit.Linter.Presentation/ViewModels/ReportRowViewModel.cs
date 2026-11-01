@@ -1,7 +1,6 @@
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Humanizer;
 using Revit.Linter.ReportMessaging;
 using System.Globalization;
 
@@ -39,7 +38,14 @@ public abstract partial class ReportRowViewModel : ObservableObject
     public required string ShowElementToolTipFormat { get; init; }
 
     /// <summary>Gets the row creation time as relative text in the current user interface culture.</summary>
-    public string CreatedText => Created.Humanize(utcDate: false, culture: CultureInfo.CurrentUICulture);
+    /// <remarks>
+    /// The text is measured against the current time on every read, so it only stays correct while the
+    /// bound cell re-reads it. <see cref="RefreshCreatedText"/> is what makes that happen for an open pane.
+    /// </remarks>
+    public string CreatedText => ReportRowAge.Format(Created, DateTime.Now, CultureInfo.CurrentUICulture);
+
+    /// <summary>Re-raises <see cref="CreatedText"/> so a bound cell re-reads the age against the current time.</summary>
+    public void RefreshCreatedText() => OnPropertyChanged(nameof(CreatedText));
 
     private ReportMessage? _message;
 

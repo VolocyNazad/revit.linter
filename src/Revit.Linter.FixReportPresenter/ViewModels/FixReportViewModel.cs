@@ -11,6 +11,7 @@ using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace Revit.Linter.FixReportPresenter.ViewModels;
 
@@ -24,6 +25,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
     private readonly Core.Abstractions.Services.IUserInterfaceActivityStream _activityStream;
     private FilteredRowCollection<FixReportItemViewModel>? _rows;
+    private ReportRowAgeTicker? _rowAgeTicker;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
@@ -128,12 +130,23 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await base.OnInitializing(cancellationToken);
+        // The rows outlive the fix that created them, so their relative creation time is refreshed
+        // while the pane is open instead of freezing at the moment each cell first appeared.
+        _rowAgeTicker = new ReportRowAgeTicker(RefreshRowAges, Dispatcher.CurrentDispatcher);
         _fixReportReceiver.ReportSent += FixReportReceiver_FixReportSent;
     }
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
+        _rowAgeTicker?.Dispose();
+        _rowAgeTicker = null;
         await base.OnDeinitializing(cancellationToken);
         _fixReportReceiver.ReportSent -= FixReportReceiver_FixReportSent;
+    }
+
+    private void RefreshRowAges()
+    {
+        foreach (FixReportItemViewModel row in Collection)
+            row.RefreshCreatedText();
     }
 
     private void FixReportReceiver_FixReportSent(object? sender, FixMessageSentEventArgs e)

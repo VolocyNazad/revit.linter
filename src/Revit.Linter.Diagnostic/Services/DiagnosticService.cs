@@ -123,7 +123,7 @@ internal sealed class DiagnosticService(
                 identity.Code,
                 registration.State.Severity,
                 document,
-                new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
+                new DiagnosticReportMessage(feedback.MessageFormat ?? identity.MessageFormat, CreateMessageArguments(
                     feedback, ("duration", duration), ("documentTitle", document.Title))),
                 document,
                 feedback.AdditionalTargetDependencies,
@@ -258,7 +258,7 @@ internal sealed class DiagnosticService(
                 identity.Code,
                 registration.State.Severity,
                 document,
-                new DiagnosticReportMessage(identity.MessageFormat, CreateMessageArguments(
+                new DiagnosticReportMessage(feedback.MessageFormat ?? identity.MessageFormat, CreateMessageArguments(
                     feedback,
                     ("duration", duration),
                     ("elementId", element.Id),

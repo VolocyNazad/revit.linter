@@ -70,9 +70,6 @@
     <Project Path="src/Revit.Linter.ConfigurationPath/Revit.Linter.ConfigurationPath.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="src/Revit.Linter.Core.Abstractions/Revit.Linter.Core.Abstractions.csproj">
-      <Platform Project="x64" />
-    </Project>
     <Project Path="src/Revit.Linter.DiagnosticConfiguration/Revit.Linter.DiagnosticConfiguration.csproj">
       <Platform Project="x64" />
     </Project>
@@ -255,6 +252,9 @@
       <Platform Project="x64" />
     </Project>
   </Folder>
+  <Project Path="src/Revit.Linter.Core.Abstractions/Revit.Linter.Core.Abstractions.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="src/Revit.Linter.Core/Revit.Linter.Core.csproj">
     <Platform Project="x64" />
   </Project>
@@ -426,7 +426,23 @@
     <File Path="docs/migrations/0001-single-configuration-file.md" />
   </Folder>
   <Folder Name="/docs/policies/">
+    <File Path="docs/policies/README.md" />
     <File Path="docs/policies/development.md" />
+    <File Path="docs/policies/branching.md" />
+    <File Path="docs/policies/commits.md" />
+    <File Path="docs/policies/changelog.md" />
+    <File Path="docs/policies/testing.md" />
+    <File Path="docs/policies/benchmarks.md" />
+    <File Path="docs/policies/wiki.md" />
+    <File Path="docs/policies/releases.md" />
+    <File Path="docs/policies/logging.md" />
+    <File Path="docs/policies/localization.md" />
+    <File Path="docs/policies/presentation.md" />
+    <File Path="docs/policies/migrations.md" />
+    <File Path="docs/policies/build.md" />
+    <File Path="docs/policies/repository-maintenance.md" />
+    <File Path="docs/policies/documentation.md" />
+    <File Path="docs/policies/pull-requests.md" />
   </Folder>
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />
@@ -435,7 +451,9 @@
     <File Path="docs/testing/diagnostics-manual-checklist.md" />
     <File Path="docs/testing/onboarding-manual-checklist.md" />
   </Folder>
-  <Folder Name="/solutionItems/.github/" />
+  <Folder Name="/solutionItems/.github/">
+    <File Path=".github/pull_request_template.md" />
+  </Folder>
   <Folder Name="/solutionItems/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
     <File Path=".github/workflows/publish-release.yml" />

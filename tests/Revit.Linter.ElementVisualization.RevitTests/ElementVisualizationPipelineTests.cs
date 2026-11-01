@@ -99,6 +99,58 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
             .SequenceEqual([LogLevel.Error, LogLevel.Warning])).IsTrue();
     }
 
+    [Test]
+    public async Task Restore_treats_sessions_whose_objects_were_deleted_as_restored()
+    {
+        // Reproduces the reported failure: a visualization is applied, then the objects it
+        // compensates are deleted (in the report the user undid the visualization view creation).
+        // The session stayed in the pipeline and failed on every trigger, and Apply could not run
+        // because it restores the previous state first.
+        Document document = _document!;
+        Wall wall = CreateWall(document);
+        CapturingLogger logger = new();
+        using TestPipeline pipeline = new(
+            CreateIdentity(),
+            new RecordingGraphicsService(),
+            [new AccentElementsStep(AccentElementsType.IsolateElementsOnView, ["First"])],
+            [new DeletedElementAccentService(wall)],
+            logger);
+
+        bool applied = pipeline.Apply(CreateContext());
+        DeleteElement(document, wall);
+
+        Exception? restore = CaptureException(pipeline.Restore);
+        bool reapplied = pipeline.Apply(CreateContext());
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(restore).IsNull();
+        await Assert.That(reapplied).IsTrue();
+        await Assert.That(logger.Levels.Count(level => level == LogLevel.Warning)).IsEqualTo(1);
+        await Assert.That(logger.Levels.Contains(LogLevel.Error)).IsFalse();
+    }
+
+    private static Wall CreateWall(Document document)
+    {
+        using Transaction transaction = new(document, "Create an element for the restore test");
+        transaction.Start();
+        Level level = Level.Create(document, 0);
+        Wall wall = Wall.Create(
+            document,
+            Line.CreateBound(XYZ.Zero, new XYZ(10, 0, 0)),
+            level.Id,
+            false);
+        transaction.Commit();
+        return wall;
+    }
+
+    private static void DeleteElement(Document document, Element element)
+    {
+        using Transaction transaction = new(document, "Delete the element the session compensates");
+        transaction.Start();
+        document.Delete(element.Id);
+        transaction.Commit();
+    }
+
     private static TestPipeline CreatePipeline(IOverrideElementGraphicsService graphicsService) => new(
         CreateIdentity(),
         graphicsService,
@@ -177,6 +229,22 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
                 ? new ThrowingSession()
                 : new TestSession(() => Events.Add($"restore:{key}"));
         }
+    }
+
+    private sealed class DeletedElementAccentService(Element element) : IAccentElementsService
+    {
+        public AccentElementsType Type => AccentElementsType.IsolateElementsOnView;
+
+        public bool RunOnce(Document document, params ElementId[] elementIds) =>
+            throw new InvalidOperationException("RunOnce should not be used by the pipeline.");
+
+        public IRestoreSession Apply(
+            Document document,
+            View view,
+            IReadOnlyCollection<ElementId> elementIds) =>
+            // Reading the id of a deleted element throws InvalidObjectException, the same failure
+            // the ShowElements restore raised on the deleted visualization view.
+            new TestSession(() => _ = element.Id);
     }
 
     private sealed class RecordingGraphicsService(int throwOnApply = -1) : IOverrideElementGraphicsService

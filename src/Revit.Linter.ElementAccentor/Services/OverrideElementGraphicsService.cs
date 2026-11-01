@@ -13,6 +13,7 @@ internal sealed class OverrideElementGraphicsService : IOverrideElementGraphicsS
     {
         Dictionary<ElementId, OverrideGraphicSettings> previous = elementIds.Distinct()
             .ToDictionary(elementId => elementId, view.GetElementOverrides);
+        Dictionary<ElementId, OverrideGraphicSettings>? pending = previous;
 
         try
         {
@@ -29,25 +30,34 @@ internal sealed class OverrideElementGraphicsService : IOverrideElementGraphicsS
         catch
         {
             DisposeSettings(previous.Values);
+            pending = null;
             throw;
         }
 
         return new RestoreSession(() =>
         {
-            try
+            Dictionary<ElementId, OverrideGraphicSettings>? pendingSettings = pending;
+            if (pendingSettings is null) return;
+            // The overrides are disposable and are released only when the restore is over: a
+            // retained session must still be able to retry a failure that was not the loss of the
+            // objects themselves.
+            if (!document.IsValidObject || !view.IsValidObject)
             {
-                if (!document.IsValidObject || !view.IsValidObject) return;
-                TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreElementGraphics_transaction"), () =>
-                {
-                    foreach (KeyValuePair<ElementId, OverrideGraphicSettings> entry in previous
-                                 .Where(entry => document.GetElement(entry.Key) is not null))
-                        view.SetElementOverrides(entry.Key, entry.Value);
-                });
+                DisposeSettings(pendingSettings.Values);
+                pending = null;
+                return;
             }
-            finally
+
+            Dictionary<ElementId, OverrideGraphicSettings> settings = pendingSettings;
+            TransactionExecutor.Execute(document, ElementAccentorLocalizations.GetString("restoreElementGraphics_transaction"), () =>
             {
-                DisposeSettings(previous.Values);
-            }
+                foreach (KeyValuePair<ElementId, OverrideGraphicSettings> entry in settings
+                             .Where(entry => document.GetElement(entry.Key) is not null))
+                    view.SetElementOverrides(entry.Key, entry.Value);
+            });
+
+            DisposeSettings(settings.Values);
+            pending = null;
         });
     }
 

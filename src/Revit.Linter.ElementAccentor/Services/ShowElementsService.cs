@@ -22,8 +22,12 @@ internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) :
         View view,
         IReadOnlyCollection<ElementId> elementIds)
     {
-        UIView? uiView = new UIDocument(document).GetOpenUIViews()
-            .FirstOrDefault(candidate => candidate.ViewId == view.Id);
+        // The view can be deleted, or its creation undone, while the visualization is shown. Its
+        // wrapper is invalid from that moment and even the Id getter throws InvalidObjectException,
+        // so the session works from the captured id and never touches the View again.
+        ElementId viewId = view.Id;
+        using UIView? uiView = new UIDocument(document).GetOpenUIViews()
+            .FirstOrDefault(candidate => candidate.ViewId.Equals(viewId));
         IList<XYZ>? previousCorners = uiView?.GetZoomCorners();
         if (uiView is null || !ZoomToElements(document, uiView, elementIds))
             return new RestoreSession(static () => { });
@@ -31,11 +35,14 @@ internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) :
         return new RestoreSession(() =>
         {
             if (!document.IsValidObject || previousCorners is not { Count: 2 }) return;
+            // A deleted view has no open window left, and a closed one has no window either;
+            // without a window there is no zoom to put back.
             using UIView? currentView = new UIDocument(document).GetOpenUIViews()
-                .FirstOrDefault(candidate => candidate.ViewId == view.Id);
+                .FirstOrDefault(candidate => candidate.ViewId.Equals(viewId));
+            if (currentView is null) return;
             try
             {
-                currentView?.ZoomAndCenterRectangle(previousCorners[0], previousCorners[1]);
+                currentView.ZoomAndCenterRectangle(previousCorners[0], previousCorners[1]);
             }
             catch (Autodesk.Revit.Exceptions.ArgumentException)
             {
@@ -44,6 +51,11 @@ internal sealed class ShowElementsService(ILogger<ShowElementsService> logger) :
                 // when they were read from a view that had just been opened or the view was rotated
                 // since. The view then keeps its current zoom and the rest of the visualization is
                 // still restored.
+            }
+            catch (Autodesk.Revit.Exceptions.InvalidObjectException)
+            {
+                // The view window disappeared between the lookup and the zoom. The zoom is a
+                // convenience like above, so the rest of the visualization is still restored.
             }
         });
     }

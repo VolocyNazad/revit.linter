@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.0.3] - 2026-11-01
+
+### Fixed
+
+- Touching elements are no longer reported as collisions: Revit rejects the Boolean intersection of solids whose faces or edges coincide — a curtain wall abutting a wall, two walls meeting end to end — and the rejected pair is now left unverified instead of being counted as a clash. A target whose only overlaps are unverified is reported with its own message that lists the pairs to review, the rule message applies to verified collisions only, linked candidates are classified the same way, and the rejection is logged once per pair.
+- Undoing the visualization view no longer breaks the feature with `Failed to restore the previous visualization state`. A restore session whose Revit objects were deleted or undone now counts as restored and is dropped with one warning instead of being retried forever, a closed view only skips the zoom, showing elements works from the captured view id, and an explicit visualization request is no longer blocked by a previous one that cannot be restored.
+- The date and time column of the diagnostic and fix reports keeps the row age current while the pane stays open instead of freezing the text from the moment the cell was first bound.
+
 ## [3.0.2] - 2026-10-27
 
 ### Added
