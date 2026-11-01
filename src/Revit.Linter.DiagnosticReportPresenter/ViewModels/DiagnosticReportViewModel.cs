@@ -109,6 +109,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private int _visualizationMutationDepth;
     private bool _catalogChangesEnabled;
     private Dispatcher? _dispatcher;
+    private ReportRowAgeTicker? _rowAgeTicker;
     private readonly object _restoreScheduleSync = new();
     private Task? _scheduledRestore;
 
@@ -280,6 +281,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        // The rows outlive the run that created them, so their relative creation time is refreshed
+        // while the pane is open instead of freezing at the moment each cell first appeared.
+        _rowAgeTicker = new ReportRowAgeTicker(RefreshRowAges, _dispatcher);
         IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
         _catalogLease?.Dispose();
         _catalogLease = lease;
@@ -297,6 +301,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     protected async override Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
+        _rowAgeTicker?.Dispose();
+        _rowAgeTicker = null;
         await RestoreActiveVisualizationAsync(cancellationToken);
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
@@ -309,6 +315,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _catalogLease = null;
         _dispatcher = null;
         await base.OnDeinitializing(cancellationToken);
+    }
+
+    private void RefreshRowAges()
+    {
+        foreach (DiagnosticReportItemViewModel row in Collection)
+            row.RefreshCreatedText();
     }
 
     private void DiagnosticCatalog_Changed(object? sender, DiagnosticCatalogChangedEventArgs args)
