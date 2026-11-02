@@ -57,10 +57,13 @@ hasparametervalue('Марка', me)
 | --- | --- |
 | `String` | `string` |
 | `Integer` | `double` |
-| `Double` | `double`, converted from internal units to project units |
+| `Double` | `double` in the parameter's project unit, converted from internal units |
 | `ElementId` | `ElementId` |
 
-A missing parameter returns `null`. Currently, `Double` values are converted using the document's length unit settings, so formulas for other physical quantities should be verified separately.
+A missing parameter returns `null`. A `Double` parameter is converted from Revit's internal units to the unit of that parameter, so it is read in the unit Revit shows for it: a length parameter in the project length unit, an area, volume or angle parameter in the matching project unit, and a dimensionless parameter as a plain number. `Integer` values are returned as numbers without any conversion, and `String` and `ElementId` values are returned as they are.
+
+> [!warning]
+> `property(name)` and `method(name)` return raw Revit API values in internal units: feet for lengths and radians for angles. Do not mix them with `parameter(...)` in one expression: `parameter(me, 'WALL_USER_HEIGHT_PARAM') + property('Height')` adds project units (millimetres in a metric project) to feet.
 
 ## Element filters
 
