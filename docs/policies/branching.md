@@ -19,13 +19,16 @@ The integration branch is always `dev`.
 | `dev` | `main` | - | permanent | Integration branch: the state of the next release. |
 | `feature/<ticket>-<slug>` | `dev` | `dev` | days | New behaviour. |
 | `fix/<ticket>-<slug>` | `dev` | `dev` | days | Defect that is not urgent in production. |
+| `chore/<slug>` | `dev` | `dev` | days | Repository maintenance: ignore files, tooling, scripts and configuration. |
 | `release/<version>` | `dev` | `main` and `dev` | hours | Release preparation: changelog, final fixes. |
 | `hotfix/<version>` | `main` | `main` and `dev` | hours | Urgent production defect. |
 
 `<ticket>` is the issue number when the repository has an issue tracker and is omitted
 otherwise. `<slug>` is a short lowercase kebab-case description, for example
-`feature/123-parameter-dependency-creator` or `fix/207-null-selection`. No other
-prefixes (`bugfix/`, `topic/`, `wip/`): review and tooling expect the six branch kinds
+`feature/123-parameter-dependency-creator` or `fix/207-null-selection`. A `chore/`
+branch carries no ticket, because repository maintenance has no user-visible change to
+track, so its name is only `chore/<slug>` such as `chore/rider-ignore-files`. No other
+prefixes (`bugfix/`, `topic/`, `wip/`): review and tooling expect the seven branch kinds
 above.
 
 `main` and `dev` are permanent; every other branch is deleted after it is merged,
@@ -66,7 +69,10 @@ git branch -d feature/123-parameter-dependency-creator
 git push origin --delete feature/123-parameter-dependency-creator
 ```
 
-`fix/` branches work the same way and differ only in intent.
+`fix/` branches work the same way and differ only in intent. `chore/` branches use the
+same flow for repository maintenance, so they are cut from `dev`, merged back into `dev`
+with a merge commit and live only as long as the maintenance task; the commit type is
+`chore`, as the [commit message policy](commits.md) defines.
 
 ## Release branches
 

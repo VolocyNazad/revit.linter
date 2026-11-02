@@ -5,10 +5,10 @@
 ## Branch
 
 - [ ] The source branch follows the [branching policy](../docs/policies/branching.md):
-  `feature/<ticket>-<slug>` or `fix/<ticket>-<slug>` from `dev`, `release/<version>`
-  from `dev`, or `hotfix/<version>` from `main`.
-- [ ] The pull request targets `dev` for a feature or a fix, and `main` for a release
-  or a hotfix. A hotfix is also merged back into `dev` or into the open release branch.
+  `feature/<ticket>-<slug>`, `fix/<ticket>-<slug>` or `chore/<slug>` from `dev`,
+  `release/<version>` from `dev`, or `hotfix/<version>` from `main`.
+- [ ] The pull request targets `dev` for a feature, a fix or a chore, and `main` for a
+  release or a hotfix. A hotfix is also merged back into `dev` or into the open release branch.
 - [ ] `main` and `dev` are not changed by a direct push.
 
 ## Checklist
