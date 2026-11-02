@@ -113,11 +113,8 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
                 new ElementDiagnosticDocumentFilter(documentFilterFactory)
                     { Identity = identity, Formula = rule.TakeDocument },
                 new DiagnosticState(rule.IsActive, rule.Severity, source.Rule.IsHidden ?? false),
-                CreateFixes(rule, (name, steps) => fixPipelineFactory.Create(identity, name, steps)),
-                rule.Visualizations
-                    .Select(pipeline => visualizationPipelineFactory.Create(
-                        identity, pipeline.Name, pipeline.Steps))
-                    .ToArray(),
+                CreateFixes(rule, identity, source, errors, providerLogger),
+                CreateVisualizations(rule, identity, source, errors, providerLogger),
                 source.Path)
             {
                 RuleType = DiagnosticRuleType.Collision,
@@ -128,18 +125,72 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
         {
             providerLogger.LogError(
                 exception,
-                "Skipping collision rule {RuleCode} from {ConfigurationPath}: its pipelines are invalid",
+                "Skipping collision rule {RuleCode} from {ConfigurationPath}: the rule cannot be registered",
                 rule.Code, source.Path);
-            errors.Add($"diagnostics.config.yaml: rule '{rule.Code}' was skipped: its fix or visualization pipeline is invalid");
+            errors.Add(
+                $"{Path.GetFileName(source.Path)}: rule '{rule.Code}' was skipped: the rule cannot be registered");
             return null;
         }
     }
 
-    private static T[] CreateFixes<T>(
+    private IElementFix[] CreateFixes(
         CollisionDiagnosticRule rule,
-        Func<string, IReadOnlyList<ElementFixStepDefinition>, T> factory) => rule.Fixes
-        .Select(pipeline => factory(pipeline.Name, pipeline.Steps))
-        .ToArray();
+        ElementDiagnosticId identity,
+        DiagnosticRuleSource source,
+        List<string> errors,
+        ILogger<CollisionDiagnosticRegistrationProvider> providerLogger)
+    {
+        List<IElementFix> fixes = [];
+        foreach (ElementFixPipelineDefinition pipeline in rule.Fixes)
+        {
+            try
+            {
+                fixes.Add(fixPipelineFactory.Create(identity, pipeline.Name, pipeline.Steps));
+            }
+            catch (Exception exception)
+            {
+                providerLogger.LogWarning(
+                    exception,
+                    "Skipping fix {FixName} of collision rule {RuleCode} from {ConfigurationPath}: {Reason}",
+                    pipeline.Name, rule.Code, source.Path, exception.Message);
+                errors.Add(
+                    $"{Path.GetFileName(source.Path)}: rule '{rule.Code}': fix '{pipeline.Name}' was skipped: " +
+                    exception.Message);
+            }
+        }
+
+        return fixes.ToArray();
+    }
+
+    private IElementVisualizationPipeline[] CreateVisualizations(
+        CollisionDiagnosticRule rule,
+        ElementDiagnosticId identity,
+        DiagnosticRuleSource source,
+        List<string> errors,
+        ILogger<CollisionDiagnosticRegistrationProvider> providerLogger)
+    {
+        List<IElementVisualizationPipeline> visualizations = [];
+        foreach (ElementVisualizationPipelineDefinition pipeline in rule.Visualizations)
+        {
+            try
+            {
+                visualizations.Add(
+                    visualizationPipelineFactory.Create(identity, pipeline.Name, pipeline.Steps));
+            }
+            catch (Exception exception)
+            {
+                providerLogger.LogWarning(
+                    exception,
+                    "Skipping visualization {VisualizationName} of collision rule {RuleCode} from {ConfigurationPath}: {Reason}",
+                    pipeline.Name, rule.Code, source.Path, exception.Message);
+                errors.Add(
+                    $"{Path.GetFileName(source.Path)}: rule '{rule.Code}': visualization '{pipeline.Name}' was skipped: " +
+                    exception.Message);
+            }
+        }
+
+        return visualizations.ToArray();
+    }
 
     private static CollisionDiagnosticRule? ToRule(DiagnosticRule rule)
     {
@@ -174,4 +225,3 @@ internal sealed class CollisionDiagnosticRegistrationProvider(
         };
     }
 }
-
