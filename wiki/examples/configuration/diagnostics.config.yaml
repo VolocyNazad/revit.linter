@@ -26,6 +26,12 @@ rules:
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_GenericModel')"
   check: "!isnullorempty(parameter(me, 'ALL_MODEL_INSTANCE_COMMENTS'))"
+  fixes:
+    - name: "Fill the Comments parameter"
+      steps:
+        - type: "SetParameter"
+          parameter: "ALL_MODEL_INSTANCE_COMMENTS"
+          value: "'Fixed by Revit Linter'"
   visualizations:
     # Single-step examples: every supported visualization operation.
     - name: "Focus on the element"
