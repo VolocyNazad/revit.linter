@@ -114,6 +114,17 @@ records what the presentation modules own; the module inventory is in the
 - `Revit.Linter.ElementFixing` owns configuration-driven element fix pipeline composition.
 - Fix pipelines execute ordered destructive steps inside the transaction supplied by the fix presenter.
 - Step implementations remain independent of user-diagnostic configuration parsing and presentation.
+- A configured step either deletes its element sets or writes one parameter value per element; the value comes from the same formula grammar the diagnostics use and is converted to the parameter storage type by `Revit.Linter.ParameterValues`.
+
+## Parameter values
+
+- `Revit.Linter.ParameterValues` owns the mapping between a Revit parameter storage value and the
+  formula value model, and the resolution of a configuration parameter identifier.
+- A `Double` value crosses the boundary through the unit of its parameter in both directions, so a
+  value a formula reads and a fix writes back is the same value; the module never writes a default
+  value when a conversion fails.
+- The mapping is stateless and Revit-facing: the formula language, the fix pipeline and future
+  diagnostics share it instead of repeating `StorageType` switches.
 
 ## Element ignoring
 

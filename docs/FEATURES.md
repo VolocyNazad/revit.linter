@@ -6,7 +6,7 @@ This document is the concise contract for the product's current scope. Detailed 
 
 - Run built-in and YAML-configured diagnostics against Revit projects and families.
 - Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; a finding can be found by its tags and clicking a tag searches for it.
-- Apply supported fixes through Revit-safe transactions and report their results.
+- Apply configured fixes through Revit-safe transactions and report their results: a fix pipeline can delete its elements or write a parameter value computed by the formula language.
 - Ignore a finding for the element it affects or for the whole document, review and remove the entries in the built-in **Ignore list** pane, and keep the list inside the model itself.
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
 - Export the displayed findings as a self-contained HTML report or as CSV, JSON and YAML data, including each finding's tags.
