@@ -31,6 +31,31 @@ public sealed class ElementFunctionFactory(
             () => Expression.Lambda<Func<Element, TResult>>(Language.Parse(formula), ElementParameter).Compile(),
             _ => fallback, formula, logger, notifier);
 
+    /// <summary>Compiles an element formula into a function that returns the formula value.</summary>
+    /// <param name="formula">The formula in the element grammar.</param>
+    /// <returns>The compiled function; a value type is boxed to <see cref="object"/>.</returns>
+    /// <exception cref="System.InvalidOperationException">The formula cannot be compiled.</exception>
+    /// <remarks>
+    /// The fix pipeline uses this method for the value a configured step writes. Unlike
+    /// <see cref="Create{TResult}"/>, a formula that cannot be compiled throws, because a fix that cannot
+    /// evaluate its value must be rejected instead of writing a fallback value.
+    /// </remarks>
+    public static Func<Element, object?> CreateValue(string formula)
+    {
+        try
+        {
+            Expression body = Language.Parse(formula);
+            if (body.Type != typeof(object))
+                body = Expression.Convert(body, typeof(object));
+
+            return Expression.Lambda<Func<Element, object?>>(body, ElementParameter).Compile();
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"The formula cannot be compiled: {formula}", exception);
+        }
+    }
+
     /// <summary>Compiles an element check formula into a boolean function.</summary>
     /// <param name="formula">The formula in the element grammar.</param>
     /// <param name="fallback">The value returned for every element when the formula cannot be compiled.</param>

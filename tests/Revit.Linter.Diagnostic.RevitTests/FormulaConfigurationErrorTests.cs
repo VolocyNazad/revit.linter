@@ -160,10 +160,88 @@ public sealed class FormulaConfigurationErrorTests
         await Assert.That(notifier.NotificationCount).IsEqualTo(0);
     }
 
+    [Test]
+    public async Task Invalid_fix_pipeline_is_skipped_without_skipping_the_rule()
+    {
+        RecordingConfigurationErrorState errors = new();
+        CountingFormulaCompilationNotifier notifier = new();
+        UserDiagnosticRegistrationProvider provider = new(
+            new ElementFilterFactory(NullLogger<ElementFilterFactory>.Instance, notifier),
+            new ElementFunctionFactory(NullLogger<ElementFunctionFactory>.Instance, notifier),
+            new DocumentFilterFactory(NullLogger<DocumentFilterFactory>.Instance, notifier),
+            new ThrowingFixPipelineFactory("Broken", "fix pipeline is broken"),
+            new EmptyVisualizationPipelineFactory(),
+            new SingleRuleConfigurationService(
+                new DiagnosticRuleSource(
+                    CustomRule(fixes:
+                    [
+                        new()
+                        {
+                            Name = "Broken",
+                            Steps = [new() { Type = "Delete" }],
+                        },
+                    ]),
+                    "diagnostics.config.yaml",
+                    IsExample: false,
+                    IsDebug: false,
+                    IsTour: false)),
+            errors,
+            NullLogger<UserDiagnosticRegistrationProvider>.Instance);
+
+        IReadOnlyList<ElementDiagnosticRegistration> registrations =
+            provider.GetElementDiagnostics().ToList();
+
+        await Assert.That(registrations).Count().IsEqualTo(1);
+        await Assert.That(registrations[0].Fixes).Count().IsEqualTo(0);
+        await Assert.That(errors.CurrentError).Contains("TEST001");
+        await Assert.That(errors.CurrentError).Contains("fix 'Broken' was skipped");
+        await Assert.That(errors.CurrentError).Contains("fix pipeline is broken");
+    }
+
+    [Test]
+    public async Task Invalid_visualization_pipeline_is_skipped_without_skipping_the_rule()
+    {
+        RecordingConfigurationErrorState errors = new();
+        CountingFormulaCompilationNotifier notifier = new();
+        UserDiagnosticRegistrationProvider provider = new(
+            new ElementFilterFactory(NullLogger<ElementFilterFactory>.Instance, notifier),
+            new ElementFunctionFactory(NullLogger<ElementFunctionFactory>.Instance, notifier),
+            new DocumentFilterFactory(NullLogger<DocumentFilterFactory>.Instance, notifier),
+            new EmptyFixPipelineFactory(),
+            new ThrowingVisualizationPipelineFactory("Broken", "visualization pipeline is broken"),
+            new SingleRuleConfigurationService(
+                new DiagnosticRuleSource(
+                    CustomRule(visualizations:
+                    [
+                        new()
+                        {
+                            Name = "Broken",
+                            Steps = [new() { Type = "Show" }],
+                        },
+                    ]),
+                    "diagnostics.config.yaml",
+                    IsExample: false,
+                    IsDebug: false,
+                    IsTour: false)),
+            errors,
+            NullLogger<UserDiagnosticRegistrationProvider>.Instance);
+
+        IReadOnlyList<ElementDiagnosticRegistration> registrations =
+            provider.GetElementDiagnostics().ToList();
+
+        await Assert.That(registrations).Count().IsEqualTo(1);
+        await Assert.That(registrations[0].VisualizationPipelines).Count().IsEqualTo(0);
+        await Assert.That(errors.CurrentError).Contains("TEST001");
+        await Assert.That(errors.CurrentError).Contains("visualization 'Broken' was skipped");
+        await Assert.That(errors.CurrentError).Contains("visualization pipeline is broken");
+    }
+
     private static DiagnosticRule CustomRule(
         string takeDocument = "true",
         string take = "instance",
-        string check = "true") =>
+        string check = "true",
+        ElementFixPipelineDefinition[]? fixes = null,
+        ElementVisualizationPipelineDefinition[]? visualizations = null) =>
         new()
         {
             Type = "custom",
@@ -173,6 +251,8 @@ public sealed class FormulaConfigurationErrorTests
             TakeDocument = takeDocument,
             Take = take,
             Check = check,
+            Fixes = fixes ?? [],
+            Visualizations = visualizations ?? [],
         };
 
     private static UserDiagnosticRegistrationProvider CreateUserProvider(
@@ -285,6 +365,30 @@ public sealed class FormulaConfigurationErrorTests
         public void Dispose()
         {
         }
+    }
+
+    private sealed class ThrowingFixPipelineFactory(string pipelineName, string reason)
+        : IElementFixPipelineFactory
+    {
+        public IElementFix Create(
+            ElementDiagnosticId identity,
+            string name,
+            IReadOnlyList<ElementFixStepDefinition> steps) =>
+            string.Equals(name, pipelineName, StringComparison.Ordinal)
+                ? throw new InvalidOperationException(reason)
+                : new EmptyFix(identity);
+    }
+
+    private sealed class ThrowingVisualizationPipelineFactory(string pipelineName, string reason)
+        : IElementVisualizationPipelineFactory
+    {
+        public IElementVisualizationPipeline Create(
+            ElementDiagnosticId identity,
+            string name,
+            IReadOnlyList<ElementVisualizationStepDefinition> steps) =>
+            string.Equals(name, pipelineName, StringComparison.Ordinal)
+                ? throw new InvalidOperationException(reason)
+                : new EmptyVisualizationPipeline(identity);
     }
 
     private sealed class ThrowingDocumentQueryService : IDocumentQueryService

@@ -91,6 +91,13 @@ them through `AddFormulaFactories` and compile the formulas of every configured 
 a rule whose formula is rejected is skipped and reported through the configuration error source. The runtime
 factories keep their fallback for any remaining compile failure, which is logged and reported through
 `IFormulaCompilationNotifier`.
+`Revit.Linter.ParameterValues` owns the parameter value model shared by configuration-driven logic.
+It resolves a parameter identifier (a `BuiltInParameter` name, a shared parameter GUID or the display
+name) and converts between the Revit storage value and the formula value: a `Double` is read and
+written through the unit of its parameter, an `Integer` is rounded when written, an `ElementId` must
+exist in the document of the parameter, and a yes/no parameter accepts a boolean. Reading and writing
+are explicit operations that report a stable failure code instead of writing a default value. The
+formula language reads parameters through it; the configuration-driven fix pipeline writes through it.
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its
 `ViewLocatorExtension` resolves an embedded view from DI by the corresponding view-model type;
 use it only at module composition boundaries, not as a general service locator.
@@ -186,7 +193,8 @@ The diagnostic report presenter activates a persistent `Revit Linter — Visuali
 applying any pipeline. The host owns creation and activation behind `IVisualizationViewActivator`, keeping
 `RevitAPIUI` calls out of the presenter while allowing crop and combined visualizations to use a predictable 3D view.
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes
-consumed by the diagnostic report presenter; the initial supported step deletes the target element.
+consumed by the diagnostic report presenter; a configured step deletes its element sets or writes one
+parameter value per element, and the value formula is compiled once when the rule is registered.
 `Revit.Linter.ElementIgnoring` owns the ignore list. `IIgnoreElementDetector` answers whether a
 finding is ignored and `IIgnoreElementProvider` writes ignores, while `IIgnoreListManager` lists,
 removes and clears the entries; storage details never leave the module. The entries live inside the

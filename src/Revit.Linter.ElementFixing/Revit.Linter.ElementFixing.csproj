@@ -1,4 +1,4 @@
-﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Revit.Linter.ElementFixing.Tests</_Parameter1>
@@ -14,6 +14,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.Languages\Revit.Linter.Languages.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ParameterValues\Revit.Linter.ParameterValues.csproj" />
 	</ItemGroup>
 
 </Project>

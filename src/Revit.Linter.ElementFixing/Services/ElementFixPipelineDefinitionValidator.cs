@@ -45,6 +45,33 @@ internal static class ElementFixPipelineDefinitionValidator
             .Select(value => value.Trim())
             .Distinct(StringComparer.Ordinal)
             .ToArray();
-        return new ElementFixStepDefinition { Type = supportedType, ElementSets = elementSets };
+
+        bool isDelete = string.Equals(
+            supportedType, nameof(ElementFixStepType.Delete), StringComparison.Ordinal);
+        string? parameter = step.Parameter?.Trim();
+        string? value = step.Value?.Trim();
+        if (isDelete)
+        {
+            if (!string.IsNullOrEmpty(parameter) || !string.IsNullOrEmpty(value))
+                throw new ArgumentException(
+                    $"Fix step '{supportedType}' does not support the parameter or value fields.");
+            parameter = null;
+            value = null;
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(parameter))
+                throw new ArgumentException($"Fix step '{supportedType}' requires the parameter field.");
+            if (string.IsNullOrEmpty(value))
+                throw new ArgumentException($"Fix step '{supportedType}' requires the value field.");
+        }
+
+        return new ElementFixStepDefinition
+        {
+            Type = supportedType,
+            ElementSets = elementSets,
+            Parameter = parameter,
+            Value = value,
+        };
     }
 }
