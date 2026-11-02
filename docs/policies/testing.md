@@ -97,6 +97,12 @@ Microsoft.Testing.Platform does not discover this executable's test through `dot
 the in-process xUnit runner does. Do not replace this command with `dotnet test` unless discovery is
 verified for every supported target framework and configuration.
 
+A TUnit attribute argument, `[Arguments(...)]` included, must not be a Revit API type or any type
+that loads the Revit API. TUnit materializes attribute arguments during discovery, before the shared
+Revit session hook runs, and the injector then fails every test of the project with
+`Attempted to write protected memory`. Pass a string in the attribute and parse it into the Revit type
+inside the test body.
+
 ## Manual smoke check
 
 For a change that affects the user interface or the add-in lifecycle, check in Revit: the
