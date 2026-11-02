@@ -1,7 +1,8 @@
-﻿using StringToExpression.GrammerDefinitions;
+using StringToExpression.GrammerDefinitions;
 using System.Linq.Expressions;
 
 using Revit.Linter.ElementDependencyDefiners.Abstractions;
+using Revit.Linter.ParameterValues.Services;
 
 namespace Revit.Linter.Languages.Languages;
 
@@ -33,12 +34,13 @@ internal static class ElementFunctionCallDefinitions
                         nameof(IElementsDependencyDefiner.FirstOrDefault))!,
                     elementExpression);
 
-                Expression? parameterExpression = identifierExpression is ConstantExpression { Value: string elementIdentifier }
+                Expression parameterExpression = identifierExpression is ConstantExpression { Value: string elementIdentifier }
                     ? CreateGetParameterExpression(targetElementExpression, elementIdentifier)
                     : CreateGetParameterExpression(targetElementExpression, identifierExpression);
 
                 Expression valueExpression = Expression.Call(
-                    typeof(Utils).GetMethod(nameof(Utils.GetParameterValue), [typeof(Parameter)])!,
+                    typeof(ParameterValueConverter).GetMethod(
+                        nameof(ParameterValueConverter.Read), [typeof(Parameter)])!,
                     parameterExpression
                 );
 
@@ -82,8 +84,9 @@ internal static class ElementFunctionCallDefinitions
 
     private static Expression CreateGetParameterExpression(Expression elementExpression, Expression elementIdentifierExpression)
     {
-        Expression? parameterExpression = Expression.Call(
-            typeof(Utils).GetMethod(nameof(Utils.DynamicGetParameter), [typeof(Element), typeof(string)])!,
+        Expression parameterExpression = Expression.Call(
+            typeof(ParameterIdentifierResolver).GetMethod(
+                nameof(ParameterIdentifierResolver.Resolve), [typeof(Element), typeof(string)])!,
             elementExpression,
             elementIdentifierExpression
         );
@@ -95,7 +98,7 @@ internal static class ElementFunctionCallDefinitions
     {
         Expression parameterExpression;
 
-        Type type = Utils.GetIdentifierType(elementIdentifier);
+        Type type = ParameterIdentifierResolver.GetIdentifierType(elementIdentifier);
 
         if (type == typeof(BuiltInParameter)) {
 #if AFTER2025
@@ -104,7 +107,9 @@ internal static class ElementFunctionCallDefinitions
             BuiltInParameter bip = (BuiltInParameter)Enum.Parse(typeof(BuiltInParameter), elementIdentifier);
 #endif
             parameterExpression = Expression.Call(
-                typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(BuiltInParameter)])!,
+                typeof(ParameterIdentifierResolver).GetMethod(
+                    nameof(ParameterIdentifierResolver.GetParameter),
+                    [typeof(Element), typeof(BuiltInParameter)])!,
                 elementExpression,
                 Expression.Constant(bip)
             );
@@ -112,7 +117,9 @@ internal static class ElementFunctionCallDefinitions
         else if (type == typeof(Guid)) {
             var guid = Guid.Parse(elementIdentifier);
             parameterExpression = Expression.Call(
-                typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(Guid)])!,
+                typeof(ParameterIdentifierResolver).GetMethod(
+                    nameof(ParameterIdentifierResolver.GetParameter),
+                    [typeof(Element), typeof(Guid)])!,
                 elementExpression,
                 Expression.Constant(guid)
             );
@@ -120,7 +127,9 @@ internal static class ElementFunctionCallDefinitions
 
         else {
             parameterExpression = Expression.Call(
-                typeof(Utils).GetMethod(nameof(Utils.GetParameter), [typeof(Element), typeof(string)])!,
+                typeof(ParameterIdentifierResolver).GetMethod(
+                    nameof(ParameterIdentifierResolver.GetParameter),
+                    [typeof(Element), typeof(string)])!,
                 elementExpression,
                 Expression.Constant(elementIdentifier)
             );
@@ -129,56 +138,3 @@ internal static class ElementFunctionCallDefinitions
         return parameterExpression;
     }
 }
-
-internal static class Utils
-{
-    public static Type GetIdentifierType(string identifier)
-    {
-        if (Enum.TryParse(identifier, out BuiltInParameter _))
-            return typeof(BuiltInParameter);
-
-        if (Guid.TryParse(identifier, out Guid _))
-            return typeof(Guid);
-
-        return typeof(string);
-    }
-
-    public static Parameter? GetParameter(Element? element, BuiltInParameter identifier)
-        => element?.get_Parameter(identifier);
-
-    public static Parameter? GetParameter(Element? element, Guid identifier)
-        => element?.get_Parameter(identifier);
-
-    public static Parameter? GetParameter(Element? element, string identifier)
-        => element?.LookupParameter(identifier);
-
-    public static Parameter? DynamicGetParameter(Element? element, string identifier)
-    {
-        if (element is null)
-            return null;
-
-        if (Enum.TryParse(identifier, out BuiltInParameter builtInParameter))
-            return element.get_Parameter(builtInParameter);
-
-        if (Guid.TryParse(identifier, out Guid guid))
-            return element.get_Parameter(guid);
-
-        return element.LookupParameter(identifier);
-    }
-    public static object? GetParameterValue(Parameter? parameter)
-    {
-        if (parameter == null) return null;
-
-        object? value = parameter.StorageType switch
-        {
-            StorageType.String => parameter.AsString(),
-            StorageType.Integer => Convert.ToDouble(parameter.AsInteger()),
-            StorageType.Double => UnitUtils.ConvertFromInternalUnits(parameter.AsDouble(), parameter.GetUnitTypeId()),
-            StorageType.ElementId => parameter.AsElementId(),
-            StorageType.None => throw new InvalidOperationException(),
-            _ => throw new NotImplementedException(),
-        };
-        return value;
-    }
-}
-
