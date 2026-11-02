@@ -41,6 +41,38 @@ public sealed class UserDiagnosticFixRegistrationTests : IDisposable
         Assert.Equal(["Target", "Dependencies"], fix.Steps[0].ElementSets);
     }
 
+    [Fact]
+    public void Configured_yaml_parameter_fix_step_keeps_parameter_and_value()
+    {
+        Directory.CreateDirectory(_tempDirectory);
+        string path = Path.Combine(_tempDirectory, ConfigurationPathUtils.DiagnosticsConfigFileName);
+        File.WriteAllText(path, """
+            version: 2
+            rules:
+              - type: custom
+                code: TEST
+                takeDocument: "true"
+                take: "instance"
+                check: "true"
+                fixes:
+                  - name: Mark checked
+                    steps:
+                      - type: SetParameter
+                        parameter: ALL_MODEL_INSTANCE_COMMENTS
+                        value: "'checked'"
+            """);
+
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            ConfigurationPathUtils.GetDiagnosticConfiguration(path));
+        DiagnosticRule rule = Assert.Single(file.Rules);
+        ElementFixPipelineDefinition fix = Assert.Single(rule.Fixes);
+        ElementFixStepDefinition step = fix.Steps[0];
+
+        Assert.Equal("SetParameter", step.Type);
+        Assert.Equal("ALL_MODEL_INSTANCE_COMMENTS", step.Parameter);
+        Assert.Equal("'checked'", step.Value);
+    }
+
     public void Dispose()
     {
         try
