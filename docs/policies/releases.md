@@ -28,8 +28,9 @@ Before creating the tag:
 
 - Confirm the full Revit test matrix is executed and recorded in the release pull request, as the [testing policy](testing.md) requires.
 - Confirm the build is green for every supported `Release_*` configuration, the working tree is clean and the release changelog section is committed.
+- Confirm `repository-policy` passed on the release pull request: it validates the changelog structure before the tag exists.
 - Verify the release tag and version against the release commit.
-- Keep every release configuration warning-free and verify with a plain `dotnet build` before tagging; the publish compiles the add-in with `TreatWarningsAsErrors=true`, so a warning fails the publish.
+- Keep every release configuration warning-free; the pull request matrix and the publish both treat warnings as errors, so a warning fails the publish.
 - Confirm CI succeeds before the release pipeline runs.
 
 Cut and prepare the release branch as the [branching policy](branching.md) requires; its branch and merge steps are not repeated here.
@@ -58,9 +59,12 @@ Cut and prepare the release branch as the [branching policy](branching.md) requi
 
 The workflow:
 
-- checks out with full history, installs the SDK from `global.json` and installs WiX 6.0.2;
-- verifies that `HEAD` carries exactly one stable tag matching `vMAJOR.MINOR.PATCH`, that `CHANGELOG.md` has a `## [Unreleased]` section with no entries below it, and that the changelog contains exactly one `## [VERSION] - YYYY-MM-DD` section for the tag;
-- runs `dotnet run --project build/Revit.Linter.Build.csproj -c Release -- publish --Publish:Draft=<input>`.
+- checks out with full history without persisting credentials, installs the SDK from `global.json`, restores the cached NuGet packages and installs WiX 6.0.2;
+- runs `./scripts/Verify-Release.ps1 -FromHeadTag -AncestorOf main`: `HEAD` must carry exactly one stable tag matching `vMAJOR.MINOR.PATCH`, `CHANGELOG.md` must have a `## [Unreleased]` section with no entries below it and exactly one `## [VERSION] - YYYY-MM-DD` section for the tag directly below it, and `HEAD` must be an ancestor of `origin/main`;
+- runs `dotnet run --project build/Revit.Linter.Build.csproj -c Release -- publish --Publish:Draft=<input>`;
+- has a 120-minute job timeout, so a hung publish does not occupy a runner for the default six hours.
+
+The `repository-policy` workflow runs the structural part of the same script on every push and pull request, so a malformed changelog or a missing `Unreleased` section is reported before the immutable tag exists.
 
 The publish pipeline compiles every `Release_*` configuration of `Revit.Linter.slnx` with `TreatWarningsAsErrors=true`, verifies the localization artifacts, publishes the updater for `win-x64`, creates the MSI, and then requires a stable version (the `GitVersion` version equal to the MSI product version) and an existing installer. It writes the release notes from the changelog section, adds a link to that section at the release tag in GitHub Actions, and invokes `gh release create v<version> --verify-tag --notes-file <file> --title "Revit.Linter <version>" [--draft] <installer>`. The pipeline never passes `--prerelease`, so automation publishes stable releases only; a pre-release is published manually as described in [Release channels](#release-channels).
 

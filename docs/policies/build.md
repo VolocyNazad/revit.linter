@@ -14,7 +14,7 @@ A build is reproducible from a clean checkout with the SDK selected by the repos
 
 ## Build units
 
-- The root solution `Revit.Linter.slnx` builds the add-in and its tests. `installer/`, `build/`, `benchmark/`, `updater/` and `sandbox/` remain independent build units with their own solutions and their own responsibility; build each of them separately and do not expect the root build to cover them.
+- The root solution `Revit.Linter.slnx` builds the add-in and its tests. `installer/`, `build/`, `benchmark/`, `updater/` and `sandbox/` remain independent build units with their own solutions and their own responsibility; build each of them separately and do not expect the root build to cover them. Pull request CI compiles the `build/` and `installer/` units as well, so their compile errors surface before the release; `benchmark/` and `sandbox/` stay local.
 - Treat `updater/` as an independent build unit: it owns `updater/Directory.Build.props`, `updater/Directory.Packages.props` and `updater/Revit.Linter.Updater.slnx`, uses `Microsoft.NET.Sdk` with plain `Debug`/`Release` configurations, is absent from the root solution, and is not referenced by any root project. The add-in couples to it only by launching `Revit.Linter.Updater.exe` by path.
 - Share product identity by compiling the `ProductIdentity` source file through a source link in independent build units instead of adding a project reference. The shared file is the contract; a reference would couple the build units.
 - Keep `netstandard2.0` projects Revit-independent: they are evaluated without a Revit configuration, so they must not reference the Revit API, WPF or the Revit SDK.
@@ -39,8 +39,8 @@ A build is reproducible from a clean checkout with the SDK selected by the repos
 
 - Treat compiler and analyzer warnings as delayed errors. Do not leave new warnings in code you touch; fix them in the same change.
 - Suppress a deliberate false positive as narrowly as possible and add a nearby comment explaining why.
-- Keep every release configuration warning-free. The release build compiles the add-in with `TreatWarningsAsErrors=true` (`build/Modules/CompileProjectModule.cs`), so a warning in a release configuration fails publishing.
-- Do not rely on pull request CI to find release-only warnings: `build-and-test` builds the root and updater solutions in their release configurations without `-warnaserror`, while the `build/` and `installer/` solutions are compiled by the release publish. Verify the affected release configuration with a plain `dotnet build` before tagging.
+- Keep every release configuration warning-free. The release build compiles the add-in with `TreatWarningsAsErrors=true` (`build/Modules/CompileProjectModule.cs`), and `build-and-test` builds every `Release_*` configuration of the root solution with the same property, so a warning fails both the pull request and the publish.
+- Do not rely on a local build to find warnings: the pull request matrix compiles every supported configuration, while a local build covers one. Build the configuration you touch before opening the pull request.
 
 ## Roslyn compatibility
 

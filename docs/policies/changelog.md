@@ -32,9 +32,11 @@ Before creating a release tag:
 3. Commit that change and create the tag on that commit, so the changelog at the tagged
    commit names the released version and carries no unreleased entries.
 
-The publish workflow enforces this before building: it refuses to publish when
-`## [Unreleased]` contains an entry or when the changelog has no section for the tagged
-version. When the publish workflow also creates a GitHub release, the version section is
+`./scripts/Verify-Release.ps1` enforces this: `repository-policy` runs its structural checks on
+every push and pull request, and the publish workflow runs its tag checks before building. Both
+refuse to continue when `## [Unreleased]` contains an entry, when a release heading has no valid
+date, when versions are duplicated or out of order, or when the changelog has no section for the
+tagged version. When the publish workflow also creates a GitHub release, the version section is
 used verbatim as the release description.
 
 The rest of the workflow - tests, build and the message format - is defined by the
