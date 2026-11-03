@@ -32,6 +32,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId RoomNotEnclosed = Create("ARCH002", DiagnosticSeverity.Error, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId RoomIsRedundant = Create("ARCH003", DiagnosticSeverity.Error, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId WallHeightIsTolerant = Create("ARCH004", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId WallWithMultipleLayers = Create("ARCH005", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId SheetEmpty = Create("SHRD0017", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId ViewOnSheetWithoutTemplate = Create("SHRD0018", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId SheetWithoutTitleBlock = Create("SHRD0019", DiagnosticSeverity.Error, DiagnosticTags.Project);
