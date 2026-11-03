@@ -66,6 +66,8 @@
   <data name="ARCH003_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) избыточно. Время выполнения: {duration} мс.</value></data>
   <data name="ARCH004_description" xml:space="preserve"><value>Проверяет высоту стен.</value></data>
   <data name="ARCH004_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет недопустимую высоту. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH005_description" xml:space="preserve"><value>Проверяет стены на многослойную составную конструкцию.</value></data>
+  <data name="ARCH005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет многослойную составную конструкцию. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0017_description" xml:space="preserve"><value>Проверяет наличие размещённых видов и спецификаций на листах.</value></data>
   <data name="SHRD0017_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) пуст. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0018_description" xml:space="preserve"><value>Проверяет наличие шаблона у размещённых на листах видов.</value></data>
