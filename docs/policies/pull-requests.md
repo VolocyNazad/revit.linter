@@ -20,10 +20,9 @@ Every change reaches `main` and `dev` through a short-lived branch and a pull re
 
 ## Required checks
 
-- `build-and-test` must pass. It builds `Revit.Linter.slnx` for every supported `Release_*` configuration and runs the headless `*.Tests` executables; a separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`.
-- `repository-policy` must pass. It runs `./scripts/Validate-Repository.ps1`, which checks the required files, navigation links and Solution Items.
+- `build-and-test` must pass. It builds `Revit.Linter.slnx` for every supported `Release_*` configuration with warnings as errors and runs the headless `*.Tests` executables through `scripts/Invoke-HeadlessTests.ps1`; a separate job builds `build/Revit.Linter.Build.slnx` and the installer project, so their compile errors surface before the release; another job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`.
+- `repository-policy` must pass. It runs `./scripts/Validate-Repository.ps1`, which checks the required files, navigation links and Solution Items, and `./scripts/Verify-Release.ps1`, which checks the `CHANGELOG.md` structure and the release inputs on every push and pull request.
 - Merge only after both required workflows pass and the pull request has the required approval. A pending or failing required check blocks the merge.
-- `build/Revit.Linter.Build.slnx` and `installer/Revit.Linter.Installer.slnx` are not built by pull request CI; the release publish compiles them, so build them locally when a change touches them.
 - Release and hotfix pull requests keep the same required checks; only the reviewer count may differ, as described under [Review](#review).
 
 ## Review

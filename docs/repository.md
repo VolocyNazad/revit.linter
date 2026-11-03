@@ -18,6 +18,7 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `updater/` - the standalone updater (`src/`, `tests/`) with its own
   `Directory.Build.props`, `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; it is not part of the root solution
 - `build/` - solution building, compilation, package
+- `scripts/` - repository validation, release verification and CI helper scripts
 - `output/` - artifacts after building
 - `benchmark/` - benchmarking
 - `sandbox/` - a separate solution (`Revit.Linter.Sandbox.slnx`) for
@@ -411,7 +412,9 @@ What must be tested, on which Revit versions and how the suites are run is defin
 
 ## Continuous integration
 
-The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push and pull requests. It runs projects ending in .Tests under `tests/` as headless tests. A separate job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. The workflow does not build `build/Revit.Linter.Build.slnx` or `installer/Revit.Linter.Installer.slnx` and does not pass `-warnaserror`; those solutions are compiled by the release publish, so their compile errors surface during release preparation rather than on a pull request. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+The CI workflow builds Release_2021.1.100, Release_2022.1.80, Release_2023.1.90, Release_2024.3.60, Release_2025.4.60, Release_2026.4.10, and Release_2027.3.0 on push to `main` and `dev` and on pull requests, with `-p:TreatWarningsAsErrors=true`. It runs projects ending in .Tests under `tests/` through `scripts/Invoke-HeadlessTests.ps1`, which writes a TRX report per project, fails when a run discovers no tests and feeds the uploaded test-results artifacts. A separate job builds `build/Revit.Linter.Build.slnx` and the installer project, so a compile error in those build units surfaces on the pull request instead of during release preparation; another job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`. The workflow does not publish the MSI: the release publish creates it. Projects ending in .RevitTests are compiled with the solution but require a local Revit process to run.
+
+The `repository-policy` workflow runs `./scripts/Validate-Repository.ps1` and `./scripts/Verify-Release.ps1`; the second one checks the `CHANGELOG.md` structure on every push and pull request, before the release tag exists. Both workflows cancel a superseded run for pull requests, set job timeouts and cache the NuGet packages keyed by the central package files.
 
 What CI must prove, how the Revit version matrix is covered and how a change is verified before a
 release tag is defined by the [testing policy](policies/testing.md).

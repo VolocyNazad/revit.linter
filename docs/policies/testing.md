@@ -73,8 +73,10 @@ test, but the build must pass.
 
 ## Running the tests
 
-Headless: `dotnet test tests/<Project>.Tests/<Project>.Tests.csproj --configuration
-Release_<version>`, or the built executable, which is what CI uses.
+Headless, all projects of one configuration:
+`./scripts/Invoke-HeadlessTests.ps1 -Configuration Release_<version>`. A single project:
+`dotnet test tests/<Project>.Tests/<Project>.Tests.csproj --configuration Release_<version>`. CI
+runs the built executables through the same script, which also writes a TRX report per project.
 
 Revit integration: on a machine with the required Revit version installed and licensed:
 
@@ -87,8 +89,10 @@ Record the version and the result in the pull request.
 ## Test infrastructure
 
 Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in `global.json`. CI
-invokes each headless test project explicitly and treats a run with no discovered tests as a
-failure. Tests that require a running Revit process use the `.RevitTests` suffix and are excluded
+and local runs use `./scripts/Invoke-HeadlessTests.ps1`: it selects the executable built for the
+configuration, writes one TRX report per project and fails when a project has no executable, when an
+executable exits with a non-zero code, or when a run discovers no tests. CI uploads the reports as
+artifacts. Tests that require a running Revit process use the `.RevitTests` suffix and are excluded
 from hosted headless test runs.
 
 The post-publish localization artifact project is an intentional exception: the build pipeline
