@@ -2,7 +2,9 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-A build is reproducible from a clean checkout with the SDK selected by the repository and the package versions pinned in the repository. This policy fixes the single source of the SDK, the independent build units, the central package and Revit-version conventions, and the warning and Roslyn baselines the other policies rely on. It states rules, not build recipes: commands and stack facts belong to the [repository guide](../repository.md).
+A build is reproducible from a clean checkout with the SDK selected by the repository and the package versions declared in the repository, including the Revit-year-bound packages that follow `$(MajorRevitVersion)`. This policy fixes the single source of the SDK, the independent build units, the central package and Revit-version conventions, and the warning and Roslyn baselines the other policies rely on. It states rules, not build recipes: commands and stack facts belong to the [repository guide](../repository.md).
+
+The supported Revit version set is declared by the `Release_*` configurations in the root `Directory.Build.props`. CI resolves its build matrix from that file through `scripts/Get-RevitConfigurations.ps1`, and `scripts/Validate-Repository.ps1` fails when the solution configurations or the testing-policy list drift from it.
 
 ## SDK selection
 

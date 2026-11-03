@@ -2,7 +2,7 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-Every change reaches `main` and `dev` through a short-lived branch and a pull request; direct pushes to either branch are blocked. The [branching policy](branching.md) owns the branch kinds, base branches, merge strategy and protection settings, and this policy covers what a pull request must target, which checks gate it, how it is reviewed and what its author verifies. The repository template is `.github/pull_request_template.md`; the `build-and-test` and `repository-policy` workflows provide the required checks.
+Every change reaches `main` and `dev` through a short-lived branch and a pull request; direct pushes to either branch are blocked. The [branching policy](branching.md) owns the branch kinds, base branches, merge strategy and protection settings, and this policy covers what a pull request must target, which checks gate it, how it is reviewed and what its author verifies. The repository template is `.github/pull_request_template.md`; the `CI gate` check from the `build-and-test` workflow and the `repository-policy` workflow provide the required checks.
 
 ## Source branch and target
 
@@ -20,9 +20,10 @@ Every change reaches `main` and `dev` through a short-lived branch and a pull re
 
 ## Required checks
 
-- `build-and-test` must pass. It builds `Revit.Linter.slnx` for every supported `Release_*` configuration with warnings as errors and runs the headless `*.Tests` executables through `scripts/Invoke-HeadlessTests.ps1`; a separate job builds `build/Revit.Linter.Build.slnx` and the installer project, so their compile errors surface before the release; another job builds `updater/Revit.Linter.Updater.slnx` in `Release` and runs the headless tests under `updater/tests/`.
-- `repository-policy` must pass. It runs `./scripts/Validate-Repository.ps1`, which checks the required files, navigation links and Solution Items, and `./scripts/Verify-Release.ps1`, which checks the `CHANGELOG.md` structure and the release inputs on every push and pull request.
+- `CI gate` must pass. It aggregates the `build-and-test` matrix, the `build-units` job and the updater job: every supported `Release_*` configuration is built with warnings as errors and tested through `scripts/Invoke-HeadlessTests.ps1`, `build/Revit.Linter.Build.slnx` and the installer project are compiled, and the updater solution is built and tested. A documentation-only pull request, whose changed files are all under `docs/` or `wiki/` or are Markdown, skips the Windows jobs by design and the gate stays green.
+- `repository-policy` must pass. It runs `./scripts/Validate-Repository.ps1`, which checks the required files, navigation links and Solution Items, the action pins, the Revit version matrix consistency, and `./scripts/Verify-Release.ps1`, which checks the `CHANGELOG.md` structure and the release inputs on every push and pull request.
 - Merge only after both required workflows pass and the pull request has the required approval. A pending or failing required check blocks the merge.
+- The security workflows (`CodeQL` and `Dependency review`) report findings but are not required checks.
 - Release and hotfix pull requests keep the same required checks; only the reviewer count may differ, as described under [Review](#review).
 
 ## Review

@@ -458,15 +458,19 @@
     <File Path="docs/testing/onboarding-manual-checklist.md" />
   </Folder>
   <Folder Name="/solutionItems/.github/">
+    <File Path=".github/dependabot.yml" />
     <File Path=".github/pull_request_template.md" />
   </Folder>
   <Folder Name="/solutionItems/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
+    <File Path=".github/workflows/codeql.yml" />
+    <File Path=".github/workflows/dependency-review.yml" />
     <File Path=".github/workflows/publish-release.yml" />
     <File Path=".github/workflows/publish-wiki.yml" />
     <File Path=".github/workflows/repository-policy.yml" />
   </Folder>
   <Folder Name="/solutionItems/scripts/">
+    <File Path="scripts/Get-RevitConfigurations.ps1" />
     <File Path="scripts/Invoke-HeadlessTests.ps1" />
     <File Path="scripts/Prepare-Wiki.ps1" />
     <File Path="scripts/Validate-Repository.ps1" />

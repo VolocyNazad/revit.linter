@@ -110,7 +110,7 @@ reaches `dev` when the release is finished.
 
 - no direct pushes, no force-push, no deletion;
 - a pull request with at least one approval is required;
-- the `build-and-test` and `repository-policy` workflows must pass;
+- the `CI gate` check from `build-and-test` and the `repository-policy` workflow must pass;
 - only maintainers merge into `main`.
 
 Release and hotfix pull requests keep the same checks but may use a single reviewer, so

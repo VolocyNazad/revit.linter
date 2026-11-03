@@ -20,30 +20,79 @@ env:
   ContinuousIntegrationBuild: true
 
 jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.detect.outputs.code }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Detect code changes
+        id: detect
+        shell: pwsh
+        run: |
+          $code = 'true'
+          if ('${{ github.event_name }}' -eq 'pull_request') {
+            $base = '${{ github.base_ref }}'
+            & git fetch --no-tags --quiet origin $base
+            if ($LASTEXITCODE -ne 0) {
+              throw "Cannot fetch the base branch '$base'; refusing to guess the changed files."
+            }
+            $changed = @(& git diff --name-only "origin/$base...HEAD")
+            if ($LASTEXITCODE -ne 0) {
+              throw "Cannot diff against 'origin/$base'; refusing to guess the changed files."
+            }
+            # A change that only touches documentation, the wiki or Markdown files cannot change the
+            # compiled product, so the Windows jobs are skipped for it.
+            $code = if (@($changed | Where-Object { $_ -notmatch '^(docs/|wiki/|.*\.md$)' }).Count -gt 0) { 'true' } else { 'false' }
+          }
+          "code=$code" >> $env:GITHUB_OUTPUT
+
+  matrix:
+    name: Resolve Revit configurations
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      configurations: ${{ steps.resolve.outputs.configurations }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Resolve configurations
+        id: resolve
+        shell: pwsh
+        run: |
+          $configurations = ./scripts/Get-RevitConfigurations.ps1 -Format Json
+          "configurations=$configurations" >> $env:GITHUB_OUTPUT
+
   build-and-test:
     name: Build and test (${{ matrix.configuration }})
-    runs-on: windows-latest
+    needs:
+      - changes
+      - matrix
+    if: needs.changes.outputs.code == 'true'
+    runs-on: windows-2025
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        configuration:
-          - Release_2021.1.100
-          - Release_2022.1.80
-          - Release_2023.1.90
-          - Release_2024.3.60
-          - Release_2025.4.60
-          - Release_2026.4.10
-          - Release_2027.3.0
+        configuration: ${{ fromJSON(needs.matrix.outputs.configurations) }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v5.4.0
         with:
           global-json-file: global.json
           cache: true
@@ -63,7 +112,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: test-results-${{ matrix.configuration }}
           path: TestResults/${{ matrix.configuration }}
@@ -71,17 +120,20 @@ jobs:
 
   build-units:
     name: Build build and installer units
-    runs-on: windows-latest
+    needs:
+      - changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: windows-2025
     timeout-minutes: 25
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v5.4.0
         with:
           global-json-file: global.json
           cache: true
@@ -100,17 +152,20 @@ jobs:
 
   updater:
     name: Build and test updater
-    runs-on: windows-latest
+    needs:
+      - changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: windows-2025
     timeout-minutes: 20
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v5.4.0
         with:
           global-json-file: global.json
           cache: true
@@ -130,8 +185,46 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: test-results-updater
           path: TestResults/Release
           if-no-files-found: ignore
+
+  ci-gate:
+    name: CI gate
+    if: always()
+    needs:
+      - changes
+      - matrix
+      - build-and-test
+      - build-units
+      - updater
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Require every required job to pass
+        shell: pwsh
+        run: |
+          $changeResult = '${{ needs.changes.result }}'
+          if ($changeResult -ne 'success') {
+            throw "Change detection did not run successfully: $changeResult."
+          }
+
+          $code = '${{ needs.changes.outputs.code }}'
+          if ($code -ne 'true') {
+            Write-Host 'Documentation-only change: the compile and test jobs are skipped by design.'
+            exit 0
+          }
+
+          $failed = [Collections.Generic.List[string]]::new()
+          if ('${{ needs.matrix.result }}' -ne 'success') { $failed.Add('Resolve Revit configurations') }
+          if ('${{ needs.build-and-test.result }}' -ne 'success') { $failed.Add('Build and test') }
+          if ('${{ needs.build-units.result }}' -ne 'success') { $failed.Add('build and installer units') }
+          if ('${{ needs.updater.result }}' -ne 'success') { $failed.Add('updater') }
+
+          if ($failed.Count -gt 0) {
+            throw "Required jobs did not pass: $($failed -join ', ')."
+          }
+          Write-Host 'Every required job passed.'

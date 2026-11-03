@@ -22,9 +22,11 @@ without `*.Tests` or `*.RevitTests` is not a test project. Prefer the product pr
 
 Code that compiles differently per Revit version (`IS2025`, `AFTER2025`, `BEFORE2026`, ...)
 or calls the Revit API must be verified on every supported version. The supported set is the
-`Release_*` configurations of the solution; today that is `Release_2021.1.100`,
-`Release_2022.1.80`, `Release_2023.1.90`, `Release_2024.3.60`, `Release_2025.4.60`,
-`Release_2026.4.10` and `Release_2027.3.0`.
+`Release_*` configurations declared in the root `Directory.Build.props`; that file feeds the CI
+matrix through `scripts/Get-RevitConfigurations.ps1`, and the solution configurations and the list
+below must match it. Today the set is `Release_2021.1.100`, `Release_2022.1.80`,
+`Release_2023.1.90`, `Release_2024.3.60`, `Release_2025.4.60`, `Release_2026.4.10` and
+`Release_2027.3.0`.
 
 - Build and headless tests run on every supported configuration in CI, for every pull request.
 - `*.RevitTests` run outside CI. CI compiles them; they are executed on a machine with Revit
@@ -40,9 +42,9 @@ or calls the Revit API must be verified on every supported version. The supporte
 
 ## New Revit version
 
-Adding support is one change: the configuration in the solution, the SDK support, the CI
-matrix entry, the tests, and a `*.RevitTests` run on that version. Until then the version is
-not supported and must not be published.
+Adding support is one change: the configuration in `Directory.Build.props` and the solution, the
+SDK support, the CI matrix entry the file feeds, the tests, and a `*.RevitTests` run on that
+version. Until then the version is not supported and must not be published.
 
 ## What needs a test
 
