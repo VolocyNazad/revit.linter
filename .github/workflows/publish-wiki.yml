@@ -28,7 +28,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
 
       - name: Verify the publication branch
         shell: pwsh
@@ -42,7 +42,7 @@ jobs:
         run: ./scripts/Prepare-Wiki.ps1
 
       - name: Publish wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@1bbb4280446f9630e8e21a18012cbacf3b0f992e # v5
+        uses: Andrew-Chen-Wang/github-wiki-action@v5.0.6
         with:
           path: .wiki-publish/
           disable-empty-commits: true

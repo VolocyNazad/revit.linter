@@ -25,7 +25,7 @@ Repository-level files are what a contributor and an automated check read first:
 
 - Run `./scripts/Validate-Repository.ps1` after changing repository-level files, documentation or the solution.
 - The same validator runs in CI on every push and pull request (`.github/workflows/repository-policy.yml`). A local run does not replace the CI check, and the CI check does not replace the local run.
-- Expect the validator to check required root files, navigation links between the required documents including anchors, and the completeness, uniqueness and validity of solution items. It also fails when Git tracks `bin/` or `obj/` content.
+- Expect the validator to check required root files, navigation links between the required documents including anchors, and the completeness, uniqueness and validity of solution items. It also fails when Git tracks `bin/` or `obj/` content, when a workflow action is not pinned to a full version tag, or when the solution configurations or the testing-policy version list drift from `Directory.Build.props`.
 - Update the solution together with added, renamed or removed managed files; the validator compares the managed set against the solution list and names what is missing.
 - Do not silence a validator failure by deleting a required file or link. Fix the cause, and when the rule itself is wrong, change the validator and this policy in the same change.
 

@@ -1,0 +1,72 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - '*'
+
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      nuget:
+        patterns:
+          - '*'
+    ignore:
+      # The Revit-year-bound packages are declared through $(MajorRevitVersion) in
+      # Directory.Packages.props: a bump must name the Revit year it targets, so an automated update
+      # would propose a version that does not belong to the configuration being built.
+      - dependency-name: 'Nice3point.Revit.Api.*'
+      - dependency-name: 'Nice3point.TUnit.Revit'
+      - dependency-name: 'VolocyNazad.*'
+
+  - package-ecosystem: nuget
+    directory: /updater
+    schedule:
+      interval: weekly
+    groups:
+      nuget-updater:
+        patterns:
+          - '*'
+
+  - package-ecosystem: nuget
+    directory: /installer
+    schedule:
+      interval: weekly
+    groups:
+      nuget-installer:
+        patterns:
+          - '*'
+
+  - package-ecosystem: nuget
+    directory: /build
+    schedule:
+      interval: weekly
+    groups:
+      nuget-build:
+        patterns:
+          - '*'
+
+  - package-ecosystem: nuget
+    directory: /benchmark
+    schedule:
+      interval: weekly
+    groups:
+      nuget-benchmark:
+        patterns:
+          - '*'
+
+  - package-ecosystem: nuget
+    directory: /sandbox
+    schedule:
+      interval: weekly
+    groups:
+      nuget-sandbox:
+        patterns:
+          - '*'
