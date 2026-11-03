@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddElementFixing() => services
             .AddSingleton<IElementFixStepExecutor, DeleteElementFixStepExecutor>()
+            .AddSingleton<IElementFixStepExecutor, SetParameterFixStepExecutor>()
             .AddSingleton<IElementFixPipelineFactory, ElementFixPipelineFactory>();
     }
 }

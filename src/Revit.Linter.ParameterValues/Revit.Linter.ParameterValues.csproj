@@ -1,0 +1,6 @@
+<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
+	<ItemGroup>
+		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
+	</ItemGroup>
+
+</Project>

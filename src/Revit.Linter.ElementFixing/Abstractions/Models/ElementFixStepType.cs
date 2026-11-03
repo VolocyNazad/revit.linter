@@ -7,5 +7,6 @@ namespace Revit.Linter.ElementFixing.Abstractions.Models;
 /// </remarks>
 internal enum ElementFixStepType
 {
+    SetParameter,
     Delete,
 }

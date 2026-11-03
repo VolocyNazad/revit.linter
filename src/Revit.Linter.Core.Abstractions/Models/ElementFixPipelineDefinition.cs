@@ -20,4 +20,15 @@ public sealed record ElementFixStepDefinition
     /// Gets the named diagnostic element sets consumed by the step. An empty list selects only the target set.
     /// </summary>
     public string[] ElementSets { get; init; } = [];
+
+    /// <summary>
+    /// Gets the identifier of the parameter written by a parameter step: a <c>BuiltInParameter</c>
+    /// name, a shared parameter GUID or the parameter display name.
+    /// </summary>
+    public string? Parameter { get; init; }
+
+    /// <summary>
+    /// Gets the formula that produces the written value, in the element formula grammar.
+    /// </summary>
+    public string? Value { get; init; }
 }

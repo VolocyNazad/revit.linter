@@ -24,8 +24,12 @@ internal sealed class ElementFixPipelineFactory(
             ElementFixPipelineDefinitionValidator.Validate(
             name, steps, [.. _executors.Keys.Select(type => type.ToString())]);
         ConfiguredStep[] parsedSteps = normalizedSteps
-            .Select(step => new ConfiguredStep(
-                _executors[ParseType(step.Type)], step.ElementSets))
+            .Select(step =>
+            {
+                ElementFixStepType type = ParseType(step.Type);
+                return new ConfiguredStep(
+                    type, _executors[type].Create(step), step.ElementSets);
+            })
             .ToArray();
         return new ConfiguredElementFixPipeline(identity, normalizedName, parsedSteps, logger);
     }
@@ -36,7 +40,8 @@ internal sealed class ElementFixPipelineFactory(
         (ElementFixStepType)Enum.Parse(typeof(ElementFixStepType), type, ignoreCase: true);
 
     private sealed record ConfiguredStep(
-        IElementFixStepExecutor Executor,
+        ElementFixStepType Type,
+        IElementFixStep Step,
         IReadOnlyList<string> ElementSetKeys);
 
     private sealed class ConfiguredElementFixPipeline(
@@ -75,7 +80,7 @@ internal sealed class ElementFixPipelineFactory(
                 bool succeeded;
                 try
                 {
-                    succeeded = step.Executor.Execute(context.Document, elementIds);
+                    succeeded = step.Step.Execute(context.Document, elementIds);
                 }
                 catch (Exception exception)
                 {
@@ -83,10 +88,10 @@ internal sealed class ElementFixPipelineFactory(
                         exception,
                         "Fix pipeline {FixName} for diagnostic {DiagnosticCode} failed at step {StepNumber}/{StepCount}: " +
                         "{StepType}; element sets: {ElementSetKeys}",
-                        Value, Identity.Code, index + 1, steps.Count, step.Executor.Type,
+                        Value, Identity.Code, index + 1, steps.Count, step.Type,
                         string.Join(", ", elementSetKeys));
                     throw new InvalidOperationException(
-                        $"Fix step '{step.Executor.Type}' failed in pipeline '{Value}' for diagnostic '{Identity.Code}'.",
+                        $"Fix step '{step.Type}' failed in pipeline '{Value}' for diagnostic '{Identity.Code}'.",
                         exception);
                 }
 
@@ -94,7 +99,7 @@ internal sealed class ElementFixPipelineFactory(
                 {
                     logger.LogWarning(
                         "Fix pipeline {FixName} for diagnostic {DiagnosticCode} failed at step {StepNumber}/{StepCount}: {StepType}",
-                        Value, Identity.Code, index + 1, steps.Count, step.Executor.Type);
+                        Value, Identity.Code, index + 1, steps.Count, step.Type);
                     return false;
                 }
             }

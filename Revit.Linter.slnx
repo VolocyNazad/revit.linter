@@ -100,6 +100,9 @@
     <Project Path="src/Revit.Linter.OnboardingState/Revit.Linter.OnboardingState.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.ParameterValues/Revit.Linter.ParameterValues.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.SerilogEnrichers/Revit.Linter.SerilogEnrichers.csproj">
       <Platform Project="x64" />
     </Project>
@@ -187,6 +190,9 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Localization.Artifact.Tests/Revit.Linter.Localization.Artifact.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.ParameterValues.RevitTests/Revit.Linter.ParameterValues.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Presentation.Tests/Revit.Linter.Presentation.Tests.csproj">

@@ -6,6 +6,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.0.4] - 2026-11-03
+
+### Added
+
+- Check that levels and grids are pinned: the built-in `SHRD0035` project diagnostic reports an unpinned level and `SHRD0036` reports an unpinned grid. Each has a fix that pins the element, the level finding offers a select visualization and the grid finding shows and selects the grid, and a multi-segment grid is reported once for the whole chain instead of once per segment. The checks do not run in family documents.
+- Write parameter values from a configured fix: the new `SetParameter` fix pipeline step evaluates a value formula in the element grammar for every element selected through the step's `elementSets` and writes the result to the named parameter. The parameter is identified by a `BuiltInParameter` name, a shared parameter GUID or the display name; the result is converted to the parameter storage type — a number is written in the project unit of the parameter, an integer is rounded away from zero, a yes/no parameter accepts a boolean, and an `ElementId` must exist in the same document. A pipeline may contain several `SetParameter` steps, `Delete` remains the terminal final step, a value that cannot be converted leaves the parameter unchanged and fails the fix, and the value formula is compiled once when the rule is registered; writing a type parameter logs a warning because every instance of that type changes.
+- The shipped English and Russian example configurations installed by the welcome wizard demonstrate the parameter fix: the `CSTM001` element check carries a configured fix that fills the empty Comments parameter, so its finding disappears on the next run.
+
+### Fixed
+
+- A configured rule is no longer dropped when one of its fix or visualization pipelines is invalid: the invalid pipeline is skipped and the configuration error names the rule, the pipeline and the reason, while the diagnostic stays registered with its other pipelines. Previously one invalid pipeline removed the whole rule.
+
 ## [3.0.3] - 2026-11-01
 
 ### Fixed

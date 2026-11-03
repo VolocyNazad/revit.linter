@@ -25,6 +25,23 @@ public sealed class ExampleConfigurationTests
     [Theory]
     [InlineData("")]
     [InlineData("ru")]
+    public void Comments_example_rule_declares_a_parameter_fix(string languageFolder)
+    {
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            Read(languageFolder, ConfigurationPathUtils.DiagnosticsConfigFileName));
+        DiagnosticRule rule = Assert.Single(file.Rules, candidate => candidate.Code == "CSTM001");
+        ElementFixPipelineDefinition fix = Assert.Single(rule.Fixes);
+        ElementFixStepDefinition step = Assert.Single(fix.Steps);
+
+        Assert.False(string.IsNullOrWhiteSpace(fix.Name));
+        Assert.Equal("SetParameter", step.Type);
+        Assert.Equal("ALL_MODEL_INSTANCE_COMMENTS", step.Parameter);
+        Assert.False(string.IsNullOrWhiteSpace(step.Value));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("ru")]
     public void Practical_tour_configuration_uses_the_single_file_format(string languageFolder)
     {
         DiagnosticConfigurationFile? tourFile = Read(languageFolder, ConfigurationPathUtils.PracticalTourFileName);

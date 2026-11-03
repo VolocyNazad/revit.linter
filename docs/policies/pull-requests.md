@@ -10,6 +10,7 @@ Every change reaches `main` and `dev` through a short-lived branch and a pull re
 | --- | --- | --- |
 | `feature/<ticket>-<slug>` | `dev` | `dev` |
 | `fix/<ticket>-<slug>` | `dev` | `dev` |
+| `chore/<slug>` | `dev` | `dev` |
 | `release/<version>` | `dev` | `main` |
 | `hotfix/<version>` | `main` | `main` |
 

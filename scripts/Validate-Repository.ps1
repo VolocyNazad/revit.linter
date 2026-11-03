@@ -173,4 +173,26 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
     }
 }
 
+# Tracked text files are UTF-8. A broken byte sequence in source or documentation is a defect: the
+# compiler then reads the file with a locale-dependent fallback, and tools cannot read it at all.
+if (Get-Command git -ErrorAction SilentlyContinue) {
+    $textExtensions = @('.cs', '.md', '.yml', '.yaml', '.json', '.xml', '.csproj', '.props', '.targets',
+        '.ps1', '.psm1', '.txt', '.config', '.slnx', '.sln', '.addin', '.xaml', '.resx', '.sh')
+    $strictUtf8 = [Text.UTF8Encoding]::new($false, $true)
+    $invalidTextFiles = @()
+    foreach ($relative in @(& git -C $root -c core.quotepath=false ls-files)) {
+        if ($textExtensions -notcontains [IO.Path]::GetExtension($relative)) { continue }
+        $trackedPath = Join-Path $root $relative
+        if (-not (Test-Path -LiteralPath $trackedPath -PathType Leaf)) { continue }
+        try {
+            [void]$strictUtf8.GetString([IO.File]::ReadAllBytes($trackedPath))
+        } catch {
+            $invalidTextFiles += $relative
+        }
+    }
+    if ($invalidTextFiles) {
+        throw "Text files are not valid UTF-8: $($invalidTextFiles -join ', ')"
+    }
+}
+
 Write-Host "Repository policy validation passed: $($solution.Name); $($listed.Count) solution items; $($markdownFiles.Count) Markdown files checked."

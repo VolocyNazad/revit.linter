@@ -6,7 +6,7 @@ They define the repository-specific stack, testing expectations and maintenance 
 
 Branches follow the [branching policy](docs/policies/branching.md): `main` holds
 the released state, `dev` integrates the next release, and every change arrives
-through a short-lived `feature/`, `fix/`, `release/` or `hotfix/` branch and a
+through a short-lived `feature/`, `fix/`, `chore/`, `release/` or `hotfix/` branch and a
 pull request. The [pull request policy](docs/policies/pull-requests.md) defines what a pull
 request must contain.
 
