@@ -4,19 +4,19 @@ Read when: you need the project that owns a responsibility, or you add, move or 
 
 Paths in this document are relative to the repository root.
 
-The solution is a set of small modules: each project owns one primary responsibility, its contracts,
-its implementation and its composition extensions. `src/` holds the modules; most are named
+Each project in the solution owns one primary responsibility, its contracts, its implementation and its
+composition extensions. `src/` holds the modules; most are named
 `Revit.Linter.<Area>`, and `VolocyNazad.Revit.Sugar` holds Revit API extensions outside the
 `Revit.Linter.*` name space. The dependency direction, the abstraction seams and the interaction
 contracts are in [module boundaries](../architecture.md#module-boundaries).
 
 ## Core and shared contracts
 
-`Revit.Linter.Core.Abstractions` owns the part of the shared diagnostic surface that compiles without
-Revit: rule models, rule types, severity, parameters and fix/visualization pipeline definitions, the
-diagnostic identity, state, tags, verdict and feedback models, documentation pages, UI activity facts,
-product identity, the configuration-reading contracts and the host seams that carry no Revit type. It
-targets `netstandard2.0` and must not reference the Revit API, WPF or the Revit SDK.
+`Revit.Linter.Core.Abstractions` owns the shared diagnostic surface that compiles without Revit: rule
+models, rule types, severity, parameters and fix/visualization pipeline definitions, the diagnostic
+identity, state, tags, verdict and feedback models, documentation pages, UI activity facts, product
+identity, the configuration-reading contracts and the host seams that carry no Revit type. It targets
+`netstandard2.0` and must not reference the Revit API, WPF or the Revit SDK.
 
 `Revit.Linter.Core` owns the Revit-facing contracts of the same surface: element and document
 diagnostics, their filters and fixes, visualization pipelines and contexts, catalog and registration
@@ -26,23 +26,20 @@ The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `I
 `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream` and
 `IFormulaCompilationNotifier`. `IRevitIdlingScheduler`, which takes `UIApplication`, stays with the
 Revit-facing contracts in `Revit.Linter.Core/Abstractions`. Their implementations live in
-`src/Revit.Linter/Infrastructure/Services` and are registered by the host; modules depend only on the
+`src/Revit.Linter/Infrastructure/Services` and the host registers them; modules depend only on the
 contracts.
 
 `Revit.Linter.DiagnosticReportPresenter.Interactions` holds the contracts other modules and the host
 use for that presenter (`IDiagnosticReportPresenter`, `IVisualizationViewActivator`), so no consumer
-has to reference the presenter project for them. A presenter that needs such an outward contract gets
-a matching `<Module>.Interactions` project instead of exposing it from its implementation assembly.
-
-The dependency and reference rules for these projects are in
-[module boundaries](../architecture.md#module-boundaries).
+references the presenter project for them. A presenter that needs such an outward contract gets a
+matching `<Module>.Interactions` project instead of exposing it from its implementation assembly.
 
 ## Configuration
 
 `Revit.Linter.DiagnosticConfiguration` owns the configuration file envelope, YAML reading,
 type-specific rule validation and the comment-preserving text editor used to write configuration
 changes. It is Revit-independent; `Revit.Linter.ConfigurationPath` keeps the Revit-version-aware paths
-behind `IConfigurationPaths`, file discovery and change watching, and delegates the format work to it.
+behind `IConfigurationPaths`, file discovery and change watching, and delegates format work to it.
 The startup migration of the legacy split files and the validation and dispatch rules are in
 [configuration and diagnostics](../architecture.md#diagnostics-and-reports).
 
@@ -54,7 +51,7 @@ are kept in the transaction cache. Diagnostic modules, the diagnostic service an
 definers reach `IRevitTransactionMemoryCache` only through its `IDocumentQueryService`; the query keys
 and their caching rules are in [diagnostics and reports](../architecture.md#diagnostics-and-reports).
 
-`Revit.Linter.ParameterValues` owns the parameter value model shared by configuration-driven logic. It
+`Revit.Linter.ParameterValues` owns the parameter value model used by configuration-driven logic. It
 resolves a parameter identifier (a `BuiltInParameter` name, a shared parameter GUID or the display
 name) and converts between the Revit storage value and the formula value. Reading and writing are
 explicit operations with a stable failure code instead of a written default value; the conversion
@@ -69,46 +66,50 @@ presenters adapt `ElementId` values through the generic link factory.
 configuration formulas into document predicates, element functions and native element filters. The
 diagnostic modules share them through `AddFormulaFactories` and compile the formulas of every
 configured rule while they register it. The runtime factories keep their fallback for any remaining
-compile failure, which is logged and reported through `IFormulaCompilationNotifier`.
+compile failure, logged and reported through `IFormulaCompilationNotifier`.
 
 ## Presentation
 
 `Revit.Linter.Presentation` holds shared WPF composition infrastructure. Its `ViewLocatorExtension`
 resolves an embedded view from DI by the corresponding view-model type; it is used only at module
-composition boundaries, not as a general service locator. The project also holds the view-model bases
-in `ViewModels` (`InitializableObservableObject` with the initialize and deinitialize commands, and
-`RevitInteractionViewModel`, which observes the host-published `IRevitEventSource` events and reports
-them as `RevitEventType`), `ReportRowViewModel` for the row state shared by the diagnostic and fix
-reports, `FilteredRowCollection` for the collection-view, sort and filter plumbing shared by the list
-panes, and `BindingProxy` for bindings outside the visual tree. It references `Revit.Linter.Core` and
-the Revit API for the row type's element identifiers, and `Revit.Linter.ReportMessaging` for the shared
-message parser.
+composition boundaries, not as a general service locator.
+
+The project also holds the view-model bases in `ViewModels` (`InitializableObservableObject` with the
+initialize and deinitialize commands, and `RevitInteractionViewModel`, which observes the
+host-published `IRevitEventSource` events and reports them as `RevitEventType`), `ReportRowViewModel`
+for the diagnostic and fix row state, `FilteredRowCollection` for the collection-view, sort and filter
+plumbing shared by the list panes, and `BindingProxy` for bindings outside the visual tree.
+
+It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers, and
+`Revit.Linter.ReportMessaging` for the shared message parser.
 
 `Revit.Linter.OpenedDocuments` owns the shared opened-document selector of the report and fix panes. It
-exposes the selector through `IOpenedDocuments` and the stable `OpenedDocument` item model, so those
-panes bind to the contract and never reference the selector view model; the view model keeps the
-Revit-aware refresh of the open document list.
+exposes the selector through `IOpenedDocuments` and the stable `OpenedDocument` item model, so the panes
+bind to the contract and never reference the selector view model; the view model keeps the Revit-aware
+refresh of the open document list.
 
 Each presenter project keeps the design-time data of its views next to them in `DesignData/`
 (`<ViewName>DesignData` classes wired through `d:DataContext` with `IsDesignTimeCreatable`); they exist
-for the XAML designer only, mirror the binding paths of their view and read the same localized
-resources, so the preview never shows empty fields. `ViewLocatorExtension` resolves the design-time view
-and its data for a composed sub-view when the designer has no service provider, and views, windows and
-dialogs whose runtime constructor needs services keep a public parameterless design-time constructor.
-The view, view-model and design-time rules are in the [presentation policy](../policies/presentation.md).
+for the XAML designer only, mirroring the binding paths and localized resources of their view.
+
+`ViewLocatorExtension` resolves the design-time view and its data for a composed sub-view when the
+designer has no service provider, and views, windows and dialogs whose runtime constructor needs
+services keep a public parameterless design-time constructor. The view, view-model and design-time
+rules are in the [presentation policy](../policies/presentation.md).
 
 `Revit.Linter.ThemeManaging` owns the look shared by all views and depends on no control library.
 `SharedThemeResources` is the single resource dictionary with the palette and the style and template of
-every control the add-in uses, drawn flat and dense like the Revit palettes; each root view merges it
-instead of declaring colors or restyling controls itself. Views refer only to its `Linter*` keys and
-take the font and the colors from the `LinterViewRoot` style set on the root element. Colors live in
-`LightPalette` and `DarkPalette` next to it: both declare the same `Linter*Brush` keys, with values
-taken from the Revit interface, and styles reference them only through `DynamicResource`. `IThemeService`
-calls `SharedThemeResources.ApplyTheme` for registered element trees when the Revit theme changes.
-`Controls` holds what the styles need beyond WPF: `PathIcon` with its `IconKind` outlines (from Material
-Design Icons, Apache License 2.0) and the `Hint.Text` attached property for the text shown in an empty
-text box. The dictionaries are XAML-compiled classes that views reference by type rather than by a pack
-URI, which survives ILRepack.
+every control the add-in uses; each root view merges it instead of declaring colors or restyling
+controls itself. Views refer only to its `Linter*` keys and take the font and the colors from the
+`LinterViewRoot` style set on the root element.
+
+Colors live in `LightPalette` and `DarkPalette` next to it: both declare the same `Linter*Brush` keys,
+and styles reference them only through `DynamicResource`.
+
+`IThemeService` calls `SharedThemeResources.ApplyTheme` for registered element trees when the Revit
+theme changes. `Controls` holds what the styles need beyond WPF: `PathIcon` with its `IconKind` outlines
+(from Material Design Icons, Apache License 2.0) and the `Hint.Text` attached property for the empty
+text box hint.
 
 `DocumentationPage` in `Revit.Linter.Core.Abstractions` names a Wiki page by its English and Russian
 page names and builds its address for the current UI culture. Diagnostic registrations carry the page of
@@ -116,27 +117,26 @@ their module, ribbon buttons use it for F1 help, and the report and diagnostics 
 Wiki page must be renamed in the code that refers to it.
 
 `HelpToolTip` in `Revit.Linter.Behaviors` gives a pane control a ribbon-like tooltip through attached
-properties (title, description, note). Its inherited `HelpCommand`, set once on the root of a view, is
-executed when F1 is pressed while a tooltip is open; the key is caught by a thread keyboard hook that
-exists only while the tooltip is shown, because a dockable pane does not have the keyboard focus on
-hover. View models open pages through `IDocumentationLauncher`, implemented by the add-in host.
+properties (title, description, note). F1 while a tooltip is open executes its inherited `HelpCommand`,
+set once on the root of a view. View models open pages through `IDocumentationLauncher`, implemented by
+the add-in host.
 
 ## Diagnostics and reports
 
 `Revit.Linter.DiagnosticReportExporting` owns the diagnostic report export: the shared export document
 contract, the CSV/JSON/YAML/HTML exporters behind `IDiagnosticReportExporter`, and the
 `IDiagnosticReportExportService` orchestration (suggested file name, export document, exporter choice).
+
 The presenter supplies plain finding data with cultures and labels and keeps the
 `DiagnosticReportExportedActivity` publishing; the modal save-file dialog stays behind
-`ISaveFileDialogService`, keeping `Microsoft.Win32` calls out of the presenter. The project has no
-Revit API dependency, so its snapshot-covered formats stay headless-testable. The ownership rules are in
+`ISaveFileDialogService`. The project has no Revit API dependency. The ownership rules are in
 [diagnostics and reports](../architecture.md#diagnostics-and-reports).
 
 `tests/Revit.Linter.CollisionDiagnostics.RevitTests` owns the collision fixture builder: it creates a
 host document with two shared-coordinates links whose walls, floors and system runs overlap the host
-content, covering volumetric hits as well as touch-only and isolated no-collision controls, so collision
-rules with link checks enabled can be verified. The builder lives in the test project instead of a
-product module, so the add-in ships no test code and the diagnostics tab has no test-tooling panel.
+content, covering volumetric and touch-only hits and no-collision controls. The builder lives in the
+test project instead of a product module, so the add-in ships no test code and the diagnostics tab has
+no test-tooling panel.
 
 ## Element operations
 
@@ -148,8 +148,7 @@ restores their sessions in reverse order; the session and reversal rules are in
 
 The diagnostic report presenter activates a persistent `Revit Linter — Visualization` isometric view
 before applying any pipeline. The host owns creation and activation behind `IVisualizationViewActivator`,
-keeping `RevitAPIUI` calls out of the presenter while allowing crop and combined visualizations to use a
-predictable 3D view.
+keeping `RevitAPIUI` calls out of the presenter.
 
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes consumed by
 the diagnostic report presenter. A configured step deletes its element sets or writes one parameter
@@ -159,7 +158,8 @@ rules are in [element fixing](../architecture.md#element-fixing).
 `Revit.Linter.ElementIgnoring` owns the ignore list behind `IIgnoreElementDetector`,
 `IIgnoreElementProvider` and `IIgnoreListManager`; storage details never leave the module. The entries
 live inside the document as Extensible Storage on a single `DataStorage`, with one entry per element and
-diagnostic code or per document and code, so any element can be ignored without adding parameters to it.
+diagnostic code or per document and code.
+
 `Revit.Linter.IgnoreListPresenter` shows the ignore list of the active document in its own dockable pane,
 where entries can be selected or removed, and reaches the list only through `IIgnoreListManager`. The
 storage and cache rules are in [element ignoring](../architecture.md#element-ignoring).
@@ -170,32 +170,35 @@ storage and cache rules are in [element ignoring](../architecture.md#element-ign
 installation and the tutorial sample handling. `Revit.Linter.PracticalTourPresenter` owns the optional
 practical tour, its managed `TOUR001` configuration and its dockable pane; its contracts live in
 `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend on `IPracticalTour`
-without referencing the presenter implementation. Both presenters share the per-user onboarding state
-(`welcomeSettings.yml` in the settings value store) owned by `Revit.Linter.OnboardingState`: it keeps the
-completed wizard version, the example offers per Revit version and the resumable practical-tour progress
-per Revit version.
+without referencing the presenter implementation.
+
+Both presenters share the per-user onboarding state (`welcomeSettings.yml` in the settings value store)
+owned by `Revit.Linter.OnboardingState`: it keeps the completed wizard version, the example offers per
+Revit version and the resumable practical-tour progress per Revit version.
 
 The installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/`
-(English) and its `ru/` subfolder, embedded as resources, so the Wiki and the product share one source.
-The host supplies the ribbon tab name, pane and link actions through `IWelcomeHost`, and the tour's pane,
-notification and diagnostics-filter actions through `IPracticalTourHost`. The wizard's headless rules
-(example composition, installation into `examples\` with a different existing file backed up to a
-`.bak-<timestamp>` copy, first-run state) are covered by `Revit.Linter.WelcomePresenter.Tests`, and the
-tour's state machine and managed configuration by `Revit.Linter.PracticalTourPresenter.Tests`; the WPF
-views themselves are not.
+(English) and its `ru/` subfolder, embedded as resources. The host supplies the ribbon tab name, pane
+and link actions through `IWelcomeHost`, and the tour's pane, notification and diagnostics-filter
+actions through `IPracticalTourHost`.
+
+The wizard's headless rules (example composition, installation into `examples\` with a different
+existing file backed up to a `.bak-<timestamp>` copy, first-run state) are covered by
+`Revit.Linter.WelcomePresenter.Tests`, and the tour's state machine and managed configuration by
+`Revit.Linter.PracticalTourPresenter.Tests`; the WPF views themselves are not.
 
 The wizard content version is raised so an upgraded user is offered the examples step again once per
 Revit version. Debug builds show the whole wizard on every Revit start; release builds show only the
 steps the user has not seen. The practical tour observes neutral completed UI facts published through
 `IUserInterfaceActivityStream`; diagnostic presenters do not reference welcome or practical-tour presenter
-types. Its WPF emphasis is owned by a disposable highlight session, so closing or restarting the tour
-restores every affected control. A non-blocking spotlight dims the surrounding pane, outlines the active
-target with a soft pulsing halo and labels it as the next step; both pulse while Windows client-area
-animations are enabled. A target that is a button (not a check box, a radio button or another control)
-additionally glows through its own element effect and takes an accent frame on the button itself, while
-rows, text and other surfaces take no element effect, so their inner text never casts accent shadows. The
-host also brings the required pane to the foreground; the tour is hosted in a right-side Revit dockable
-pane and its registration and visibility remain host actions behind `IPracticalTourHost`.
+types.
+
+Its WPF emphasis is owned by a disposable highlight session, so closing or restarting the tour restores
+every affected control. A non-blocking spotlight dims the surrounding pane, outlines the active target
+and labels it as the next step; a button target additionally glows through its own element effect and
+takes an accent frame.
+
+The host also brings the required pane to the foreground; the tour is hosted in a right-side Revit
+dockable pane and its registration and visibility remain host actions behind `IPracticalTourHost`.
 
 The tour's managed state, its removal and the `TOUR001` ordering are in
 [presentation](../architecture.md#presentation).
@@ -203,20 +206,20 @@ The tour's managed state, its removal and the `TOUR001` ordering are in
 ## Updater and installer
 
 The updater lives in `updater/src/` and its tests in `updater/tests/`. `updater/Directory.Packages.props`
-replaces the root central package versions for everything under `updater/` (MSBuild uses the nearest file
-and it does not import the root one), so updater dependencies can be versioned independently of the Revit
-add-in. `updater/Directory.Build.props` likewise replaces the root one: the updater projects use
-`Microsoft.NET.Sdk` instead of `VolocyNazad.Revit.Sdk` and target `net8.0-windows` explicitly, except the
-notification executable, which adds the Windows 10 version to that target framework; all of them have
-plain `Debug`/`Release` configurations because the updater runs outside Revit. Nothing in the root solution
-references the updater projects; the add-in only starts `Revit.Linter.Updater.exe` by path, and the release
-build publishes the updater project directly.
+replaces the root central package versions for everything under `updater/`, so updater dependencies can
+be versioned independently of the Revit add-in. `updater/Directory.Build.props` likewise replaces the
+root one: the updater projects use `Microsoft.NET.Sdk` instead of `VolocyNazad.Revit.Sdk` and target
+`net8.0-windows` explicitly, except the notification executable, which adds the Windows 10 version to
+that target framework; all of them have plain `Debug`/`Release` configurations.
 
-`Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison, check
-scheduling, per-user state persistence, and single-instance coordination. `Revit.Linter.Updater` is the
-short-lived executable entry point; it must remain free of Revit API dependencies so the installer and
-sign-in startup can run it outside Revit. The build-unit rules for `updater/` are in the
-[build and toolchain policy](../policies/build.md), and the runtime update rules are in
+Nothing in the root solution references the updater projects; the add-in only starts
+`Revit.Linter.Updater.exe` by path, and the release build publishes the updater project directly.
+
+`Revit.Linter.Updater.Core` contains Revit-independent release discovery, stable-version comparison,
+check scheduling, per-user state persistence, and single-instance coordination. `Revit.Linter.Updater`
+is the short-lived executable entry point; it must remain free of Revit API dependencies. The build-unit
+rules for `updater/` are in the [build and toolchain policy](../policies/build.md), and the runtime
+update rules are in
 [packaging, releases and updates](../architecture.md#packaging-releases-and-updates).
 
 Its product icon is embedded in the executable and reused by the MSI registration shown in Windows
@@ -239,39 +242,43 @@ configuration-specific paths under `bin`.
 
 Update discovery runs through GitHub's `/releases/latest` endpoint (`ProductIdentity.DefaultReleaseApiUrl`),
 which returns only the latest published release that is neither a draft nor a pre-release; the client
-additionally rejects draft and pre-release payloads. Only a newer **stable** version can produce an
-update. The updater runs at Windows sign-in (at most once every 24 hours by default, subject to policy and
-user settings) and on demand from the ribbon command, and shows one Windows notification per new stable
-version with **Download**, **What's new**, **Later** and **Skip this version**. A version that was already
-notified, skipped or postponed is remembered in the updater state. The add-in itself never contacts GitHub
-and the command does not modify the model. What the download may do is in
+also rejects draft and pre-release payloads. Only a newer **stable** version can produce an update.
+
+The updater runs at Windows sign-in (at most once every 24 hours by default, subject to policy and user
+settings) and on demand from the ribbon command, and shows one Windows notification per new stable
+version with **Download**, **What's new**, **Later** and **Skip this version**. A version that was
+already notified, skipped or postponed is remembered in the updater state. The add-in itself never
+contacts GitHub and the command does not modify the model. What the download may do is in
 [packaging, releases and updates](../architecture.md#packaging-releases-and-updates).
 
-Release packaging produces one per-user MSI containing every supported Revit build and the shared updater.
-It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific manifests
-under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current user's `Run`
-key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with the stable
-product version. The feature-tree installer UI keeps the per-user installation directory fixed. Manifest
-assembly paths still use the effective MSI `INSTALLDIR`, keeping silent and administrative invocations
-internally consistent. The first unified installation also detects and removes older per-Revit-version
-products by their legacy upgrade codes, preventing duplicate Programs and Features entries during
-migration.
+Release packaging produces one per-user MSI containing every supported Revit build and the shared
+updater. It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific
+manifests under `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current
+user's `Run` key. The MSI has one stable `UpgradeCode`; its product code changes deterministically with
+the stable product version. The feature-tree installer UI keeps the per-user installation directory
+fixed.
+
+Manifest assembly paths still use the effective MSI `INSTALLDIR`. The first unified installation also
+detects and removes older per-Revit-version products by their legacy upgrade codes.
 
 The MSI exposes one required `Core` feature and one optional feature per supported Revit year. A
-`ProductName` lookup under `HKLM\SOFTWARE\Autodesk\Revit\Autodesk Revit <year>\Components` selects installed
-versions by default; the feature-tree UI lets the user override that selection. Manifest synchronization
-follows the requested feature states on install, repair and modify. Before any file change, setup stops the
-short-lived updater and refuses to continue while a Revit process is running.
+`ProductName` lookup under `HKLM\SOFTWARE\Autodesk\Revit\Autodesk Revit <year>\Components` selects
+installed versions by default; the feature-tree UI lets the user override that selection. Manifest
+synchronization follows the requested feature states on install, repair and modify. Before any file
+change, setup stops the short-lived updater and refuses to continue while a Revit process is running.
 
-Product-wide identity (vendor, product and repository names, GitHub destinations, registry policy location,
-updater synchronization name) is owned by `ProductIdentity` in `Revit.Linter.Core.Abstractions`
-(`src/Revit.Linter.Core.Abstractions/ProductIdentity.cs`). The updater and the installer compile the same
-file as a source link, so they stay independent build units without a project reference to the Revit API.
+Product-wide identity (vendor, product and repository names, GitHub destinations, registry policy
+location, updater synchronization name) is owned by `ProductIdentity` in
+`Revit.Linter.Core.Abstractions` (`src/Revit.Linter.Core.Abstractions/ProductIdentity.cs`). The updater
+and the installer compile the same file as a source link, so they stay independent build units without a
+project reference to the Revit API.
+
 Path composition stays with the owning module: `IConfigurationPaths` for user configurations
 (`Documents\Revit Linter\<year>\`, `diagnostics.config.yaml`, `examples\`, `debug\`, `tour\`, `legacy\`, and
 the `VersionsDirectory` that the startup migration enumerates), `UpdaterPaths` in
 `Revit.Linter.Updater.Core` for `%LOCALAPPDATA%\Volocy\Revit.Linter\updater\` (`logs/`, `state.json`,
 `downloads/`), `InstallerProduct` for MSI identity and manifest paths, and the composition root for add-in
 logs (`...\logs\`) and the ValueStore settings directory (`%LOCALAPPDATA%\Volocy\Revit.Linter\settings\`).
-Renaming the vendor, product or repository requires editing `ProductIdentity` only; the `build/` asset name
-`RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.
+
+Renaming the vendor, product or repository requires editing `ProductIdentity` only; the `build/` asset
+name `RevitLinter-<version>.msi` mirrors `ProductIdentity.GetMsiAssetName`.

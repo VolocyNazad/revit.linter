@@ -1,10 +1,10 @@
 # Migration registry
 
-This folder is the single source of truth about **user-visible migrations**: which product version introduced
-a breaking change, from and to which versions the migration applies, why it exists, what the product does
+This folder is the single source of truth for **user-visible migrations**: which product version introduced
+a breaking change, which versions the migration applies to, why it exists, what the product does
 automatically and what the user must do by hand, and when the transitional behaviour is removed.
 
-The registry complements the other documents instead of repeating them:
+The registry complements the other documents without repeating them:
 
 | Document | Answers |
 |---|---|
@@ -17,14 +17,14 @@ The registry complements the other documents instead of repeating them:
 | `TODO.md` | Scheduled work, including the tracked removal task |
 | `docs/testing/*-manual-checklist.md` | The manual checks that verify the migration in a live Revit |
 
-The registry does not replace the release changelog and is not published to the Wiki: users read the Wiki
-page and the release notes, contributors read this folder.
+Users read the Wiki page and the release notes; contributors read this folder. The registry does not
+replace the release changelog and is not published to the Wiki.
 
 ## Lifecycle rules
 
-The principles, the version window, the data-safety guarantees and the removal gate are defined by
-the [migration policy](../policies/migrations.md). This registry records the entries, their status and
-the operational steps for adding and retiring one.
+The principles, version window, data-safety guarantees and removal gate are defined by the
+[migration policy](../policies/migrations.md); this registry records the entries, their status and the
+steps for adding and retiring one.
 
 ## Status lifecycle
 
@@ -43,22 +43,20 @@ recorded history of a shipped migration.
 |---|---|---|---|---|---|
 | [MIG-0001](0001-single-configuration-file.md) | `Active` | product ≤ 2.0.0 (split YAML files) → configuration format 2 (`3.0.0`); the product moves the legacy files into `legacy` folders automatically | `3.0.0` | planned 4.0.0, gated | [Migrating configuration](../../wiki/Migrating%20configuration.md) (EN) · [Миграция конфигурации](../../wiki/ru/Миграция%20конфигурации.md) (RU) |
 
-Statuses in this table are repeated in every entry; the table is the quick overview, the entry is the detail.
-
 ## Adding an entry
 
-1. Copy the template below into `docs/migrations/<next number>-<kebab-case-title>.md` and fill every field.
-   Mark the status `Planned`.
-2. Decide and write down the four things reviewers will challenge: source version, target version, the exact
-   user action, and the data-safety guarantees.
-3. Write or update the user-facing Wiki guide (both languages) and link it from the entry.
+1. Copy the template below into `docs/migrations/<next number>-<kebab-case-title>.md`, fill every field and
+   mark the status `Planned`.
+2. Decide the four things reviewers will challenge: source version, target version, the exact user action
+   and the data-safety guarantees.
+3. Write or update the bilingual user-facing Wiki guide and link it from the entry.
 4. Add the entry to the [index](#index) and to the solution items
-   (`docs/migrations/` folder in `Revit.Linter.slnx`); `scripts/Validate-Repository.ps1` fails otherwise.
+   (`docs/migrations/` in `Revit.Linter.slnx`); `scripts/Validate-Repository.ps1` fails otherwise.
 5. Add the removal task to `TODO.md`, naming the entry id and the target release.
-6. At release: set the status to `Active`, record the actual tag, mention the migration in the release section
-   of `CHANGELOG.md`, and confirm the Wiki guide matches what shipped.
-7. Add the manual verification of the migration to `docs/testing/` when the workflow needs a live Revit; add
-   headless tests for detection and data safety.
+6. At release: set the status to `Active`, record the actual tag, mention the migration in the release
+   section of `CHANGELOG.md`, and confirm the Wiki guide matches what shipped.
+7. Add manual verification under `docs/testing/` when the workflow needs a live Revit; add headless tests
+   for detection and data safety.
 
 ## Entry template
 

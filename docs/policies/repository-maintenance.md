@@ -4,7 +4,8 @@ Paths mentioned in this policy are relative to the repository root unless a Mark
 
 Read when: adding a file or solution item, or changing the formatting baseline.
 
-Repository-level files are what a contributor and an automated check read first: the root solution lists them, the validator enforces them, and the root configuration applies to every project. This policy defines what the root solution exposes, which root files must exist, how repository-level changes are validated, and the formatting baseline. Documentation content and genres belong to the [documentation policy](documentation.md); this policy owns the repository mechanics around it.
+This policy defines what the root solution exposes, which root files must exist, how repository-level
+changes are validated, and the formatting baseline.
 
 ## Solution items
 
@@ -12,9 +13,9 @@ Repository-level files are what a contributor and an automated check read first:
 - Place root files under the `/solutionItems/` folder, `.github/` and `scripts/` files in matching subfolders, and documentation under `/docs/` with its directory hierarchy.
 - Add, rename and remove solution links in the same change as the corresponding files. A solution folder does not pick up new files by itself.
 - Include only files that exist, each exactly once. Exclude local settings, secrets and generated output; build output is never a solution item.
-- Keep the list explicit, not a filesystem glob, so that it stays reviewable and a missing entry stays visible.
+- Keep the list explicit, not a filesystem glob.
 - Apply the same contract to solution templates.
-- Treat every file under `docs/`, `.github/` and `scripts/` as managed. A new policy file is therefore also a solution item in the `/docs/policies/` folder, which already enumerates the existing policy files; add the link together with the file.
+- Treat every file under `docs/`, `.github/` and `scripts/` as managed. A new policy file is therefore also a solution item in the `/docs/policies/` folder; add the link together with the file.
 
 ## Required root files
 
@@ -26,7 +27,7 @@ Repository-level files are what a contributor and an automated check read first:
 ## Repository validation
 
 - Run `./scripts/Validate-Repository.ps1` after changing repository-level files, documentation or the solution.
-- The same validator runs in CI on every push and pull request (`.github/workflows/repository-policy.yml`). A local run does not replace the CI check, and the CI check does not replace the local run.
+- The same validator runs in CI on every push and pull request (`.github/workflows/repository-policy.yml`). Neither replaces the other.
 - Expect the validator to check required root files, navigation links between the required documents including anchors, and the completeness, uniqueness and validity of solution items. It also fails when Git tracks `bin/` or `obj/` content, when a workflow action is not pinned to a full version tag, or when the solution configurations or the testing-policy version list drift from `Directory.Build.props`.
 - Update the solution together with added, renamed or removed managed files; the validator compares the managed set against the solution list and names what is missing.
 - Do not silence a validator failure by deleting a required file or link. Fix the cause, and when the rule itself is wrong, change the validator and this policy in the same change.
@@ -37,7 +38,7 @@ Repository-level files are what a contributor and an automated check read first:
 - Apply the baseline to every file it matches. Do not add a file-local override that fights it without a reason recorded in the change.
 - Let repository-specific sections add stricter language rules. Do not replace a specialized rule with the shared minimum, and do not weaken the baseline to accommodate one file.
 - Update the file deliberately when a convention changes, and apply the reformat in the same change; do not mix formatting churn with a behaviour change.
-- Keep the baseline file itself in the solution; it is a repository-level file like any other.
+- Keep the baseline file itself in the solution.
 
 ## When to run the validator
 

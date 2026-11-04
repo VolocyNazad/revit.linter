@@ -16,14 +16,9 @@
 ## Why
 
 The old design read three independent YAML files and kept the effective per-diagnostic state (active flag and
-severity) in two separate per-user settings stores, so the same rule had to be traced through four places to
-know what would run. The format also forced three parsers, three validators and three change watchers, made the
-source order between the files implicit, and allowed a rule code to mean different things in different files.
-
-Configuration format 2 replaces that with one versioned file per Revit version. The envelope carries the file
-format version and a rule list; every rule declares its module with `type` (`custom`, `collision`, `parameter`,
-`builtIn`), so source order, validation and the effective state have exactly one representation. This also lets
-the product own its example and practical-tour files in the same format.
+severity) in two separate per-user settings stores. Configuration format 2 replaces that with one versioned file
+per Revit version: the envelope carries the file format version and a rule list, and every rule declares its
+module with `type` (`custom`, `collision`, `parameter`, `builtIn`).
 
 The change is breaking because the old files have no `type` and no version envelope: a file can only be read
 after it is wrapped and each rule is classified. The switches that used to live outside the files now live in
@@ -71,17 +66,13 @@ Nothing else is automatic. In particular the product does **not** import rules, 
    it came from (`custom`, `collision`, `parameter`).
 3. Reproduce the switches that lived in `elementDiagnosticSettings.yml` and `documentDiagnosticSettings.yml`:
    set `isActive`/`severity` on the rule itself for user rules, and add `type: builtIn` entries for built-in
-   checks. The old stores were per user, the new file is per Revit version, so this is repeated in every
-   version folder.
+   checks.
 4. Re-ignore the findings that the old `Linter_Ignored`/`Linter_IgnoredType` project parameters suppressed. The
    old parameters are not migrated, are no longer read, and old ignored findings reappear.
 5. Reinstall the examples from **Getting started** if they were used.
 6. Verify the new list and the skipped-rule notification.
 7. Delete the `legacy` folders only after the new configuration works; the product never deletes them, and they
    are the only way back to an older product version.
-
-The step-by-step guide, including the YAML shape and the skipped-rule message format, is the Wiki page from the
-table above. This entry does not duplicate it.
 
 ## Data safety and rollback
 
@@ -95,8 +86,7 @@ table above. This entry does not duplicate it.
 * The old per-user settings files under `%LOCALAPPDATA%\Volocy\Revit.Linter\settings\` are not moved and not
   read; they stay on disk and are read again by an older product version. The old in-model ignore parameters
   stay in the model in the same way.
-* The managed practical-tour file is the only configuration file that is regenerated. It is product-owned and
-  reproducible; starting the tour writes the same current-format content.
+* The managed practical-tour file is the only configuration file that is regenerated.
 * An existing `examples\diagnostics.config.yaml` is backed up to `.bak-<timestamp>` before the shipped example
   replaces it.
 * The ignore list is not migrated: findings ignored under the old parameters reappear, and the current
@@ -109,11 +99,10 @@ Headless coverage (all in the release that ships the migration):
 * `tests/Revit.Linter.ConfigurationPath.Tests/ConfigurationMigrationServiceTests.cs` — moves the legacy files of
   every version folder, including the `examples` and `debug` copies; preserves the subfolder layout, gives a
   collision a numeric suffix, leaves an unreadable file in place and reports it as remaining, writes
-  `legacy\README.txt`, and is a no-op on a second run and on a clean folder. The result model reports moved and
-  remaining files.
+  `legacy\README.txt`, and is a no-op on a second run and on a clean folder.
 * `ConfigurationPathUtilsTests` — the legacy paths are computed from a version folder rather than static state,
   and a newly created configuration file carries only the format header.
-* The migration warning runs in the add-in host, which has no headless test project; its behaviour (one warning
+* The migration warning runs in the add-in host; its behaviour (one warning
   per product version, shown when the result has findings or a previous start left it pending, queued before the
   wizard, recorded as shown only after it was displayed) is covered by the manual checklist.
 * `tests/Revit.Linter.WelcomePresenter.Tests/ExampleConfigurationInstallerTests.cs` — an existing example file
@@ -126,9 +115,6 @@ Manual verification: the **Upgrade from 2.0.0** section of
 absence of a banner, the moved files in several version folders with subfolder preservation, `legacy\README.txt`,
 the file that could not be moved, the re-offered examples step with the backup, the stale tour file, and the
 skipped-rule reporting.
-
-After a correct migration the Diagnostic list shows the expected user and built-in overrides, skips and reports
-only genuinely invalid rules, shows no banner, and produces no configuration error from the managed tour file.
 
 ## Removal gate
 
@@ -146,12 +132,12 @@ Support may be removed only when **all** conditions hold:
 - [ ] The cleanup checklist below is complete, the solution builds without warnings, all headless tests pass,
       and `scripts/Validate-Repository.ps1` passes.
 
-The removal itself is a normal breaking-cleanup change: update this entry, `docs/architecture.md`,
-`docs/FEATURES.md`, the release notes and the `TODO.md` task in the same change.
+Update this entry, `docs/architecture.md`, `docs/FEATURES.md`, the release notes and the `TODO.md` task in the
+same change.
 
 ## Cleanup checklist
 
-Delete when the removal gate is met. Each item exists only for this migration.
+Delete when the removal gate is met.
 
 **ConfigurationPath module**
 
