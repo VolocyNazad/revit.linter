@@ -19,7 +19,9 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `updater/` - the standalone updater (`src/`, `tests/`) with its own
   `Directory.Build.props`, `Directory.Packages.props` and `Revit.Linter.Updater.slnx`; it is not part of the root solution
 - `build/` - solution building, compilation, package
-- `scripts/` - repository validation, release verification and CI helper scripts
+- `scripts/` - repository validation, changelog composition, release verification and CI helper scripts
+- `changelog.d/` - pending changelog fragments, one per change, composed into `CHANGELOG.md` when a
+  release is prepared
 - `output/` - artifacts after building
 - `benchmark/` - benchmarking
 - `sandbox/` - a separate solution (`Revit.Linter.Sandbox.slnx`) for
@@ -112,6 +114,9 @@ The projects, their responsibilities and the updater and installer mechanics are
 - `docs/diagnostics/adding.md` describes the end-to-end workflow for adding a built-in diagnostic.
 - `docs/repository.md` describes the project, repository structure and technology stack;
   the [module inventory](repository/modules.md) lists the projects and their responsibilities.
+- `changelog.d/` holds the pending changelog fragments: a change adds one, and the release
+  preparation composes them into `CHANGELOG.md`; the rules are in the
+  [changelog policy](policies/changelog.md).
 - The [changelog archive](changelog/archive.md) holds releases older than the current major version;
   `CHANGELOG.md` keeps `[Unreleased]` and the current major release line.
 - `docs/architecture.md` records stable module boundaries and design decisions.
@@ -170,6 +175,9 @@ and complete, valid Solution Items. The `.github/workflows/repository-policy.yml
 pushes and pull requests. See the
 [repository maintenance policy](policies/repository-maintenance.md#repository-validation).
 
+The same workflow runs `scripts/Update-Changelog.ps1 -Verify`, which checks the pending changelog
+fragments: the category directories, the file names and the content.
+
 ## Formatting
 
 The root `.editorconfig` defines the portable formatting baseline. Repository-specific sections may
@@ -216,7 +224,8 @@ gate stays green. The workflow does not publish the MSI: the release publish cre
 ending in .RevitTests are compiled with the solution but require a local Revit process to run.
 
 The `repository-policy` workflow runs `./scripts/Validate-Repository.ps1`, which also enforces the
-action pins and the Revit version-matrix consistency, and `./scripts/Verify-Release.ps1`, which checks
+action pins and the Revit version-matrix consistency, `./scripts/Update-Changelog.ps1 -Verify` for the
+pending changelog fragments, and `./scripts/Verify-Release.ps1`, which checks
 the `CHANGELOG.md` structure on every push and pull request. Both workflows cancel a superseded run
 for pull requests, set job timeouts and cache the NuGet packages keyed by the central package files;
 every action reference in `.github/workflows/` is pinned to a full release tag such as

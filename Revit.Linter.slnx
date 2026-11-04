@@ -479,6 +479,7 @@
     <File Path="scripts/Get-RevitConfigurations.ps1" />
     <File Path="scripts/Invoke-HeadlessTests.ps1" />
     <File Path="scripts/Prepare-Wiki.ps1" />
+    <File Path="scripts/Update-Changelog.ps1" />
     <File Path="scripts/Validate-Repository.ps1" />
     <File Path="scripts/Verify-Release.ps1" />
   </Folder>

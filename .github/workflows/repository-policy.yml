@@ -26,6 +26,17 @@ jobs:
         shell: pwsh
         run: ./scripts/Validate-Repository.ps1
 
+      - name: Verify the pending changelog fragments
+        shell: pwsh
+        run: ./scripts/Update-Changelog.ps1 -Verify
+
       - name: Verify the changelog and release inputs
         shell: pwsh
-        run: ./scripts/Verify-Release.ps1
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if ($env:BRANCH -like 'release/*' -or $env:BRANCH -like 'hotfix/*') {
+            ./scripts/Verify-Release.ps1 -AllowUnreleased
+          } else {
+            ./scripts/Verify-Release.ps1
+          }

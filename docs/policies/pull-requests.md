@@ -34,7 +34,8 @@ the `build-and-test` workflow and the `repository-policy` workflow.
   request whose files are all under `docs/` or `wiki/` or are Markdown skips the Windows jobs; the
   gate stays green.
 - `repository-policy` must pass. It runs `./scripts/Validate-Repository.ps1` for the required files,
-  navigation links and Solution Items, action pins and Revit version matrix consistency, and
+  navigation links and Solution Items, action pins and Revit version matrix consistency,
+  `./scripts/Update-Changelog.ps1 -Verify` for the pending changelog fragments, and
   `./scripts/Verify-Release.ps1` for the `CHANGELOG.md` structure and release inputs on every push
   and pull request.
 - Merge only after both required workflows pass and the pull request has the required approval.
@@ -67,8 +68,8 @@ Before opening a pull request, check every item that applies to the change:
 - Update user documentation and localized strings when user-visible behavior or text changes, as the
   [documentation policy](documentation.md) requires.
 - Review logging for significant operations, refusals and failures when behavior changes.
-- Update the changelog and repository documentation when the development policy requires it,
-  following the [changelog policy](changelog.md).
+- Add the changelog fragment in `changelog.d/` and update the repository documentation when the
+  development policy requires it, following the [changelog policy](changelog.md).
 - Run `./scripts/Validate-Repository.ps1` after changing repository-level files, documentation or the
   solution.
 - Write commit messages as the [commit message policy](commits.md) requires.
@@ -76,8 +77,8 @@ Before opening a pull request, check every item that applies to the change:
 ## Release and hotfix pull requests
 
 - A `release/<version>` pull request targets `main` and carries only fixes; new features wait for the
-  next release. Compose and commit the release section of `CHANGELOG.md` in the release branch before
-  the tag, as the [changelog policy](changelog.md) requires.
+  next release. Compose, edit and finalize the release section with `./scripts/Update-Changelog.ps1`
+  in the release branch before the tag, as the [changelog policy](changelog.md) requires.
 - A `hotfix/<version>` pull request targets `main`. Merge the same branch back into `dev`, or into
   the open release branch when there is one.
 - The tag is created on the merge commit on `main` after the pull request is merged; the branch and
@@ -94,8 +95,8 @@ A pull request uses `.github/pull_request_template.md` and keeps its three secti
 - **Branch** — the source branch, its base and target, and confirmation that `main` and `dev` are
   not changed by a direct push.
 - **Checklist** — the build and test result for the affected projects,
-  `./scripts/Validate-Repository.ps1`, and the changelog update when the development policy requires
-  it.
+  `./scripts/Validate-Repository.ps1`, and the changelog fragment when the development policy
+  requires it.
 
 The Branch and Checklist items restate rules owned by the [branching policy](branching.md) and the
 [changelog policy](changelog.md); complete them.

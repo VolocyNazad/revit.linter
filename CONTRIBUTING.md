@@ -16,10 +16,10 @@ Tests follow the [testing policy](docs/policies/testing.md): `*.Tests` run in CI
 every supported Revit version, `*.RevitTests` run outside CI on a machine with Revit
 installed.
 
-Keep changes focused. Regular development leaves `## [Unreleased]` in
-[CHANGELOG.md](CHANGELOG.md) empty: the release section is composed from the changes
-since the previous stable tag when a release is prepared. See the
-[changelog policy](docs/policies/changelog.md).
+Keep changes focused. A change carries its changelog entry as one fragment in `changelog.d/`, in
+the same branch as the change; regular development leaves `## [Unreleased]` in
+[CHANGELOG.md](CHANGELOG.md) empty and the release section is composed when a release is prepared.
+See the [changelog policy](docs/policies/changelog.md).
 Before submitting a pull request, check the items that apply to the change:
 
 - Assess whether automated tests or a manual Revit check are needed; add or update
@@ -34,7 +34,7 @@ Before submitting a pull request, check the items that apply to the change:
   text changes.
 - Review logging for significant operations, refusals and failures when behavior
   changes; follow the [logging policy](docs/policies/logging.md).
-- Update the changelog and repository documentation when required by the
+- Add the changelog fragment and update the repository documentation when required by the
   development policy.
 - Run the repository policy validator after changing repository-level files,
   documentation or the solution:

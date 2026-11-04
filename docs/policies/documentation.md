@@ -53,8 +53,8 @@ policy rule.
   diagnostic itself.
 - A change that adds or removes a user-visible string updates the localized resources and the affected
   Wiki page in both languages.
-- A change covered by the [changelog policy](changelog.md) updates `CHANGELOG.md` in the way that
-  policy requires.
+- A change covered by the [changelog policy](changelog.md) adds its fragment in `changelog.d/` in the
+  way that policy requires.
 - A new documentation file is added as a solution item together with the file; the
   [repository-maintenance policy](repository-maintenance.md) defines the solution items contract.
 - Documentation is not deferred.
