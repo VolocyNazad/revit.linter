@@ -2,8 +2,9 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-Performance work is measured, not estimated. A claim about speed is backed by numbers from a
-repeatable run on a stated environment.
+Read when: adding a benchmark or reporting measurements.
+
+A claim about speed is backed by numbers from a repeatable run on a stated environment.
 
 ## Kinds
 
@@ -12,9 +13,7 @@ repeatable run on a stated environment.
 | Headless | `benchmarks/<Project>.Benchmarks` | a normal process, with BenchmarkDotNet | pure code, collections, parsing, serialization, start-up of components that do not call the Revit API |
 | Revit | `benchmarks/<Project>.RevitBenchmarks` | Revit, through Nice3point.BenchmarkDotNet.Revit | Revit API, `Document`, collectors, transactions |
 
-The suffix follows the same idea as the test policy: the project name says whether a Revit
-process is required. A project without `Benchmarks` or `RevitBenchmarks` is not a benchmark
-project.
+A project without `Benchmarks` or `RevitBenchmarks` is not a benchmark project.
 
 ## When
 
@@ -34,7 +33,7 @@ Code that does not need a running Revit is benchmarked with plain
 - run with `dotnet run -c Release --project benchmarks/<Project>.Benchmarks -- --filter
   "*<Benchmarks>*"`;
 - a headless benchmark that compiles differently per Revit version runs on each of those
-  configurations, so the numbers match the shipped code;
+  configurations;
 - compare against the current `main`/`dev` baseline in the same session.
 
 ## Revit benchmarks
@@ -44,8 +43,7 @@ Code that calls the Revit API is benchmarked with
 which runs the benchmark inside Revit on its single-threaded API context:
 
 - benchmark classes derive from `RevitApiBenchmark`; the package is referenced as
-  `Version="$(MajorRevitVersion).*"`, so each configuration gets the package built for its Revit
-  year;
+  `Version="$(MajorRevitVersion).*"`;
 - open and close documents in `OnGlobalSetup` and `OnGlobalCleanup`; `[GlobalSetup]` and
   `[GlobalCleanup]` cannot be applied twice;
 - run with the solution configuration instead of the default `Release`: use
@@ -57,13 +55,11 @@ which runs the benchmark inside Revit on its single-threaded API context:
 
 ## Not in CI
 
-Neither kind runs in CI. A hosted runner has no Revit, and a shared runner is too noisy for a
-meaningful number. Benchmarks are run locally, before and after the change.
+Neither kind runs in CI. Benchmarks are run locally, before and after the change.
 
 ## Revit versions
 
-Revit benchmarks use the same `Release_*` configurations as the tests, so a run always targets
-one Revit version and one Revit process.
+Revit benchmarks use the same `Release_*` configurations as the tests.
 
 - A number from one version does not transfer to another: a claim that spans versions is
   measured on each of them.

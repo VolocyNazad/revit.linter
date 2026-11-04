@@ -98,6 +98,46 @@ foreach ($item in $listed) {
 $missingItems = @($managed | Where-Object { $_ -notin $listed } | Sort-Object)
 if ($missingItems) { throw "Files missing from Solution Items: $($missingItems -join ', ')" }
 
+# --- CI configuration ------------------------------------------------------------------------
+# Actions are pinned to full release tags (vMAJOR.MINOR.PATCH): a floating major tag is a movable
+# pointer, while a full release tag names one release. The supported Revit version set has one
+# source, Directory.Build.props: the solution and the testing policy must name the configurations
+# the CI matrix resolves from it.
+$workflowsPath = Join-Path $root '.github/workflows'
+foreach ($workflow in Get-ChildItem -LiteralPath $workflowsPath -File -Filter '*.yml') {
+    $text = Read-Utf8File $workflow.FullName
+    foreach ($match in [regex]::Matches($text, '(?m)^\s*(?:-\s+)?uses:\s*(\S+)')) {
+        $reference = $match.Groups[1].Value
+        if ($reference.StartsWith('./', [StringComparison]::Ordinal)) { continue }
+        if ($reference -notmatch '^[^@\s]+@v\d+\.\d+\.\d+$') {
+            throw "Workflow $($workflow.Name) references an action that is not pinned to a full version tag (vMAJOR.MINOR.PATCH): $reference"
+        }
+    }
+}
+
+$releaseConfigurations = @([regex]::Matches(
+        (Read-Utf8File (Join-Path $root 'Directory.Build.props')), 'Release_\d+\.\d+\.\d+') |
+    ForEach-Object Value | Select-Object -Unique | Sort-Object)
+if ($releaseConfigurations.Count -eq 0) {
+    throw 'Directory.Build.props declares no Release_<year>.<major>.<minor> configuration.'
+}
+function Compare-ConfigurationSet([string]$Label, [string[]]$Actual) {
+    $expected = @($releaseConfigurations | Sort-Object -Unique)
+    $actual = @($Actual | Sort-Object -Unique)
+    $missing = @($expected | Where-Object { $_ -notin $actual })
+    $extra = @($actual | Where-Object { $_ -notin $expected })
+    if ($missing -or $extra) {
+        throw "$Label does not match Directory.Build.props: missing $($missing -join ', '); unexpected $($extra -join ', ')."
+    }
+}
+if ($solution.Extension -eq '.slnx') {
+    Compare-ConfigurationSet 'The solution Release_* configurations' @(
+        $xml.Solution.Configurations.BuildType | ForEach-Object { $_.Name } | Where-Object { $_ -like 'Release_*' })
+}
+Compare-ConfigurationSet 'The testing policy version list' @(
+    [regex]::Matches((Read-Utf8File (Join-Path $root 'docs/policies/testing.md')), 'Release_\d+\.\d+\.\d+') |
+        ForEach-Object Value | Select-Object -Unique)
+
 # --- Markdown links and anchors --------------------------------------------------------------
 # Every relative link must resolve to an existing file or directory, and a `#anchor` must point at
 # a heading that exists in the target Markdown document.

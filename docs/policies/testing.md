@@ -2,9 +2,7 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-Tests are the evidence that a change works, and on which Revit versions. The repository
-separates tests by what they need to run: a headless process, a running Revit, or a person
-in front of Revit.
+Read when: adding tests, choosing a test kind or running a suite.
 
 ## Test kinds
 
@@ -14,67 +12,68 @@ in front of Revit.
 | Revit integration | `*.RevitTests` | a machine with the Revit version under test installed and licensed | `Document`, transactions, collectors, selection, services that need a live API context |
 | Manual smoke | - | Revit, by a person | ribbon, windows, dialogs, add-in loading and unloading |
 
-The suffix is a contract: CI and the release checklist select tests by it, and a project
-without `*.Tests` or `*.RevitTests` is not a test project. Prefer the product prefix as well
+The suffix is a contract: CI and the release checklist select tests by it, and a project without
+`*.Tests` or `*.RevitTests` is not a test project. Prefer the product prefix as well
 (`<Product>.Tests`, `<Product>.RevitTests`), but the suffix is what matters.
 
 ## Revit versions
 
-Code that compiles differently per Revit version (`IS2025`, `AFTER2025`, `BEFORE2026`, ...)
-or calls the Revit API must be verified on every supported version. The supported set is the
-`Release_*` configurations of the solution; today that is `Release_2021.1.100`,
-`Release_2022.1.80`, `Release_2023.1.90`, `Release_2024.3.60`, `Release_2025.4.60`,
-`Release_2026.4.10` and `Release_2027.3.0`.
+Code that compiles differently per Revit version (`IS2025`, `AFTER2025`, `BEFORE2026`, ...) or calls
+the Revit API must be verified on every supported version. The supported set is the `Release_*`
+configurations declared in the root `Directory.Build.props`; that file feeds the CI matrix through
+`scripts/Get-RevitConfigurations.ps1`, and the solution configurations and the list below must match
+it. Today the set is `Release_2021.1.100`, `Release_2022.1.80`, `Release_2023.1.90`,
+`Release_2024.3.60`, `Release_2025.4.60`, `Release_2026.4.10` and `Release_2027.3.0`.
 
 - Build and headless tests run on every supported configuration in CI, for every pull request.
 - `*.RevitTests` run outside CI. CI compiles them; they are executed on a machine with Revit
   installed.
-- Before a release tag the full matrix is executed: every `*.RevitTests` project on every
-  supported version, with the results recorded in the release pull request.
-- A pull request that changes version-specific code runs those tests on the versions it
-  touches; the full matrix is still required before the release.
-- Every `#if` branch is behaviour: a test that compiles only one branch does not cover the
-  other.
-- A repository that does not compile against the Revit API is exempt from the version matrix,
-  not from testing.
+- Before a release tag the full matrix is executed: every `*.RevitTests` project on every supported
+  version, with the results recorded in the release pull request.
+- A pull request that changes version-specific code runs those tests on the versions it touches; the
+  full matrix is still required before the release.
+- Every `#if` branch is behaviour: a test that compiles only one branch does not cover the other.
+- A repository that does not compile against the Revit API is exempt from the version matrix, not
+  from testing.
 
 ## New Revit version
 
-Adding support is one change: the configuration in the solution, the SDK support, the CI
-matrix entry, the tests, and a `*.RevitTests` run on that version. Until then the version is
-not supported and must not be published.
+Adding support is one change: the configuration in `Directory.Build.props` and the solution, the SDK
+support, the CI matrix entry the file feeds, the tests, and a `*.RevitTests` run on that version.
+Until then the version is not supported and must not be published.
 
 ## What needs a test
 
 - A bug fix comes with a regression test that fails without the fix.
-- A behaviour change comes with a test of the new behaviour, not only proof that nothing
-  crashes.
+- A behaviour change comes with a test of the new behaviour, not only proof that nothing crashes.
 - MSBuild and SDK logic is tested on a temporary project.
 - Analyzers and generators are tested through the diagnostic or the generated code.
-- Revit-bound logic is covered by `*.RevitTests`; a headless test is added wherever the logic
-  can be detached from `Document`.
-- When a service needs both `RevitAPI` and `RevitAPIUI`, keep the `RevitAPIUI` interaction in a
-  thin boundary and move meaningful document logic behind it so it can be covered with
-  `Nice3point.TUnit.Revit`. Do this where it creates a real testable boundary; do not add
-  interfaces around trivial private UI calls solely to satisfy the rule.
+- Revit-bound logic is covered by `*.RevitTests`; a headless test is added wherever the logic can be
+  detached from `Document`.
+- When a service needs both `RevitAPI` and `RevitAPIUI`, keep the `RevitAPIUI` interaction in a thin
+  boundary and move meaningful document logic behind it so it can be covered with
+  `Nice3point.TUnit.Revit`. Do this where it creates a real testable boundary; do not add interfaces
+  around trivial private UI calls solely to satisfy the rule.
 
-Documentation, formatting, dependency updates and purely visual XAML changes do not need a
-test, but the build must pass.
+Documentation, formatting, dependency updates and purely visual XAML changes do not need a test, but
+the build must pass.
 
 ## Isolation and determinism
 
-- Headless tests do not open Revit, do not use the network and do not write into the
-  repository; temporary data goes to a temporary directory.
-- `*.RevitTests` create their document from a template and close it in the fixture; they never
-  depend on a document the user has open.
+- Headless tests do not open Revit, do not use the network and do not write into the repository;
+  temporary data goes to a temporary directory.
+- `*.RevitTests` create their document from a template and close it in the fixture; they never depend
+  on a document the user has open.
 - No dialogs and no waiting for input in any test.
-- A test does not depend on execution order, locale, registry state or installed add-ins,
-  except for the Revit version it targets.
+- A test does not depend on execution order, locale, registry state or installed add-ins, except for
+  the Revit version it targets.
 
 ## Running the tests
 
-Headless: `dotnet test tests/<Project>.Tests/<Project>.Tests.csproj --configuration
-Release_<version>`, or the built executable, which is what CI uses.
+Headless, all projects of one configuration:
+`./scripts/Invoke-HeadlessTests.ps1 -Configuration Release_<version>`. A single project:
+`dotnet test tests/<Project>.Tests/<Project>.Tests.csproj --configuration Release_<version>`. CI runs
+the built executables through the same script.
 
 Revit integration: on a machine with the required Revit version installed and licensed:
 
@@ -86,44 +85,44 @@ Record the version and the result in the pull request.
 
 ## Test infrastructure
 
-Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in `global.json`. CI
-invokes each headless test project explicitly and treats a run with no discovered tests as a
-failure. Tests that require a running Revit process use the `.RevitTests` suffix and are excluded
-from hosted headless test runs.
+Projects using xUnit v3 4.0 run through Microsoft.Testing.Platform, selected in `global.json`. CI and
+local runs use `./scripts/Invoke-HeadlessTests.ps1`: it selects the executable built for the
+configuration, writes one TRX report per project and fails when a project has no executable, when an
+executable exits with a non-zero code, or when a run discovers no tests.
 
-The post-publish localization artifact project is an intentional exception: the build pipeline
-invokes its xUnit v3 executable through `dotnet run` after producing each ILRepack output.
-Microsoft.Testing.Platform does not discover this executable's test through `dotnet test`, while
-the in-process xUnit runner does. Do not replace this command with `dotnet test` unless discovery is
-verified for every supported target framework and configuration.
+The post-publish localization artifact project is an exception: the build pipeline invokes its xUnit
+v3 executable through `dotnet run` after each ILRepack output. Microsoft.Testing.Platform does not
+discover its tests through `dotnet test`, while the in-process xUnit runner does. Do not replace this
+command with `dotnet test` unless discovery is verified for every supported target framework and
+configuration.
 
 A TUnit attribute argument, `[Arguments(...)]` included, must not be a Revit API type or any type
 that loads the Revit API. TUnit materializes attribute arguments during discovery, before the shared
-Revit session hook runs, and the injector then fails every test of the project with
-`Attempted to write protected memory`. Pass a string in the attribute and parse it into the Revit type
-inside the test body.
+Revit session hook runs, so the injector fails every test with `Attempted to write protected memory`.
+Pass a string in the attribute and parse it into the Revit type inside the test body.
 
 ## Manual smoke check
 
-For a change that affects the user interface or the add-in lifecycle, check in Revit: the
-add-in loads, the ribbon entry appears, the main scenario works, a second load and unload does
-not fail, and the Revit journal has no exceptions. Run it on at least one supported version,
-and on every version whose code path changed.
+For a change that affects the user interface or the add-in lifecycle, check in Revit: the add-in
+loads, the ribbon entry appears, the main scenario works, a second load and unload does not fail, and
+the Revit journal has no exceptions. Run it on at least one supported version, and on every version
+whose code path changed.
 
 Area-specific manual checklists live in [docs/testing/](../testing/). Keep them in step with the
-behaviour they verify, and add a section there when a workflow needs a live Revit and is not
-covered yet.
+behaviour they verify, and add a section there when a workflow needs a live Revit and is not covered
+yet.
 
 ## Flaky and skipped tests
 
-A test that fails intermittently is fixed or quarantined with an issue and a date. A skipped
-test has a reason and an issue; an unexplained skip is a defect.
+A test that fails intermittently is fixed or quarantined with an issue and a date. A skipped test has
+a reason and an issue; an unexplained skip is a defect.
 
 ## Coverage
 
-Every behaviour a consumer of the library or add-in can observe has a test. No numeric
-threshold is enforced: a percentage that moves without a behaviour change is not a goal.
+Every behaviour a consumer of the library or add-in can observe has a test. No numeric threshold is
+enforced: a percentage that moves without a behaviour change is not a goal.
 
-The workflow around tests - branches, commit messages and the changelog - is defined by the
-[development policy](development.md), [branching policy](branching.md), [commit message
-policy](commits.md) and [changelog policy](changelog.md).
+Branch, commit and changelog rules are defined by the [development policy](development.md), [branching
+policy](branching.md), [commit message policy](commits.md) and [changelog policy](changelog.md).
+
+The rest of the contributor workflow is defined by the [development policy](development.md).

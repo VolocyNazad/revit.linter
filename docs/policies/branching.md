@@ -2,11 +2,12 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: creating a branch, choosing its base branch or merging.
+
 The repository follows [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/).
 `main` always reflects a released state, `dev` integrates the changes for the next
 release, and every other branch is short-lived. Branch names, base branches and merge
-targets are a contract: the publish workflows, the tag-based versioning and the
-changelog policy depend on them.
+targets are a contract.
 
 Where a repository still names its main branch `master`, read `main` as that branch.
 The integration branch is always `dev`.
@@ -26,10 +27,8 @@ The integration branch is always `dev`.
 `<ticket>` is the issue number when the repository has an issue tracker and is omitted
 otherwise. `<slug>` is a short lowercase kebab-case description, for example
 `feature/123-parameter-dependency-creator` or `fix/207-null-selection`. A `chore/`
-branch carries no ticket, because repository maintenance has no user-visible change to
-track, so its name is only `chore/<slug>` such as `chore/rider-ignore-files`. No other
-prefixes (`bugfix/`, `topic/`, `wip/`): review and tooling expect the seven branch kinds
-above.
+branch carries no ticket, so its name is only `chore/<slug>` such as
+`chore/rider-ignore-files`. No other prefixes (`bugfix/`, `topic/`, `wip/`).
 
 `main` and `dev` are permanent; every other branch is deleted after it is merged,
 locally and on the remote.
@@ -49,7 +48,7 @@ locally and on the remote.
   [commit message policy](commits.md).
 - `dev` stays buildable. A change that breaks the build or the tests is fixed or
   reverted immediately, not at the end of the release.
-- Update [CHANGELOG.md](../../CHANGELOG.md) as the [changelog policy](changelog.md)
+- Add the changelog fragment under `changelog.d/` as the [changelog policy](changelog.md)
   requires, in the same branch as the change.
 
 ## Feature and fix branches
@@ -70,35 +69,34 @@ git push origin --delete feature/123-parameter-dependency-creator
 ```
 
 `fix/` branches work the same way and differ only in intent. `chore/` branches use the
-same flow for repository maintenance, so they are cut from `dev`, merged back into `dev`
-with a merge commit and live only as long as the maintenance task; the commit type is
-`chore`, as the [commit message policy](commits.md) defines.
+same flow for repository maintenance; the commit type is `chore`, as the
+[commit message policy](commits.md) defines.
 
 ## Release branches
 
 A release branch is cut when `dev` contains everything that should ship.
 
 1. Create `release/<version>` from `dev`.
-2. Prepare the release in it: compose the changelog section and commit it, as described
-   in the [changelog policy](changelog.md). Only fixes are
+2. Prepare the release in it: compose the changelog section with
+   `./scripts/Update-Changelog.ps1 -Compose`, edit the collected entries and close the section
+   with `-Finalize <version>`, as described in the [changelog policy](changelog.md). Only fixes are
    allowed here; new features wait for the next release.
 3. Open a pull request into `main` and merge it with a merge commit.
 4. Tag the merge commit on `main` with the release version and push the tag. The publish
    workflow requires exactly one stable tag on the selected commit and refuses to run
-   without it; the tag format is the one the repository already uses.
-5. Merge `release/<version>` back into `dev`, so the release fixes are not lost, then
+   without it.
+5. Merge `release/<version>` back into `dev`, which also carries the deleted fragments, then
    delete the branch.
 
 ## Hotfix branches
 
-A hotfix is the only way to change `main` outside a release. The branch lives minutes,
-but it keeps the fix traceable, revertable and present in the next release.
+A hotfix is the only way to change `main` outside a release.
 
 1. Create `hotfix/<version>` from `main`.
-2. Fix the defect and compose the changelog entry.
+2. Fix the defect, add the changelog fragment, and compose and finalize the section as the
+   [changelog policy](changelog.md) requires.
 3. Open a pull request into `main`, merge it, tag the merge commit, publish.
-4. Merge the branch into `dev` as well. Without this step the next release silently
-   drops the fix or reintroduces the defect when `dev` is merged into `main`.
+4. Merge the branch into `dev` as well.
 5. Delete the branch.
 
 If a release branch is still open, merge the hotfix into it instead of `dev`; the fix
@@ -110,11 +108,10 @@ reaches `dev` when the release is finished.
 
 - no direct pushes, no force-push, no deletion;
 - a pull request with at least one approval is required;
-- the `build-and-test` and `repository-policy` workflows must pass;
+- the `CI gate` check from `build-and-test` and the `repository-policy` workflow must pass;
 - only maintainers merge into `main`.
 
-Release and hotfix pull requests keep the same checks but may use a single reviewer, so
-the urgent path stays short.
+Release and hotfix pull requests keep the same checks but may use a single reviewer.
 
 ## Adopting the policy
 

@@ -1,0 +1,37 @@
+name: CodeQL
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze C#
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      # C# supports build-mode none: CodeQL extracts the source without running the build, so the
+      # custom Revit SDK and the Revit version matrix are not involved.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4.39.2
+        with:
+          languages: csharp
+          build-mode: none
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v4.39.2

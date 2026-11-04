@@ -66,6 +66,8 @@
   <data name="ARCH003_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) избыточно. Время выполнения: {duration} мс.</value></data>
   <data name="ARCH004_description" xml:space="preserve"><value>Проверяет высоту стен.</value></data>
   <data name="ARCH004_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет недопустимую высоту. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH005_description" xml:space="preserve"><value>Проверяет стены на многослойную составную конструкцию.</value></data>
+  <data name="ARCH005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет многослойную составную конструкцию. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0017_description" xml:space="preserve"><value>Проверяет наличие размещённых видов и спецификаций на листах.</value></data>
   <data name="SHRD0017_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) пуст. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0018_description" xml:space="preserve"><value>Проверяет наличие шаблона у размещённых на листах видов.</value></data>
@@ -106,8 +108,11 @@
   <data name="SHRD0035_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) не закреплён. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0036_description" xml:space="preserve"><value>Проверяет, закреплены ли оси.</value></data>
   <data name="SHRD0036_message" xml:space="preserve"><value>Ось «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0037_description" xml:space="preserve"><value>Проверяет, закреплены ли экземпляры связей.</value></data>
+  <data name="SHRD0037_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
+  <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>
   <data name="unbindArray_fix" xml:space="preserve"><value>Отвязать массив</value></data>
   <data name="deleteArray_fix" xml:space="preserve"><value>Удалить массив</value></data>
 </root>

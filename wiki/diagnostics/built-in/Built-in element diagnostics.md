@@ -16,6 +16,7 @@ lang: en
 | **SHRD0010** | Checks family instances for placement height tolerance (projects only).                                         | ⚠️ Warning | `Instance 'Светильник_01' (ID:22334) has an invalid height. (10 ms)`                |
 | **SHRD0011** | Checks whether parameter elements are used (projects only).                                                     | ⚠️ Warning | `Parameter 'Заказчик_ДопПоле' (ID:44556) is not used. (8 ms)`                       |
 | **ARCH004**  | Checks walls for height value tolerance (projects only).                                                        | ⚠️ Warning | `Wall 'Стена_Внутренняя' (ID:77889) has an invalid height. (8 ms)`                  |
+| **ARCH005**  | Checks walls for a multi-layer compound structure (projects only).                                              | ⚠️ Warning | `Wall 'Стена_Внешняя' (ID:33221) has a multi-layer compound structure. (7 ms)`      |
 | **ARCH001**  | Checks whether a room is placed (projects only).                                                                | ❌ Error    | `Room 'Комната 101' (ID:11223) is not placed. (6 ms)`                               |
 | **ARCH002**  | Checks whether a room is enclosed (projects only).                                                              | ❌ Error    | `Room 'Комната 102' (ID:33445) is not enclosed. (7 ms)`                             |
 | **ARCH003**  | Checks whether a room is redundant (projects only).                                                             | ❌ Error    | `Room 'Комната 103' (ID:55667) is redundant. (5 ms)`                                |
@@ -47,6 +48,7 @@ lang: en
 | **SHRD0034** | Checks radial arrays for excessive member count (50+ projects, 25+ families). | ⚠️ Warning | `Radial array 'Массив 1' (ID:99016) has too many members. (5 ms)` |
 | **SHRD0035** | Checks whether levels are pinned (projects only). | ⚠️ Warning | `Level 'Уровень 2' (ID:55667) is not pinned. (5 ms)` |
 | **SHRD0036** | Checks whether grids are pinned (projects only). | ⚠️ Warning | `Grid 'Ось 1' (ID:77665) is not pinned. (5 ms)` |
+| **SHRD0037** | Checks whether Revit links are pinned (projects only). | ⚠️ Warning | `Revit link 'АР' (ID:12345) is not pinned. (5 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

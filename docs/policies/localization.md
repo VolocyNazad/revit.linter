@@ -2,22 +2,21 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-User-facing text is part of the product contract: it appears in Revit, in the diagnostic report and
-in the Undo history. Every translatable string lives in a resource file owned by the module that
-shows it, resolves through `LocalizationResourceReader`, and ships in both supported cultures in the
-same change that introduces it.
+Read when: adding or changing a localized string, culture or resource.
+
+User-facing text is part of the product contract. Every translatable string lives in a resource file
+owned by the module that shows it, resolves through `LocalizationResourceReader`, and ships in both
+supported cultures in the same change that introduces it.
 
 ## Languages and cultures
 
 - English is the neutral resource language: the base `Type.resx` holds English text, and the
-  localization project declares `<NeutralLanguage>en</NeutralLanguage>` so English is the fallback
-  for any UI culture without resources.
+  localization project declares `<NeutralLanguage>en</NeutralLanguage>`.
 - Russian is the only translated culture, shipped as `Type.ru.resx` under the parent `ru` culture. A
-  regional UI culture such as `ru-RU` or `ru-KZ` resolves through its parent to `ru`; it does not get
-  its own resource file. Do not add a file for a regional variant of an existing language.
+  regional UI culture such as `ru-RU` or `ru-KZ` resolves through its parent to `ru`; do not add a
+  file for a regional variant.
 - A UI culture without matching resources falls back to the neutral English resource. Keep the
-  neutral file English and the Russian text in the satellite; do not put translated text in the
-  neutral resource.
+  neutral file English and the Russian text in the satellite.
 
 ## Resource ownership
 
@@ -25,8 +24,7 @@ same change that introduces it.
   type that reads it. Do not keep strings for another module.
 - `Revit.Linter.Localization` aggregates the resources: it embeds every source `.resx` owned by
   feature and presenter projects, and it owns the shared vocabulary resources (severity, target
-  type, report filter, help tooltips). Ownership of the text stays with the feature; embedding and
-  validation are centralized.
+  type, report filter, help tooltips).
 - `Revit.Linter.Localization` also owns `LocalizationResourceReader` and the `*Localizations`
   helpers. Consumers resolve strings through those types, not by opening a resource file or
   constructing a `ResourceManager`.
@@ -47,8 +45,7 @@ same change that introduces it.
   neutral `*.resx` files to the generator as `AdditionalFiles` and excludes `*.ru.resx`; do not pass
   satellites or other translated files to the generator.
 - In `Revit.Linter.Localization`, declare every new source `.resx` and its `ru` counterpart as an
-  `EmbeddedResource`. The aggregation project is the registration point that the localization tests
-  compare against; a resource file that is not declared there is not embedded and not tested.
+  `EmbeddedResource`.
 
 ## Resolving strings at runtime
 
@@ -58,20 +55,17 @@ same change that introduces it.
   wrap the reader in a `*Localizations` helper; use that helper where it exists.
 - The reader walks the current UI culture and each parent culture, then the invariant neutral
   resource. A missing key returns the key itself from `GetString` and `false` from `TryGetString`.
-  Do not rely on the echoed key as user text: a missing translation is a defect to fix, not a
-  fallback to display.
-- The generated typed properties are thin wrappers over the reader. Apply
-  `[GenerateLocalizedProperties]` to the partial type whose resource file is named after the type and
-  whose namespace matches the nested base name; the generator builds the base name from the class
-  namespace and name, so a renamed type or resource file changes the runtime lookup.
+  Do not rely on the echoed key as user text.
+- Apply `[GenerateLocalizedProperties]` to the partial type whose resource file is named after the
+  type and whose namespace matches the nested base name; the generator builds the base name from the
+  class namespace and name, so a renamed type or resource file changes the runtime lookup.
 - `GlobalStringLocalizer` is the `IStringLocalizer<GlobalLocalizations>` implementation and delegates
   to the reader for the global resource. Do not add a parallel lookup path with its own
   `ResourceManager` or culture handling.
 
 ## User-facing names
 
-- Revit transaction and transaction-group names are user-facing: Revit shows them in the Undo history
-  and in the status bar while the transaction runs. Resolve them through
+- Revit transaction and transaction-group names are user-facing. Resolve them through
   `LocalizationResourceReader` or the owning module's `*Localizations` helper, never as hard-coded
   English text.
 - A name created only by a test fixture or a benchmark is not user-facing and is exempt.
@@ -92,10 +86,8 @@ same change that introduces it.
 - `VolocyNazad.ResxAnalyzer` runs during regular builds of `Revit.Linter.Localization` and reports
   `RESX001`-`RESX007`: missing, extra and duplicate keys, mismatched composite-format placeholders,
   empty translations, missing culture files, and satellites without a neutral resource. Keep the
-  analyzer referenced by the aggregation project only; adding it globally would analyse incomplete
-  per-project subsets and report missing culture files that are intentionally owned and embedded
-  elsewhere.
-- The analyzer complements the localization tests; it does not replace them. The tests verify key and
+  analyzer referenced by the aggregation project only.
+- The tests verify key and
   placeholder parity for every source `.resx`, require every source resource to be declared by the
   aggregation project, and load all declared neutral resources plus the `ru` satellite from the final
   published artifacts.
@@ -108,16 +100,10 @@ same change that introduces it.
 ## Satellites and publishing
 
 - Localization satellites stay outside ILRepack. `Revit.Linter.Localization.dll` is listed in
-  `RepackBinariesExcludes`, so the localization assembly and its `ru` satellite are not merged into
-  the add-in.
-- Keep `Revit.Linter.Localization.dll` excluded from repacking and ship its
-  `ru/Revit.Linter.Localization.resources.dll` satellite next to it. Do not fold the resources into
-  the merged add-in or move them to another project; the reader resolves them from the localization
-  assembly.
+  `RepackBinariesExcludes` and its `ru/Revit.Linter.Localization.resources.dll` satellite ships next
+  to it; do not fold the resources into the merged add-in or move them to another project.
 - Every final ILRepack output is verified to load all declared neutral resources and the Russian
   satellite before MSI creation. A missing, misnamed or merged satellite fails the release build.
-- The reader resolves `ru-RU` and `ru-KZ` through the `ru` parent culture and an unrelated culture
-  through English. Keep this precedence when a culture is added or a resource file moves.
 - The artifact test asserts that the published localization assembly carries `en` as its neutral
   resource language; keep `<NeutralLanguage>en</NeutralLanguage>` in the localization project.
 
@@ -132,7 +118,6 @@ same change that introduces it.
   as [adding a built-in diagnostic](../diagnostics/adding.md) requires.
 - When a string becomes unused, remove the key from both files and every consumer in the same change.
 - Design-time data resolves localized text through the reader with the same base name the view model
-  uses instead of copying literals into the design class; the full design-time rule belongs to the
-  [presentation policy](presentation.md).
+  uses; the full design-time rule belongs to the [presentation policy](presentation.md).
 
 The rest of the contributor workflow is defined by the [development policy](development.md).

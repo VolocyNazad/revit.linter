@@ -32,6 +32,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId RoomNotEnclosed = Create("ARCH002", DiagnosticSeverity.Error, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId RoomIsRedundant = Create("ARCH003", DiagnosticSeverity.Error, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId WallHeightIsTolerant = Create("ARCH004", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId WallWithMultipleLayers = Create("ARCH005", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId SheetEmpty = Create("SHRD0017", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId ViewOnSheetWithoutTemplate = Create("SHRD0018", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId SheetWithoutTitleBlock = Create("SHRD0019", DiagnosticSeverity.Error, DiagnosticTags.Project);
@@ -52,6 +53,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId LargeRadialArray = Create("SHRD0034", DiagnosticSeverity.Warning, ProjectAndFamily);
     public static readonly ElementDiagnosticId LevelNotPinned = Create("SHRD0035", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId GridNotPinned = Create("SHRD0036", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId RevitLinkNotPinned = Create("SHRD0037", DiagnosticSeverity.Warning, DiagnosticTags.Project);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)

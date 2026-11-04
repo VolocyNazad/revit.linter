@@ -2,17 +2,20 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-The stack described in the [repository guide](../repository.md) is used by default and takes priority over
-whatever the agent might choose on its own. Prefer whatever is already used
-in the affected part of the repository over an alternative. If an alternative
-seems better — don't substitute it silently: ask the user,
+Read when: you start a change; it owns the asking rule, the stack priority and the code basics.
+
+The [repository guide](../repository.md) stack is the default; the usage in the affected part of the
+repository comes first. Never substitute an alternative silently — if it seems better, ask the user,
 explain the reason, and wait for confirmation.
 
-If a change affects the folder structure or the technology stack (a new/removed project, a new dependency, a version bump worth recording, a new convention) — update the relevant policy and [repository guide](../repository.md) as part of the same change, not as a separate follow-up later.
+If a change affects the folder structure or the technology stack (a new/removed project, a new
+dependency, a version bump worth recording, a new convention) — update the relevant policy and
+[repository guide](../repository.md) in the same change.
 
-Before changing existing tests or writing new ones, ask the user first — clarify what and how it should be covered (or that the change is trivial enough that no clarification is needed), rather than deciding this on your own.
+Before changing or writing tests, ask the user first — clarify what and how it should be covered (or
+that the change is trivial enough to need no clarification).
 
-Do not `git push` — commit locally and leave the push to the user, unless they explicitly ask you to push.
+Do not `git push` — commit locally and leave the push to the user unless they explicitly ask.
 
 ## Where the rules live
 
@@ -38,12 +41,14 @@ The [policy index](README.md) is the full list. The policies a change usually to
 
 Module boundaries, abstractions and dependency injection follow the stable rules in
 [architecture decisions](../architecture.md). When a change introduces or revises a fundamental
-architectural decision, update that document as part of the same change.
+architectural decision, update that document in the same change.
 
 ## Code basics
 
 Do not invent abbreviations in identifiers, file names or documentation. Use complete words such as `ViewModel` and `Configuration`; established terms such as `API`, `WPF`, `XML`, `Guid`, `Id` and `Uri` remain valid.
 
-Use `global using` only when most files in that project need the namespace. Keep specialized namespaces local, and do not repeat namespaces already supplied by `ImplicitUsings`. Apply this rule to new and touched code; clean up existing files only when doing so stays within the task scope.
+Use `global using` only when most files in that project need the namespace. Keep specialized namespaces local, and do not repeat namespaces already supplied by `ImplicitUsings`. Apply this rule to new and touched code; clean up existing files only within the task scope.
 
-Keep [CHANGELOG.md](../../CHANGELOG.md) in the state the [changelog policy](changelog.md) requires: regular development leaves `## [Unreleased]` empty, and the release section is composed when a release is prepared.
+Keep [CHANGELOG.md](../../CHANGELOG.md) in the state the [changelog policy](changelog.md) requires:
+regular development leaves `## [Unreleased]` empty, a change carries its entry as a fragment in
+`changelog.d/`, and the release section is composed when a release is prepared.

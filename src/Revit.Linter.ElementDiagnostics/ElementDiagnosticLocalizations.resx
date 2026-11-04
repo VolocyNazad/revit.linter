@@ -66,6 +66,8 @@
   <data name="ARCH003_message" xml:space="preserve"><value>Room '{elementName}' ({elementId}) is redundant. Duration: {duration} ms.</value></data>
   <data name="ARCH004_description" xml:space="preserve"><value>Checks walls for height tolerance.</value></data>
   <data name="ARCH004_message" xml:space="preserve"><value>Wall '{elementName}' ({elementId}) has an invalid height. Duration: {duration} ms.</value></data>
+  <data name="ARCH005_description" xml:space="preserve"><value>Checks walls for a multi-layer compound structure.</value></data>
+  <data name="ARCH005_message" xml:space="preserve"><value>Wall '{elementName}' ({elementId}) has a multi-layer compound structure. Duration: {duration} ms.</value></data>
   <data name="SHRD0017_description" xml:space="preserve"><value>Checks sheets for placed views and schedules.</value></data>
   <data name="SHRD0017_message" xml:space="preserve"><value>Sheet '{elementName}' ({elementId}) is empty. Duration: {duration} ms.</value></data>
   <data name="SHRD0018_description" xml:space="preserve"><value>Checks whether views placed on sheets have a view template.</value></data>
@@ -106,8 +108,11 @@
   <data name="SHRD0035_message" xml:space="preserve"><value>Level '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
   <data name="SHRD0036_description" xml:space="preserve"><value>Checks whether grids are pinned.</value></data>
   <data name="SHRD0036_message" xml:space="preserve"><value>Grid '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
+  <data name="SHRD0037_description" xml:space="preserve"><value>Checks whether Revit links are pinned.</value></data>
+  <data name="SHRD0037_message" xml:space="preserve"><value>Revit link '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
+  <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>
   <data name="unbindArray_fix" xml:space="preserve"><value>Unbind array</value></data>
   <data name="deleteArray_fix" xml:space="preserve"><value>Delete array</value></data>
 </root>

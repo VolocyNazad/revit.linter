@@ -2,10 +2,10 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-Logs are the first evidence in a support case and in a failed diagnostic: which build is installed,
-which checks are active, and how a run ended. A change that adds an operation, a refusal or a failure
-path updates the logging as part of the same change instead of leaving the diagnosis to a later
-debugging session.
+Read when: adding or changing a log statement or a failure report.
+
+A change that adds an operation, a refusal or a failure path updates the logging in the same change
+instead of leaving the diagnosis to a later debugging session.
 
 ## Where logging is configured
 
@@ -16,8 +16,7 @@ debugging session.
   every build; the console and debug sinks are added in a Debug build only. Do not compensate for a
   missing sink inside a module.
 - Use the static `Serilog.Log` logger only where the host logger cannot be resolved: the fatal
-  startup path and a shutdown failure after the host has been disposed. Everywhere else resolve
-  `ILogger<T>` through dependency injection.
+  startup path and a shutdown failure after the host has been disposed.
 - Enrichment adds environment and Revit context - the document, model path and add-in identity - to
   every event. Add operation-specific context through the structured message properties instead of
   composing it into the message text. The logging stack is listed in the
@@ -34,8 +33,7 @@ debugging session.
 | `Fatal` | A startup failure that leaves the add-in unusable. |
 
 A run logs its own start and completion once, not the elements it visited. Do not choose a level by
-how interesting a message looks: user-meaningful operations are `Information`, and the details used
-only while investigating stay at `Debug`.
+how interesting a message looks.
 
 ## Log an exception once
 
@@ -53,16 +51,14 @@ only while investigating stay at `Debug`.
 
 - Keep documented benign fallbacks, `Try*` probes and cancellation used as control flow silent.
 - Silence is a decision: put a code comment at the probe or catch block explaining why the failure is
-  expected and what the fallback does. A silent fallback without that comment is indistinguishable
-  from a swallowed defect.
+  expected and what the fallback does.
 - Do not turn an unexpected failure into a silent fallback to keep the log clean. A protected read
   that intentionally treats an unreadable element as clean says so in the code.
 
 ## Structured messages
 
 - Use structured message templates with named properties, for example
-  `"Diagnostic {DiagnosticCode} failed"`, and pass the values as arguments. The properties remain
-  queryable in the log.
+  `"Diagnostic {DiagnosticCode} failed"`, and pass the values as arguments.
 - Never interpolate values into a template: no string interpolation, concatenation or
   `string.Format` for a logging call.
 - Choose stable, meaningful property names and keep the message a sentence that describes the
@@ -76,8 +72,7 @@ only while investigating stay at `Debug`.
   operation and counts.
 - Do not log secrets such as credentials or tokens, and do not log entire element payloads or
   collections. Element details belong to the diagnostic report, not to the log.
-- Prefer counts, identifiers and titles over serialized objects: a property that renders a whole
-  object makes the line large and hard to query.
+- Prefer counts, identifiers and titles over serialized objects.
 
 ## Failed diagnostics
 
@@ -96,8 +91,7 @@ only while investigating stay at `Debug`.
   active and what the report contains. See [adding a built-in diagnostic](../diagnostics/adding.md).
 - Adding temporary detailed logging inside the check is allowed while the failure is being
   diagnosed: log what the code sees, what it compares and what it decides on.
-- Remove the temporary logging once the failure is fixed, before the change is finished. The removal
-  belongs to the same change, not to a follow-up.
+- Remove the temporary logging once the failure is fixed, before the change is finished.
 
 ## Where the logs are
 
