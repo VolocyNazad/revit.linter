@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: writing a commit message.
+
 Every commit message follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 `<type>(<scope>): <description>`. The message is read by people and by tooling: the type
 tells a reader what changed and how it affects a consumer of the release. It is a

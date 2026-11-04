@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: you start a change; it owns the asking rule, the stack priority and the code basics.
+
 The stack described in the [repository guide](../repository.md) is used by default and takes priority over
 whatever the agent might choose on its own. Prefer whatever is already used
 in the affected part of the repository over an alternative. If an alternative

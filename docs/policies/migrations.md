@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding, changing or removing a user-visible migration.
+
 Revit Linter carries a breaking change for its users as a time-boxed migration: the product keeps working across the change, and the transitional code is removed only when the evidence says it is no longer needed. This policy defines the rules a migration follows from design to retirement. The [migration registry](../migrations/README.md) remains the single source of truth for which migrations exist, for the entry template and for the step-by-step registry instructions; this policy states the norms that the registry and every change touching a migration must satisfy.
 
 ## Scope

@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: editing, adding or publishing user documentation.
+
 The GitHub wiki is a published mirror of documentation that lives in this repository, not a
 second source. It is never edited on GitHub: the next publish replaces the pages.
 

@@ -1,6 +1,6 @@
 # Architecture decisions
 
-This document records stable architectural rules. Implementation details belong in code and tests. Read it together with the [development policy](policies/development.md) and [repository guide](repository.md).
+This document records stable architectural rules. Implementation details belong in code and tests. Read it together with the [development policy](policies/development.md) and [repository guide](repository.md). Read when: a module boundary, the Revit integration, a host seam or a runtime rule changes.
 
 ## Module boundaries
 

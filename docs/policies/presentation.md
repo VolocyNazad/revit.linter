@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding or changing a WPF view, view model or design-time data.
+
 This policy governs the WPF layer of the add-in: the split between views and view models, composition between UI modules, shared presentation infrastructure, design-time data, styles and help helpers. The inventory of presenter modules and the contents of each project belong to the [repository guide](../repository.md); the stable module boundaries and the decisions behind them belong to [architecture decisions](../architecture.md). The rules below refine how the WPF layer is written inside those boundaries and do not redefine the boundaries.
 
 ## Views and view models

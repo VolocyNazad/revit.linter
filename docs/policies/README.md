@@ -12,6 +12,7 @@ architecture decisions in [architecture decisions](../architecture.md), user-vis
 ## Conventions
 
 - Policies are written in English.
+- Every policy states when it applies, in a `Read when:` line right after the paths sentence.
 - Every policy starts with the sentence "Paths mentioned in this policy are relative to the
   repository root unless a Markdown link specifies otherwise.".
 - Links between policies are relative Markdown links. An anchor must point at a heading that exists;

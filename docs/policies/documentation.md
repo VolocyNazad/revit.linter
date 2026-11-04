@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: writing, moving or restructuring contributor documentation or XML documentation.
+
 The repository documents what the product does, why the repository is arranged the way it is, and how to change it. Every document has one genre and one subject, so each fact has one home and the rest of the repository links to it instead of restating it. This policy defines which document owns which fact, when documentation changes, and how it is written.
 
 ## Documents and genres
@@ -9,7 +11,7 @@ The repository documents what the product does, why the repository is arranged t
 | Document | Genre | Answers |
 |---|---|---|
 | `docs/policies/*.md` (index: [repository policies](README.md)) | Binding rules | What a change must do in one area |
-| [Repository guide](../repository.md) | Facts about the repository | How the solution, projects, tooling and documents are arranged |
+| [Repository guide](../repository.md) and its [module inventory](../repository/modules.md) | Facts about the repository | How the solution, projects, tooling and documents are arranged |
 | [Architecture decisions](../architecture.md) | Decisions | Which stable module boundaries and design rules the product keeps |
 | [Migration registry](../migrations/README.md) and its entries | Registry | Which user-visible migrations exist, their versions, data safety and removal plan |
 | [Adding a built-in diagnostic](../diagnostics/adding.md) and `docs/testing/*.md` | Procedures and checklists | How to add a diagnostic; how to verify a workflow by hand in a live Revit |

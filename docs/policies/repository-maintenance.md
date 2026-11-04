@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding a file or solution item, or changing the formatting baseline.
+
 Repository-level files are what a contributor and an automated check read first: the root solution lists them, the validator enforces them, and the root configuration applies to every project. This policy defines what the root solution exposes, which root files must exist, how repository-level changes are validated, and the formatting baseline. Documentation content and genres belong to the [documentation policy](documentation.md); this policy owns the repository mechanics around it.
 
 ## Solution items

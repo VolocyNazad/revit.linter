@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding a changelog entry or composing a release section.
+
 `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): the newest
 release comes first, `## [Unreleased]` stays on top, and every release has one
 `## [VERSION] - YYYY-MM-DD` section. Empty category headings under `Unreleased` are

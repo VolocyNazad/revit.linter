@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: preparing a release tag, version or MSI.
+
 A release turns a tagged commit into a GitHub release with installers: it selects a channel, fixes the version, prepares the changelog and publishes the MSI through the build pipeline. The workflow is `.github/workflows/publish-release.yml` and the publish mechanics are the modules under `build/`; the tag and the release section of `CHANGELOG.md` are the inputs the pipeline consumes. The [changelog policy](changelog.md) owns the section format and its composition, the [branching policy](branching.md) owns release and hotfix branches, and the [testing policy](testing.md) owns what must be green before the tag.
 
 ## Release channels

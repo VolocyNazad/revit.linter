@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: preparing, reviewing or merging a pull request.
+
 Every change reaches `main` and `dev` through a short-lived branch and a pull request; direct pushes to either branch are blocked. The [branching policy](branching.md) owns the branch kinds, base branches, merge strategy and protection settings, and this policy covers what a pull request must target, which checks gate it, how it is reviewed and what its author verifies. The repository template is `.github/pull_request_template.md`; the `CI gate` check from the `build-and-test` workflow and the `repository-policy` workflow provide the required checks.
 
 ## Source branch and target

@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding a benchmark or reporting measurements.
+
 Performance work is measured, not estimated. A claim about speed is backed by numbers from a
 repeatable run on a stated environment.
 

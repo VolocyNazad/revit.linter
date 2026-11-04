@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: creating a branch, choosing its base branch or merging.
+
 The repository follows [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/).
 `main` always reflects a released state, `dev` integrates the changes for the next
 release, and every other branch is short-lived. Branch names, base branches and merge

@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding or changing a log statement or a failure report.
+
 Logs are the first evidence in a support case and in a failed diagnostic: which build is installed,
 which checks are active, and how a run ended. A change that adds an operation, a refusal or a failure
 path updates the logging as part of the same change instead of leaving the diagnosis to a later

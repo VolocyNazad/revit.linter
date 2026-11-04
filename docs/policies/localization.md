@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding or changing a localized string, culture or resource.
+
 User-facing text is part of the product contract: it appears in Revit, in the diagnostic report and
 in the Undo history. Every translatable string lives in a resource file owned by the module that
 shows it, resolves through `LocalizationResourceReader`, and ships in both supported cultures in the
