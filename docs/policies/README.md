@@ -25,7 +25,7 @@ and future work in [TODO.md](../../TODO.md).
 | [Development policy](development.md) | Entry point: repository rules, asking before a change, code basics, links to every policy | Review |
 | [Branching policy](branching.md) | Branch kinds, base branches, merge strategy, protected branches | Review; branch protection is configured in GitHub, not in the repository |
 | [Commit message policy](commits.md) | Conventional Commits, types, scope, body and footers | Review |
-| [Changelog policy](changelog.md) | `CHANGELOG.md` format, entry modes, release section, release history window and archive | `scripts/Verify-Release.ps1` in `.github/workflows/repository-policy.yml` and `.github/workflows/publish-release.yml`; the same script also checks the release history window and the archive |
+| [Changelog policy](changelog.md) | `CHANGELOG.md` format, `changelog.d/` fragments, the compose and finalize tool, release section, release history window and archive | `scripts/Update-Changelog.ps1` and `scripts/Verify-Release.ps1` in `.github/workflows/repository-policy.yml`; `Verify-Release.ps1` in `.github/workflows/publish-release.yml` also checks the tag, the release history window and the archive |
 | [Testing policy](testing.md) | Test kinds, Revit version matrix, what needs a test, determinism, running tests | `.github/workflows/build-and-test.yml`, `scripts/Invoke-HeadlessTests.ps1` and the matrix resolved from `Directory.Build.props`; Revit integration runs are manual |
 | [Benchmark policy](benchmarks.md) | Benchmark kinds, when to measure, reporting | Review; benchmarks deliberately do not run in CI |
 | [Wiki policy](wiki.md) | Wiki as a mirror of `wiki/`, publication rules | `.github/workflows/publish-wiki.yml`, `scripts/Prepare-Wiki.ps1` |

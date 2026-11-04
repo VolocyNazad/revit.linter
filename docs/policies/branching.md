@@ -48,7 +48,7 @@ locally and on the remote.
   [commit message policy](commits.md).
 - `dev` stays buildable. A change that breaks the build or the tests is fixed or
   reverted immediately, not at the end of the release.
-- Update [CHANGELOG.md](../../CHANGELOG.md) as the [changelog policy](changelog.md)
+- Add the changelog fragment under `changelog.d/` as the [changelog policy](changelog.md)
   requires, in the same branch as the change.
 
 ## Feature and fix branches
@@ -77,21 +77,24 @@ same flow for repository maintenance; the commit type is `chore`, as the
 A release branch is cut when `dev` contains everything that should ship.
 
 1. Create `release/<version>` from `dev`.
-2. Prepare the release in it: compose the changelog section and commit it, as described
-   in the [changelog policy](changelog.md). Only fixes are
+2. Prepare the release in it: compose the changelog section with
+   `./scripts/Update-Changelog.ps1 -Compose`, edit the collected entries and close the section
+   with `-Finalize <version>`, as described in the [changelog policy](changelog.md). Only fixes are
    allowed here; new features wait for the next release.
 3. Open a pull request into `main` and merge it with a merge commit.
 4. Tag the merge commit on `main` with the release version and push the tag. The publish
    workflow requires exactly one stable tag on the selected commit and refuses to run
    without it.
-5. Merge `release/<version>` back into `dev`, then delete the branch.
+5. Merge `release/<version>` back into `dev`, which also carries the deleted fragments, then
+   delete the branch.
 
 ## Hotfix branches
 
 A hotfix is the only way to change `main` outside a release.
 
 1. Create `hotfix/<version>` from `main`.
-2. Fix the defect and compose the changelog entry.
+2. Fix the defect, add the changelog fragment, and compose and finalize the section as the
+   [changelog policy](changelog.md) requires.
 3. Open a pull request into `main`, merge it, tag the merge commit, publish.
 4. Merge the branch into `dev` as well.
 5. Delete the branch.

@@ -27,9 +27,13 @@ needs: the table routes you, and each document says what it owns.
 - User documentation is bilingual. Read and edit the English page first, then bring the `wiki/ru/`
   mirror in step; do not read both pages before the English text is final.
 - `CHANGELOG.md` keeps `[Unreleased]` and the current major release line; older releases are in the
-  [changelog archive](docs/changelog/archive.md) and are not read for context.
+  [changelog archive](docs/changelog/archive.md) and are not read for context. A change carries its
+  entry as a fragment in `changelog.d/`, which the release preparation composes.
+- Do not read `changelog.d/` for context: open it only to add a fragment or to compose the release
+  section.
 - Do not read generated or ignored directories for context: `output/`, `benchmark/BenchmarkDotNet.Artifacts/`,
   `bin/`, `obj/`, `.vs/`, `.idea/`, `TestResults/`.
 - Verify before finishing: [scripts/Validate-Repository.ps1](scripts/Validate-Repository.ps1) checks
-  links, anchors, required files and solution items; [scripts/Verify-Release.ps1](scripts/Verify-Release.ps1)
+  links, anchors, required files and solution items; [scripts/Update-Changelog.ps1](scripts/Update-Changelog.ps1)
+  checks the pending changelog fragments; [scripts/Verify-Release.ps1](scripts/Verify-Release.ps1)
   checks the `CHANGELOG.md` structure.

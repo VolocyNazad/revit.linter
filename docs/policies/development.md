@@ -49,4 +49,6 @@ Do not invent abbreviations in identifiers, file names or documentation. Use com
 
 Use `global using` only when most files in that project need the namespace. Keep specialized namespaces local, and do not repeat namespaces already supplied by `ImplicitUsings`. Apply this rule to new and touched code; clean up existing files only within the task scope.
 
-Keep [CHANGELOG.md](../../CHANGELOG.md) in the state the [changelog policy](changelog.md) requires: regular development leaves `## [Unreleased]` empty, and the release section is composed when a release is prepared.
+Keep [CHANGELOG.md](../../CHANGELOG.md) in the state the [changelog policy](changelog.md) requires:
+regular development leaves `## [Unreleased]` empty, a change carries its entry as a fragment in
+`changelog.d/`, and the release section is composed when a release is prepared.

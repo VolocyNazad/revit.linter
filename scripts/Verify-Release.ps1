@@ -7,6 +7,10 @@ Checks `CHANGELOG.md` against the changelog policy: `## [Unreleased]` is the fir
 empty of entries, every release has one `## [VERSION] - YYYY-MM-DD` heading, versions are unique and
 ordered newest first, and dates are valid.
 
+`-AllowUnreleased` accepts the composed entries a release or hotfix branch carries between the
+compose and finalize steps of the changelog policy. The tag check never accepts them: the tagged
+commit must not carry unreleased entries.
+
 The release history window is checked in the same run: `CHANGELOG.md` holds the current major
 line, the archive `docs/changelog/archive.md` holds only older releases in the same section
 format, and the two files do not repeat a version.
@@ -27,6 +31,10 @@ Repository root. Defaults to the current directory.
 .PARAMETER FromHeadTag
 Derive the version from the single stable tag on `HEAD` and verify the tag and the matching section.
 
+.PARAMETER AllowUnreleased
+Accept entries under `## [Unreleased]`. Use it on a release or hotfix branch, where the composed
+entry waits for the finalize step; the tag check ignores it.
+
 .PARAMETER AncestorOf
 Remote branch name, for example `main`. With -FromHeadTag, `HEAD` must be an ancestor of
 `origin/<AncestorOf>`.
@@ -35,6 +43,8 @@ param(
     [string]$RepositoryRoot = (Get-Location).Path,
 
     [switch]$FromHeadTag,
+
+    [switch]$AllowUnreleased,
 
     [string]$AncestorOf = ''
 )
@@ -88,7 +98,11 @@ if ($unreleasedHeadings.Count -ge 1) {
         }
     }
     if ($pending.Count -gt 0) {
-        $problems.Add("'## [Unreleased]' still has $($pending.Count) unreleased line(s); move them into the release section before publishing.")
+        if ($FromHeadTag) {
+            $problems.Add("'## [Unreleased]' still has $($pending.Count) unreleased line(s); the tagged commit carries the release section and an empty 'Unreleased'.")
+        } elseif (-not $AllowUnreleased) {
+            $problems.Add("'## [Unreleased]' still has $($pending.Count) unreleased line(s); a composed entry belongs to a release or hotfix branch until it is finalized.")
+        }
     }
 }
 
@@ -239,5 +253,6 @@ if ($problems.Count -gt 0) {
 if ($FromHeadTag) {
     Write-Host "Release verification passed for tag $tag (version $version)."
 } else {
-    Write-Host "Release verification passed: $($releases.Count) release section(s); 'Unreleased' is empty."
+    $unreleasedState = if ($AllowUnreleased) { "'Unreleased' may carry composed entries on a release or hotfix branch" } else { "'Unreleased' is empty" }
+    Write-Host "Release verification passed: $($releases.Count) release section(s); $unreleasedState."
 }

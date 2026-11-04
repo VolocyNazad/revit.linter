@@ -19,7 +19,8 @@ The [pull request policy](../docs/policies/pull-requests.md) defines the full ch
 - [ ] Build and tests for the affected projects pass, with no new compiler or analyzer warnings.
 - [ ] `./scripts/Validate-Repository.ps1` passes after changing repository-level
   files, documentation or the solution.
-- [ ] `CHANGELOG.md` is in the state the [changelog policy](../docs/policies/changelog.md) requires.
+- [ ] The changelog fragment is in `changelog.d/` in the state the
+  [changelog policy](../docs/policies/changelog.md) requires.
 - [ ] User documentation and localized strings are updated when behaviour or text changes.
 - [ ] Saved settings, configuration files and upgrade paths are reviewed when affected.
 - [ ] Logging was reviewed for significant operations, refusals and failures.

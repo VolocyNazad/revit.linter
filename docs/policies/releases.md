@@ -36,7 +36,8 @@ manually with `gh release create vX.Y.Z-beta.N --prerelease ...`, or extend the 
   three numbers, while the add-in and updater assemblies keep the full `GitVersion` semantic version.
 - The repository publishes a GitHub release with installers instead of a NuGet package.
 - The tagged commit already contains the release section in `CHANGELOG.md` with an empty
-  `## [Unreleased]` above it; the pipeline publishes that section as the GitHub release description.
+  `## [Unreleased]` above it and no pending fragment in `changelog.d/`; the pipeline publishes that
+  section as the GitHub release description.
   Do not compose or edit that section outside the [changelog policy](changelog.md).
 
 ## Preparing a release
@@ -45,6 +46,8 @@ Before creating the tag:
 
 - Confirm the full Revit test matrix is executed and recorded in the release pull request, as the
   [testing policy](testing.md) requires.
+- Compose and finalize the release section with `./scripts/Update-Changelog.ps1` and confirm that
+  `changelog.d/` holds no fragment, as the [changelog policy](changelog.md) requires.
 - Confirm the build is green for every supported `Release_*` configuration, the working tree is clean
   and the release changelog section is committed.
 - Confirm `repository-policy` passed on the release pull request.
