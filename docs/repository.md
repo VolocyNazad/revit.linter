@@ -83,6 +83,13 @@ The projects, their responsibilities and the updater and installer mechanics are
   `LocalizationResourceReader` from the localization assembly excluded from ILRepack
 - Microsoft.CodeAnalysis.CSharp (Roslyn) — the analyzer API of the in-repo source generator
   `Revit.Linter.Localization.Generator`, which generates the typed localized properties of view models
+- `VolocyNazad.Wpf.DependencyPropertyGenerator` — the source generator behind the dependency
+  properties of the behaviors, the binding proxy and the report message view. From
+  `[GenerateDependencyProperty<T>]` and `[GenerateAttachedDependencyProperty<T>]` it generates the
+  registration, the CLR property or the `Get`/`Set` accessors, the XML documentation and the change
+  callback wiring, and it fails the build on an unusable declaration (`VDP0001`-`VDP0008`). It is an
+  external package (`toolkit.wpf.dependency-properties`), not an in-repo project; the
+  [presentation policy](policies/presentation.md) defines when a declaration is generated
 - YamlDotNet, StringToExpression, Humanizer.Core(.ru)
 - Serilog + Serilog.Sinks.* (Console and Debug in development, File in all builds); logs are stored
   under `%LOCALAPPDATA%\Volocy\Revit.Linter\logs\`, roll daily and at 20 MB, retain the newest 14

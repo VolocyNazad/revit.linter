@@ -4,6 +4,8 @@ using System.Windows.Input;
 
 using Microsoft.Xaml.Behaviors;
 
+using VolocyNazad.Wpf.DependencyProperties;
+
 namespace Revit.Linter.Behaviors;
 
 /// <summary>
@@ -16,26 +18,12 @@ namespace Revit.Linter.Behaviors;
 /// these keys or from a view model, the selected row is scrolled into view. Do not attach the behavior to
 /// a grid whose cells are edited with the arrow or Enter keys.
 /// </remarks>
-public sealed class DataGridRowNavigationBehavior : Behavior<DataGrid>
+[GenerateDependencyProperty<ICommand>(
+    "ActivateCommand",
+    IsNullable = true,
+    PropertyXmlDocumentation = "Gets or sets the command executed when Enter is pressed in the grid.")]
+public sealed partial class DataGridRowNavigationBehavior : Behavior<DataGrid>
 {
-    /// <summary>
-    /// Identifies the <see cref="ActivateCommand"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty ActivateCommandProperty = DependencyProperty.Register(
-        nameof(ActivateCommand),
-        typeof(ICommand),
-        typeof(DataGridRowNavigationBehavior),
-        new PropertyMetadata(null));
-
-    /// <summary>
-    /// Gets or sets the command executed when Enter is pressed in the grid.
-    /// </summary>
-    public ICommand? ActivateCommand
-    {
-        get => (ICommand?)GetValue(ActivateCommandProperty);
-        set => SetValue(ActivateCommandProperty, value);
-    }
-
     /// <inheritdoc />
     protected override void OnAttached()
     {

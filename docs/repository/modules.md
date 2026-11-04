@@ -83,6 +83,13 @@ plumbing shared by the list panes, and `BindingProxy` for bindings outside the v
 It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers, and
 `Revit.Linter.ReportMessaging` for the shared message parser.
 
+The dependency properties of this project, of `Revit.Linter.Behaviors` and of
+`Revit.Linter.ReportMessaging` are declared with the `VolocyNazad.Wpf.DependencyPropertyGenerator`
+package: the registration, the CLR property or the `Get`/`Set` accessors, the XML documentation and
+the callback wiring are generated from `[GenerateDependencyProperty<T>]` and
+`[GenerateAttachedDependencyProperty<T>]`. The projects that XAML compiles keep their registrations
+hand-written, as the [presentation policy](../policies/presentation.md) explains.
+
 `Revit.Linter.OpenedDocuments` owns the shared opened-document selector of the report and fix panes. It
 exposes the selector through `IOpenedDocuments` and the stable `OpenedDocument` item model, so the panes
 bind to the contract and never reference the selector view model; the view model keeps the Revit-aware
