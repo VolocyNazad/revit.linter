@@ -119,6 +119,8 @@ boundaries and the runtime rules are in [architecture decisions](architecture.md
 - `docs/diagnostics/adding.md` describes the end-to-end workflow for adding a built-in diagnostic.
 - `docs/repository.md` describes the project, repository structure, and technology stack;
   its [module inventory](repository/modules.md) lists the projects and their responsibilities.
+- The [changelog archive](changelog/archive.md) holds releases older than the current major version;
+  `CHANGELOG.md` keeps `[Unreleased]` and the current major release line.
 - `docs/architecture.md` records stable module boundaries and design decisions.
 - `docs/FEATURES.md` summarizes the current product scope and compatibility contract.
 - `docs/migrations/README.md` defines the migration registry: lifecycle, version window, index and entry template.

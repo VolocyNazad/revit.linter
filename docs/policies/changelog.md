@@ -24,6 +24,18 @@ follow-up. The repository uses one of two modes consistently:
 Write for the consumer of the release: keep changes a consumer can observe, merge related
 entries, and drop fixes for behaviour that was never released.
 
+## Release history window
+
+`CHANGELOG.md` keeps `## [Unreleased]` and every release of the current major version. Older
+releases move to the [changelog archive](../changelog/archive.md): the archive preserves history
+and is not context — read it only when a historical detail is needed.
+
+When a new major version is released, move the previous major version's sections to the archive
+in the same change and update the archive link near the top of `CHANGELOG.md`. The archive keeps
+releases newest first: insert the moved sections above the entries already there. It is add-only:
+existing entries are never rewritten or reordered, and a factually wrong entry is corrected in
+place.
+
 ## Release
 
 Before creating a release tag:

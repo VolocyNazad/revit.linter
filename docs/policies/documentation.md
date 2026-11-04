@@ -21,7 +21,7 @@ The repository documents what the product does, why the repository is arranged t
 | [GLOSSARY.md](../../GLOSSARY.md) | Vocabulary | Which terms the code, documents and tests share |
 | [AGENTS.md](../../AGENTS.md) | Entry point | Which documents a contributor must read before changing the repository |
 | [CONTRIBUTING.md](../../CONTRIBUTING.md) | Contributor workflow | How a change is prepared, checked and submitted |
-| [CHANGELOG.md](../../CHANGELOG.md) | Release history | What one release changed (see the [changelog policy](changelog.md)) |
+| [CHANGELOG.md](../../CHANGELOG.md) and the [changelog archive](../changelog/archive.md) | Release history | What one release changed; releases older than the current major version are archived (see the [changelog policy](changelog.md)) |
 
 The genre decides the content. A policy states a rule and its boundary; the repository guide records facts about the structure and the stack; the architecture document records decisions and their consequences; a registry entry records a contract with versions, safety guarantees and a removal plan; a guide records a procedure step by step. Do not move a rule into a guide, and do not record a procedure as a policy rule.
 
