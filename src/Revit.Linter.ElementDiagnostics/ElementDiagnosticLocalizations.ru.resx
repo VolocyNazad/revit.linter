@@ -108,8 +108,11 @@
   <data name="SHRD0035_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) не закреплён. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0036_description" xml:space="preserve"><value>Проверяет, закреплены ли оси.</value></data>
   <data name="SHRD0036_message" xml:space="preserve"><value>Ось «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0037_description" xml:space="preserve"><value>Проверяет, закреплены ли экземпляры связей.</value></data>
+  <data name="SHRD0037_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
+  <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>
   <data name="unbindArray_fix" xml:space="preserve"><value>Отвязать массив</value></data>
   <data name="deleteArray_fix" xml:space="preserve"><value>Удалить массив</value></data>
 </root>
