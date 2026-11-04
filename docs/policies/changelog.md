@@ -36,6 +36,11 @@ releases newest first: insert the moved sections above the entries already there
 existing entries are never rewritten or reordered, and a factually wrong entry is corrected in
 place.
 
+A release always belongs to the current major line: a defect found in an older major line is fixed
+in a release of the current one, not in a patch of the archived line. Supporting a maintenance
+line is a separate decision that changes this section, the versioning configuration and the
+release channels together.
+
 ## Release
 
 Before creating a release tag:
@@ -52,6 +57,10 @@ refuse to continue when `## [Unreleased]` contains an entry, when a release head
 date, when versions are duplicated or out of order, or when the changelog has no section for the
 tagged version. When the publish workflow also creates a GitHub release, the version section is
 used verbatim as the release description.
+
+The same script checks the release history window: every release section belongs to the current
+major line, the archive holds only older releases in newest-first order, and the two files do not
+repeat a version.
 
 The rest of the workflow - tests, build and the message format - is defined by the
 [testing policy](testing.md), [build and toolchain policy](build.md) and the

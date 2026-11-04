@@ -62,11 +62,11 @@ Cut and prepare the release branch as the [branching policy](branching.md) requi
 The workflow:
 
 - checks out with full history without persisting credentials, installs the SDK from `global.json`, restores the cached NuGet packages and installs WiX 6.0.2;
-- runs `./scripts/Verify-Release.ps1 -FromHeadTag -AncestorOf main`: `HEAD` must carry exactly one stable tag matching `vMAJOR.MINOR.PATCH`, `CHANGELOG.md` must have a `## [Unreleased]` section with no entries below it and exactly one `## [VERSION] - YYYY-MM-DD` section for the tag directly below it, and `HEAD` must be an ancestor of `origin/main`;
+- runs `./scripts/Verify-Release.ps1 -FromHeadTag -AncestorOf main`: `HEAD` must carry exactly one stable tag matching `vMAJOR.MINOR.PATCH`, `CHANGELOG.md` must have a `## [Unreleased]` section with no entries below it and exactly one `## [VERSION] - YYYY-MM-DD` section for the tag directly below it, the release history window must hold - one major line in the changelog, older releases in its archive - and `HEAD` must be an ancestor of `origin/main`;
 - runs `dotnet run --project build/Revit.Linter.Build.csproj -c Release -- publish --Publish:Draft=<input>`;
 - has a 120-minute job timeout, so a hung publish does not occupy a runner for the default six hours.
 
-The `repository-policy` workflow runs the structural part of the same script on every push and pull request, so a malformed changelog or a missing `Unreleased` section is reported before the immutable tag exists.
+The `repository-policy` workflow runs the structural part of the same script on every push and pull request, so a malformed changelog, a missing `Unreleased` section, a release outside the current major line or a stale archive is reported before the immutable tag exists.
 
 The publish pipeline compiles every `Release_*` configuration of `Revit.Linter.slnx` with `TreatWarningsAsErrors=true`, verifies the localization artifacts, publishes the updater for `win-x64`, creates the MSI, and then requires a stable version (the `GitVersion` version equal to the MSI product version) and an existing installer. It writes the release notes from the changelog section, adds a link to that section at the release tag in GitHub Actions, and invokes `gh release create v<version> --verify-tag --notes-file <file> --title "Revit.Linter <version>" [--draft] <installer>`. The pipeline never passes `--prerelease`, so automation publishes stable releases only; a pre-release is published manually as described in [Release channels](#release-channels).
 

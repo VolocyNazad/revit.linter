@@ -7,6 +7,10 @@ Checks `CHANGELOG.md` against the changelog policy: `## [Unreleased]` is the fir
 empty of entries, every release has one `## [VERSION] - YYYY-MM-DD` heading, versions are unique and
 ordered newest first, and dates are valid.
 
+The release history window is checked in the same run: `CHANGELOG.md` holds the current major
+line, the archive `docs/changelog/archive.md` holds only older releases in the same section
+format, and the two files do not repeat a version.
+
 With `-FromHeadTag` the script additionally requires exactly one stable `vMAJOR.MINOR.PATCH` tag on
 `HEAD`, requires the changelog to contain the section for that tag directly below `Unreleased`, and
 optionally requires `HEAD` to be an ancestor of the given remote branch.
@@ -120,6 +124,77 @@ foreach ($release in $releases) {
             $problems.Add("Release sections must be ordered newest first; '## [$($release.Label)]' is not below the previous version.")
         }
         $previousVersion = $version
+    }
+}
+
+# --- Release history window --------------------------------------------------------------
+# CHANGELOG.md keeps the current major line; older releases live in the archive in the same
+# section format. Together the two files are one release history: sections must not repeat,
+# overlap or leave their order.
+$archiveRelativePath = 'docs/changelog/archive.md'
+$archivePath = Join-Path $root $archiveRelativePath
+$changelogVersions = [Collections.Generic.List[version]]::new()
+foreach ($release in $releases) {
+    $parsedVersion = $null
+    if ([version]::TryParse($release.Label, [ref]$parsedVersion)) { $changelogVersions.Add($parsedVersion) }
+}
+$currentMajor = if ($changelogVersions.Count -gt 0) { $changelogVersions[0].Major } else { -1 }
+if ($currentMajor -ge 0) {
+    $olderReleases = @($changelogVersions | Where-Object { $_.Major -ne $currentMajor })
+    if ($olderReleases.Count -gt 0) {
+        $olderLabels = ($olderReleases | ForEach-Object { $_.ToString() }) -join ', '
+        $problems.Add("CHANGELOG.md keeps the current major line ($currentMajor.x) only; release(s) $olderLabels belong to an older major line - move them to $archiveRelativePath.")
+    }
+}
+if (Test-Path -LiteralPath $archivePath -PathType Leaf) {
+    if (-not (($lines -join "`n").Contains($archiveRelativePath))) {
+        $problems.Add("CHANGELOG.md must link to the changelog archive '$archiveRelativePath'.")
+    }
+    $archiveLines = @(Get-Content -LiteralPath $archivePath -Encoding utf8)
+    $archiveVersions = [Collections.Generic.List[version]]::new()
+    $archiveSeen = @{}
+    $previousArchiveVersion = $null
+    for ($archiveIndex = 0; $archiveIndex -lt $archiveLines.Count; $archiveIndex++) {
+        if ($archiveLines[$archiveIndex] -notmatch $headingPattern) { continue }
+        $archiveLabel = $Matches['label']
+        $archiveDate = $Matches['date']
+        if ($archiveLabel -notmatch $versionPattern) {
+            $problems.Add("Archive section '## [$archiveLabel]' must name a MAJOR.MINOR.PATCH version.")
+            continue
+        }
+        if (-not $archiveDate) {
+            $problems.Add("Archive section '## [$archiveLabel]' has no '- YYYY-MM-DD' date.")
+        } else {
+            $archiveDateValue = [datetime]::MinValue
+            if (-not [datetime]::TryParseExact(
+                    $archiveDate,
+                    'yyyy-MM-dd',
+                    [Globalization.CultureInfo]::InvariantCulture,
+                    [Globalization.DateTimeStyles]::None,
+                    [ref]$archiveDateValue)) {
+                $problems.Add("Archive section '## [$archiveLabel]' has an invalid date '$archiveDate'.")
+            }
+        }
+        if ($archiveSeen.ContainsKey($archiveLabel)) {
+            $problems.Add("Archive version '$archiveLabel' appears more than once.")
+        } else {
+            $archiveSeen[$archiveLabel] = $true
+        }
+        $archiveVersion = $null
+        if ([version]::TryParse($archiveLabel, [ref]$archiveVersion)) {
+            $archiveVersions.Add($archiveVersion)
+            if ($previousArchiveVersion -and $archiveVersion -ge $previousArchiveVersion) {
+                $problems.Add("Archive sections must be ordered newest first; '## [$archiveLabel]' is not below the previous version.")
+            }
+            $previousArchiveVersion = $archiveVersion
+            if ($currentMajor -ge 0 -and $archiveVersion.Major -ge $currentMajor) {
+                $problems.Add("Archive release '$archiveLabel' is not older than the current major line ($currentMajor.x).")
+            }
+        }
+    }
+    $repeated = @($changelogVersions | Where-Object { $archiveVersions.Contains($_) } | ForEach-Object { $_.ToString() } | Sort-Object -Unique)
+    if ($repeated.Count -gt 0) {
+        $problems.Add("Release version(s) $($repeated -join ', ') appear in both CHANGELOG.md and $archiveRelativePath.")
     }
 }
 
