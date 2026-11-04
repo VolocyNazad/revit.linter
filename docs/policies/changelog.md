@@ -2,6 +2,8 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
+Read when: adding a changelog entry or composing a release section.
+
 `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): the newest
 release comes first, `## [Unreleased]` stays on top, and every release has one
 `## [VERSION] - YYYY-MM-DD` section. Empty category headings under `Unreleased` are
@@ -22,6 +24,23 @@ follow-up. The repository uses one of two modes consistently:
 Write for the consumer of the release: keep changes a consumer can observe, merge related
 entries, and drop fixes for behaviour that was never released.
 
+## Release history window
+
+`CHANGELOG.md` keeps `## [Unreleased]` and every release of the current major version. Older
+releases move to the [changelog archive](../changelog/archive.md): the archive preserves history
+and is not context — read it only when a historical detail is needed.
+
+When a new major version is released, move the previous major version's sections to the archive
+in the same change and update the archive link near the top of `CHANGELOG.md`. The archive keeps
+releases newest first: insert the moved sections above the entries already there. It is add-only:
+existing entries are never rewritten or reordered, and a factually wrong entry is corrected in
+place.
+
+A release always belongs to the current major line: a defect found in an older major line is fixed
+in a release of the current one, not in a patch of the archived line. Supporting a maintenance
+line is a separate decision that changes this section, the versioning configuration and the
+release channels together.
+
 ## Release
 
 Before creating a release tag:
@@ -38,6 +57,10 @@ refuse to continue when `## [Unreleased]` contains an entry, when a release head
 date, when versions are duplicated or out of order, or when the changelog has no section for the
 tagged version. When the publish workflow also creates a GitHub release, the version section is
 used verbatim as the release description.
+
+The same script checks the release history window: every release section belongs to the current
+major line, the archive holds only older releases in newest-first order, and the two files do not
+repeat a version.
 
 The rest of the workflow - tests, build and the message format - is defined by the
 [testing policy](testing.md), [build and toolchain policy](build.md) and the

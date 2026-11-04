@@ -453,6 +453,12 @@
   <Folder Name="/docs/diagnostics/">
     <File Path="docs/diagnostics/adding.md" />
   </Folder>
+  <Folder Name="/docs/repository/">
+    <File Path="docs/repository/modules.md" />
+  </Folder>
+  <Folder Name="/docs/changelog/">
+    <File Path="docs/changelog/archive.md" />
+  </Folder>
   <Folder Name="/docs/testing/">
     <File Path="docs/testing/diagnostics-manual-checklist.md" />
     <File Path="docs/testing/onboarding-manual-checklist.md" />

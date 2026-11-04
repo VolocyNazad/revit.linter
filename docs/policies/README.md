@@ -1,24 +1,22 @@
 # Repository policies
 
-This folder holds the repository policies: the rules a change must follow. Read the policies that
-cover the area you touch before changing it; [development policy](development.md) is the entry point
-and links the rest.
+Read the policy for your area before changing it; [development policy](development.md) is the entry
+point and links the rest.
 
-A policy states a rule and its boundary, not how a tool works. Facts about the repository, the
-technology stack and the module inventory belong in the [repository guide](../repository.md),
-architecture decisions in [architecture decisions](../architecture.md), user-visible behaviour in
-[product scope](../FEATURES.md), and the future work in [TODO.md](../../TODO.md).
+Facts belong in the [repository guide](../repository.md), architecture decisions in
+[architecture decisions](../architecture.md), user-visible behaviour in [product scope](../FEATURES.md),
+and future work in [TODO.md](../../TODO.md).
 
 ## Conventions
 
 - Policies are written in English.
+- Every policy has a `Read when:` line after the paths sentence.
 - Every policy starts with the sentence "Paths mentioned in this policy are relative to the
   repository root unless a Markdown link specifies otherwise.".
-- Links between policies are relative Markdown links. An anchor must point at a heading that exists;
-  `scripts/Validate-Repository.ps1` checks both the file and the anchor.
-- A policy ends by pointing to the [development policy](development.md) for the rest of the workflow.
-- A policy owns exactly one subject. Rules owned by another policy are linked, not repeated: a
-  duplicated rule is a policy that will drift.
+- Policy links are relative Markdown links; an anchor must point at an existing heading, checked by
+  `scripts/Validate-Repository.ps1`.
+- A policy ends by pointing to the [development policy](development.md).
+- A policy owns exactly one subject. Rules owned by another policy are linked, not repeated.
 
 ## Policy index
 
@@ -27,7 +25,7 @@ architecture decisions in [architecture decisions](../architecture.md), user-vis
 | [Development policy](development.md) | Entry point: repository rules, asking before a change, code basics, links to every policy | Review |
 | [Branching policy](branching.md) | Branch kinds, base branches, merge strategy, protected branches | Review; branch protection is configured in GitHub, not in the repository |
 | [Commit message policy](commits.md) | Conventional Commits, types, scope, body and footers | Review |
-| [Changelog policy](changelog.md) | `CHANGELOG.md` format, entry modes, release section | `scripts/Verify-Release.ps1` in `.github/workflows/repository-policy.yml` and `.github/workflows/publish-release.yml` |
+| [Changelog policy](changelog.md) | `CHANGELOG.md` format, entry modes, release section, release history window and archive | `scripts/Verify-Release.ps1` in `.github/workflows/repository-policy.yml` and `.github/workflows/publish-release.yml`; the same script also checks the release history window and the archive |
 | [Testing policy](testing.md) | Test kinds, Revit version matrix, what needs a test, determinism, running tests | `.github/workflows/build-and-test.yml`, `scripts/Invoke-HeadlessTests.ps1` and the matrix resolved from `Directory.Build.props`; Revit integration runs are manual |
 | [Benchmark policy](benchmarks.md) | Benchmark kinds, when to measure, reporting | Review; benchmarks deliberately do not run in CI |
 | [Wiki policy](wiki.md) | Wiki as a mirror of `wiki/`, publication rules | `.github/workflows/publish-wiki.yml`, `scripts/Prepare-Wiki.ps1` |
@@ -45,13 +43,12 @@ architecture decisions in [architecture decisions](../architecture.md), user-vis
 
 1. Add or edit the file in `docs/policies/`. Keep one subject per policy.
 2. Add the row to the [policy index](#policy-index) above.
-3. Add the file to the `/docs/policies/` solution folder in `Revit.Linter.slnx`, or
-   `scripts/Validate-Repository.ps1` fails.
-4. Link the policy from the place that needs it: [development policy](development.md),
-   [CONTRIBUTING.md](../../CONTRIBUTING.md), the pull request template or the affected area guide.
-   Do not maintain a second copy of the full list outside this index.
+3. Add the file to the `/docs/policies/` solution folder in `Revit.Linter.slnx`, or the validator
+   fails.
+4. Link the policy from [development policy](development.md),
+   [CONTRIBUTING.md](../../CONTRIBUTING.md), the pull request template or the area guide; keep no
+   second copy of the full list.
 5. Run `./scripts/Validate-Repository.ps1`.
 
-When a policy rule is replaced by an automated check, say so in the "Enforced by" column. When a
-policy is no longer enforced or no longer followed, fix the policy instead of leaving a dead rule in
-place.
+When an automated check replaces a policy rule, say so in the "Enforced by" column. Fix a policy that
+is no longer enforced instead of leaving a dead rule.

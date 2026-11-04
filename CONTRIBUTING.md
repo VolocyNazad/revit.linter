@@ -1,8 +1,8 @@
 # Contributing
 
-Before making a change, read the [repository policy index](docs/policies/README.md), the
-[development policy](docs/policies/development.md) and the [repository guide](docs/repository.md).
-They define the repository-specific stack, testing expectations and maintenance rules.
+Before making a change, read the [development policy](docs/policies/development.md) and open the
+[repository policy index](docs/policies/README.md) for the one policy that covers the area you touch.
+The [repository guide](docs/repository.md) is a reference: read the section for that area, not the whole file.
 
 Branches follow the [branching policy](docs/policies/branching.md): `main` holds
 the released state, `dev` integrates the next release, and every change arrives
