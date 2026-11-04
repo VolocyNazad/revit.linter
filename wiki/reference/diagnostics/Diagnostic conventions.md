@@ -15,7 +15,7 @@ Each diagnostic's identifier must be unique
 
 |Prefix|Category|Diagnostic type|
 |:---|:---|:---|
-|`SYST`|System diagnostics (connectors)|`ElementDiagnosticId`|
+|`SYST`|System diagnostics for engineering systems (ducts, pipes, cable trays, electrical, plumbing)|`ElementDiagnosticId`|
 |`SHRD`|Shared element diagnostics (families, views, levels, links)|`ElementDiagnosticId`|
 |`ARCH`|Architectural diagnostics (rooms, walls)|`ElementDiagnosticId`|
 |`DOC`|Document diagnostics (starting view, etc.)|`DocumentDiagnosticId`|
