@@ -4,86 +4,35 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 
+using VolocyNazad.Wpf.DependencyProperties;
+
 namespace Revit.Linter.ReportMessaging;
 
 /// <summary>
 /// Renders report message parts as WPF text and command-enabled hyperlinks.
 /// </summary>
-public sealed class ReportMessageView : FlowDocumentScrollViewer
+[GenerateDependencyProperty<IEnumerable<ReportTextPart>>(
+    "Parts",
+    IsNullable = true,
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets the report message parts to render.")]
+[GenerateDependencyProperty<ICommand>(
+    "LinkCommand",
+    IsNullable = true,
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets the command invoked by rendered hyperlinks.")]
+[GenerateDependencyProperty<string>(
+    "ToolTipFormat",
+    IsNullable = true,
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets the composite format string used for hyperlink tooltips.")]
+[GenerateDependencyProperty<bool>(
+    "IsObsolete",
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets a value indicating whether the message is rendered with a strikethrough.")]
+public sealed partial class ReportMessageView : FlowDocumentScrollViewer
 {
-    /// <summary>
-    /// Identifies the <see cref="Parts"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty PartsProperty = DependencyProperty.Register(
-        nameof(Parts),
-        typeof(IEnumerable<ReportTextPart>),
-        typeof(ReportMessageView),
-        new PropertyMetadata(null, OnMessagePropertyChanged));
-
-    /// <summary>
-    /// Identifies the <see cref="LinkCommand"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty LinkCommandProperty = DependencyProperty.Register(
-        nameof(LinkCommand),
-        typeof(ICommand),
-        typeof(ReportMessageView),
-        new PropertyMetadata(null, OnMessagePropertyChanged));
-
-    /// <summary>
-    /// Identifies the <see cref="ToolTipFormat"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty ToolTipFormatProperty = DependencyProperty.Register(
-        nameof(ToolTipFormat),
-        typeof(string),
-        typeof(ReportMessageView),
-        new PropertyMetadata(null, OnMessagePropertyChanged));
-
-    /// <summary>
-    /// Identifies the <see cref="IsObsolete"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty IsObsoleteProperty = DependencyProperty.Register(
-        nameof(IsObsolete),
-        typeof(bool),
-        typeof(ReportMessageView),
-        new PropertyMetadata(false, OnMessagePropertyChanged));
-
     private static readonly Thickness NoPadding = new(0);
-
-    /// <summary>
-    /// Gets or sets the report message parts to render.
-    /// </summary>
-    public IEnumerable<ReportTextPart>? Parts
-    {
-        get => (IEnumerable<ReportTextPart>?)GetValue(PartsProperty);
-        set => SetValue(PartsProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the command invoked by rendered hyperlinks.
-    /// </summary>
-    public ICommand? LinkCommand
-    {
-        get => (ICommand?)GetValue(LinkCommandProperty);
-        set => SetValue(LinkCommandProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the composite format string used for hyperlink tooltips.
-    /// </summary>
-    public string? ToolTipFormat
-    {
-        get => (string?)GetValue(ToolTipFormatProperty);
-        set => SetValue(ToolTipFormatProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the message is rendered with a strikethrough.
-    /// </summary>
-    public bool IsObsolete
-    {
-        get => (bool)GetValue(IsObsoleteProperty);
-        set => SetValue(IsObsoleteProperty, value);
-    }
 
     /// <inheritdoc />
     protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

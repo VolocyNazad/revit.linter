@@ -2,6 +2,8 @@ using System.Windows;
 
 using Microsoft.Xaml.Behaviors;
 
+using VolocyNazad.Wpf.DependencyProperties;
+
 namespace Revit.Linter.Behaviors;
 
 /// <summary>
@@ -13,26 +15,11 @@ namespace Revit.Linter.Behaviors;
 /// dialogs: assigning the result of a modeless window throws. The view model resets the bound
 /// property before and after every show, so a stale result never closes the next show on attach.
 /// </remarks>
-public sealed class WindowDialogResultBehavior : Behavior<Window>
+[GenerateDependencyProperty<bool?>(
+    "DialogResult",
+    PropertyXmlDocumentation = "Gets or sets the dialog result requested by the view model; null requests nothing.")]
+public sealed partial class WindowDialogResultBehavior : Behavior<Window>
 {
-    /// <summary>
-    /// Identifies the <see cref="DialogResult"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty DialogResultProperty = DependencyProperty.Register(
-        nameof(DialogResult),
-        typeof(bool?),
-        typeof(WindowDialogResultBehavior),
-        new PropertyMetadata(null, OnDialogResultChanged));
-
-    /// <summary>
-    /// Gets or sets the dialog result requested by the view model; null requests nothing.
-    /// </summary>
-    public bool? DialogResult
-    {
-        get => (bool?)GetValue(DialogResultProperty);
-        set => SetValue(DialogResultProperty, value);
-    }
-
     private static void OnDialogResultChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
     {
         if (source is not WindowDialogResultBehavior behavior) return;

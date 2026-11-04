@@ -5,6 +5,8 @@ using System.Windows.Controls;
 
 using Microsoft.Xaml.Behaviors;
 
+using VolocyNazad.Wpf.DependencyProperties;
+
 namespace Revit.Linter.Behaviors;
 
 /// <summary>
@@ -16,44 +18,18 @@ namespace Revit.Linter.Behaviors;
 /// and clears the highlight. Row items are matched through <see cref="IHasDiagnosticCode"/>;
 /// items without a code never match. The key never names an observer; it only marks the row.
 /// </remarks>
-public sealed class FirstMatchRowHighlightBehavior : Behavior<DataGrid>
+[GenerateDependencyProperty<string>(
+    "HighlightKey",
+    DefaultValueExpression = "string.Empty",
+    OnChanged = nameof(OnHighlightSetupChanged),
+    PropertyXmlDocumentation = "Gets or sets the onboarding key set on the first matching realized row.")]
+[GenerateDependencyProperty<string>(
+    "TargetCode",
+    DefaultValueExpression = "string.Empty",
+    OnChanged = nameof(OnHighlightSetupChanged),
+    PropertyXmlDocumentation = "Gets or sets the diagnostic code of the row to highlight.")]
+public sealed partial class FirstMatchRowHighlightBehavior : Behavior<DataGrid>
 {
-    /// <summary>
-    /// Identifies the <see cref="HighlightKey"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty HighlightKeyProperty = DependencyProperty.Register(
-        nameof(HighlightKey),
-        typeof(string),
-        typeof(FirstMatchRowHighlightBehavior),
-        new PropertyMetadata(string.Empty, OnHighlightSetupChanged));
-
-    /// <summary>
-    /// Identifies the <see cref="TargetCode"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty TargetCodeProperty = DependencyProperty.Register(
-        nameof(TargetCode),
-        typeof(string),
-        typeof(FirstMatchRowHighlightBehavior),
-        new PropertyMetadata(string.Empty, OnHighlightSetupChanged));
-
-    /// <summary>
-    /// Gets or sets the onboarding key set on the first matching realized row.
-    /// </summary>
-    public string HighlightKey
-    {
-        get => (string)GetValue(HighlightKeyProperty);
-        set => SetValue(HighlightKeyProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the diagnostic code of the row to highlight.
-    /// </summary>
-    public string TargetCode
-    {
-        get => (string)GetValue(TargetCodeProperty);
-        set => SetValue(TargetCodeProperty, value);
-    }
-
     private INotifyCollectionChanged? _observedItems;
     private DependencyPropertyDescriptor? _itemsSourceDescriptor;
 
