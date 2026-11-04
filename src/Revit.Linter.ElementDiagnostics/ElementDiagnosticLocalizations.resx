@@ -108,8 +108,11 @@
   <data name="SHRD0035_message" xml:space="preserve"><value>Level '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
   <data name="SHRD0036_description" xml:space="preserve"><value>Checks whether grids are pinned.</value></data>
   <data name="SHRD0036_message" xml:space="preserve"><value>Grid '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
+  <data name="SHRD0037_description" xml:space="preserve"><value>Checks whether Revit links are pinned.</value></data>
+  <data name="SHRD0037_message" xml:space="preserve"><value>Revit link '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
+  <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>
   <data name="unbindArray_fix" xml:space="preserve"><value>Unbind array</value></data>
   <data name="deleteArray_fix" xml:space="preserve"><value>Delete array</value></data>
 </root>

@@ -48,6 +48,7 @@ lang: en
 | **SHRD0034** | Checks radial arrays for excessive member count (50+ projects, 25+ families). | ⚠️ Warning | `Radial array 'Массив 1' (ID:99016) has too many members. (5 ms)` |
 | **SHRD0035** | Checks whether levels are pinned (projects only). | ⚠️ Warning | `Level 'Уровень 2' (ID:55667) is not pinned. (5 ms)` |
 | **SHRD0036** | Checks whether grids are pinned (projects only). | ⚠️ Warning | `Grid 'Ось 1' (ID:77665) is not pinned. (5 ms)` |
+| **SHRD0037** | Checks whether Revit links are pinned (projects only). | ⚠️ Warning | `Revit link 'АР' (ID:12345) is not pinned. (5 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

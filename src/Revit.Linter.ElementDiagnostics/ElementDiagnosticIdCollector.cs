@@ -53,6 +53,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId LargeRadialArray = Create("SHRD0034", DiagnosticSeverity.Warning, ProjectAndFamily);
     public static readonly ElementDiagnosticId LevelNotPinned = Create("SHRD0035", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId GridNotPinned = Create("SHRD0036", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId RevitLinkNotPinned = Create("SHRD0037", DiagnosticSeverity.Warning, DiagnosticTags.Project);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)
