@@ -1,10 +1,14 @@
 version: 2
 
+# Version updates target `dev`, the integration branch: `main` only carries released states, so a
+# dependency pull request must not land there directly. Dependabot reads this file from the default
+# branch, so the setting takes effect only after it reaches `main`.
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       actions:
         patterns:
@@ -14,6 +18,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget:
         patterns:
@@ -30,6 +35,7 @@ updates:
     directory: /updater
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget-updater:
         patterns:
@@ -39,6 +45,7 @@ updates:
     directory: /installer
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget-installer:
         patterns:
@@ -48,6 +55,7 @@ updates:
     directory: /build
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget-build:
         patterns:
@@ -57,6 +65,7 @@ updates:
     directory: /benchmark
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget-benchmark:
         patterns:
@@ -66,6 +75,7 @@ updates:
     directory: /sandbox
     schedule:
       interval: weekly
+    target-branch: dev
     groups:
       nuget-sandbox:
         patterns:

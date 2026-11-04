@@ -233,8 +233,8 @@ every action reference in `.github/workflows/` is pinned to a full release tag s
 
 Security automation lives in `.github/workflows/codeql.yml` (CodeQL for C# in build-mode none on push
 to `main` and `dev`, and weekly), `.github/workflows/dependency-review.yml` (dependency review on every
-pull request) and `.github/dependabot.yml` (weekly grouped updates for GitHub Actions and NuGet). Those
-workflows report findings; they are not required checks.
+pull request) and `.github/dependabot.yml` (weekly grouped updates for GitHub Actions and NuGet, opened
+against `dev`). Those workflows report findings; they are not required checks.
 
 What CI must prove, how the Revit version matrix is covered and how a change is verified before a
 release tag is defined by the [testing policy](policies/testing.md).
