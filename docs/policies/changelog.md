@@ -23,7 +23,7 @@ conflict over `CHANGELOG.md`.
 - The file holds one line: the entry text. Do not add the `- ` marker or a heading; the composer
   adds both. A change that spans several files is still one fragment; a change with two unrelated
   outcomes has two, one per category.
-- `changelog.d/README.md` is the only file outside a category directory.
+- No file lives outside a category directory.
 
 One fragment per change: write for the consumer of the release, keep what a consumer can observe,
 and leave out fixes for behaviour that was never released. `CHANGELOG.md` and `## [Unreleased]`

@@ -21,7 +21,8 @@ Revit.Linter is an extension for Autodesk Revit that lets users keep projects an
 - `build/` - solution building, compilation, package
 - `scripts/` - repository validation, changelog composition, release verification and CI helper scripts
 - `changelog.d/` - pending changelog fragments, one per change, composed into `CHANGELOG.md` when a
-  release is prepared
+  release is prepared; Git does not track empty directories, so the folder exists only while a
+  fragment is pending
 - `output/` - artifacts after building
 - `benchmark/` - benchmarking
 - `sandbox/` - a separate solution (`Revit.Linter.Sandbox.slnx`) for
