@@ -8,6 +8,13 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+## [3.0.5] - 2026-11-04
+
+### Added
+
+- Check that a Revit link is pinned: the new `SHRD0037` element diagnostic reports an unpinned link instance in a project, offers the `Pin Revit link` fix and a visualization that shows and selects the link. An unloaded link is not reported: its instances stay in the model, but there is no content to move until the link is reloaded, and the run after reloading reports the pin state again.
+- Check that walls are single-layer: the new `ARCH005` element diagnostic reports a wall whose wall type carries a compound structure with more than one layer, and offers a visualization that shows and selects the wall. A wall type whose compound structure cannot be read is not reported. The check does not run in family documents.
+
 ## [3.0.4] - 2026-11-03
 
 ### Added
