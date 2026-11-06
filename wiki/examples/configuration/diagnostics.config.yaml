@@ -20,7 +20,7 @@ rules:
 - type: "custom"
   code: "CSTM001"
   description: "Generic models with an empty Comments parameter"
-  tags: ["Modeling", "Parameters", "Project"]
+  tags: ["Shared", "Modeling", "Parameters", "Project"]
   message: "'{elementName}' ({elementId}) is a generic model with an empty Comments parameter. Fill it in to describe the element."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -173,7 +173,7 @@ rules:
 - type: "custom"
   code: "CSTM101"
   description: "Ducts and pipes without a system"
-  tags: ["MEP", "Systems", "Project"]
+  tags: ["Systems", "MEP", "Project"]
   message: "'{elementName}' ({elementId}) is not assigned to a system."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -190,7 +190,7 @@ rules:
 - type: "custom"
   code: "CSTM201"
   description: "Doors and windows without a mark"
-  tags: ["Project"]
+  tags: ["Architecture", "Project"]
   message: "'{elementName}' ({elementId}) has an empty mark."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -207,7 +207,7 @@ rules:
 - type: "custom"
   code: "CSTM202"
   description: "Mirrored doors"
-  tags: ["Doors", "Modeling", "Project"]
+  tags: ["Architecture", "Doors", "Modeling", "Project"]
   message: "Door '{elementName}' ({elementId}) is mirrored: its handing differs from the family."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -224,7 +224,7 @@ rules:
 - type: "custom"
   code: "CSTM203"
   description: "Rooms without a meaningful name"
-  tags: ["Project"]
+  tags: ["Architecture", "Project"]
   message: "Room '{elementName}' ({elementId}) has an empty or default name."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -241,7 +241,7 @@ rules:
 - type: "custom"
   code: "CSTM204"
   description: "Unplaced rooms"
-  tags: ["Project"]
+  tags: ["Architecture", "Project"]
   message: "Room '{elementName}' ({elementId}) is not placed in the model."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -264,7 +264,7 @@ rules:
 - type: "collision"
   code: "CLSN101"
   description: "Ducts;Pipes"
-  tags: ["MEP", "Project"]
+  tags: ["Systems", "MEP", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -347,7 +347,7 @@ rules:
 - type: "collision"
   code: "CLSN102"
   description: "Trays+Conduits;Ducts+Pipes"
-  tags: ["Project"]
+  tags: ["Systems", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
@@ -430,7 +430,7 @@ rules:
 - type: "collision"
   code: "CLSN103"
   description: "Equipment;Ducts+Pipes+Trays"
-  tags: ["Project"]
+  tags: ["Systems", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_MechanicalEquipment') or builtincategory('OST_DuctTerminal') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_ElectricalEquipment'))"
@@ -513,7 +513,7 @@ rules:
 - type: "collision"
   code: "CLSN104"
   description: "Ducts;Pipes;With links"
-  tags: ["MEP", "Links", "Project"]
+  tags: ["Systems", "MEP", "Links", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -597,7 +597,7 @@ rules:
 - type: "collision"
   code: "CLSN105"
   description: "Ducts;Fittings;Ignore connector-joined"
-  tags: ["Project"]
+  tags: ["Systems", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -767,7 +767,7 @@ rules:
 - type: "collision"
   code: "CLSN202"
   description: "Furniture+Fixtures;Walls+Columns"
-  tags: ["Project"]
+  tags: ["Architecture", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_Casework') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SpecialityEquipment'))"
@@ -850,7 +850,7 @@ rules:
 - type: "collision"
   code: "CLSN203"
   description: "Stairs+Railings;Walls+Floors"
-  tags: ["Project"]
+  tags: ["Architecture", "Project"]
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing'))"
@@ -1019,7 +1019,7 @@ rules:
 - type: "collision"
   code: "CLSN302"
   description: "Framing;Framing"
-  tags: ["Project"]
+  tags: ["Structure", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFraming'))"
@@ -1102,7 +1102,7 @@ rules:
 - type: "collision"
   code: "CLSN303"
   description: "Foundations;Foundations+Columns"
-  tags: ["Project"]
+  tags: ["Structure", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFoundation'))"
@@ -1188,7 +1188,7 @@ rules:
 - type: "parameter"
   code: "PRMTR101"
   description: "ADSK parameters of MEP system families (ducts, pipes, cable trays)"
-  tags: ["MEP", "ADSK", "Project"]
+  tags: ["Systems", "MEP", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:

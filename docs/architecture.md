@@ -153,6 +153,12 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   - The document-kind tags `Project` and `Family` are ordinary tags the product sets on its built-in
     diagnostics; a configured rule declares them itself, because only the rule knows which document kinds it
     applies to.
+  - The discipline tags `Shared`, `Systems` and `Architecture` are ordinary tags too. The product sets them on
+    a built-in diagnostic from the `SHRD`, `SYST` or `ARCH` prefix of its code; a configured rule declares
+    its own spelling, which follows the language of the configuration file.
+  - A single prefix-to-tag table in `DiagnosticTags` decides the discipline of every built-in prefix, including
+    prefixes that deliberately have none. A guard test fails when a built-in collector uses a prefix without an
+    entry, so a new prefix needs an explicit tag-or-none decision instead of silently losing its tag.
   - System tags are trusted and always English, so a rule tag that reuses a reserved name is dropped.
 - Diagnostic configuration files carry a single `version` file format envelope around the rule list. Version
   2 is the one-file format with a per-rule `type`; files without it are not read, and a file with a newer

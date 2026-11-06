@@ -20,7 +20,7 @@ rules:
 - type: "custom"
   code: "CSTM001"
   description: "Обобщённые модели с незаполненным параметром «Комментарии»"
-  tags: ["Моделирование", "Параметры", "Project"]
+  tags: ["Общие", "Моделирование", "Параметры", "Project"]
   message: "'{elementName}' ({elementId}) — у обобщённой модели не заполнен параметр «Комментарии». Заполните его, чтобы описать элемент."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -173,7 +173,7 @@ rules:
 - type: "custom"
   code: "CSTM101"
   description: "Воздуховоды и трубы без системы"
-  tags: ["Инженерные системы", "Системы", "Project"]
+  tags: ["Системы", "Инженерные системы", "Project"]
   message: "'{elementName}' ({elementId}) не входит ни в одну систему."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -190,7 +190,7 @@ rules:
 - type: "custom"
   code: "CSTM201"
   description: "Двери и окна без марки"
-  tags: ["Project"]
+  tags: ["Архитектура", "Project"]
   message: "У элемента '{elementName}' ({elementId}) не заполнена марка."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -207,7 +207,7 @@ rules:
 - type: "custom"
   code: "CSTM202"
   description: "Зеркально отражённые двери"
-  tags: ["Двери", "Моделирование", "Project"]
+  tags: ["Архитектура", "Двери", "Моделирование", "Project"]
   message: "Дверь '{elementName}' ({elementId}) отражена зеркально: открывание не совпадает с семейством."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -224,7 +224,7 @@ rules:
 - type: "custom"
   code: "CSTM203"
   description: "Помещения без осмысленного имени"
-  tags: ["Project"]
+  tags: ["Архитектура", "Project"]
   message: "У помещения '{elementName}' ({elementId}) пустое имя или имя по умолчанию."
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
@@ -241,7 +241,7 @@ rules:
 - type: "custom"
   code: "CSTM204"
   description: "Неразмещённые помещения"
-  tags: ["Project"]
+  tags: ["Архитектура", "Project"]
   message: "Помещение '{elementName}' ({elementId}) не размещено в модели."
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
@@ -264,7 +264,7 @@ rules:
 - type: "collision"
   code: "CLSN101"
   description: "Воздуховоды;Трубы"
-  tags: ["Инженерные системы", "Project"]
+  tags: ["Системы", "Инженерные системы", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -347,7 +347,7 @@ rules:
 - type: "collision"
   code: "CLSN102"
   description: "Лотки+Короба;Воздуховоды+Трубы"
-  tags: ["Project"]
+  tags: ["Системы", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_Conduit') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_ConduitFitting'))"
@@ -430,7 +430,7 @@ rules:
 - type: "collision"
   code: "CLSN103"
   description: "Оборудование;Воздуховоды+Трубы+Лотки"
-  tags: ["Project"]
+  tags: ["Системы", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_MechanicalEquipment') or builtincategory('OST_DuctTerminal') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_ElectricalEquipment'))"
@@ -513,7 +513,7 @@ rules:
 - type: "collision"
   code: "CLSN104"
   description: "Воздуховоды;Трубы;Со связями"
-  tags: ["Инженерные системы", "Связи", "Project"]
+  tags: ["Системы", "Инженерные системы", "Связи", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -597,7 +597,7 @@ rules:
 - type: "collision"
   code: "CLSN105"
   description: "Воздуховоды;Фитинги;Игнор присоединений через коннекторы"
-  tags: ["Project"]
+  tags: ["Системы", "Project"]
   severity: "Error"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctAccessory'))"
@@ -767,7 +767,7 @@ rules:
 - type: "collision"
   code: "CLSN202"
   description: "Мебель+Сантехника;Стены+Колонны"
-  tags: ["Project"]
+  tags: ["Архитектура", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_Casework') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SpecialityEquipment'))"
@@ -850,7 +850,7 @@ rules:
 - type: "collision"
   code: "CLSN203"
   description: "Лестницы+Ограждения;Стены+Перекрытия"
-  tags: ["Project"]
+  tags: ["Архитектура", "Project"]
   severity: "Message"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing'))"
@@ -1019,7 +1019,7 @@ rules:
 - type: "collision"
   code: "CLSN302"
   description: "Каркас;Каркас"
-  tags: ["Project"]
+  tags: ["Конструкции", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFraming'))"
@@ -1102,7 +1102,7 @@ rules:
 - type: "collision"
   code: "CLSN303"
   description: "Фундаменты;Фундаменты+Колонны"
-  tags: ["Project"]
+  tags: ["Конструкции", "Project"]
   severity: "Warning"
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and (builtincategory('OST_StructuralFoundation'))"
@@ -1188,7 +1188,7 @@ rules:
 - type: "parameter"
   code: "PRMTR101"
   description: "Параметры ADSK системных семейств ИОС (воздуховоды, трубы, лотки)"
-  tags: ["Инженерные системы", "ADSK", "Project"]
+  tags: ["Системы", "Инженерные системы", "ADSK", "Project"]
   severity: "Message"
   take: "!property('IsFamilyDocument')"
   parameters:
