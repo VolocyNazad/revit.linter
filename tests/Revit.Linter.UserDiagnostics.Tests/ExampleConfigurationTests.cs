@@ -23,6 +23,28 @@ public sealed class ExampleConfigurationTests
     }
 
     [Theory]
+    [InlineData("", "Shared", "Systems", "Architecture", "Structure")]
+    [InlineData("ru", "Общие", "Системы", "Архитектура", "Конструкции")]
+    public void Every_example_rule_starts_with_the_discipline_tag_of_its_block(
+        string languageFolder, string shared, string systems, string architecture, string structure)
+    {
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            Read(languageFolder, ConfigurationPathUtils.DiagnosticsConfigFileName));
+
+        foreach (DiagnosticRule rule in file.Rules)
+        {
+            string code = rule.Code!;
+            string expected = ExpectedDiscipline(code, shared, systems, architecture, structure);
+
+            Assert.NotEmpty(rule.Tags);
+            Assert.Equal(expected, rule.Tags[0]);
+            Assert.DoesNotContain(
+                rule.Tags.Skip(1),
+                tag => tag == shared || tag == systems || tag == architecture || tag == structure);
+        }
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("ru")]
     public void Comments_example_rule_declares_a_parameter_fix(string languageFolder)
@@ -53,6 +75,22 @@ public sealed class ExampleConfigurationTests
         Assert.False(tourRule.IsActive);
         Assert.Equal(3, tourRule.Visualizations.Length);
     }
+
+    private static string ExpectedDiscipline(
+        string code, string shared, string systems, string architecture, string structure) =>
+        code switch
+        {
+            "CSTM001" => shared,
+            _ when code.StartsWith("CSTM1", StringComparison.Ordinal) ||
+                   code.StartsWith("CLSN1", StringComparison.Ordinal) ||
+                   code.StartsWith("PRMTR1", StringComparison.Ordinal) => systems,
+            _ when code.StartsWith("CSTM2", StringComparison.Ordinal) ||
+                   code.StartsWith("CLSN2", StringComparison.Ordinal) ||
+                   code.StartsWith("PRMTR2", StringComparison.Ordinal) => architecture,
+            _ when code.StartsWith("CLSN3", StringComparison.Ordinal) ||
+                   code.StartsWith("PRMTR3", StringComparison.Ordinal) => structure,
+            _ => throw new InvalidOperationException($"Unexpected example rule code '{code}'."),
+        };
 
     private static DiagnosticConfigurationFile? Read(string languageFolder, string fileName) =>
         ConfigurationPathUtils.GetDiagnosticConfiguration(Path.Combine(

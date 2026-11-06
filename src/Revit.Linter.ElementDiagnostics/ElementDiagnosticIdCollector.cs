@@ -4,9 +4,10 @@ namespace Revit.Linter.ElementDiagnostics;
 
 internal static class ElementDiagnosticIdCollector
 {
-    // Every built-in diagnostic carries the BuiltIn tag plus the document-kind tags that mirror its
-    // document filter: a check that rejects family documents gets Project, one that only accepts them
-    // gets Family, and a check that runs in both gets both tags.
+    // Every built-in diagnostic carries the BuiltIn tag and, when the prefix of its code names a
+    // discipline (SHRD, SYST, ARCH), the matching discipline tag. The document-kind tags follow and
+    // mirror the document filter: a check that rejects family documents gets Project, one that only
+    // accepts them gets Family, and a check that runs in both gets both tags.
     private static readonly string[] ProjectAndFamily = [DiagnosticTags.Project, DiagnosticTags.Family];
 
     public static readonly ElementDiagnosticId AnyConnectorsNotConnected = Create("SYST001", DiagnosticSeverity.Message, DiagnosticTags.Project);
@@ -64,13 +65,20 @@ internal static class ElementDiagnosticIdCollector
 
     internal static IReadOnlyList<ElementDiagnosticId> GetAllDiagnosticIds() => _allDiagnosticIds.Value;
 
-    private static ElementDiagnosticId Create(string code, DiagnosticSeverity severity, params string[] systemTags) => new(
-        code,
-        ElementDiagnosticLocalizations.GetString($"{code}_description"),
-        ElementDiagnosticLocalizations.GetString($"{code}_message"),
-        severity,
-        true,
-        false,
-        string.Empty,
-        systemTags: [DiagnosticTags.BuiltIn, .. systemTags]);
+    private static ElementDiagnosticId Create(string code, DiagnosticSeverity severity, params string[] systemTags)
+    {
+        List<string> tags = [DiagnosticTags.BuiltIn];
+        if (DiagnosticTags.DisciplineForCode(code) is { } discipline) tags.Add(discipline);
+        tags.AddRange(systemTags);
+
+        return new(
+            code,
+            ElementDiagnosticLocalizations.GetString($"{code}_description"),
+            ElementDiagnosticLocalizations.GetString($"{code}_message"),
+            severity,
+            true,
+            false,
+            string.Empty,
+            systemTags: tags);
+    }
 }

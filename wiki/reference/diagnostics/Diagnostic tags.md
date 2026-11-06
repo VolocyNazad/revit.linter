@@ -30,10 +30,12 @@ Set by the product. They are always English and look the same in every interface
 
 `Project` and `Family` are the document kinds a diagnostic applies to. The product sets them on a built-in check from its document filter; on a configured rule they are ordinary tags the author writes in `tags`, because only the rule knows where it applies. They are not reserved.
 
+`Shared`, `Systems` and `Architecture` are the discipline tags. The product sets them on a built-in check from the prefix of its code (`SHRD`, `SYST` or `ARCH`); a check whose code has no such prefix, such as a `DOC` or `RVT` check, gets none. On a configured rule they are ordinary tags the author writes in `tags`, so the installed examples spell them in the language of the configuration file: `Systems` in English and `Системы` in Russian. They are not reserved.
+
 ## How the tag list of a diagnostic is built
 
-- A built-in diagnostic gets `BuiltIn` and the document kinds it applies to (`Project`, `Family` or both).
-- A rule loaded from a configuration file gets the tag of its declared `type` (`Custom`, `Collision` or `ParameterProject`) and, when the product installed the rule, the provenance tag (`Example`, `Tour` or `Debug`). The author's `tags` from the file follow.
+- A built-in diagnostic gets `BuiltIn`, then its discipline tag when its code has one of the prefixes above, then the document kinds it applies to (`Project`, `Family` or both).
+- A rule loaded from a configuration file gets the tag of its declared `type` (`Custom`, `Collision` or `ParameterProject`) and, when the product installed the rule, the provenance tag (`Example`, `Tour` or `Debug`). The author's `tags` from the file follow; the installed examples begin them with the discipline tag of the block.
 - The system tags come first in declaration order, then the user tags in the order they are written in the file.
 
 Before the list is built, tags are trimmed, empty tags are dropped and duplicates are removed ignoring case, so `MEP` and `mep` are one tag.

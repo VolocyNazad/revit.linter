@@ -359,6 +359,32 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         await Assert.That(snapshot.ElementDiagnostics.SelectMany(registration => registration.Fixes).Any()).IsTrue();
         await Assert.That(snapshot.ElementDiagnostics.All(registration =>
             registration.VisualizationPipelines.Count > 0)).IsTrue();
+
+        foreach (ElementDiagnosticId identity in snapshot.ElementDiagnostics.Select(registration => registration.Identity))
+        {
+            IReadOnlyList<string> systemTags = identity.SystemTags;
+            string? discipline = DiagnosticTags.DisciplineForCode(identity.Code);
+
+            await Assert.That(systemTags[0]).IsEqualTo(DiagnosticTags.BuiltIn);
+            int documentKindStart;
+            if (discipline is null)
+            {
+                documentKindStart = 1;
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Shared);
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Systems);
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Architecture);
+            }
+            else
+            {
+                documentKindStart = 2;
+                await Assert.That(systemTags[1]).IsEqualTo(discipline);
+                await Assert.That(systemTags.Count(tag => string.Equals(tag, discipline, StringComparison.Ordinal)))
+                    .IsEqualTo(1);
+            }
+
+            await Assert.That(systemTags.Skip(documentKindStart)
+                .All(tag => tag == DiagnosticTags.Project || tag == DiagnosticTags.Family)).IsTrue();
+        }
     }
 
     private sealed class TestElementVisualizationPipelineFactory : IElementVisualizationPipelineFactory
