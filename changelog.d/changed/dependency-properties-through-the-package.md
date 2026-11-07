@@ -1,1 +1,0 @@
-Declare the dependency properties of the behaviors, the binding proxy and the report message view through the `VolocyNazad.Wpf.DependencyPropertyGenerator` package instead of hand-written registrations.
