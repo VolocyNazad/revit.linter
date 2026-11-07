@@ -8,6 +8,24 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-11-07
+
+### Added
+
+- Tag built-in diagnostics with their discipline: every built-in check carries the `BuiltIn` tag and its discipline tag (`SHRD`, `SYST` or `ARCH`), and every rule of the installed example configuration carries a discipline tag in the language of the file. The tags are searchable in the diagnostic panes and shown in the reports.
+- `SetCategoryVisibility` accepts an optional `mode`: `onlyVisible` (the default) shows the listed categories and hides every other hideable category, `onlyHidden` hides the listed categories and shows the rest, and `show` and `hide` change only the listed categories. The built-in `Cut, show and select` and `Show and select` pipelines use `hide` to keep the Scope Boxes category out of the way.
+
+### Changed
+
+- The practical tour keeps its training check only while a session is active: pausing hides it, clears the training findings and returns the user's own checks, while a resumed session continues at the run checkpoint, reruns the check for fresh findings and keeps the steps before the run completed. Starting a session also restores the diagnostics pane search, filters and sort order.
+- Diagnostic visualization applies the configured steps before switching to the visualization view, runs consecutive steps in one transaction, and opens that view with coarse detail and shaded display, so showing a finding regenerates a large model once instead of twice.
+- In its default `onlyVisible` mode, `SetCategoryVisibility` now also shows the listed categories: a category that the view hid before the visualization becomes visible and is hidden again on rollback, instead of staying hidden.
+
+### Fixed
+
+- The row button columns of the Diagnostics, Diagnostic reports and Ignore list panes keep a fixed width, so a row icon is no longer clipped when the table layout is recalculated.
+- Applying a visualization no longer fails when its view still has a temporary hide/isolate state, for example after undoing a restored visualization; the tool replaces that state and writes a warning to the application log.
+
 ## [3.0.5] - 2026-11-04
 
 ### Added

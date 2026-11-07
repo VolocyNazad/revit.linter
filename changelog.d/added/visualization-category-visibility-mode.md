@@ -1,1 +1,0 @@
-`SetCategoryVisibility` accepts an optional `mode`: `onlyVisible` (default) shows the listed categories and hides the rest, `onlyHidden` hides the listed categories and shows the rest, `show` and `hide` change only the listed categories; the built-in `Cut, show and select` and `Show and select` pipelines use `hide` to hide the Scope Boxes category.
