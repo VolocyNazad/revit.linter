@@ -80,6 +80,36 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
     }
 
     [Test]
+    public async Task Scope_narrows_the_catalog_to_the_focused_check_and_restores_it()
+    {
+        ElementDiagnosticId tourId = new(
+            "TOUR-SCOPE", "Description", "Message", DiagnosticSeverity.Warning, true, false, "",
+            systemTags: [DiagnosticTags.Tour]);
+        ElementDiagnosticId regularId = CreateElementId("ELM-SCOPE");
+        using ServiceProvider services = CreateServices(elementDiagnostics:
+            [CreateElementRegistration(tourId), CreateElementRegistration(regularId)]);
+        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        IDiagnosticCatalogScope scope = services.GetRequiredService<IDiagnosticCatalogScope>();
+        DiagnosticCatalogChangeOrigin? changeOrigin = null;
+        catalog.Changed += (_, args) => changeOrigin = args.Origin;
+
+        scope.Focus("TOUR-SCOPE");
+
+        using (IDiagnosticCatalogSnapshotLease narrowed = catalog.AcquireSnapshot())
+        {
+            await Assert.That(narrowed.Snapshot.ElementDiagnostics).Count().IsEqualTo(1);
+            await Assert.That(narrowed.Snapshot.ElementDiagnostics[0].Identity.Code).IsEqualTo("TOUR-SCOPE");
+        }
+
+        await Assert.That(changeOrigin).IsEqualTo(DiagnosticCatalogChangeOrigin.Scope);
+
+        scope.Clear();
+
+        using IDiagnosticCatalogSnapshotLease restored = catalog.AcquireSnapshot();
+        await Assert.That(restored.Snapshot.ElementDiagnostics).Count().IsEqualTo(2);
+    }
+
+    [Test]
     public async Task Disposing_catalog_disposes_owned_components()
     {
         ElementDiagnosticId id = CreateElementId("ELM-DISPOSE");

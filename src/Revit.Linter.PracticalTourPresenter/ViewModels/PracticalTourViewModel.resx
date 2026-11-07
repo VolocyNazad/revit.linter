@@ -33,7 +33,7 @@
   <data name="openDocument_text" xml:space="preserve"><value>On the Revit Home page, select Open and choose a project or family.</value></data>
   <data name="openTutorialSample_text" xml:space="preserve"><value>If the sample did not open automatically, on the Revit ribbon select Diagnostics → Open tutorial.</value></data>
   <data name="openConfigurationFolder_text" xml:space="preserve"><value>Every user check is a record in YAML you can copy and adapt. In the Diagnostics pane, in the TOUR001 row, press the document button to see its rule.</value></data>
-  <data name="selectDiagnostic_text" xml:space="preserve"><value>At the top of the Diagnostics pane, press “Uncheck all” and enable only TOUR001 “Practical tour: review a model collision”. Only actions with this check advance the tour.</value></data>
+  <data name="selectDiagnostic_text" xml:space="preserve"><value>While the tour works with it, the other checks are hidden and the Diagnostics pane lists only TOUR001 “Practical tour: review a model collision”. Enable this check at the top of the pane. Only actions with it advance the tour.</value></data>
   <data name="runDiagnostics_text" xml:space="preserve"><value>At the top of the Diagnostics pane, select Run diagnostics with only TOUR001 enabled.</value></data>
   <data name="inspectFinding_text" xml:space="preserve"><value>In the Warnings pane, select a TOUR001 finding and review its message and affected element.</value></data>
   <data name="showElement_text" xml:space="preserve"><value>In the selected TOUR001 row, select Show to open the visualization menu and choose “Isolate and inspect” to locate the element in the model.</value></data>

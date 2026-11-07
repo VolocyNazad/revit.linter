@@ -27,6 +27,7 @@ internal sealed class PracticalTour(
     PracticalTourConfigurationInstaller configurationInstaller,
     PracticalTourView view,
     IConfigurationPaths paths,
+    IDiagnosticCatalogScope catalogScope,
     ILogger<PracticalTour> logger) : IPracticalTour
 {
     internal const string DiagnosticCode = "TOUR001";
@@ -79,6 +80,7 @@ internal sealed class PracticalTour(
             _optOutRequested = false;
             viewModel.Start(hasOpenDocument, savedProgress, tutorialSampleQueued);
             SaveProgress(viewModel.CurrentStep, viewModel.CurrentStep == PracticalTourStep.Completed, isOptedOut: false);
+            UpdateCatalogScope(viewModel.CurrentStep);
             UpdateGuidance(viewModel.CurrentStep);
             tourHost.ShowPracticalTourPane();
         }
@@ -335,6 +337,7 @@ internal sealed class PracticalTour(
                 viewModel.CurrentStep,
                 viewModel.CurrentStep == PracticalTourStep.Completed,
                 isOptedOut: false);
+            UpdateCatalogScope(viewModel.CurrentStep);
             UpdateGuidance(viewModel.CurrentStep);
         }
         catch (Exception exception)
@@ -368,6 +371,44 @@ internal sealed class PracticalTour(
     {
         ShowTargetPane(step);
         UpdateHighlight(step);
+    }
+
+    /// <summary>Publishes only the training check while the tour works with it.</summary>
+    /// <remarks>
+    /// The scope is session state, so it never writes the user's check states to the configuration and
+    /// ending the session restores the full list. The catalog then republishes itself, and the report pane
+    /// keeps its findings for that origin, so returning to a later step still has the report to work with.
+    /// </remarks>
+    private void UpdateCatalogScope(PracticalTourStep step)
+    {
+        if (PracticalTourStateMachine.RequiresTrainingScope(step))
+            FocusCatalogScope();
+        else
+            ClearCatalogScope();
+    }
+
+    private void FocusCatalogScope()
+    {
+        try
+        {
+            catalogScope.Focus(DiagnosticCode);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to narrow the diagnostic catalog to the training check");
+        }
+    }
+
+    private void ClearCatalogScope()
+    {
+        try
+        {
+            catalogScope.Clear();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to restore the full diagnostic catalog after the practical tour");
+        }
     }
 
     /// <summary>Brings forward the pane where the current step happens.</summary>
@@ -498,6 +539,7 @@ internal sealed class PracticalTour(
             _highlightSession = null;
             _viewModel = null;
             view.DataContext = null;
+            ClearCatalogScope();
             if (hidePane) tourHost.HidePracticalTourPane();
         }
     }

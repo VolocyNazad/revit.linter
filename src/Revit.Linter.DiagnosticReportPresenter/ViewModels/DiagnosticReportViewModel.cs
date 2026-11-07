@@ -332,18 +332,25 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         {
             _ = dispatcher.InvokeAsync(() =>
             {
-                if (_catalogChangesEnabled) ReplaceCatalogSnapshot();
+                if (_catalogChangesEnabled) ReplaceCatalogSnapshot(args.Origin);
             });
             return;
         }
 
-        ReplaceCatalogSnapshot();
+        ReplaceCatalogSnapshot(args.Origin);
     }
 
-    private void ReplaceCatalogSnapshot()
+    private void ReplaceCatalogSnapshot(DiagnosticCatalogChangeOrigin origin)
     {
         IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
-        Clear();
+
+        // A scope refresh only narrows the published checks. The findings already shown stay, because a
+        // session that takes over the diagnostics list (the practical tour) must not erase the report it
+        // is about to explain; its next run replaces the report anyway. Any other refresh may invalidate
+        // the rows, so it clears them as before.
+        if (origin is not DiagnosticCatalogChangeOrigin.Scope)
+            Clear();
+
         IDiagnosticCatalogSnapshotLease? previous = _catalogLease;
         _catalogLease = lease;
         RefreshTagIndex();

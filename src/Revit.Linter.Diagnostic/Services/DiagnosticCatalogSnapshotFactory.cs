@@ -6,6 +6,7 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
     IEnumerable<IDiagnosticRegistrationProvider> providers,
     IDiagnosticConfigurationErrorState configurationErrorState,
     IBuiltInDiagnosticStateProvider builtInStateProvider,
+    IDiagnosticCatalogScope catalogScope,
     ILogger<DiagnosticCatalogSnapshotFactory> logger) : IDiagnosticCatalogSnapshotFactory
 {
     private readonly IDiagnosticRegistrationProvider[] _providers = providers.ToArray();
@@ -29,8 +30,9 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
 
             var snapshot = new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics);
             Validate(snapshot);
+            snapshot = NarrowToScope(snapshot);
             configurationErrorState.CompleteRefresh();
-            LogRefreshSummary(elementDiagnostics.Count, documentDiagnostics.Count);
+            LogRefreshSummary(snapshot.ElementDiagnostics.Count, snapshot.DocumentDiagnostics.Count);
             return new DiagnosticCatalogSnapshotOwner(snapshot);
         }
         catch
@@ -41,6 +43,34 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
             DiagnosticCatalogSnapshotOwner.DisposeComponents(elementDiagnostics, documentDiagnostics);
             throw;
         }
+    }
+
+    /// <summary>Publishes only the check a session scoped the catalog to.</summary>
+    /// <remarks>
+    /// The narrowing runs after validation and after the built-in override report, so an active session
+    /// scope never hides configuration problems. The hidden registrations own components that would
+    /// otherwise be disposed only when the snapshot retires, so they are disposed here instead.
+    /// </remarks>
+    private DiagnosticCatalogSnapshot NarrowToScope(DiagnosticCatalogSnapshot snapshot)
+    {
+        if (catalogScope.FocusedDiagnosticCode is not { } focusedCode) return snapshot;
+
+        bool IsFocused(string code) => string.Equals(code, focusedCode, StringComparison.Ordinal);
+
+        List<ElementDiagnosticRegistration> hiddenElements = snapshot.ElementDiagnostics
+            .Where(registration => !IsFocused(registration.Identity.Code))
+            .ToList();
+        List<DocumentDiagnosticRegistration> hiddenDocuments = snapshot.DocumentDiagnostics
+            .Where(registration => !IsFocused(registration.Identity.Code))
+            .ToList();
+        if (hiddenElements.Count == 0 && hiddenDocuments.Count == 0) return snapshot;
+
+        DiagnosticCatalogSnapshotOwner.DisposeComponents(hiddenElements, hiddenDocuments);
+        logger.LogInformation(
+            "Diagnostic catalog is narrowed to {DiagnosticCode} for the active session", focusedCode);
+        return new DiagnosticCatalogSnapshot(
+            snapshot.ElementDiagnostics.Where(registration => IsFocused(registration.Identity.Code)),
+            snapshot.DocumentDiagnostics.Where(registration => IsFocused(registration.Identity.Code)));
     }
 
     private List<T> KeepFirstRegistration<T>(List<T> registrations, Func<T, string> getCode)

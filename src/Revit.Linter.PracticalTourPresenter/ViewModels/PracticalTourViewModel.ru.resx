@@ -33,7 +33,7 @@
   <data name="openDocument_text" xml:space="preserve"><value>На главной странице Revit нажмите «Открыть» и выберите проект или семейство.</value></data>
   <data name="openTutorialSample_text" xml:space="preserve"><value>Если пример не открылся автоматически: на ленте Revit откройте «Диагностика» → «Открыть учебный проект».</value></data>
   <data name="openConfigurationFolder_text" xml:space="preserve"><value>Каждая пользовательская проверка — это запись в YAML, которую можно скопировать и изменить под себя. На панели «Проверки» в строке TOUR001 нажмите кнопку с документом, чтобы увидеть её правило.</value></data>
-  <data name="selectDiagnostic_text" xml:space="preserve"><value>Вверху панели «Проверки» нажмите «Снять выбор со всех» и включите только TOUR001 «Практическое обучение: изучение коллизии модели». Обучение учитывает действия только с этой проверкой.</value></data>
+  <data name="selectDiagnostic_text" xml:space="preserve"><value>На время обучения остальные проверки скрыты, и панель «Проверки» показывает только TOUR001 «Практическое обучение: изучение коллизии модели». Включите эту проверку вверху панели. Обучение учитывает действия только с ней.</value></data>
   <data name="runDiagnostics_text" xml:space="preserve"><value>В верхней части панели «Проверки» нажмите «Запустить проверки», оставив включённой только TOUR001.</value></data>
   <data name="inspectFinding_text" xml:space="preserve"><value>На панели «Предупреждения» выберите одно из замечаний TOUR001 и изучите его.</value></data>
   <data name="showElement_text" xml:space="preserve"><value>В выбранной строке TOUR001 нажмите «Показать», чтобы открыть меню визуализации, и выберите «Изолировать и осмотреть», чтобы найти элемент в модели.</value></data>

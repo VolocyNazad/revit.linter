@@ -90,7 +90,10 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   refreshes `tour/practical-tour.config.yaml` in the current format with `isActive: false`, and completing
   or opting out removes the managed file. Step advancement stays purely observational: only observed UI
   facts move the state machine, and resumed tours keep the current selection. Tour rules carry the reserved
-  `Tour` tag and sort above the rest of the diagnostics list.
+  `Tour` tag and sort above the rest of the diagnostics list. From the selection step on, the tour narrows
+  the published catalog to that check with `IDiagnosticCatalogScope`, so the run, the reports and the list
+  cover the training check alone; the scope is session state and is cleared when the session ends, leaving
+  the user's own checks and their states untouched.
 - Onboarding is realized by two presenter modules with one primary responsibility each: the modal one-shot
   welcome wizard and the optional modeless practical tour. The tour publishes its contracts from
   `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend only on the
@@ -131,6 +134,11 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
 - The effective state of a diagnostic (`isActive`, `severity`, `isHidden`) lives in the configuration file.
   The Diagnostics pane writes it back through `IDiagnosticConfigurationWriter`, which patches only the
   affected YAML fields so comments and rule order survive. There is no separate override store.
+- A session can narrow the published catalog to one check without touching the configuration:
+  `IDiagnosticCatalogScope` is session state, and a change republishes the snapshot with the `Scope` change
+  origin. The run, the panes and the reports then see the narrowed set, and the report pane keeps its rows
+  for that origin because narrowing must not discard findings a guided session explains. Ending the session
+  clears the scope, so the full catalog returns with nothing to restore on disk.
 - Diagnoses whose `isHidden` is `true` are absent from the list, the run selection and the reports, and are
   not executed; `isHidden` is stronger than `isActive`. The reset command removes built-in overrides and
   `isHidden` fields but never rewrites the user's own `isActive`/`severity` values.

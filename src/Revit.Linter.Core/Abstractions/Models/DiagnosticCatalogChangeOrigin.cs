@@ -7,4 +7,6 @@ public enum DiagnosticCatalogChangeOrigin
     Manual,
     /// <summary>The catalog was refreshed after its external configuration changed.</summary>
     ExternalFile,
+    /// <summary>The catalog was refreshed after a session scope narrowed or restored its diagnostics.</summary>
+    Scope,
 }
