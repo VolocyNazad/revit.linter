@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.Diagnostic.Services;
 
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
         /// </summary>
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddDiagnosticModule() => services
+            .AddSingleton<IDiagnosticCatalogScope, DiagnosticCatalogScope>()
             .AddSingleton<IDiagnosticCatalogSnapshotFactory, DiagnosticCatalogSnapshotFactory>()
             .AddSingleton<IDiagnosticCatalog, DiagnosticCatalog>()
             .AddSingleton<IDiagnosticService, DiagnosticService>()

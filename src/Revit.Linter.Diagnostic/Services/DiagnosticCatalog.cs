@@ -6,6 +6,7 @@ internal sealed class DiagnosticCatalog : IDiagnosticCatalog, IDisposable
 {
     private readonly object _sync = new();
     private readonly object _refreshSync = new();
+    private readonly IDiagnosticCatalogScope _catalogScope;
     private SnapshotEntry? _current;
     private readonly IDiagnosticCatalogSnapshotFactory _snapshotFactory;
     private readonly ILogger<DiagnosticCatalog> _logger;
@@ -16,15 +17,18 @@ internal sealed class DiagnosticCatalog : IDiagnosticCatalog, IDisposable
     public DiagnosticCatalog(
         IDiagnosticCatalogSnapshotFactory snapshotFactory,
         IEnumerable<IDiagnosticCatalogChangeSource> changeSources,
+        IDiagnosticCatalogScope catalogScope,
         ILogger<DiagnosticCatalog> logger)
     {
         _snapshotFactory = snapshotFactory;
+        _catalogScope = catalogScope;
         _logger = logger;
         _current = new SnapshotEntry(snapshotFactory.Create(), _version);
         _refreshScheduler = new DebouncedAction(TimeSpan.FromMilliseconds(300), RefreshSafely);
         _changeSubscriptions = changeSources
             .Select(source => source.OnChange(ScheduleRefresh))
             .ToArray();
+        _catalogScope.Changed += CatalogScope_Changed;
     }
 
     public event EventHandler<DiagnosticCatalogChangedEventArgs>? Changed;
@@ -76,6 +80,7 @@ internal sealed class DiagnosticCatalog : IDiagnosticCatalog, IDisposable
         lock (_refreshSync)
         {
             _refreshScheduler.Dispose();
+            _catalogScope.Changed -= CatalogScope_Changed;
             foreach (IDisposable subscription in _changeSubscriptions)
                 subscription.Dispose();
 
@@ -98,6 +103,23 @@ internal sealed class DiagnosticCatalog : IDiagnosticCatalog, IDisposable
         catch (ObjectDisposedException)
         {
             // A file-system event raced with catalog disposal.
+        }
+    }
+
+    /// <summary>Republishes the snapshot when a session scope narrows or restores the published checks.</summary>
+    /// <remarks>
+    /// The scope change is immediate rather than debounced: the session that sets it presents the
+    /// narrowed list at that point, and a deferred refresh would briefly show the old set.
+    /// </remarks>
+    private void CatalogScope_Changed(object? sender, EventArgs args)
+    {
+        try
+        {
+            Refresh(DiagnosticCatalogChangeOrigin.Scope);
+        }
+        catch (ObjectDisposedException)
+        {
+            // A scope change raced with catalog disposal.
         }
     }
 
