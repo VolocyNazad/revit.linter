@@ -69,6 +69,32 @@ public sealed class ExampleConfigurationTests
         Assert.Equal("SHRD003", after.Rules[after.Rules.Count - 1].Code);
     }
 
+    [Fact]
+    public void A_category_visibility_step_parses_with_its_categories_and_mode()
+    {
+        const string yaml = """
+            version: 2
+            rules:
+              - type: custom
+                code: "CSTM001"
+                take: "instance"
+                check: "true"
+                visualizations:
+                  - name: "Hide"
+                    steps:
+                      - type: "SetCategoryVisibility"
+                        categories: ["OST_VolumeOfInterest", "ost_grids"]
+                        mode: "hide"
+            """;
+
+        DiagnosticConfigurationFile file = DiagnosticConfigurationReader.Read(yaml)!;
+        ElementVisualizationStepDefinition step = file.Rules[0].Visualizations[0].Steps[0];
+
+        Assert.Equal("SetCategoryVisibility", step.Type);
+        Assert.Equal(["OST_VolumeOfInterest", "ost_grids"], step.Categories);
+        Assert.Equal("hide", step.Mode);
+    }
+
     private static DiagnosticConfigurationFile ReadExample() =>
         DiagnosticConfigurationReader.Read(File.ReadAllText(ExamplePath))
         ?? throw new InvalidOperationException("The example configuration is empty.");

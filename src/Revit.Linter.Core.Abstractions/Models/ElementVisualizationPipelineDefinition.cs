@@ -34,8 +34,18 @@ public sealed record ElementVisualizationStepDefinition
     /// <summary>Gets a <c>DisplayStyle</c> name for a display-style step.</summary>
     public string? DisplayStyle { get; init; }
 
-    /// <summary>Gets <c>BuiltInCategory</c> names that stay visible for a category-isolation step.</summary>
+    /// <summary>
+    /// Gets <c>BuiltInCategory</c> names of a category step: the listed categories the
+    /// <see cref="Mode"/> applies to.
+    /// </summary>
     public string[] Categories { get; init; } = [];
+
+    /// <summary>
+    /// Gets the category visibility mode of a category step: <c>onlyVisible</c> (default) shows the
+    /// listed categories and hides the rest, <c>onlyHidden</c> hides the listed categories and shows
+    /// the rest, <c>show</c> and <c>hide</c> change only the listed categories.
+    /// </summary>
+    public string? Mode { get; init; }
 }
 
 /// <summary>Defines view graphics overrides in diagnostic configuration.</summary>

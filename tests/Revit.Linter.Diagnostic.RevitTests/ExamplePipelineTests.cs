@@ -35,6 +35,60 @@ public sealed class ExamplePipelineTests
         await Assert.That(builtCount).IsGreaterThan(0);
     }
 
+    [Test]
+    public async Task Category_visibility_modes_build_through_the_factory()
+    {
+        using ServiceProvider provider = CreateProvider();
+        IElementVisualizationPipelineFactory factory =
+            provider.GetRequiredService<IElementVisualizationPipelineFactory>();
+
+        foreach (string mode in (string[])["onlyVisible", "onlyHidden", "show", "hide", "only"])
+        {
+            IElementVisualizationPipeline pipeline = factory.Create(
+                CreateIdentity("CSTM001", "Category visibility"),
+                "Category visibility",
+                [
+                    new ElementVisualizationStepDefinition
+                    {
+                        Type = "SetCategoryVisibility",
+                        Categories = ["OST_VolumeOfInterest"],
+                        Mode = mode
+                    }
+                ]);
+            await Assert.That(pipeline.Value).IsEqualTo("Category visibility");
+        }
+    }
+
+    [Test]
+    public async Task An_unknown_category_visibility_mode_is_rejected()
+    {
+        using ServiceProvider provider = CreateProvider();
+        IElementVisualizationPipelineFactory factory =
+            provider.GetRequiredService<IElementVisualizationPipelineFactory>();
+        Exception? exception = null;
+
+        try
+        {
+            factory.Create(
+                CreateIdentity("CSTM001", "Category visibility"),
+                "Category visibility",
+                [
+                    new ElementVisualizationStepDefinition
+                    {
+                        Type = "SetCategoryVisibility",
+                        Categories = ["OST_VolumeOfInterest"],
+                        Mode = "invert"
+                    }
+                ]);
+        }
+        catch (Exception caught)
+        {
+            exception = caught;
+        }
+
+        await Assert.That(exception).IsTypeOf<ArgumentException>();
+    }
+
     private static int BuildRule(
         DiagnosticRule rule,
         IElementFixPipelineFactory fixFactory,

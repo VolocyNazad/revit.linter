@@ -157,6 +157,27 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
     }
 
     [Test]
+    public async Task Set_category_visibility_step_runs_through_the_category_service()
+    {
+        RecordingCategoriesService categoriesService = new();
+        using TestPipeline pipeline = new(
+            CreateIdentity(),
+            new RecordingGraphicsService(),
+            [
+                new SetCategoryVisibilityStep(
+                    [BuiltInCategory.OST_VolumeOfInterest], CategoryVisibilityMode.Hide, [])
+            ],
+            categoriesService: categoriesService);
+
+        bool result = pipeline.Apply(CreateContext());
+
+        await Assert.That(result).IsTrue();
+        await Assert.That(categoriesService.Categories.SequenceEqual(
+            [BuiltInCategory.OST_VolumeOfInterest])).IsTrue();
+        await Assert.That(categoriesService.Mode is CategoryVisibilityMode.Hide).IsTrue();
+    }
+
+    [Test]
     public async Task Restore_failure_throws_and_retains_sessions_for_retry()
     {
         // Locks the failure-containment contract the report presenter relies on when a restore
@@ -288,10 +309,11 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
         IOverrideElementGraphicsService graphicsService,
         IReadOnlyList<ElementVisualizationStep> steps,
         IEnumerable<IAccentElementsService>? accentServices = null,
-        ILogger? logger = null)
+        ILogger? logger = null,
+        ISetCategoryVisibilityService? categoriesService = null)
         : ElementVisualizationPipelineBase(
             identity, "Test", accentServices ?? [], graphicsService, new UnusedFilterService(),
-            new UnusedCategoriesService(), new UnusedViewSettingsService(),
+            categoriesService ?? new UnusedCategoriesService(), new UnusedViewSettingsService(),
             logger ?? NullLogger<ElementVisualizationPipelineBase>.Instance)
     {
         protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } = steps;
@@ -375,8 +397,28 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
     private sealed class UnusedCategoriesService : ISetCategoryVisibilityService
     {
         public IRestoreSession Apply(
-            Document document, View view, IReadOnlyList<BuiltInCategory> categories) =>
+            Document document,
+            View view,
+            IReadOnlyList<BuiltInCategory> categories,
+            CategoryVisibilityMode mode) =>
             throw new InvalidOperationException("The categories service should not be used by this test.");
+    }
+
+    private sealed class RecordingCategoriesService : ISetCategoryVisibilityService
+    {
+        public List<BuiltInCategory> Categories { get; } = [];
+        public CategoryVisibilityMode? Mode { get; private set; }
+
+        public IRestoreSession Apply(
+            Document document,
+            View view,
+            IReadOnlyList<BuiltInCategory> categories,
+            CategoryVisibilityMode mode)
+        {
+            Categories.AddRange(categories);
+            Mode = mode;
+            return new TestSession(static () => { });
+        }
     }
 
     private sealed class UnusedViewSettingsService : IViewSettingsService

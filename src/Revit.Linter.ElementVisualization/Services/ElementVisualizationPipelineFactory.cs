@@ -45,6 +45,8 @@ internal sealed class ElementVisualizationPipelineFactory(
             .Select(value => value.Trim())
             .Distinct(StringComparer.Ordinal)
             .ToArray();
+        if (!string.IsNullOrWhiteSpace(step.Mode) && type != ElementVisualizationStepType.SetCategoryVisibility)
+            throw new ArgumentException($"Visualization step '{step.Type}' does not support mode.");
         return type switch
         {
             ElementVisualizationStepType.Show => Accent(AccentElementsType.ShowElements),
@@ -60,7 +62,8 @@ internal sealed class ElementVisualizationPipelineFactory(
             ElementVisualizationStepType.DisplayStyle =>
                 new DisplayStyleStep(ParseDisplayStyle(step, elementSets), []),
             ElementVisualizationStepType.SetCategoryVisibility =>
-                new SetCategoryVisibilityStep(ParseCategories(step, elementSets), []),
+                new SetCategoryVisibilityStep(
+                    ParseCategories(step, elementSets), ParseCategoryVisibilityMode(step), []),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(step), step.Type, "Unsupported visualization step type.")
         };
@@ -184,6 +187,28 @@ internal sealed class ElementVisualizationPipelineFactory(
                 return category;
             })
             .ToArray();
+    }
+
+    private static CategoryVisibilityMode ParseCategoryVisibilityMode(ElementVisualizationStepDefinition step)
+    {
+        // A local null check instead of string.IsNullOrWhiteSpace: the net48 reference assemblies
+        // used by the Revit 2021 build carry no nullable annotations, so the compiler cannot tell
+        // from that call that Mode is not null here.
+        string? mode = step.Mode;
+        if (mode is null) return CategoryVisibilityMode.OnlyVisible;
+        string normalizedMode = mode.Trim();
+        if (normalizedMode.Length == 0) return CategoryVisibilityMode.OnlyVisible;
+
+        return normalizedMode.ToUpperInvariant() switch
+        {
+            "ONLYVISIBLE" or "ONLY" => CategoryVisibilityMode.OnlyVisible,
+            "ONLYHIDDEN" => CategoryVisibilityMode.OnlyHidden,
+            "SHOW" => CategoryVisibilityMode.Show,
+            "HIDE" => CategoryVisibilityMode.Hide,
+            _ => throw new ArgumentException(
+                $"Unknown category visibility mode '{normalizedMode}'. Supported values: " +
+                "onlyVisible, onlyHidden, show, hide.")
+        };
     }
 
     private static LineGraphicsStyle? ParseLines(ElementVisualizationLineStyleDefinition? source)

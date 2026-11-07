@@ -41,9 +41,9 @@ visualizations:
 | `OverrideFilter` | `style` | Creates a temporary `SelectionFilterElement`; removes only that filter on rollback. |
 | `DetailLevel` | `detailLevel` | Sets the view detail level; restores the previous level. |
 | `DisplayStyle` | `displayStyle` | Sets the view display style; restores the previous style. |
-| `SetCategoryVisibility` | `categories` | Hides every hideable category except the listed ones through the persistent view visibility; unhides exactly the hidden ones on rollback. It composes with an isolation already active before the pipeline. |
+| `SetCategoryVisibility` | `categories`; optional `mode` | `onlyVisible` (the default) shows the listed categories and hides every other hideable category; `onlyHidden` hides the listed categories and shows the rest; `show` and `hide` change only the listed categories. Rollback restores the previous visibility of every category it changed. It composes with an isolation already active before the pipeline. |
 
-`style` is invalid on `Show`, `Select`, `Isolate`, and `Cut`. It is required on both override steps. `style` and `elementSets` are invalid on `DetailLevel` and `DisplayStyle`: view steps address the whole view. `style` and `elementSets` are invalid on `SetCategoryVisibility`: it takes `categories`, a list of `BuiltInCategory` names such as `OST_Walls`, matched case-insensitively. Categories absent from the document are ignored.
+`style` is invalid on `Show`, `Select`, `Isolate`, and `Cut`. It is required on both override steps. `style` and `elementSets` are invalid on `DetailLevel` and `DisplayStyle`: view steps address the whole view. `style` and `elementSets` are invalid on `SetCategoryVisibility`: it takes `categories`, a list of `BuiltInCategory` names such as `OST_Walls`, matched case-insensitively, and an optional `mode`. `mode` accepts `onlyVisible` (the default; `only` is accepted as an alias), `onlyHidden`, `show` or `hide`, and is invalid on every other step. Categories absent from the document are ignored.
 
 `detailLevel` accepts `Coarse`, `Medium` or `Fine`. `displayStyle` accepts `Wireframe`, `HLR`, `Shading`, `ShadingWithEdges`, `Rendering`, `Realistic`, `FlatColors`, `RealisticWithEdges` and `Textures` (`Textures` needs Revit 2024 or later). Names are matched case-insensitively. A view without the requested setting fails the step; completed steps roll back as usual.
 
@@ -54,6 +54,12 @@ visualizations:
   displayStyle: "Shading"
 - type: "SetCategoryVisibility"
   categories: ["OST_Walls", "OST_Floors"]
+- type: "SetCategoryVisibility"
+  categories: ["OST_VolumeOfInterest"]
+  mode: "hide"
+- type: "SetCategoryVisibility"
+  categories: ["OST_Grids"]
+  mode: "show"
 ```
 
 ## Graphics style
@@ -171,4 +177,4 @@ Only one pipeline is active at a time. Starting another pipeline first restores 
 
 > **Note:** A pipeline is skipped when its report document is closed, invalid, or not currently active. If a later step fails, completed steps are restored in reverse order; restoration failures are retained for a later retry and written to the application log.
 
-> **Note:** The tool reuses one 3D view named `Revit Linter — Visualization` per project. It opens with coarse detail and shaded display so a large model regenerates it quickly; the `DetailLevel` and `DisplayStyle` steps can change both. The view is activated at the first step that needs it on screen, without changing the declared step order; consecutive steps that change the document share one transaction, and a step that needs the active view splits the pipeline into two.
+> **Note:** The tool reuses one 3D view named `Revit Linter — Visualization` per project. It opens with coarse detail and shaded display so a large model regenerates it quickly; the `DetailLevel` and `DisplayStyle` steps can change both. The built-in `Cut, show and select` and `Show and select` pipelines hide the Scope Boxes category with `SetCategoryVisibility` in `hide` mode; a configured pipeline can do the same. The view is activated at the first step that needs it on screen, without changing the declared step order; consecutive steps that change the document share one transaction, and a step that needs the active view splits the pipeline into two.

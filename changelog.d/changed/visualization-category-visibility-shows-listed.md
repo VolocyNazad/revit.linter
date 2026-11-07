@@ -1,0 +1,1 @@
+In its default `onlyVisible` mode, `SetCategoryVisibility` now also shows the listed categories: a category that the view hid before the visualization becomes visible and is hidden again on rollback, instead of staying hidden.
