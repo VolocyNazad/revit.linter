@@ -184,7 +184,10 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
     private sealed class UnusedCategoriesService : ISetCategoryVisibilityService
     {
         public IRestoreSession Apply(
-            Document document, View view, IReadOnlyList<BuiltInCategory> categories) =>
+            Document document,
+            View view,
+            IReadOnlyList<BuiltInCategory> categories,
+            CategoryVisibilityMode mode) =>
             throw new InvalidOperationException("The categories service should not be used by this test.");
     }
 

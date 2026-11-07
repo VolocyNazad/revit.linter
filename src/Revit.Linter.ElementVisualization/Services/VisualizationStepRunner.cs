@@ -65,7 +65,7 @@ internal sealed class VisualizationStepRunner(
             OverrideFilterStep filter => overrideFilterGraphicsService
                 .Apply(context.Document, context.View, elementIds, filter.Style),
             SetCategoryVisibilityStep setCategoryVisibility => setCategoryVisibilityService
-                .Apply(context.Document, context.View, setCategoryVisibility.Categories),
+                .Apply(context.Document, context.View, setCategoryVisibility.Categories, setCategoryVisibility.Mode),
             DetailLevelStep detailLevel => viewSettingsService
                 .ApplyDetailLevel(context.Document, context.View, detailLevel.Level),
             DisplayStyleStep displayStyle => viewSettingsService

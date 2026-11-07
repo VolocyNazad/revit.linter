@@ -12,8 +12,9 @@ using TUnit.Core.Executors;
 namespace Revit.Linter.ElementVisualization.RevitTests;
 
 /// <summary>
-/// Covers persistent category visibility through <c>ISetCategoryVisibilityService</c>: only the
-/// listed categories stay visible, restoring unhides exactly the hidden ones.
+/// Covers persistent category visibility through <c>ISetCategoryVisibilityService</c> in all four
+/// modes: only the listed categories visible, only the listed ones hidden, and showing or hiding
+/// only the listed ones. Restoring restores every category the operation changed.
 /// </summary>
 /// <remarks>
 /// Runs inside live Revit like the other accentor tests; verify locally with the bridge.
@@ -61,7 +62,7 @@ public sealed class SetCategoryVisibilityServiceTests : RevitApiTest
         ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
 
         using IRestoreSession session = service.Apply(
-            _document!, _view!, [BuiltInCategory.OST_Walls]);
+            _document!, _view!, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.OnlyVisible);
 
         // Persistent visibility composes with the temporary mode instead of using it.
         await Assert.That(_view!.IsTemporaryHideIsolateActive()).IsFalse();
@@ -73,6 +74,134 @@ public sealed class SetCategoryVisibilityServiceTests : RevitApiTest
         await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
 
         session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
+    }
+
+    [Test]
+    public async Task Show_mode_shows_the_listed_categories_and_leaves_the_rest_unchanged()
+    {
+        Document document = _document!;
+        View3D view = _view!;
+        using (Transaction transaction = new(document, "Hide the categories before the test"))
+        {
+            transaction.Start();
+            view.SetCategoryHidden(GetCategoryId(BuiltInCategory.OST_Walls), true);
+            view.SetCategoryHidden(GetCategoryId(BuiltInCategory.OST_GenericModel), true);
+            transaction.Commit();
+        }
+
+        using ServiceProvider services = CreateServices();
+        ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
+        using IRestoreSession session = service.Apply(
+            document, view, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.Show);
+
+        // The walls are shown, the generic models stay hidden.
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsTrue();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+    }
+
+    [Test]
+    public async Task OnlyHidden_mode_hides_the_listed_categories_and_shows_the_rest()
+    {
+        Document document = _document!;
+        View3D view = _view!;
+        using (Transaction transaction = new(document, "Hide generic models before the test"))
+        {
+            transaction.Start();
+            view.SetCategoryHidden(GetCategoryId(BuiltInCategory.OST_GenericModel), true);
+            transaction.Commit();
+        }
+
+        using ServiceProvider services = CreateServices();
+        ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
+        using IRestoreSession session = service.Apply(
+            document, view, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.OnlyHidden);
+
+        // The walls are hidden and the other hideable categories become visible.
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsTrue();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+    }
+
+    [Test]
+    public async Task Listed_categories_are_hidden_and_unhidden_on_restore()
+    {
+        using ServiceProvider services = CreateServices();
+        ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
+
+        using IRestoreSession session = service.Apply(
+            _document!, _view!, [BuiltInCategory.OST_GenericModel], CategoryVisibilityMode.Hide);
+
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
+    }
+
+    [Test]
+    public async Task Hide_leaves_a_category_hidden_before_the_operation_hidden_after_restore()
+    {
+        Document document = _document!;
+        View3D view = _view!;
+        using (Transaction transaction = new(document, "Hide generic models before the test"))
+        {
+            transaction.Start();
+            view.SetCategoryHidden(GetCategoryId(BuiltInCategory.OST_GenericModel), true);
+            transaction.Commit();
+        }
+
+        using ServiceProvider services = CreateServices();
+        ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
+        using IRestoreSession session = service.Apply(
+            document,
+            view,
+            [BuiltInCategory.OST_GenericModel, BuiltInCategory.OST_Walls],
+            CategoryVisibilityMode.Hide);
+
+        // The generic models were hidden already; only the walls change.
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsTrue();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
+    }
+
+    [Test]
+    public async Task A_listed_category_hidden_before_the_operation_is_shown_and_hidden_again_on_restore()
+    {
+        // The listed categories are the visible ones by definition of the step, so the operation also
+        // shows a category the view was hiding before.
+        Document document = _document!;
+        View3D view = _view!;
+        using (Transaction transaction = new(document, "Hide walls before the test"))
+        {
+            transaction.Start();
+            view.SetCategoryHidden(GetCategoryId(BuiltInCategory.OST_Walls), true);
+            transaction.Commit();
+        }
+
+        using ServiceProvider services = CreateServices();
+        ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
+        using IRestoreSession session = service.Apply(
+            document, view, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.OnlyVisible);
+
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
+
+        session.Restore();
+        await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsTrue();
         await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsFalse();
     }
 
@@ -91,7 +220,7 @@ public sealed class SetCategoryVisibilityServiceTests : RevitApiTest
         using ServiceProvider services = CreateServices();
         ISetCategoryVisibilityService service = services.GetRequiredService<ISetCategoryVisibilityService>();
         using IRestoreSession session = service.Apply(
-            document, view, [BuiltInCategory.OST_Walls]);
+            document, view, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.OnlyVisible);
 
         // The generic models were already hidden, so there is nothing to change for them.
         await Assert.That(GetCategoryHidden(BuiltInCategory.OST_Walls)).IsFalse();
@@ -112,7 +241,7 @@ public sealed class SetCategoryVisibilityServiceTests : RevitApiTest
         using IRestoreSession isolation = elementsService.Apply(_document!, _view!, [_wall!.Id]);
 
         using IRestoreSession visibility = categoriesService.Apply(
-            _document!, _view!, [BuiltInCategory.OST_Walls]);
+            _document!, _view!, [BuiltInCategory.OST_Walls], CategoryVisibilityMode.OnlyVisible);
 
         await Assert.That(_view!.IsTemporaryHideIsolateActive()).IsTrue();
         await Assert.That(GetCategoryHidden(BuiltInCategory.OST_GenericModel)).IsTrue();
