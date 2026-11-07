@@ -16,7 +16,7 @@ public sealed class PracticalTourStepCatalogTests
         PracticalTourStep[] defined = PracticalTourStepCatalog.Definitions
             .Select(definition => definition.Step)
             .ToArray();
-        PracticalTourStep[] expected = Enum.GetValues<PracticalTourStep>();
+        PracticalTourStep[] expected = (PracticalTourStep[])Enum.GetValues(typeof(PracticalTourStep));
 
         Assert.Equal(expected.Length, defined.Length);
         Assert.Equal(
@@ -30,7 +30,7 @@ public sealed class PracticalTourStepCatalogTests
         Assert.Equal(
             PracticalTourStepCatalog.Definitions.Select(definition => definition.Step).ToArray(),
             PracticalTourStepCatalog.Steps);
-        Assert.Equal(PracticalTourStep.Completed, PracticalTourStepCatalog.Steps[^1]);
+        Assert.Equal(PracticalTourStep.Completed, PracticalTourStepCatalog.Steps[PracticalTourStepCatalog.Steps.Length - 1]);
     }
 
     [Fact]
