@@ -61,6 +61,10 @@ internal sealed partial class PracticalTour(
             configurationInstaller.Install(startsOver);
             catalogScope.BeginSession();
 
+            // A session starts with a clean report: leftovers from a previous attempt, a document change or
+            // an interrupted pause must not look like the findings the resumed step explains.
+            ClearTrainingFindings();
+
             PracticalTourProgress? startProgress = savedProgress is null
                 ? null
                 : ResolveStartProgress(savedProgress, hasOpenDocument);

@@ -1,1 +1,1 @@
-A resumed practical tour continues at its run checkpoint: the training check runs again and finds fresh findings for the remaining tasks, while the steps before the run stay completed and nothing tracks the open document or the previous report.
+A resumed practical tour continues at its run checkpoint: any leftover training findings are removed first, the training check runs again and finds fresh findings for the remaining tasks, while the steps before the run stay completed and nothing tracks the open document or the previous report.

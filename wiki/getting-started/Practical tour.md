@@ -32,7 +32,7 @@ Only Autodesk samples for the running Revit version are offered. Your original s
 Progress is kept separately for each Revit version.
 
 - **Continue later** hides the tour pane, ends the session and remembers the current step. The training check disappears from the Diagnostics pane and your own checks return with the states you set; the training findings are removed from the Warnings pane, so only your own results remain.
-- Starting the tour again continues from the **Run checks** step: the training check runs again and finds fresh findings for the remaining tasks, while the steps before the run stay completed. The tour says so on that step instead of asking you to run the checks for the first time.
+- Starting the tour again continues from the **Run checks** step: any leftover training findings are removed first, then the training check runs again and finds fresh findings for the remaining tasks, while the steps before the run stay completed. The tour says so on that step instead of asking you to run the checks for the first time.
 - **Do not show again** opts out for the running Revit version.
 - **Start over** in the pane discards the saved step and restarts the tour from the first task.
 - Opening or switching documents ends the tour, except while it waits for you to open a project or family. The pane hides and the step is remembered: use **Practical tour** on the **Diagnostics** tab to return.
