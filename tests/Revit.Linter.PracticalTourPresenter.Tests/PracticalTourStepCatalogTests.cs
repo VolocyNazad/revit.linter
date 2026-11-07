@@ -90,6 +90,13 @@ public sealed class PracticalTourStepCatalogTests
         Assert.Equal([PracticalTourStep.SelectVisualization], visualizationChoice);
     }
 
+    [Fact]
+    public void Get_rejects_a_step_that_has_no_definition()
+    {
+        Assert.Throws<InvalidOperationException>(
+            () => PracticalTourStepCatalog.Get((PracticalTourStep)int.MaxValue));
+    }
+
     private static void AssertResolvable(string? resourceKey)
     {
         if (resourceKey is null) return;
