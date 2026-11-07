@@ -133,7 +133,8 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        MinWidth="{StaticResource LinterGridIconColumnWidth}"
+                        MaxWidth="{StaticResource LinterGridIconColumnWidth}"
                         CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -147,7 +148,8 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        MinWidth="{StaticResource LinterGridIconColumnWidth}"
+                        MaxWidth="{StaticResource LinterGridIconColumnWidth}"
                         CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
