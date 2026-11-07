@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
+namespace Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 
 /// <summary>
 /// Controls the diagnostic reports displayed by the report presenter.
@@ -26,4 +26,13 @@ public interface IDiagnosticReportPresenter
     /// <param name="documentTitle">The title of the document whose findings are counted after refresh.</param>
     /// <returns>The number of matching findings currently presented.</returns>
     int Refresh(string documentTitle);
+
+    /// <summary>Removes the displayed findings of one diagnostic from every document.</summary>
+    /// <param name="diagnosticCode">The diagnostic code, compared ordinally.</param>
+    /// <remarks>
+    /// Used by a guided session that clears its own training findings when the user pauses it; the
+    /// findings of other diagnostics stay untouched. An active visualization of that diagnostic is
+    /// restored, because the rows that offered it are gone.
+    /// </remarks>
+    void ClearFindings(string diagnosticCode);
 }

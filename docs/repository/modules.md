@@ -20,8 +20,8 @@ identity, the configuration-reading contracts and the host seams that carry no R
 
 `Revit.Linter.Core` owns the Revit-facing contracts of the same surface: element and document
 diagnostics, their filters and fixes, visualization pipelines and contexts, catalog and registration
-types, and the session catalog scope that narrows the published checks for a guided session. A
-Revit-free type stays there only when it belongs to one of those clusters.
+types, and the session catalog scope that narrows the published checks for a guided session and hides
+its checks outside one. A Revit-free type stays there only when it belongs to one of those clusters.
 
 The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `IClipboardService`,
 `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream` and

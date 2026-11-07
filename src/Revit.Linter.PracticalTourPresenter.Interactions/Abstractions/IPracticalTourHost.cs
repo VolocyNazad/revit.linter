@@ -15,6 +15,14 @@ public interface IPracticalTourHost
     /// <summary>Gets a value indicating whether Revit currently has an active project or family document.</summary>
     bool HasOpenDocument { get; }
 
+    /// <summary>Removes the displayed findings of the given diagnostic from every document.</summary>
+    /// <param name="diagnosticCode">The diagnostic code, compared ordinally.</param>
+    /// <remarks>
+    /// A paused tour clears the findings it produced, so the user returns to a report that holds only
+    /// their own results; the findings of their other diagnostics are not touched.
+    /// </remarks>
+    void ClearDiagnosticFindings(string diagnosticCode);
+
     /// <summary>Shows the add-in dockable panes that are currently hidden.</summary>
     /// <remarks>Requires a valid Revit API context.</remarks>
     void ShowPanes();

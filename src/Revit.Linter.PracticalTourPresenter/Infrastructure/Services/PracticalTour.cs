@@ -1,4 +1,3 @@
-using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Behaviors;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
@@ -19,7 +18,7 @@ namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 /// tour from observed UI facts and persists the progress per Revit version.
 /// </summary>
 /// <remarks>A failure closes the session and leaves the add-in, the document and the other panes unaffected.</remarks>
-internal sealed class PracticalTour(
+internal sealed partial class PracticalTour(
     IThemeService themeService,
     IUserInterfaceActivityStream activityStream,
     IValueStore<OnboardingSettings> settingsStore,
@@ -58,14 +57,20 @@ internal sealed class PracticalTour(
                 savedProgress = null;
             }
 
-            configurationInstaller.Install();
+            bool startsOver = savedProgress is null;
+            configurationInstaller.Install(startsOver);
+            catalogScope.BeginSession();
 
-            if (savedProgress is null)
-            {
-                // A fresh tour starts with the managed check switched off because the installed
-                // tour configuration declares isActive: false; the user enables it as the guided
-                // step asks. Resumed tours keep the selection written to the managed file.
-            }
+            // A session starts with a clean report: leftovers from a previous attempt, a document change or
+            // an interrupted pause must not look like the findings the resumed step explains.
+            ClearTrainingFindings();
+
+            PracticalTourProgress? startProgress = savedProgress is null
+                ? null
+                : ResolveStartProgress(savedProgress, hasOpenDocument);
+            bool resumedAtCheckpoint = savedProgress is not null
+                                       && startProgress!.CurrentStep == PracticalTourStep.RunDiagnostics
+                                       && savedProgress.CurrentStep != PracticalTourStep.RunDiagnostics;
 
             PracticalTourViewModel viewModel = new(new PracticalTourStateMachine());
             view.DataContext = viewModel;
@@ -78,7 +83,11 @@ internal sealed class PracticalTour(
             activityStream.ActivityPublished += ActivityStream_ActivityPublished;
             themeService.Register(view);
             _optOutRequested = false;
-            viewModel.Start(hasOpenDocument, savedProgress, tutorialSampleQueued);
+            viewModel.Start(hasOpenDocument, startProgress, tutorialSampleQueued, resumedAtCheckpoint);
+
+            // The guided steps point at the training check row, so a search, filter or column sort left
+            // over from earlier work must not hide it.
+            tourHost.ResetDiagnosticsSearchAndFilters();
             SaveProgress(viewModel.CurrentStep, viewModel.CurrentStep == PracticalTourStep.Completed, isOptedOut: false);
             UpdateCatalogScope(viewModel.CurrentStep);
             UpdateGuidance(viewModel.CurrentStep);
@@ -91,188 +100,34 @@ internal sealed class PracticalTour(
         }
     }
 
-    private void ActivityStream_ActivityPublished(object? sender, UserInterfaceActivity activity)
-    {
-        try
-        {
-            if (activity is DiagnosticRunCompletedActivity run)
-            {
-                // A run counts only with the single training check selected: mixed runs
-                // would credit findings from unrelated rules. (A list pattern would need
-                // System.Index, which the net48 WPF markup compilation lacks.)
-                if (run.Result != DiagnosticServiceResult.Failed
-                    && run.EnabledDiagnosticCodes.Length == 1
-                    && string.Equals(run.EnabledDiagnosticCodes[0], DiagnosticCode, StringComparison.Ordinal))
-                    _viewModel?.ObserveDiagnosticRun(run.FindingCount > 0);
-                return;
-            }
-
-            if (activity is VisualizationAppliedActivity visualization)
-            {
-                if (!IsPracticalTourDiagnostic(visualization.DiagnosticCode)) return;
-                _viewModel?.ObserveVisualization(
-                    visualization.SelectedFromMenu,
-                    visualization.AvailableOptionCount);
-                return;
-            }
-
-            if (activity is DiagnosticListFilteredActivity)
-            {
-                _viewModel?.Observe(PracticalTourStep.SearchAndFilters);
-                return;
-            }
-
-            if (activity is DiagnosticSearchChangedActivity search)
-            {
-                _viewModel?.ObserveSearchText(search.SearchText);
-                return;
-            }
-
-            if (activity is FixListPaneShownActivity)
-            {
-                _viewModel?.Observe(PracticalTourStep.FixList);
-                return;
-            }
-
-            if (activity is FixSelectedActivity selectedFix)
-            {
-                if (IsPracticalTourDiagnostic(selectedFix.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.FixList);
-                return;
-            }
-
-            if (activity is DiagnosticSelectionChangedActivity selection)
-            {
-                // The step asks the user to leave only the training check enabled. Any other enabled
-                // diagnostic keeps the step open, so pre-existing selections cannot complete it.
-                if (IsSinglePracticalTourDiagnostic(selection.ActiveDiagnosticCodes))
-                    _viewModel?.Observe(PracticalTourStep.SelectDiagnostic);
-                return;
-            }
-
-            if (activity is FindingSelectedActivity finding)
-            {
-                if (IsPracticalTourDiagnostic(finding.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.InspectFinding);
-                return;
-            }
-
-            if (activity is FixAppliedActivity applied)
-            {
-                if (IsPracticalTourDiagnostic(applied.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.UnderstandFix);
-                return;
-            }
-
-            if (activity is IgnoreAppliedActivity ignored)
-            {
-                if (IsPracticalTourDiagnostic(ignored.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.UnderstandIgnore);
-                return;
-            }
-
-            if (activity is IgnoreListPaneShownActivity)
-            {
-                _viewModel?.Observe(PracticalTourStep.IgnoreList);
-                return;
-            }
-
-            if (activity is IgnoreSelectedActivity selectedEntry)
-            {
-                if (IsPracticalTourDiagnostic(selectedEntry.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.IgnoreList);
-                return;
-            }
-
-            if (activity is DocumentationOpenedActivity)
-            {
-                _viewModel?.Observe(PracticalTourStep.OpenHelp);
-                return;
-            }
-
-            if (activity is FindingNavigationUsedActivity navigation)
-            {
-                if (IsPracticalTourDiagnostic(navigation.DiagnosticCode))
-                    _viewModel?.Observe(PracticalTourStep.NavigateFindings);
-                return;
-            }
-
-            if (activity is RuleConfigurationOpenedActivity ruleConfiguration
-                && IsPracticalTourDiagnostic(ruleConfiguration.DiagnosticCode))
-            {
-                _viewModel?.Observe(PracticalTourStep.OpenConfigurationFolder);
-                return;
-            }
-
-            if (activity is DiagnosticReportExportedActivity exported)
-            {
-                _viewModel?.ObserveReportExport(exported.Format);
-                return;
-            }
-
-            if (activity is DocumentFocusChangedActivity)
-            {
-                if (EndOnDocumentChange())
-                {
-                    logger.LogInformation(
-                        "Practical tour ended on document change at step {Step}", _viewModel?.CurrentStep);
-                    EndSession(hidePane: true);
-                }
-                return;
-            }
-
-            PracticalTourStep step = activity switch
-            {
-                DocumentOpenedActivity => PracticalTourStep.OpenDocument,
-                _ => PracticalTourStep.Completed,
-            };
-            if (activity is DocumentOpenedActivity)
-            {
-                tourHost.ShowPanes();
-                if (EndOnDocumentChange())
-                {
-                    logger.LogInformation(
-                        "Practical tour ended on document change at step {Step}", _viewModel?.CurrentStep);
-                    EndSession(hidePane: true);
-                    return;
-                }
-            }
-            _viewModel?.Observe(step);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Practical tour was disabled while observing user activity");
-            CloseAfterFailure();
-        }
-    }
-
-    private static bool IsPracticalTourDiagnostic(string diagnosticCode)
-        => string.Equals(diagnosticCode, DiagnosticCode, StringComparison.Ordinal);
-
-    /// <summary>Returns whether the training diagnostic is the only enabled diagnostic.</summary>
-    /// <param name="activeDiagnosticCodes">The enabled diagnostics after a selection change.</param>
+    /// <summary>Chooses the step a saved session can continue from.</summary>
+    /// <param name="savedProgress">The saved progress.</param>
+    /// <param name="hasOpenDocument">Whether a document is open in Revit.</param>
     /// <remarks>
-    /// The diagnostic-selection step completes only when every other check is off: a user who already had
-    /// checks enabled cannot complete it by enabling the training check alongside them.
+    /// The run of the training check is the checkpoint: a saved step after it continues from the run
+    /// again, because the findings that step explained are not kept across a pause.
     /// </remarks>
-    internal static bool IsSinglePracticalTourDiagnostic(IReadOnlyList<string> activeDiagnosticCodes) =>
-        activeDiagnosticCodes.Count == 1 && IsPracticalTourDiagnostic(activeDiagnosticCodes[0]);
-
-    // Findings, visualizations and fixes observed so far belong to the previous document, and the
-    // shared TOUR001 check exists in every document, so continuing would advance the tour on
-    // unrelated findings. Only waiting for a document survives a document change: opening one
-    // is the awaited action itself.
-    private bool EndOnDocumentChange()
+    private PracticalTourProgress ResolveStartProgress(PracticalTourProgress savedProgress, bool hasOpenDocument)
     {
-        if (_viewModel is null) return false;
-        return _viewModel.CurrentStep != PracticalTourStep.OpenDocument;
+        PracticalTourProgress progress = PracticalTourResume.ResolveStartProgress(savedProgress, hasOpenDocument);
+        if (progress.CurrentStep != savedProgress.CurrentStep)
+            logger.LogInformation(
+                "The practical tour continues from its run checkpoint instead of the saved {SavedStep}",
+                savedProgress.CurrentStep);
+        return progress;
     }
 
     private void ViewModel_StopRequested(object? sender, EventArgs args)
     {
         bool isCompleted = _viewModel?.CurrentStep == PracticalTourStep.Completed;
         EndSession(hidePane: true);
-        if (!isCompleted) return;
+        if (!isCompleted)
+        {
+            // The paused session does not keep its findings: it resumes at the run checkpoint and finds
+            // them again, so the user returns to a report that holds only their own results.
+            ClearTrainingFindings();
+            return;
+        }
         RemovePracticalTourConfiguration();
         ResetDiagnosticsSearchAndFilters();
         try
@@ -347,25 +202,8 @@ internal sealed class PracticalTour(
         }
     }
 
-    private void UpdateHighlight(PracticalTourStep step) => _highlightSession?.SetActiveKey(step switch
-    {
-        PracticalTourStep.OpenConfigurationFolder => "OpenConfiguration",
-        PracticalTourStep.SearchAndFilters => "SearchAndFilters",
-        PracticalTourStep.SelectDiagnostic => "SelectDiagnostic",
-            PracticalTourStep.RunDiagnostics => "RunDiagnostics",
-            PracticalTourStep.InspectFinding => "InspectFinding",
-            PracticalTourStep.OpenHelp => "OpenHelp",
-            PracticalTourStep.ShowElement => "ShowElement",
-            PracticalTourStep.SelectVisualization => "ShowElement",
-        PracticalTourStep.NavigateFindings => "NavigateFindings",
-        PracticalTourStep.UnderstandFix => "UnderstandFix",
-        PracticalTourStep.UnderstandIgnore => "UnderstandFix",
-        PracticalTourStep.IgnoreList => "IgnoreList",
-        PracticalTourStep.FixList => "FixList",
-            PracticalTourStep.ExportReport => "ExportReport",
-            PracticalTourStep.ExportReportAnotherFormat => "ExportReport",
-            _ => null,
-        });
+    private void UpdateHighlight(PracticalTourStep step) =>
+        _highlightSession?.SetActiveKey(PracticalTourStepCatalog.Get(step).HighlightKey);
 
     private void UpdateGuidance(PracticalTourStep step)
     {
@@ -381,10 +219,10 @@ internal sealed class PracticalTour(
     /// </remarks>
     private void UpdateCatalogScope(PracticalTourStep step)
     {
-        if (PracticalTourStateMachine.RequiresTrainingScope(step))
+        if (PracticalTourStepCatalog.RequiresTrainingScope(step))
             FocusCatalogScope();
         else
-            ClearCatalogScope();
+            ClearCatalogScopeFocus();
     }
 
     private void FocusCatalogScope()
@@ -399,7 +237,7 @@ internal sealed class PracticalTour(
         }
     }
 
-    private void ClearCatalogScope()
+    private void ClearCatalogScopeFocus()
     {
         try
         {
@@ -407,53 +245,44 @@ internal sealed class PracticalTour(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Failed to restore the full diagnostic catalog after the practical tour");
+            logger.LogError(exception, "Failed to publish every diagnostic of the practical tour");
+        }
+    }
+
+    private void EndCatalogScope()
+    {
+        try
+        {
+            catalogScope.EndSession();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to hide the managed practical-tour checks after the session");
+        }
+    }
+
+    private void ClearTrainingFindings()
+    {
+        try
+        {
+            tourHost.ClearDiagnosticFindings(DiagnosticCode);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to clear the practical-tour findings");
         }
     }
 
     /// <summary>Brings forward the pane where the current step happens.</summary>
     /// <remarks>
-    /// Step-to-pane map: opening, configuration, search, selection and run steps show Diagnostics;
-    /// finding, help, visualization, navigation and fix-or-ignore steps show Warnings; FixList shows
-    /// the fix list; IgnoreList shows the ignore list. Export steps keep the current pane so the user
-    /// is not yanked away right after selecting a fix row, and completion hides the tour pane itself.
+    /// The pane of every step is part of its catalog definition. A step without a pane keeps the current
+    /// one, so export does not yank the user away right after they selected a fix row, and completion
+    /// hides the tour pane itself.
     /// </remarks>
     private void ShowTargetPane(PracticalTourStep step)
     {
-        // The tour starts on the diagnostics list and returns to it for the early steps:
-        // opening steps carry no target of their own, so they keep the starting pane.
-        if (step is PracticalTourStep.OpenDocument
-            or PracticalTourStep.OpenConfigurationFolder
-            or PracticalTourStep.SearchAndFilters
-            or PracticalTourStep.SelectDiagnostic
-            or PracticalTourStep.RunDiagnostics)
-        {
-            tourHost.ShowPane(OnboardingPane.Diagnostics);
-            return;
-        }
-
-        if (step is PracticalTourStep.FixList)
-        {
-            tourHost.ShowPane(OnboardingPane.FixList);
-            return;
-        }
-
-        if (step is PracticalTourStep.IgnoreList)
-        {
-            tourHost.ShowPane(OnboardingPane.IgnoreList);
-            return;
-        }
-
-        // ExportReport keeps the current pane: yanking the user away right after
-        // they selected a fix row hides what they came to look at.
-        if (step is PracticalTourStep.InspectFinding
-            or PracticalTourStep.OpenHelp
-            or PracticalTourStep.ShowElement
-            or PracticalTourStep.SelectVisualization
-            or PracticalTourStep.NavigateFindings
-            or PracticalTourStep.UnderstandFix
-            or PracticalTourStep.UnderstandIgnore)
-            tourHost.ShowPane(OnboardingPane.Warnings);
+        if (PracticalTourStepCatalog.Get(step).Pane is { } pane)
+            tourHost.ShowPane(pane);
     }
 
     public void ResetProgress()
@@ -512,11 +341,9 @@ internal sealed class PracticalTour(
     private void EndSession(bool hidePane, bool saveProgress = true)
     {
         PracticalTourViewModel? viewModel = _viewModel;
-        if (viewModel is null) return;
-
         try
         {
-            if (saveProgress)
+            if (viewModel is not null && saveProgress)
             {
                 SaveProgress(
                     viewModel.CurrentStep,
@@ -530,16 +357,20 @@ internal sealed class PracticalTour(
         }
         finally
         {
-            activityStream.ActivityPublished -= ActivityStream_ActivityPublished;
-            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-            viewModel.StopRequested -= ViewModel_StopRequested;
-            viewModel.OptOutRequested -= ViewModel_OptOutRequested;
-            viewModel.RestartRequested -= ViewModel_RestartRequested;
-            _highlightSession?.Dispose();
-            _highlightSession = null;
-            _viewModel = null;
-            view.DataContext = null;
-            ClearCatalogScope();
+            if (viewModel is not null)
+            {
+                activityStream.ActivityPublished -= ActivityStream_ActivityPublished;
+                viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                viewModel.StopRequested -= ViewModel_StopRequested;
+                viewModel.OptOutRequested -= ViewModel_OptOutRequested;
+                viewModel.RestartRequested -= ViewModel_RestartRequested;
+                _highlightSession?.Dispose();
+                _highlightSession = null;
+                _viewModel = null;
+                view.DataContext = null;
+            }
+
+            EndCatalogScope();
             if (hidePane) tourHost.HidePracticalTourPane();
         }
     }

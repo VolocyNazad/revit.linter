@@ -11,44 +11,11 @@ namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 /// </remarks>
 internal sealed class PracticalTourStateMachine
 {
-    private static readonly PracticalTourStep[] Steps =
-    [
-        PracticalTourStep.OpenDocument,
-        PracticalTourStep.OpenConfigurationFolder,
-        PracticalTourStep.SearchAndFilters,
-        PracticalTourStep.SelectDiagnostic,
-        PracticalTourStep.RunDiagnostics,
-        PracticalTourStep.InspectFinding,
-        PracticalTourStep.OpenHelp,
-        PracticalTourStep.ShowElement,
-        PracticalTourStep.SelectVisualization,
-        PracticalTourStep.NavigateFindings,
-        PracticalTourStep.UnderstandFix,
-        PracticalTourStep.FixList,
-        PracticalTourStep.UnderstandIgnore,
-        PracticalTourStep.IgnoreList,
-        PracticalTourStep.ExportReport,
-        PracticalTourStep.ExportReportAnotherFormat,
-        PracticalTourStep.Completed,
-    ];
+    /// <summary>Gets the steps in the order the catalog defines them.</summary>
+    private static readonly PracticalTourStep[] Steps = PracticalTourStepCatalog.Steps;
 
     /// <summary>Gets the current tour step.</summary>
     public PracticalTourStep CurrentStep { get; private set; } = PracticalTourStep.Completed;
-
-    /// <summary>Gets a value indicating whether the step works with the training check alone.</summary>
-    /// <param name="step">The step to test.</param>
-    /// <remarks>
-    /// From the selection step on, every step works with the training check only: the run must cover it
-    /// alone and the findings, fixes and exports belong to it. Earlier steps teach the real diagnostics
-    /// list, which still shows the user's own checks.
-    /// </remarks>
-    internal static bool RequiresTrainingScope(PracticalTourStep step)
-    {
-        if (step == PracticalTourStep.Completed) return false;
-
-        int selectionIndex = Array.IndexOf(Steps, PracticalTourStep.SelectDiagnostic);
-        return Array.IndexOf(Steps, step) >= selectionIndex;
-    }
 
     /// <summary>Gets a value indicating whether a practical tour session is active.</summary>
     public bool IsActive { get; private set; }

@@ -31,7 +31,7 @@ public sealed class PracticalTourScopeTests
         PracticalTourStep step,
         bool expected)
     {
-        Assert.Equal(expected, PracticalTourStateMachine.RequiresTrainingScope(step));
+        Assert.Equal(expected, PracticalTourStepCatalog.RequiresTrainingScope(step));
     }
 
     [Fact]
@@ -40,19 +40,19 @@ public sealed class PracticalTourScopeTests
         PracticalTourStateMachine tour = new();
         tour.Start(hasOpenDocument: true);
 
-        Assert.False(PracticalTourStateMachine.RequiresTrainingScope(tour.CurrentStep));
+        Assert.False(PracticalTourStepCatalog.RequiresTrainingScope(tour.CurrentStep));
 
         Assert.True(tour.Observe(PracticalTourStep.OpenConfigurationFolder));
         Assert.False(tour.ObserveSearchText("TOUR001"));
         Assert.True(tour.Observe(PracticalTourStep.SearchAndFilters));
 
         Assert.Equal(PracticalTourStep.SelectDiagnostic, tour.CurrentStep);
-        Assert.True(PracticalTourStateMachine.RequiresTrainingScope(tour.CurrentStep));
+        Assert.True(PracticalTourStepCatalog.RequiresTrainingScope(tour.CurrentStep));
 
         Assert.True(tour.Observe(PracticalTourStep.SelectDiagnostic));
 
         Assert.Equal(PracticalTourStep.RunDiagnostics, tour.CurrentStep);
-        Assert.True(PracticalTourStateMachine.RequiresTrainingScope(tour.CurrentStep));
+        Assert.True(PracticalTourStepCatalog.RequiresTrainingScope(tour.CurrentStep));
     }
 
     [Fact]
@@ -62,6 +62,6 @@ public sealed class PracticalTourScopeTests
 
         tour.Start(hasOpenDocument: true, resumeStep: PracticalTourStep.InspectFinding);
 
-        Assert.True(PracticalTourStateMachine.RequiresTrainingScope(tour.CurrentStep));
+        Assert.True(PracticalTourStepCatalog.RequiresTrainingScope(tour.CurrentStep));
     }
 }
