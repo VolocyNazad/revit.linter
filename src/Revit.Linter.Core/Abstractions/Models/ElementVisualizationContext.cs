@@ -8,10 +8,16 @@ namespace Revit.Linter.Core.Abstractions.Models;
 /// <param name="ElementSets">
 /// Named element groups available to pipeline steps. A step may combine one or more groups.
 /// </param>
+/// <param name="ViewActivator">
+/// Activates the view so the user sees the visualization. The presenter supplies it because switching
+/// the active view is a user interface operation; the pipeline calls it only when no transaction is
+/// open, because Revit rejects the switch while the document is modifiable.
+/// </param>
 public sealed record ElementVisualizationContext(
     Document Document,
     View View,
-    IReadOnlyDictionary<string, IReadOnlyCollection<ElementId>> ElementSets);
+    IReadOnlyDictionary<string, IReadOnlyCollection<ElementId>> ElementSets,
+    Action<View>? ViewActivator = null);
 
 /// <summary>
 /// Defines the conventional element-set keys supplied by diagnostic presenters.

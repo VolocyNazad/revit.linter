@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Models;
@@ -57,43 +58,53 @@ public abstract class ElementVisualizationPipelineBase(
         List<IRestoreSession> appliedSessions = [];
         using TransactionGroup? transactionGroup = StartTransactionGroup(
             context.Document, ElementVisualizationLocalizations.GetString("applyVisualization_transactionGroup", Value));
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        Transaction? stepTransaction = null;
+        bool viewActivated = false;
         try
         {
-            ElementId? activeViewIdBefore = context.Document.ActiveView?.Id;
-            ApplySteps(context, appliedSessions);
-
-            // If the active view changed while the steps ran (another view activated externally),
-            // the steps above landed on the view the user has just left. They are undone and applied
-            // again to the view the user is looking at now.
-            View? activeViewAfter = context.Document.ActiveView;
-            if (activeViewAfter is not null
-                && !Equals(activeViewAfter.Id, activeViewIdBefore)
-                && !Equals(activeViewAfter.Id, context.View.Id))
+            for (int index = 0; index < Steps.Count; index++)
             {
-                logger.LogInformation(
-                    "Showing the elements moved the user from view {PreviousViewName} to view {ViewName}; " +
-                    "applying visualization pipeline {VisualizationName} there",
-                    context.View.Name, activeViewAfter.Name, Value);
-                Exception? undoError = RestoreSessions(appliedSessions);
-                appliedSessions.Clear();
-                if (undoError is not null)
-                    throw new InvalidOperationException(
-                        "Failed to undo the visualization applied to the previous view.", undoError);
+                ElementVisualizationStep step = Steps[index];
 
-                ApplySteps(context with { View = activeViewAfter }, appliedSessions);
+                // Revit rejects a change of the active view while a transaction is open, and a step
+                // that needs the view on screen cannot run before the view is active. The declared
+                // step order is kept: the preceding steps are committed, then the view is activated,
+                // and only then the remaining steps run.
+                if (step.RequiresActiveView && !viewActivated)
+                {
+                    CommitStepTransaction(ref stepTransaction);
+                    viewActivated = TryActivateView(context);
+                }
+
+                if (step.RequiresTransaction)
+                    EnsureStepTransaction(ref stepTransaction, context.Document);
+                else
+                    CommitStepTransaction(ref stepTransaction);
+
+                ElementId[] elementIds = ResolveElementIds(context, step.ElementSetKeys);
+                LogStepApplying(index, step, elementIds);
+                Stopwatch stepStopwatch = Stopwatch.StartNew();
+                appliedSessions.Add(ExecuteStep(context, step, elementIds));
+                LogStepApplied(index, step, stepStopwatch.ElapsedMilliseconds);
             }
 
+            CommitStepTransaction(ref stepTransaction);
+            if (!viewActivated)
+                TryActivateView(context);
             Assimilate(transactionGroup);
             _sessions.AddRange(appliedSessions);
             _sessionDocument = context.Document;
             _consecutiveRestoreFailures = 0;
             logger.LogInformation(
-                "Visualization pipeline {VisualizationName} for diagnostic {DiagnosticCode} applied successfully",
-                Value, Identity.Code);
+                "Visualization pipeline {VisualizationName} for diagnostic {DiagnosticCode} " +
+                "applied successfully in {ElapsedMilliseconds:F0} ms",
+                Value, Identity.Code, stopwatch.Elapsed.TotalMilliseconds);
             return true;
         }
         catch (Exception exception)
         {
+            RollBack(stepTransaction);
             RollBack(transactionGroup);
             Exception? cleanupError = RestoreSessions(appliedSessions);
             logger.LogError(
@@ -107,16 +118,67 @@ public abstract class ElementVisualizationPipelineBase(
         }
     }
 
-    private void ApplySteps(ElementVisualizationContext context, List<IRestoreSession> appliedSessions)
+    // A step that changes the document needs one transaction. Consecutive such steps share it, so a
+    // pipeline usually runs in a single transaction; a step that needs the active view splits the
+    // pipeline into a segment before the activation and one after it.
+    private void EnsureStepTransaction(ref Transaction? transaction, Document document)
     {
-        for (int index = 0; index < Steps.Count; index++)
+        if (transaction is not null || document.IsModifiable) return;
+
+        Transaction started = new(
+            document, ElementVisualizationLocalizations.GetString("applyVisualization_transactionStep", Value));
+        try
         {
-            ElementVisualizationStep step = Steps[index];
-            ElementId[] elementIds = ResolveElementIds(context, step.ElementSetKeys);
-            LogStepApplying(index, step, elementIds);
-            appliedSessions.Add(ExecuteStep(context, step, elementIds));
-            LogStepApplied(index, step);
+            if (started.Start() != TransactionStatus.Started)
+                throw new InvalidOperationException("Failed to start a visualization step transaction.");
         }
+        catch
+        {
+            started.Dispose();
+            throw;
+        }
+
+        transaction = started;
+    }
+
+    private static void CommitStepTransaction(ref Transaction? transaction)
+    {
+        Transaction? current = transaction;
+        if (current is null) return;
+        transaction = null;
+        try
+        {
+            if (current.GetStatus() == TransactionStatus.Started
+                && current.Commit() != TransactionStatus.Committed)
+                throw new InvalidOperationException("Failed to commit a visualization step transaction.");
+        }
+        finally
+        {
+            current.Dispose();
+        }
+    }
+
+    // Activation runs between two committed transactions, which is the only state in which Revit
+    // accepts a change of the active view.
+    private bool TryActivateView(ElementVisualizationContext context)
+    {
+        Action<View>? activateView = context.ViewActivator;
+        if (activateView is null) return false;
+        if (context.Document.IsModifiable)
+        {
+            logger.LogDebug(
+                "The visualization view {ViewName} was not activated for pipeline {VisualizationName} " +
+                "because an outer transaction keeps the document modifiable",
+                context.View.Name, Value);
+            return true;
+        }
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        activateView(context.View);
+        logger.LogInformation(
+            "Activated visualization view {ViewName} for pipeline {VisualizationName} in {ElapsedMilliseconds:F0} ms",
+            context.View.Name, Value, stopwatch.Elapsed.TotalMilliseconds);
+        return true;
     }
 
     private IRestoreSession ExecuteStep(
@@ -147,10 +209,10 @@ public abstract class ElementVisualizationPipelineBase(
             step.ElementSetKeys.Count == 0 ? "<all>" : string.Join(", ", step.ElementSetKeys),
             elementIds.Length);
 
-    private void LogStepApplied(int index, ElementVisualizationStep step)
+    private void LogStepApplied(int index, ElementVisualizationStep step, long elapsedMilliseconds)
         => logger.LogInformation(
-            "Visualization step {StepNumber}/{StepCount} completed: {StepType}",
-            index + 1, Steps.Count, step.GetType().Name);
+            "Visualization step {StepNumber}/{StepCount} completed: {StepType} in {ElapsedMilliseconds:F0} ms",
+            index + 1, Steps.Count, step.GetType().Name, elapsedMilliseconds);
 
     /// <inheritdoc />
     public void Restore()
@@ -316,6 +378,20 @@ public abstract class ElementVisualizationPipelineBase(
     {
         if (group is null || group.GetStatus() != TransactionStatus.Started) return;
         group.RollBack();
+    }
+
+    private static void RollBack(Transaction? transaction)
+    {
+        if (transaction is null) return;
+        try
+        {
+            if (transaction.GetStatus() == TransactionStatus.Started)
+                transaction.RollBack();
+        }
+        finally
+        {
+            transaction.Dispose();
+        }
     }
 
     private static Exception? RestoreSessions(IEnumerable<IRestoreSession> sessions)

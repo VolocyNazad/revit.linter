@@ -147,11 +147,9 @@ internal sealed partial class DiagnosticReportViewModel
                                 return pipeline.Apply(new(document, activeView, elementSets));
                             }
 
-                            _visualizationViewActivator.Activate();
-                            if (document.ActiveView is not View3D visualizationView)
-                                throw new InvalidOperationException(
-                                    "The diagnostic visualization view was not activated.");
-                            return pipeline.Apply(new(document, visualizationView, elementSets));
+                            View3D visualizationView = _visualizationViewProvider.GetOrCreateView();
+                            return pipeline.Apply(
+                                new(document, visualizationView, elementSets, _visualizationViewProvider.Activate));
                         });
                         if (applied)
                         {

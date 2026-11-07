@@ -1,0 +1,1 @@
+Diagnostic visualization now applies the configured steps before switching to the visualization view, runs consecutive steps in one transaction, and opens that view with coarse detail and shaded display, so showing a finding regenerates a large model once instead of twice.

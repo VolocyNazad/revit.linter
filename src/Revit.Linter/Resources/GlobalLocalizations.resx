@@ -233,4 +233,5 @@ tour</value></data>
   <data name="configuration_openFailed_message" xml:space="preserve"><value>The configuration file could not be opened.&#xA;&#xA;{0}</value></data>
   <data name="configurationFolder_openFailed_message" xml:space="preserve"><value>The configuration folder could not be opened.&#xA;&#xA;{0}</value></data>
   <data name="visualizationView_create_transaction" xml:space="preserve"><value>Create Revit Linter visualization view</value></data>
+  <data name="visualizationView_prepare_transaction" xml:space="preserve"><value>Prepare Revit Linter visualization view</value></data>
 </root>

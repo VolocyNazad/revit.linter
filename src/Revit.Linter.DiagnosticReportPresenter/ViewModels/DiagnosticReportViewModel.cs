@@ -121,7 +121,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDialog _dialog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
-    private readonly IVisualizationViewActivator _visualizationViewActivator;
+    private readonly IVisualizationViewProvider _visualizationViewProvider;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IDiagnosticReportExportService _exportService;
@@ -154,7 +154,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDialog dialog, IConfirmationDialog confirmationDialog,
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
-            IVisualizationViewActivator visualizationViewActivator,
+            IVisualizationViewProvider visualizationViewProvider,
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
@@ -171,7 +171,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _dialog = dialog;
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
-        _visualizationViewActivator = visualizationViewActivator;
+        _visualizationViewProvider = visualizationViewProvider;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;

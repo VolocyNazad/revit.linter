@@ -170,3 +170,5 @@ Only one pipeline is active at a time. Starting another pipeline first restores 
 > **Note:** The eye button is a toggle for the active pipeline and finding. Clicking it again restores the recorded state. `Show` changes the view framing; it does not promise keyboard focus for the report panel or Revit canvas.
 
 > **Note:** A pipeline is skipped when its report document is closed, invalid, or not currently active. If a later step fails, completed steps are restored in reverse order; restoration failures are retained for a later retry and written to the application log.
+
+> **Note:** The tool reuses one 3D view named `Revit Linter — Visualization` per project. It opens with coarse detail and shaded display so a large model regenerates it quickly; the `DetailLevel` and `DisplayStyle` steps can change both. The view is activated at the first step that needs it on screen, without changing the declared step order; consecutive steps that change the document share one transaction, and a step that needs the active view splits the pipeline into two.
