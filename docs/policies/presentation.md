@@ -18,6 +18,18 @@ the stable module boundaries and the decisions behind them belong to
 - Put reusable mechanics in `Microsoft.Xaml.Behaviors.Wpf` behaviors; mechanics intimate to one view
   may remain local to it.
 - Do not repeat in code-behind a base type that the XAML declares.
+- Declare a dependency property through the `VolocyNazad.Wpf.DependencyPropertyGenerator` package:
+  `[GenerateDependencyProperty<T>]` on a control or behavior, or `[GenerateAttachedDependencyProperty<T>]`
+  on the static class that exposes an attached property. The attribute carries the default value, the
+  metadata options, the browsable-for type and the XML documentation; the generator emits the
+  registration, the CLR property or the `Get`/`Set` accessors and the callback wiring. Name a change
+  callback `On<Name>Changed` with the WPF signature
+  `(DependencyObject, DependencyPropertyChangedEventArgs)`, or implement the generated `On<Name>Changed`
+  partial hook; a method under that name with no supported signature fails the build. Keep hand-written
+  what the generator cannot express: `AddOwner`, `OverrideMetadata`, private properties that only hold
+  state for another property, an `OnPropertyChanged` override, and a type that XAML in the same project
+  references, because WPF markup compilation recompiles such a type in a temporary project that carries
+  no analyzers.
 
 ## Composition and navigation
 

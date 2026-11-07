@@ -67,6 +67,7 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         });
 
         IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        services.GetRequiredService<IDiagnosticCatalogScope>().BeginSession();
         using IDiagnosticCatalogSnapshotLease lease = catalog.AcquireSnapshot();
 
         ElementDiagnosticRegistration tourRegistration = lease.Snapshot.ElementDiagnostics
@@ -77,6 +78,66 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         await Assert.That(tourRegistration.Identity.SystemTags).Contains(DiagnosticTags.Tour);
         await Assert.That(tourRegistration.Identity.SystemTags).DoesNotContain(DiagnosticTags.Example);
         await Assert.That(regularRegistration.Identity.SystemTags).DoesNotContain(DiagnosticTags.Tour);
+    }
+
+    [Test]
+    public async Task Session_scope_hides_tour_checks_while_no_session_is_active()
+    {
+        ElementDiagnosticId tourId = new(
+            "TOUR-SCOPE", "Description", "Message", DiagnosticSeverity.Warning, true, false, "",
+            systemTags: [DiagnosticTags.Tour]);
+        ElementDiagnosticId regularId = CreateElementId("ELM-SCOPE");
+        using ServiceProvider services = CreateServices(elementDiagnostics:
+            [CreateElementRegistration(tourId), CreateElementRegistration(regularId)]);
+        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        IDiagnosticCatalogScope scope = services.GetRequiredService<IDiagnosticCatalogScope>();
+
+        using (IDiagnosticCatalogSnapshotLease idle = catalog.AcquireSnapshot())
+        {
+            await Assert.That(idle.Snapshot.ElementDiagnostics).Count().IsEqualTo(1);
+            await Assert.That(idle.Snapshot.ElementDiagnostics[0].Identity.Code).IsEqualTo("ELM-SCOPE");
+        }
+
+        scope.BeginSession();
+
+        using (IDiagnosticCatalogSnapshotLease active = catalog.AcquireSnapshot())
+            await Assert.That(active.Snapshot.ElementDiagnostics).Count().IsEqualTo(2);
+
+        scope.EndSession();
+
+        using IDiagnosticCatalogSnapshotLease ended = catalog.AcquireSnapshot();
+        await Assert.That(ended.Snapshot.ElementDiagnostics).Count().IsEqualTo(1);
+        await Assert.That(ended.Snapshot.ElementDiagnostics[0].Identity.Code).IsEqualTo("ELM-SCOPE");
+    }
+
+    [Test]
+    public async Task Scope_narrows_the_catalog_to_the_focused_check_and_restores_it()
+    {
+        ElementDiagnosticId tourId = new(
+            "TOUR-SCOPE", "Description", "Message", DiagnosticSeverity.Warning, true, false, "",
+            systemTags: [DiagnosticTags.Tour]);
+        ElementDiagnosticId regularId = CreateElementId("ELM-SCOPE");
+        using ServiceProvider services = CreateServices(elementDiagnostics:
+            [CreateElementRegistration(tourId), CreateElementRegistration(regularId)]);
+        IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
+        IDiagnosticCatalogScope scope = services.GetRequiredService<IDiagnosticCatalogScope>();
+        DiagnosticCatalogChangeOrigin? changeOrigin = null;
+        catalog.Changed += (_, args) => changeOrigin = args.Origin;
+
+        scope.Focus("TOUR-SCOPE");
+
+        using (IDiagnosticCatalogSnapshotLease narrowed = catalog.AcquireSnapshot())
+        {
+            await Assert.That(narrowed.Snapshot.ElementDiagnostics).Count().IsEqualTo(1);
+            await Assert.That(narrowed.Snapshot.ElementDiagnostics[0].Identity.Code).IsEqualTo("TOUR-SCOPE");
+        }
+
+        await Assert.That(changeOrigin).IsEqualTo(DiagnosticCatalogChangeOrigin.Scope);
+
+        scope.Clear();
+
+        using IDiagnosticCatalogSnapshotLease restored = catalog.AcquireSnapshot();
+        await Assert.That(restored.Snapshot.ElementDiagnostics).Count().IsEqualTo(2);
     }
 
     [Test]
@@ -359,6 +420,32 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         await Assert.That(snapshot.ElementDiagnostics.SelectMany(registration => registration.Fixes).Any()).IsTrue();
         await Assert.That(snapshot.ElementDiagnostics.All(registration =>
             registration.VisualizationPipelines.Count > 0)).IsTrue();
+
+        foreach (ElementDiagnosticId identity in snapshot.ElementDiagnostics.Select(registration => registration.Identity))
+        {
+            IReadOnlyList<string> systemTags = identity.SystemTags;
+            string? discipline = DiagnosticTags.DisciplineForCode(identity.Code);
+
+            await Assert.That(systemTags[0]).IsEqualTo(DiagnosticTags.BuiltIn);
+            int documentKindStart;
+            if (discipline is null)
+            {
+                documentKindStart = 1;
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Shared);
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Systems);
+                await Assert.That(systemTags).DoesNotContain(DiagnosticTags.Architecture);
+            }
+            else
+            {
+                documentKindStart = 2;
+                await Assert.That(systemTags[1]).IsEqualTo(discipline);
+                await Assert.That(systemTags.Count(tag => string.Equals(tag, discipline, StringComparison.Ordinal)))
+                    .IsEqualTo(1);
+            }
+
+            await Assert.That(systemTags.Skip(documentKindStart)
+                .All(tag => tag == DiagnosticTags.Project || tag == DiagnosticTags.Family)).IsTrue();
+        }
     }
 
     private sealed class TestElementVisualizationPipelineFactory : IElementVisualizationPipelineFactory

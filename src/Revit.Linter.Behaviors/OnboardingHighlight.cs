@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using Revit.Linter.Localization;
+using VolocyNazad.Wpf.DependencyProperties;
 
 namespace Revit.Linter.Behaviors;
 
@@ -14,7 +15,22 @@ namespace Revit.Linter.Behaviors;
 /// Registration uses weak references and only affects controls owned by Revit Linter. The original WPF effect is
 /// restored when the key changes, the control unloads or highlighting stops.
 /// </remarks>
-public static class OnboardingHighlight
+[GenerateAttachedDependencyProperty<string>(
+    "Key",
+    IsNullable = true,
+    XmlDocumentation = "Identifies the onboarding action represented by a WPF element.",
+    GetterXmlDocumentation = "<summary>Gets the onboarding key attached to an element.</summary>",
+    SetterXmlDocumentation = "<summary>Sets the onboarding key attached to an element.</summary>")]
+[GenerateAttachedDependencyProperty<bool>(
+    "ScalePulse",
+    DefaultValueExpression = "true",
+    XmlDocumentation = """
+        <summary>Identifies whether a highlighted element also breathes with a scale pulse.</summary>
+        <remarks>Only genuine buttons take an element glow: other surfaces pulse in scale and halo only.</remarks>
+        """,
+    GetterXmlDocumentation = "<summary>Gets whether the element scales while highlighted.</summary>",
+    SetterXmlDocumentation = "<summary>Sets whether the element scales while highlighted.</summary>")]
+public static partial class OnboardingHighlight
 {
     // Matches the spotlight fallback, so the button frame and the glow stay one color outside the theme dictionaries.
     private static readonly Color AccentFallback = Color.FromRgb(43, 123, 179);
@@ -22,10 +38,6 @@ public static class OnboardingHighlight
     private static readonly List<SpotlightAdorner> Spotlights = [];
     private static OnboardingHighlightSession? _activeSession;
     private static string? _activeKey;
-
-    /// <summary>Identifies the onboarding action represented by a WPF element.</summary>
-    public static readonly DependencyProperty KeyProperty = DependencyProperty.RegisterAttached(
-        "Key", typeof(string), typeof(OnboardingHighlight), new PropertyMetadata(null, OnKeyChanged));
 
     private static readonly DependencyProperty PreviousEffectProperty = DependencyProperty.RegisterAttached(
         "PreviousEffect", typeof(Effect), typeof(OnboardingHighlight));
@@ -38,23 +50,6 @@ public static class OnboardingHighlight
 
     private static readonly DependencyProperty PreviousBorderProperty = DependencyProperty.RegisterAttached(
         "PreviousBorder", typeof(BorderSnapshot), typeof(OnboardingHighlight));
-
-    /// <summary>Gets the onboarding key attached to an element.</summary>
-    public static string? GetKey(DependencyObject element) => (string?)element.GetValue(KeyProperty);
-
-    /// <summary>Sets the onboarding key attached to an element.</summary>
-    public static void SetKey(DependencyObject element, string? value) => element.SetValue(KeyProperty, value);
-
-    /// <summary>Identifies whether a highlighted element also breathes with a scale pulse.</summary>
-    /// <remarks>Only genuine buttons take an element glow: other surfaces pulse in scale and halo only.</remarks>
-    public static readonly DependencyProperty ScalePulseProperty = DependencyProperty.RegisterAttached(
-        "ScalePulse", typeof(bool), typeof(OnboardingHighlight), new PropertyMetadata(true, OnScalePulseChanged));
-
-    /// <summary>Gets whether the element scales while highlighted.</summary>
-    public static bool GetScalePulse(DependencyObject element) => (bool)element.GetValue(ScalePulseProperty);
-
-    /// <summary>Sets whether the element scales while highlighted.</summary>
-    public static void SetScalePulse(DependencyObject element, bool value) => element.SetValue(ScalePulseProperty, value);
 
     /// <summary>Starts an exclusively owned highlight session and ends the previous session, if any.</summary>
     public static OnboardingHighlightSession StartSession()
@@ -325,28 +320,22 @@ public static class OnboardingHighlight
         bool HasLocalBorderThickness);
 }
 
-internal sealed class SpotlightAdorner : Adorner, IDisposable
+[GenerateDependencyProperty<double>(
+    "GlowOpacity",
+    DefaultValueExpression = "1.0",
+    Options = FrameworkPropertyMetadataOptions.AffectsRender,
+    XmlDocumentation = """
+        <summary>Identifies the pulsing opacity of the halo drawn around the targets.</summary>
+        <remarks>
+        The halo is pure geometry around the target rectangles, so unlike an element
+        <see cref="System.Windows.Media.Effects.DropShadowEffect"/> it never samples the inner text.
+        </remarks>
+        """,
+    PropertyXmlDocumentation = "Gets or sets the pulsing opacity of the halo drawn around the targets.")]
+internal sealed partial class SpotlightAdorner : Adorner, IDisposable
 {
     private const double TargetPadding = 7;
     private const double LabelGap = 12;
-
-    /// <summary>Identifies the pulsing opacity of the halo drawn around the targets.</summary>
-    /// <remarks>
-    /// The halo is pure geometry around the target rectangles, so unlike an element
-    /// <see cref="System.Windows.Media.Effects.DropShadowEffect"/> it never samples the inner text.
-    /// </remarks>
-    public static readonly DependencyProperty GlowOpacityProperty = DependencyProperty.Register(
-        nameof(GlowOpacity),
-        typeof(double),
-        typeof(SpotlightAdorner),
-        new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    /// <summary>Gets or sets the pulsing opacity of the halo drawn around the targets.</summary>
-    public double GlowOpacity
-    {
-        get => (double)GetValue(GlowOpacityProperty);
-        set => SetValue(GlowOpacityProperty, value);
-    }
 
     private readonly IReadOnlyList<FrameworkElement> _targets;
     private readonly Border _label;

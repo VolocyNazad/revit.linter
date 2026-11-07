@@ -1,30 +1,17 @@
 using System.Windows;
 
+using VolocyNazad.Wpf.DependencyProperties;
+
 namespace Revit.Linter.Presentation;
 
 /// <summary>
 /// Carries a data context into WPF objects, such as data-grid columns, that are outside the visual tree.
 /// </summary>
-public sealed class BindingProxy : Freezable
+[GenerateDependencyProperty<object>(
+    "DataContext",
+    PropertyXmlDocumentation = "Gets or sets the object exposed to bindings through the proxy.")]
+public sealed partial class BindingProxy : Freezable
 {
-    /// <summary>
-    /// Identifies the <see cref="DataContext"/> dependency property.
-    /// </summary>
-    public static readonly DependencyProperty DataContextProperty
-        = DependencyProperty.Register(
-            nameof(FrameworkElement.DataContext),
-            typeof(object),
-            typeof(BindingProxy));
-
-    /// <summary>
-    /// Gets or sets the object exposed to bindings through the proxy.
-    /// </summary>
-    public object DataContext
-    {
-        get => GetValue(DataContextProperty);
-        set => SetValue(DataContextProperty, value);
-    }
-
     /// <summary>
     /// Creates a new proxy instance for the WPF freezable infrastructure.
     /// </summary>

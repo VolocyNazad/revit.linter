@@ -58,6 +58,33 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     }
 
 
+    /// <inheritdoc />
+    public void ClearFindings(string diagnosticCode)
+    {
+        if (string.IsNullOrWhiteSpace(diagnosticCode))
+            throw new ArgumentException("The diagnostic code is required.", nameof(diagnosticCode));
+
+        List<DiagnosticReportItemViewModel> remaining = Collection
+            .Where(item => !string.Equals(item.Code, diagnosticCode, StringComparison.Ordinal))
+            .ToList();
+        int removedCount = Collection.Count - remaining.Count;
+        if (removedCount == 0) return;
+
+        if (string.Equals(_activeVisualizationPipeline?.Identity.Code, diagnosticCode, StringComparison.Ordinal))
+            RestoreActiveVisualizationOrSchedule();
+
+        // Removing items one by one makes the sorted collection view handle every item separately, which
+        // takes quadratic time on a large report; the rows are dropped in one operation instead.
+        if (remaining.Count == 0)
+            Collection.Clear();
+        else
+            Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>(remaining);
+
+        ClearFilters();
+        _logger.LogInformation(
+            "Cleared {ReportCount} findings of diagnostic {DiagnosticCode}", removedCount, diagnosticCode);
+    }
+
     public int Refresh(string documentTitle)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -94,7 +121,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDialog _dialog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
-    private readonly IVisualizationViewActivator _visualizationViewActivator;
+    private readonly IVisualizationViewProvider _visualizationViewProvider;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IDiagnosticReportExportService _exportService;
@@ -127,7 +154,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDialog dialog, IConfirmationDialog confirmationDialog,
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
-            IVisualizationViewActivator visualizationViewActivator,
+            IVisualizationViewProvider visualizationViewProvider,
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
@@ -144,7 +171,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _dialog = dialog;
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
-        _visualizationViewActivator = visualizationViewActivator;
+        _visualizationViewProvider = visualizationViewProvider;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
@@ -332,18 +359,25 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         {
             _ = dispatcher.InvokeAsync(() =>
             {
-                if (_catalogChangesEnabled) ReplaceCatalogSnapshot();
+                if (_catalogChangesEnabled) ReplaceCatalogSnapshot(args.Origin);
             });
             return;
         }
 
-        ReplaceCatalogSnapshot();
+        ReplaceCatalogSnapshot(args.Origin);
     }
 
-    private void ReplaceCatalogSnapshot()
+    private void ReplaceCatalogSnapshot(DiagnosticCatalogChangeOrigin origin)
     {
         IDiagnosticCatalogSnapshotLease lease = _diagnosticCatalog.AcquireSnapshot();
-        Clear();
+
+        // A scope refresh only narrows the published checks. The findings already shown stay, because a
+        // session that takes over the diagnostics list (the practical tour) must not erase the report it
+        // is about to explain; its next run replaces the report anyway. Any other refresh may invalidate
+        // the rows, so it clears them as before.
+        if (origin is not DiagnosticCatalogChangeOrigin.Scope)
+            Clear();
+
         IDiagnosticCatalogSnapshotLease? previous = _catalogLease;
         _catalogLease = lease;
         RefreshTagIndex();

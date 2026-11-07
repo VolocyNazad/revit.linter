@@ -80,7 +80,6 @@ function Get-ChangelogFragments([string]$Root, [System.Collections.IDictionary]$
                 }
                 continue
             }
-            if ($item.Name -eq 'README.md') { continue }
             $problems.Add("changelog.d/$($item.Name): a fragment belongs in a category directory, not in the root of changelog.d.")
         }
 

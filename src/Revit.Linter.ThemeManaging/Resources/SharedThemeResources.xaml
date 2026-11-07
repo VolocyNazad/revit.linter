@@ -28,8 +28,14 @@
     <!--  Narrowest width of the table column that takes the room left by the fixed columns.  -->
     <system:Double x:Key="LinterStretchColumnMinWidth">200</system:Double>
 
+    <!--
+        Row action columns never take part in the table width calculation: the column is pinned to this width
+        with MinWidth and MaxWidth, so a recalculated layout can never squeeze the icon. The width is the
+        16 px icon inside its 20 px button plus the 6 px cell padding on each side.
+    -->
+    <system:Double x:Key="LinterGridIconColumnWidth">32</system:Double>
+
     <!--  Table columns keep enough room for localized headers and representative cell values.  -->
-    <DataGridLength x:Key="LinterGridActionColumnWidth">32</DataGridLength>
     <system:Double x:Key="LinterGridToggleColumnMinWidth">64</system:Double>
     <system:Double x:Key="LinterGridCodeColumnMinWidth">76</system:Double>
     <system:Double x:Key="LinterGridSeverityColumnMinWidth">128</system:Double>

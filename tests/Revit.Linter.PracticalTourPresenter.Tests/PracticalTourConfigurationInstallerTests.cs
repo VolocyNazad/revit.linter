@@ -88,6 +88,52 @@ public sealed class PracticalTourConfigurationInstallerTests : IDisposable
         Assert.Equal(installed, File.ReadAllText(paths.PracticalTourConfigPath));
     }
 
+    [Fact]
+    public void Second_install_keeps_the_selection_written_by_the_tour()
+    {
+        ConfigurationPaths paths = CreatePaths();
+        PracticalTourConfigurationInstaller installer = CreateInstaller(paths);
+        installer.Install(startOver: true);
+        string selection = File.ReadAllText(paths.PracticalTourConfigPath)
+            .Replace("isActive: false", "isActive: true");
+        File.WriteAllText(paths.PracticalTourConfigPath, selection);
+
+        installer.Install();
+
+        Assert.Equal(selection, File.ReadAllText(paths.PracticalTourConfigPath));
+    }
+
+    [Fact]
+    public void Starting_over_rewrites_the_managed_file_from_the_template()
+    {
+        ConfigurationPaths paths = CreatePaths();
+        PracticalTourConfigurationInstaller installer = CreateInstaller(paths);
+        installer.Install(startOver: true);
+        File.WriteAllText(
+            paths.PracticalTourConfigPath,
+            File.ReadAllText(paths.PracticalTourConfigPath).Replace("isActive: false", "isActive: true"));
+
+        installer.Install(startOver: true);
+
+        Assert.DoesNotContain("isActive: true", File.ReadAllText(paths.PracticalTourConfigPath));
+    }
+
+    [Fact]
+    public void Install_writes_the_template_when_the_file_is_outdated()
+    {
+        ConfigurationPaths paths = CreatePaths();
+        PracticalTourConfigurationInstaller installer = CreateInstaller(paths);
+        Directory.CreateDirectory(Path.GetDirectoryName(paths.PracticalTourConfigPath)!);
+        File.WriteAllText(paths.PracticalTourConfigPath, "- code: \"TOUR001\"\n");
+
+        installer.Install();
+
+        DiagnosticConfigurationFile file = Assert.IsType<DiagnosticConfigurationFile>(
+            ConfigurationPathUtils.GetDiagnosticConfiguration(paths.PracticalTourConfigPath));
+        Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, file.Version);
+        Assert.Contains(file.Rules, rule => rule.Code == "TOUR001");
+    }
+
     private ConfigurationPaths CreatePaths() => new(2025, _tempDirectory);
 
     private static PracticalTourConfigurationInstaller CreateInstaller(ConfigurationPaths paths) =>

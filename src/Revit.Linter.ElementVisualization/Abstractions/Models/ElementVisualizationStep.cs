@@ -4,7 +4,21 @@ namespace Revit.Linter.ElementVisualization.Abstractions.Models;
 
 /// <summary>Represents one typed operation in a visualization pipeline.</summary>
 /// <param name="ElementSetKeys">Semantic element sets consumed by the operation; an empty list selects all sets.</param>
-public abstract record ElementVisualizationStep(IReadOnlyList<string> ElementSetKeys);
+public abstract record ElementVisualizationStep(IReadOnlyList<string> ElementSetKeys)
+{
+    /// <summary>
+    /// Gets whether the step needs the visualization view active and visible, so it cannot run inside
+    /// a transaction.
+    /// </summary>
+    /// <remarks>
+    /// The pipeline commits the preceding steps and activates the view before such a step, because
+    /// Revit rejects a change of the active view while the document is modifiable.
+    /// </remarks>
+    public virtual bool RequiresActiveView => false;
+
+    /// <summary>Gets whether the step changes the document and therefore runs inside a transaction.</summary>
+    public virtual bool RequiresTransaction => true;
+}
 
 /// <summary>Runs an element interaction operation such as show, select, isolate, or cut.</summary>
 /// <param name="Type">The interaction operation to run.</param>
@@ -12,7 +26,15 @@ public abstract record ElementVisualizationStep(IReadOnlyList<string> ElementSet
 public sealed record AccentElementsStep(
     AccentElementsType Type,
     IReadOnlyList<string> ElementSetKeys)
-    : ElementVisualizationStep(ElementSetKeys);
+    : ElementVisualizationStep(ElementSetKeys)
+{
+    /// <inheritdoc />
+    public override bool RequiresActiveView => Type == AccentElementsType.ShowElements;
+
+    /// <inheritdoc />
+    public override bool RequiresTransaction =>
+        Type is not (AccentElementsType.ShowElements or AccentElementsType.SelectElements);
+}
 
 /// <summary>Overrides graphics individually for every element in the selected sets.</summary>
 /// <param name="ElementSetKeys">Semantic element sets consumed by the operation.</param>
@@ -46,10 +68,16 @@ public sealed record DisplayStyleStep(
     IReadOnlyList<string> ElementSetKeys)
     : ElementVisualizationStep(ElementSetKeys);
 
-/// <summary>Leaves only the given categories visible through the persistent view visibility.</summary>
-/// <param name="Categories">The categories that stay visible; every other hideable category is hidden.</param>
+/// <summary>Changes the category visibility through the persistent view visibility.</summary>
+/// <param name="Categories">The categories the mode treats as listed.</param>
+/// <param name="Mode">
+/// <see cref="CategoryVisibilityMode.OnlyVisible"/> and <see cref="CategoryVisibilityMode.OnlyHidden"/>
+/// also change every other hideable category; <see cref="CategoryVisibilityMode.Show"/> and
+/// <see cref="CategoryVisibilityMode.Hide"/> change only the listed categories.
+/// </param>
 /// <param name="ElementSetKeys">Kept empty: a category step consumes no element sets.</param>
 public sealed record SetCategoryVisibilityStep(
     IReadOnlyList<BuiltInCategory> Categories,
+    CategoryVisibilityMode Mode,
     IReadOnlyList<string> ElementSetKeys)
     : ElementVisualizationStep(ElementSetKeys);

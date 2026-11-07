@@ -156,7 +156,7 @@
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
+                    <DataGridTemplateColumn MinWidth="{StaticResource LinterGridIconColumnWidth}" MaxWidth="{StaticResource LinterGridIconColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
@@ -193,7 +193,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
+                    <DataGridTemplateColumn MinWidth="{StaticResource LinterGridIconColumnWidth}" MaxWidth="{StaticResource LinterGridIconColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
@@ -326,7 +326,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="{StaticResource LinterGridActionColumnWidth}" CanUserResize="False">
+                    <DataGridTemplateColumn MinWidth="{StaticResource LinterGridIconColumnWidth}" MaxWidth="{StaticResource LinterGridIconColumnWidth}" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button

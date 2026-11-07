@@ -6,6 +6,7 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
     IEnumerable<IDiagnosticRegistrationProvider> providers,
     IDiagnosticConfigurationErrorState configurationErrorState,
     IBuiltInDiagnosticStateProvider builtInStateProvider,
+    IDiagnosticCatalogScope catalogScope,
     ILogger<DiagnosticCatalogSnapshotFactory> logger) : IDiagnosticCatalogSnapshotFactory
 {
     private readonly IDiagnosticRegistrationProvider[] _providers = providers.ToArray();
@@ -29,8 +30,9 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
 
             var snapshot = new DiagnosticCatalogSnapshot(elementDiagnostics, documentDiagnostics);
             Validate(snapshot);
+            snapshot = ApplyCatalogScope(snapshot);
             configurationErrorState.CompleteRefresh();
-            LogRefreshSummary(elementDiagnostics.Count, documentDiagnostics.Count);
+            LogRefreshSummary(snapshot.ElementDiagnostics.Count, snapshot.DocumentDiagnostics.Count);
             return new DiagnosticCatalogSnapshotOwner(snapshot);
         }
         catch
@@ -41,6 +43,48 @@ internal sealed class DiagnosticCatalogSnapshotFactory(
             DiagnosticCatalogSnapshotOwner.DisposeComponents(elementDiagnostics, documentDiagnostics);
             throw;
         }
+    }
+
+    /// <summary>Applies the session scope to the published checks.</summary>
+    /// <remarks>
+    /// The filtering runs after validation and after the built-in override report, so an active session
+    /// never hides configuration problems. A focused session publishes only its check; a session without
+    /// focus publishes every check; with no session the managed session checks stay hidden, so a paused or
+    /// finished tour does not leave its training check in the user's list or runs. The hidden registrations
+    /// own components that would otherwise be disposed only when the snapshot retires, so they are disposed
+    /// here instead.
+    /// </remarks>
+    private DiagnosticCatalogSnapshot ApplyCatalogScope(DiagnosticCatalogSnapshot snapshot)
+    {
+        string? focusedCode = catalogScope.FocusedDiagnosticCode;
+        if (focusedCode is null && catalogScope.IsSessionActive) return snapshot;
+
+        bool IsPublished(string code, IReadOnlyList<string> systemTags) => focusedCode is { } focused
+            ? string.Equals(code, focused, StringComparison.Ordinal)
+            : !systemTags.Contains(DiagnosticTags.Tour);
+
+        List<ElementDiagnosticRegistration> hiddenElements = snapshot.ElementDiagnostics
+            .Where(registration => !IsPublished(registration.Identity.Code, registration.Identity.SystemTags))
+            .ToList();
+        List<DocumentDiagnosticRegistration> hiddenDocuments = snapshot.DocumentDiagnostics
+            .Where(registration => !IsPublished(registration.Identity.Code, registration.Identity.SystemTags))
+            .ToList();
+        if (hiddenElements.Count == 0 && hiddenDocuments.Count == 0) return snapshot;
+
+        DiagnosticCatalogSnapshotOwner.DisposeComponents(hiddenElements, hiddenDocuments);
+        if (focusedCode is null)
+            logger.LogInformation(
+                "Diagnostic catalog hides {HiddenDiagnosticCount} managed session checks while no session is active",
+                hiddenElements.Count + hiddenDocuments.Count);
+        else
+            logger.LogInformation(
+                "Diagnostic catalog is narrowed to {DiagnosticCode} for the active session", focusedCode);
+
+        return new DiagnosticCatalogSnapshot(
+            snapshot.ElementDiagnostics.Where(registration =>
+                IsPublished(registration.Identity.Code, registration.Identity.SystemTags)),
+            snapshot.DocumentDiagnostics.Where(registration =>
+                IsPublished(registration.Identity.Code, registration.Identity.SystemTags)));
     }
 
     private List<T> KeepFirstRegistration<T>(List<T> registrations, Func<T, string> getCode)

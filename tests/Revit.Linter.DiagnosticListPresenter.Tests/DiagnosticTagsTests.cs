@@ -63,6 +63,9 @@ public sealed class DiagnosticTagsTests
     {
         Assert.Equal("Project", DiagnosticTags.Project);
         Assert.Equal("Family", DiagnosticTags.Family);
+        Assert.Equal("Shared", DiagnosticTags.Shared);
+        Assert.Equal("Systems", DiagnosticTags.Systems);
+        Assert.Equal("Architecture", DiagnosticTags.Architecture);
         Assert.Equal("BuiltIn", DiagnosticTags.BuiltIn);
         Assert.Equal("Custom", DiagnosticTags.Custom);
         Assert.Equal("Collision", DiagnosticTags.Collision);
@@ -71,6 +74,53 @@ public sealed class DiagnosticTagsTests
         Assert.Equal("Tour", DiagnosticTags.Tour);
         Assert.Equal("Debug", DiagnosticTags.Debug);
     }
+
+    [Theory]
+    [InlineData("SHRD001", "Shared")]
+    [InlineData("SHRD0037", "Shared")]
+    [InlineData("SYST001", "Systems")]
+    [InlineData("ARCH005", "Architecture")]
+    public void TryGetDisciplineTag_returns_the_tag_of_a_registered_prefix(string code, string expected)
+    {
+        Assert.True(DiagnosticTags.TryGetDisciplineTag(code, out string? tag));
+        Assert.Equal(expected, tag);
+    }
+
+    [Theory]
+    [InlineData("DOC001")]
+    [InlineData("RVT003")]
+    public void TryGetDisciplineTag_reports_a_registered_prefix_without_a_discipline(string code)
+    {
+        Assert.True(DiagnosticTags.TryGetDisciplineTag(code, out string? tag));
+        Assert.Null(tag);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("123")]
+    [InlineData("CSTM001")]
+    [InlineData("TOUR001")]
+    public void TryGetDisciplineTag_reports_an_unregistered_prefix(string? code)
+        => Assert.False(DiagnosticTags.TryGetDisciplineTag(code, out _));
+
+    [Theory]
+    [InlineData("SHRD001", "Shared")]
+    [InlineData("SHRD0037", "Shared")]
+    [InlineData("SYST001", "Systems")]
+    [InlineData("ARCH005", "Architecture")]
+    public void DisciplineForCode_returns_the_discipline_tag_of_the_code_prefix(string code, string expected)
+        => Assert.Equal(expected, DiagnosticTags.DisciplineForCode(code));
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("DOC001")]
+    [InlineData("RVT003")]
+    [InlineData("CSTM001")]
+    [InlineData("TOUR001")]
+    public void DisciplineForCode_returns_null_for_a_code_without_a_discipline_tag(string? code)
+        => Assert.Null(DiagnosticTags.DisciplineForCode(code));
 
     [Theory]
     [InlineData("builtin")]
@@ -89,6 +139,9 @@ public sealed class DiagnosticTagsTests
     [InlineData("   ")]
     [InlineData("Project")]
     [InlineData("family")]
+    [InlineData("Shared")]
+    [InlineData("systems")]
+    [InlineData("ARCHITECTURE")]
     [InlineData("Walls")]
     public void IsReserved_is_false_for_the_document_kinds_and_other_tags(string? tag)
         => Assert.False(DiagnosticTags.IsReserved(tag));

@@ -22,7 +22,12 @@ internal abstract class CutShowAndSelectVisualizationPipeline(
         setCategoryVisibilityService, viewSettingsService, logger)
 {
     protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } =
-        [new AccentElementsStep(AccentElementsType.CutViewByElements, []),
+        [HideScopeBoxesStep,
+            new AccentElementsStep(AccentElementsType.CutViewByElements, []),
             new AccentElementsStep(AccentElementsType.ShowElements, []),
             new AccentElementsStep(AccentElementsType.SelectElements, [])];
+
+    // Scope boxes only cover the framed elements in a visualization view.
+    private static SetCategoryVisibilityStep HideScopeBoxesStep =>
+        new([BuiltInCategory.OST_VolumeOfInterest], CategoryVisibilityMode.Hide, []);
 }

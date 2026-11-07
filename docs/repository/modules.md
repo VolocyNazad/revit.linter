@@ -20,17 +20,19 @@ identity, the configuration-reading contracts and the host seams that carry no R
 
 `Revit.Linter.Core` owns the Revit-facing contracts of the same surface: element and document
 diagnostics, their filters and fixes, visualization pipelines and contexts, catalog and registration
-types. A Revit-free type stays there only when it belongs to one of those clusters.
+types, and the session catalog scope that narrows the published checks for a guided session and hides
+its checks outside one. A Revit-free type stays there only when it belongs to one of those clusters.
 
 The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `IClipboardService`,
 `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream` and
-`IFormulaCompilationNotifier`. `IRevitIdlingScheduler`, which takes `UIApplication`, stays with the
-Revit-facing contracts in `Revit.Linter.Core/Abstractions`. Their implementations live in
+`IFormulaCompilationNotifier`. `IRevitIdlingScheduler`, which takes `UIApplication`, and
+`IVisualizationViewProvider`, which returns `View3D`, stay with the Revit-facing contracts in
+`Revit.Linter.Core/Abstractions`. Their implementations live in
 `src/Revit.Linter/Infrastructure/Services` and the host registers them; modules depend only on the
 contracts.
 
 `Revit.Linter.DiagnosticReportPresenter.Interactions` holds the contracts other modules and the host
-use for that presenter (`IDiagnosticReportPresenter`, `IVisualizationViewActivator`), so no consumer
+use for that presenter (`IDiagnosticReportPresenter`), so no consumer
 references the presenter project for them. A presenter that needs such an outward contract gets a
 matching `<Module>.Interactions` project instead of exposing it from its implementation assembly.
 
@@ -82,6 +84,13 @@ plumbing shared by the list panes, and `BindingProxy` for bindings outside the v
 
 It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers, and
 `Revit.Linter.ReportMessaging` for the shared message parser.
+
+The dependency properties of this project, of `Revit.Linter.Behaviors` and of
+`Revit.Linter.ReportMessaging` are declared with the `VolocyNazad.Wpf.DependencyPropertyGenerator`
+package: the registration, the CLR property or the `Get`/`Set` accessors, the XML documentation and
+the callback wiring are generated from `[GenerateDependencyProperty<T>]` and
+`[GenerateAttachedDependencyProperty<T>]`. The projects that XAML compiles keep their registrations
+hand-written, as the [presentation policy](../policies/presentation.md) explains.
 
 `Revit.Linter.OpenedDocuments` owns the shared opened-document selector of the report and fix panes. It
 exposes the selector through `IOpenedDocuments` and the stable `OpenedDocument` item model, so the panes
@@ -146,9 +155,11 @@ as show, select, isolate, crop, per-element overrides and temporary-filter overr
 restores their sessions in reverse order; the session and reversal rules are in
 [element highlighting](../architecture.md#element-highlighting).
 
-The diagnostic report presenter activates a persistent `Revit Linter — Visualization` isometric view
-before applying any pipeline. The host owns creation and activation behind `IVisualizationViewActivator`,
-keeping `RevitAPIUI` calls out of the presenter.
+The diagnostic report presenter obtains the persistent `Revit Linter — Visualization` isometric view
+and passes it to the pipeline. The host owns creation, preparation and activation behind
+`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. The pipeline activates
+the view only after the steps declared before the first step that needs it on screen are committed,
+because Revit rejects an active-view change inside a transaction.
 
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes consumed by
 the diagnostic report presenter. A configured step deletes its element sets or writes one parameter

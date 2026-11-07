@@ -11,26 +11,8 @@ namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 /// </remarks>
 internal sealed class PracticalTourStateMachine
 {
-    private static readonly PracticalTourStep[] Steps =
-    [
-        PracticalTourStep.OpenDocument,
-        PracticalTourStep.OpenConfigurationFolder,
-        PracticalTourStep.SearchAndFilters,
-        PracticalTourStep.SelectDiagnostic,
-        PracticalTourStep.RunDiagnostics,
-        PracticalTourStep.InspectFinding,
-        PracticalTourStep.OpenHelp,
-        PracticalTourStep.ShowElement,
-        PracticalTourStep.SelectVisualization,
-        PracticalTourStep.NavigateFindings,
-        PracticalTourStep.UnderstandFix,
-        PracticalTourStep.FixList,
-        PracticalTourStep.UnderstandIgnore,
-        PracticalTourStep.IgnoreList,
-        PracticalTourStep.ExportReport,
-        PracticalTourStep.ExportReportAnotherFormat,
-        PracticalTourStep.Completed,
-    ];
+    /// <summary>Gets the steps in the order the catalog defines them.</summary>
+    private static readonly PracticalTourStep[] Steps = PracticalTourStepCatalog.Steps;
 
     /// <summary>Gets the current tour step.</summary>
     public PracticalTourStep CurrentStep { get; private set; } = PracticalTourStep.Completed;

@@ -4,6 +4,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+		<PackageReference Include="VolocyNazad.Wpf.DependencyPropertyGenerator">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />

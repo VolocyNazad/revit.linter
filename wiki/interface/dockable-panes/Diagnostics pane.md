@@ -19,7 +19,7 @@ Actions:
 ---
 Features:
 - Search, sort, and filter the diagnostics list; the **Filters** button chooses which rows the table shows
-- Find diagnostics by tag: the **Tags** column shows the tags of each diagnostic, and clicking a tag searches for it. A rule states the document kinds it applies to with the ordinary tags `Project` and `Family`. Alongside the tags written in a rule, the product adds reserved system tags; see [[Diagnostic tags]] for the full list and how the tag list is built
+- Find diagnostics by tag: the **Tags** column shows the tags of each diagnostic, and clicking a tag searches for it. A rule states the document kinds it applies to with the ordinary tags `Project` and `Family`. Alongside the tags written in a rule, the product adds reserved system tags and the discipline tag of a built-in check (`Shared`, `Systems` or `Architecture`); see [[Diagnostic tags]] for the full list and how the tag list is built
 - Copy text
 - Batch enable/disable diagnostics: check or uncheck all or only the visible rows, and invert the selection
 

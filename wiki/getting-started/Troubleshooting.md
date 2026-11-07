@@ -16,7 +16,8 @@ Useful records include add-in startup and shutdown, configuration loads, diagnos
 2. Check that the configuration is `diagnostics.config.yaml` in the folder for the running Revit version and declares `version: 2`.
 3. After editing YAML, look for a configuration error in the UI and then inspect the newest log entry.
 4. For a visualization that appears to do nothing, click once more only if it is already active: the second click intentionally restores the previous view state.
-5. If findings that were ignored by an older installation are reported again, check the [[Ignoring pane|Ignore list]] pane. Revit Linter 2.0.0 stored ignores in the `Linter_Ignored` and `Linter_IgnoredType` project parameters, while the current version reads only the in-document ignore list, so those entries are not carried over. Ignore the findings again; the unused parameters may stay in the model.
+5. Undo can restore a visualization the tool had already restored, for example when you undo a fix that removed its elements. The next **Show** click replaces the leftover view state instead of failing, and the application log records a warning.
+6. If findings that were ignored by an older installation are reported again, check the [[Ignoring pane|Ignore list]] pane. Revit Linter 2.0.0 stored ignores in the `Linter_Ignored` and `Linter_IgnoredType` project parameters, while the current version reads only the in-document ignore list, so those entries are not carried over. Ignore the findings again; the unused parameters may stay in the model.
 
 > **Note:** A malformed configuration file is loaded as an empty list. This prevents stale rules from continuing to run, but it can make the diagnostics list appear empty until the file is corrected. A single invalid rule is skipped on its own and described in the notification.
 

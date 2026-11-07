@@ -88,9 +88,20 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   the originating command's result.
 - The practical tour owns the starting state of its managed `TOUR001` training diagnostic: tour setup
   refreshes `tour/practical-tour.config.yaml` in the current format with `isActive: false`, and completing
-  or opting out removes the managed file. Step advancement stays purely observational: only observed UI
-  facts move the state machine, and resumed tours keep the current selection. Tour rules carry the reserved
-  `Tour` tag and sort above the rest of the diagnostics list.
+  or opting out removes the managed file. Tour setup writes the managed file only when it is missing or
+  outdated, or when the tour starts over; rewriting a current file would reset the selection the tour
+  writes into it and would raise a configuration change that discards the report the resumed session
+  explains. Step advancement stays purely observational: only observed UI facts move the state machine,
+  and resumed tours keep the current selection. Tour rules carry the reserved `Tour` tag and sort above the
+  rest of the diagnostics list. From the selection step on, the tour narrows the published catalog to that
+  check with `IDiagnosticCatalogScope`, so the run, the reports and the list cover the training check
+  alone; the scope is session state and ends with the session, leaving the user's own checks and their
+  states untouched. A paused session keeps its progress but ends the scope, so the training check is gone
+  from the list and the training findings are cleared from the report pane; the run of the training check
+  is the session's only checkpoint, so resuming continues at that step and finds fresh findings for the
+  remaining tasks. Starting a session also clears any leftover training findings and restores the
+  diagnostics pane view — search, filters and sort order — so the training row the first steps point at
+  cannot be hidden by earlier work.
 - Onboarding is realized by two presenter modules with one primary responsibility each: the modal one-shot
   welcome wizard and the optional modeless practical tour. The tour publishes its contracts from
   `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend only on the
@@ -131,6 +142,12 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
 - The effective state of a diagnostic (`isActive`, `severity`, `isHidden`) lives in the configuration file.
   The Diagnostics pane writes it back through `IDiagnosticConfigurationWriter`, which patches only the
   affected YAML fields so comments and rule order survive. There is no separate override store.
+- A session can narrow the published catalog to one check without touching the configuration:
+  `IDiagnosticCatalogScope` is session state, and a change republishes the snapshot with the `Scope` change
+  origin. The run, the panes and the reports then see the narrowed set, and the report pane keeps its rows
+  for that origin because narrowing must not discard findings a guided session explains. Managed session
+  checks stay hidden while no session is active, so a paused or finished session leaves nothing of its own
+  in the user's list or runs; ending the session therefore needs no restore on disk.
 - Diagnoses whose `isHidden` is `true` are absent from the list, the run selection and the reports, and are
   not executed; `isHidden` is stronger than `isActive`. The reset command removes built-in overrides and
   `isHidden` fields but never rewrites the user's own `isActive`/`severity` values.
@@ -153,6 +170,12 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   - The document-kind tags `Project` and `Family` are ordinary tags the product sets on its built-in
     diagnostics; a configured rule declares them itself, because only the rule knows which document kinds it
     applies to.
+  - The discipline tags `Shared`, `Systems` and `Architecture` are ordinary tags too. The product sets them on
+    a built-in diagnostic from the `SHRD`, `SYST` or `ARCH` prefix of its code; a configured rule declares
+    its own spelling, which follows the language of the configuration file.
+  - A single prefix-to-tag table in `DiagnosticTags` decides the discipline of every built-in prefix, including
+    prefixes that deliberately have none. A guard test fails when a built-in collector uses a prefix without an
+    entry, so a new prefix needs an explicit tag-or-none decision instead of silently losing its tag.
   - System tags are trusted and always English, so a rule tag that reuses a reserved name is dropped.
 - Diagnostic configuration files carry a single `version` file format envelope around the rule list. Version
   2 is the one-file format with a per-rule `type`; files without it are not read, and a file with a newer
@@ -175,6 +198,15 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
 - `Revit.Linter.ElementVisualization` composes those operations into diagnostic visualization pipelines.
 - Every visualization session records enough state to restore what it changed. Composite sessions restore
   steps in reverse order.
+- Pipeline steps keep the order the configuration declares. The steps that change the document share one
+  transaction inside the pipeline's transaction group; a step that needs the view on screen splits the
+  pipeline into two, because Revit rejects a change of the active view while the document is modifiable.
+  The built-in view-changing pipelines hide scope boxes with the `SetCategoryVisibility` step
+  in `hide` mode.
+- The host provides `IVisualizationViewProvider`, which creates and prepares the persistent 3D view
+  (coarse detail, shaded display) and activates it from the committed state the pipeline asks for. The
+  pipeline itself delegates transactions, step dispatch and session bookkeeping to small collaborators,
+  so it only states the run order.
 
 ## Element fixing
 
