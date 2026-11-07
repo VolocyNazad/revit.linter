@@ -57,14 +57,13 @@ internal sealed partial class PracticalTour(
                 savedProgress = null;
             }
 
-            configurationInstaller.Install();
+            bool startsOver = savedProgress is null;
+            configurationInstaller.Install(startsOver);
+            catalogScope.BeginSession();
 
-            if (savedProgress is null)
-            {
-                // A fresh tour starts with the managed check switched off because the installed
-                // tour configuration declares isActive: false; the user enables it as the guided
-                // step asks. Resumed tours keep the selection written to the managed file.
-            }
+            PracticalTourProgress? startProgress = savedProgress is null
+                ? null
+                : ResolveStartProgress(savedProgress, hasOpenDocument);
 
             PracticalTourViewModel viewModel = new(new PracticalTourStateMachine());
             view.DataContext = viewModel;
@@ -77,7 +76,11 @@ internal sealed partial class PracticalTour(
             activityStream.ActivityPublished += ActivityStream_ActivityPublished;
             themeService.Register(view);
             _optOutRequested = false;
-            viewModel.Start(hasOpenDocument, savedProgress, tutorialSampleQueued);
+            viewModel.Start(hasOpenDocument, startProgress, tutorialSampleQueued);
+
+            // The guided steps point at the training check row, so a search, filter or column sort left
+            // over from earlier work must not hide it.
+            tourHost.ResetDiagnosticsSearchAndFilters();
             SaveProgress(viewModel.CurrentStep, viewModel.CurrentStep == PracticalTourStep.Completed, isOptedOut: false);
             UpdateCatalogScope(viewModel.CurrentStep);
             UpdateGuidance(viewModel.CurrentStep);
@@ -88,6 +91,27 @@ internal sealed partial class PracticalTour(
             logger.LogError(exception, "Practical tour was disabled after an onboarding failure");
             CloseAfterFailure();
         }
+    }
+
+    /// <summary>Chooses the step a saved session can continue from.</summary>
+    /// <param name="savedProgress">The saved progress.</param>
+    /// <param name="hasOpenDocument">Whether a document is open in Revit.</param>
+    /// <remarks>
+    /// A finding-specific step continues only when the active document still shows the training findings;
+    /// otherwise the session restarts at the run step so it never asks for findings that are gone.
+    /// </remarks>
+    private PracticalTourProgress ResolveStartProgress(PracticalTourProgress savedProgress, bool hasOpenDocument)
+    {
+        PracticalTourProgress progress = PracticalTourResume.ResolveStartProgress(
+            savedProgress,
+            hasOpenDocument,
+            tourHost.HasDiagnosticFindings(DiagnosticCode));
+        if (progress.CurrentStep != savedProgress.CurrentStep)
+            logger.LogInformation(
+                "The practical tour resumes at {ResumeStep} instead of the saved {SavedStep}: the active document has no training findings",
+                progress.CurrentStep,
+                savedProgress.CurrentStep);
+        return progress;
     }
 
     private void ViewModel_StopRequested(object? sender, EventArgs args)
@@ -189,7 +213,7 @@ internal sealed partial class PracticalTour(
         if (PracticalTourStepCatalog.RequiresTrainingScope(step))
             FocusCatalogScope();
         else
-            ClearCatalogScope();
+            ClearCatalogScopeFocus();
     }
 
     private void FocusCatalogScope()
@@ -204,7 +228,7 @@ internal sealed partial class PracticalTour(
         }
     }
 
-    private void ClearCatalogScope()
+    private void ClearCatalogScopeFocus()
     {
         try
         {
@@ -212,7 +236,19 @@ internal sealed partial class PracticalTour(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Failed to restore the full diagnostic catalog after the practical tour");
+            logger.LogError(exception, "Failed to publish every diagnostic of the practical tour");
+        }
+    }
+
+    private void EndCatalogScope()
+    {
+        try
+        {
+            catalogScope.EndSession();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to hide the managed practical-tour checks after the session");
         }
     }
 
@@ -284,11 +320,9 @@ internal sealed partial class PracticalTour(
     private void EndSession(bool hidePane, bool saveProgress = true)
     {
         PracticalTourViewModel? viewModel = _viewModel;
-        if (viewModel is null) return;
-
         try
         {
-            if (saveProgress)
+            if (viewModel is not null && saveProgress)
             {
                 SaveProgress(
                     viewModel.CurrentStep,
@@ -302,16 +336,20 @@ internal sealed partial class PracticalTour(
         }
         finally
         {
-            activityStream.ActivityPublished -= ActivityStream_ActivityPublished;
-            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-            viewModel.StopRequested -= ViewModel_StopRequested;
-            viewModel.OptOutRequested -= ViewModel_OptOutRequested;
-            viewModel.RestartRequested -= ViewModel_RestartRequested;
-            _highlightSession?.Dispose();
-            _highlightSession = null;
-            _viewModel = null;
-            view.DataContext = null;
-            ClearCatalogScope();
+            if (viewModel is not null)
+            {
+                activityStream.ActivityPublished -= ActivityStream_ActivityPublished;
+                viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                viewModel.StopRequested -= ViewModel_StopRequested;
+                viewModel.OptOutRequested -= ViewModel_OptOutRequested;
+                viewModel.RestartRequested -= ViewModel_RestartRequested;
+                _highlightSession?.Dispose();
+                _highlightSession = null;
+                _viewModel = null;
+                view.DataContext = null;
+            }
+
+            EndCatalogScope();
             if (hidePane) tourHost.HidePracticalTourPane();
         }
     }

@@ -58,6 +58,12 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     }
 
 
+    /// <inheritdoc />
+    public bool HasFindings(string documentTitle, string diagnosticCode) =>
+        Collection.Any(item =>
+            string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal)
+            && string.Equals(item.Code, diagnosticCode, StringComparison.Ordinal));
+
     public int Refresh(string documentTitle)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();

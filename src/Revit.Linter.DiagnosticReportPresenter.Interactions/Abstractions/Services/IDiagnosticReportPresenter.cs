@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
+namespace Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 
 /// <summary>
 /// Controls the diagnostic reports displayed by the report presenter.
@@ -26,4 +26,14 @@ public interface IDiagnosticReportPresenter
     /// <param name="documentTitle">The title of the document whose findings are counted after refresh.</param>
     /// <returns>The number of matching findings currently presented.</returns>
     int Refresh(string documentTitle);
+
+    /// <summary>Reports whether the displayed findings include one of the given diagnostic.</summary>
+    /// <param name="documentTitle">The title of the document whose findings are checked.</param>
+    /// <param name="diagnosticCode">The diagnostic code, compared ordinally.</param>
+    /// <returns><see langword="true"/> when at least one displayed finding has the code for the document.</returns>
+    /// <remarks>
+    /// The practical tour uses this to decide whether a resumed step still has the findings it explains,
+    /// so resuming on another document or after the report was cleared starts from the run step instead.
+    /// </remarks>
+    bool HasFindings(string documentTitle, string diagnosticCode);
 }

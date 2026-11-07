@@ -58,6 +58,20 @@ public sealed class FilteredRowCollection<TItem> : IDisposable
     /// <summary>Refreshes the view after the search text or a row changed.</summary>
     public void Refresh() => _viewSource?.View.Refresh();
 
+    /// <summary>Restores the pane's default sort order, discarding a sort the user applied.</summary>
+    /// <remarks>
+    /// A column header click replaces the view's sort descriptions, so a guided session that needs a
+    /// specific row on top resets the order to the one this collection was created with.
+    /// </remarks>
+    public void ResetSort()
+    {
+        if (_viewSource is null) return;
+
+        _viewSource.SortDescriptions.Clear();
+        foreach (SortDescription sortDescription in _sortDescriptions)
+            _viewSource.SortDescriptions.Add(sortDescription);
+    }
+
     /// <summary>Replaces one named filter group and refreshes the view.</summary>
     /// <param name="group">The group name, which keeps independent filter sets apart.</param>
     /// <param name="filters">The new filters; an empty sequence removes the group.</param>

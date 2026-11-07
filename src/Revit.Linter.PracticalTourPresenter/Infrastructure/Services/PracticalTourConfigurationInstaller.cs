@@ -28,16 +28,33 @@ internal sealed class PracticalTourConfigurationInstaller(
     private const string ResourcePrefix = "Revit.Linter.PracticalTourPresenter.Examples.";
 
     /// <summary>Installs the managed practical-tour configuration and removes a superseded copy.</summary>
+    /// <param name="startOver">
+    /// Whether the tour starts from its first step, which resets the file from the template.
+    /// </param>
     /// <returns>The full path of the installed configuration file.</returns>
-    public string Install()
+    /// <remarks>
+    /// An up-to-date file is kept untouched unless the tour starts over: rewriting it would reset the
+    /// selection the tour writes into it, and every write raises a configuration change that makes the
+    /// panes discard the findings the resumed tour explains.
+    /// </remarks>
+    public string Install(bool startOver = false)
     {
         string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
         string stalePath = Path.Combine(paths.Directory, ExamplesFolderName, PracticalTourFileName);
         bool hadStaleConfiguration = File.Exists(stalePath);
-        string path = Install(paths.Directory, fileName => ReadTemplate(language, fileName));
+        string path = Path.Combine(paths.Directory, TourFolderName, PracticalTourFileName);
+        bool keptCurrentFile = !startOver && IsCurrent(path);
+
+        path = Install(paths.Directory, fileName => ReadTemplate(language, fileName), startOver);
+        if (keptCurrentFile)
+            logger.LogInformation(
+                "Kept the current managed practical-tour configuration at {ConfigurationPath}", path);
+        else
+            logger.LogInformation(
+                "Installed practical-tour diagnostic configuration into {ConfigurationPath}", path);
+
         if (hadStaleConfiguration)
             logger.LogInformation("Removed the superseded practical-tour configuration at {ConfigurationPath}", stalePath);
-        logger.LogInformation("Installed practical-tour diagnostic configuration into {ConfigurationPath}", path);
         return path;
     }
 
@@ -59,14 +76,7 @@ internal sealed class PracticalTourConfigurationInstaller(
     public bool RefreshOutdated()
     {
         string path = Path.Combine(paths.Directory, TourFolderName, PracticalTourFileName);
-        if (!File.Exists(path)) return false;
-
-        bool isCurrent = ConfigurationPathUtils.TryGetDiagnosticConfiguration(
-                             path, out DiagnosticConfigurationFile? file, out _)
-                         && file is not null
-                         && file.Version == ConfigurationPathUtils.SupportedConfigurationVersion
-                         && file.Rules?.Any(rule => string.Equals(rule.Code, TourDiagnosticCode, StringComparison.Ordinal)) == true;
-        if (isCurrent) return false;
+        if (IsCurrent(path)) return false;
 
         Install();
         logger.LogInformation(
@@ -85,15 +95,33 @@ internal sealed class PracticalTourConfigurationInstaller(
         return true;
     }
 
+    /// <summary>Returns whether the managed file is in the current format and declares the training check.</summary>
+    /// <param name="path">The full path of the managed configuration file.</param>
+    /// <remarks>Separated from the Revit-version lookup so it can be exercised headlessly.</remarks>
+    internal static bool IsCurrent(string path) =>
+        File.Exists(path)
+        && ConfigurationPathUtils.TryGetDiagnosticConfiguration(path, out DiagnosticConfigurationFile? file, out _)
+        && file is not null
+        && file.Version == ConfigurationPathUtils.SupportedConfigurationVersion
+        && file.Rules?.Any(rule => string.Equals(rule.Code, TourDiagnosticCode, StringComparison.Ordinal)) == true;
+
     /// <summary>Installs the practical-tour configuration into an explicit directory from an explicit template source.</summary>
+    /// <param name="targetDirectory">The configuration folder of the running Revit version.</param>
+    /// <param name="readTemplate">Reads the embedded template for the requested file name.</param>
+    /// <param name="startOver">Whether the file is rewritten from the template even when it is current.</param>
+    /// <returns>The full path of the managed configuration file.</returns>
     /// <remarks>Separated from the Revit-version and culture lookup so it can be exercised headlessly.</remarks>
-    internal static string Install(string targetDirectory, Func<string, string> readTemplate)
+    internal static string Install(string targetDirectory, Func<string, string> readTemplate, bool startOver = false)
     {
         string tourDirectory = Path.Combine(targetDirectory, TourFolderName);
-        Directory.CreateDirectory(tourDirectory);
         string path = Path.Combine(tourDirectory, PracticalTourFileName);
-        UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
-        File.WriteAllText(path, readTemplate(PracticalTourFileName), encoding);
+        if (startOver || !IsCurrent(path))
+        {
+            Directory.CreateDirectory(tourDirectory);
+            UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
+            File.WriteAllText(path, readTemplate(PracticalTourFileName), encoding);
+        }
+
         string stalePath = Path.Combine(targetDirectory, ExamplesFolderName, PracticalTourFileName);
         if (File.Exists(stalePath)) File.Delete(stalePath);
         return path;

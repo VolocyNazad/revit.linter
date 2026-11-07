@@ -67,7 +67,11 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> newValue)
         => Rows.SetFilters("target-type", newValue);
 
-    /// <summary>Clears the search box and re-enables every filter without publishing user activity.</summary>
+    /// <summary>Restores the default view: empty search, every filter enabled and the default sort order.</summary>
+    /// <remarks>
+    /// A guided session that needs a specific row on top resets the view first, so a search, filter or
+    /// column sort left over from earlier work cannot hide that row.
+    /// </remarks>
     public void ResetSearchAndFilters()
     {
         SearchField = string.Empty;
@@ -81,6 +85,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         {
             _isResettingFilters = false;
         }
+
+        Rows.ResetSort();
     }
 
     #region [FilterByTag] Command - Filter by tag

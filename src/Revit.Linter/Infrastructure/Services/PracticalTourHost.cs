@@ -5,6 +5,7 @@ using Revit.Linter.Core.Abstractions;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
+using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
@@ -21,9 +22,17 @@ internal sealed class PracticalTourHost(
     IRevitIdlingScheduler idlingScheduler,
     IDialog dialog,
     IDiagnosticListFilterReset diagnosticListFilterReset,
+    IDiagnosticReportPresenter diagnosticReportPresenter,
     IStringLocalizer<GlobalLocalizations> localizer) : IPracticalTourHost
 {
     public bool HasOpenDocument => revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
+
+    public bool HasDiagnosticFindings(string diagnosticCode)
+    {
+        string? documentTitle = revitContext.UIApplication?.ActiveUIDocument?.Document?.Title;
+        return documentTitle is not null
+               && diagnosticReportPresenter.HasFindings(documentTitle, diagnosticCode);
+    }
 
     public void ShowPanes() => OnboardingPanes.ShowAll(revitContext.UIApplication, logger);
 
