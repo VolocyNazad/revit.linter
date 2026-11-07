@@ -1,1 +1,1 @@
-The practical tour now keeps its managed TOUR001 training check visible only while a session is active: pausing hides it and returns the user's own checks, and starting a tour restores the diagnostics pane search, filters and sort order.
+The practical tour now keeps its managed TOUR001 training check visible only while a session is active: pausing hides it, returns the user's own checks and clears the training findings, and starting a tour restores the diagnostics pane search, filters and sort order.

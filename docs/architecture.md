@@ -97,10 +97,10 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   check with `IDiagnosticCatalogScope`, so the run, the reports and the list cover the training check
   alone; the scope is session state and ends with the session, leaving the user's own checks and their
   states untouched. A paused session keeps its progress but ends the scope, so the training check is gone
-  from the list; resuming continues at the saved step only when the active document still shows the
-  training findings, and otherwise restarts at the run step because the findings it would explain are gone.
-  Starting a session also restores the diagnostics pane view — search, filters and sort order — so the
-  training row the first steps point at cannot be hidden by earlier work.
+  from the list and the training findings are cleared from the report pane; the run of the training check
+  is the session's only checkpoint, so resuming continues at that step and finds fresh findings for the
+  remaining tasks. Starting a session also restores the diagnostics pane view — search, filters and sort
+  order — so the training row the first steps point at cannot be hidden by earlier work.
 - Onboarding is realized by two presenter modules with one primary responsibility each: the modal one-shot
   welcome wizard and the optional modeless practical tour. The tour publishes its contracts from
   `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend only on the
