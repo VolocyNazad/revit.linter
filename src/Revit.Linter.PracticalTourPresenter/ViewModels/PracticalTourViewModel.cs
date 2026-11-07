@@ -9,30 +9,13 @@ namespace Revit.Linter.PracticalTourPresenter.ViewModels;
 /// <summary>
 /// Presents the current practical-tour step, the visible step list and the commands the tour pane offers.
 /// </summary>
+/// <remarks>
+/// What each step shows lives in <see cref="PracticalTourStepCatalog"/>; this view model only decides which
+/// of the catalog texts applies to the current session and how the list is marked up.
+/// </remarks>
 [GenerateLocalizedProperties]
 internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine stateMachine) : ObservableObject
 {
-
-    private static readonly PracticalTourStep[] VisibleSteps =
-    [
-        PracticalTourStep.OpenDocument,
-        PracticalTourStep.OpenConfigurationFolder,
-        PracticalTourStep.SearchAndFilters,
-        PracticalTourStep.SelectDiagnostic,
-        PracticalTourStep.RunDiagnostics,
-        PracticalTourStep.InspectFinding,
-        PracticalTourStep.OpenHelp,
-        PracticalTourStep.ShowElement,
-        PracticalTourStep.SelectVisualization,
-        PracticalTourStep.NavigateFindings,
-        PracticalTourStep.UnderstandFix,
-        PracticalTourStep.FixList,
-        PracticalTourStep.UnderstandIgnore,
-        PracticalTourStep.IgnoreList,
-        PracticalTourStep.ExportReport,
-        PracticalTourStep.ExportReportAnotherFormat,
-    ];
-
     private bool _tutorialSampleQueued;
     private IReadOnlyList<PracticalTourStepRow> _steps = [];
 
@@ -42,28 +25,7 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     public string? FirstExportFormat => stateMachine.FirstExportFormat;
     public IReadOnlyList<PracticalTourStepRow> Steps => _steps;
 
-    public string Instruction => CurrentStep switch
-    {
-        PracticalTourStep.OpenDocument when _tutorialSampleQueued => OpenTutorialSampleText,
-        PracticalTourStep.OpenDocument => OpenDocumentText,
-        PracticalTourStep.OpenConfigurationFolder => OpenConfigurationFolderText,
-        PracticalTourStep.SearchAndFilters => SearchAndFiltersText,
-        PracticalTourStep.SelectDiagnostic => SelectDiagnosticText,
-        PracticalTourStep.RunDiagnostics => RunDiagnosticsText,
-        PracticalTourStep.InspectFinding => InspectFindingText,
-        PracticalTourStep.OpenHelp => OpenHelpText,
-        PracticalTourStep.ShowElement => ShowElementText,
-        PracticalTourStep.SelectVisualization => SelectVisualizationText,
-        PracticalTourStep.NavigateFindings => NavigateFindingsText,
-        PracticalTourStep.UnderstandFix => UnderstandFixText,
-        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreText,
-        PracticalTourStep.IgnoreList => IgnoreListText,
-        PracticalTourStep.FixList => FixListText,
-        PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
-        PracticalTourStep.ExportReport => ExportReportText,
-        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatText,
-        _ => CompletedText,
-    };
+    public string Instruction => GetInstruction(CurrentStep);
 
     public event EventHandler? StopRequested;
     public event EventHandler? OptOutRequested;
@@ -128,78 +90,47 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
 
     private void RefreshSteps()
     {
-        _steps = VisibleSteps.Select(CreateStepRow).ToArray();
+        _steps = PracticalTourStepCatalog.VisibleSteps.Select(CreateStepRow).ToArray();
         OnPropertyChanged(nameof(Steps));
     }
 
-    private PracticalTourStepRow CreateStepRow(PracticalTourStep step)
+    private PracticalTourStepRow CreateStepRow(PracticalTourStepDefinition definition)
     {
-        bool isUnavailable = stateMachine.HasCleanRun
-                             && step is PracticalTourStep.InspectFinding
-                                 or PracticalTourStep.OpenHelp
-                                 or PracticalTourStep.ShowElement
-                                 or PracticalTourStep.SelectVisualization
-                                 or PracticalTourStep.NavigateFindings
-                                 or PracticalTourStep.UnderstandFix
-                                 or PracticalTourStep.UnderstandIgnore
-                                 or PracticalTourStep.IgnoreList;
-        isUnavailable |= stateMachine.HasSingleVisualization
-                         && step == PracticalTourStep.SelectVisualization;
-        int currentIndex = Array.IndexOf(VisibleSteps, CurrentStep);
-        int stepIndex = Array.IndexOf(VisibleSteps, step);
+        bool isUnavailable = IsUnavailable(definition);
+        int currentIndex = IndexOfVisibleStep(CurrentStep);
+        int stepIndex = IndexOfVisibleStep(definition.Step);
         return new(
-            GetStepTitle(step),
-            GetStepInstruction(step),
-            step == CurrentStep,
+            GetTitle(definition),
+            GetInstruction(definition.Step),
+            definition.Step == CurrentStep,
             !isUnavailable && (CurrentStep == PracticalTourStep.Completed || stepIndex < currentIndex),
             isUnavailable);
     }
 
-    private string GetStepTitle(PracticalTourStep step) => step switch
-    {
-        PracticalTourStep.OpenDocument => OpenDocumentStepText,
-        PracticalTourStep.OpenConfigurationFolder => OpenConfigurationFolderStepText,
-        PracticalTourStep.SearchAndFilters => SearchAndFiltersStepText,
-        PracticalTourStep.SelectDiagnostic => SelectDiagnosticStepText,
-        PracticalTourStep.RunDiagnostics => RunDiagnosticsStepText,
-        PracticalTourStep.InspectFinding => InspectFindingStepText,
-        PracticalTourStep.OpenHelp => OpenHelpStepText,
-        PracticalTourStep.ShowElement => ShowElementStepText,
-        PracticalTourStep.SelectVisualization when stateMachine.HasSingleVisualization
-            => SelectVisualizationUnavailableStepText,
-        PracticalTourStep.SelectVisualization => SelectVisualizationStepText,
-        PracticalTourStep.NavigateFindings => NavigateFindingsStepText,
-        PracticalTourStep.UnderstandFix => InspectFixesStepText,
-        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreStepText,
-        PracticalTourStep.IgnoreList => IgnoreListStepText,
-        PracticalTourStep.FixList => FixListStepText,
-        PracticalTourStep.ExportReport => ExportReportStepText,
-        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatStepText,
-        _ => string.Empty,
-    };
+    private static int IndexOfVisibleStep(PracticalTourStep step) =>
+        Array.FindIndex(PracticalTourStepCatalog.VisibleSteps, definition => definition.Step == step);
 
-    private string GetStepInstruction(PracticalTourStep step) => step switch
+    private bool IsUnavailable(PracticalTourStepDefinition definition) =>
+        definition.NeedsFindings && stateMachine.HasCleanRun
+        || definition.NeedsVisualizationChoice && stateMachine.HasSingleVisualization;
+
+    private string GetTitle(PracticalTourStepDefinition definition) =>
+        Localize(IsUnavailable(definition) ? definition.UnavailableTitleKey ?? definition.TitleKey : definition.TitleKey);
+
+    private string GetInstruction(PracticalTourStep step)
     {
-        PracticalTourStep.OpenDocument when _tutorialSampleQueued => OpenTutorialSampleText,
-        PracticalTourStep.OpenDocument => OpenDocumentText,
-        PracticalTourStep.OpenConfigurationFolder => OpenConfigurationFolderText,
-        PracticalTourStep.SearchAndFilters => SearchAndFiltersText,
-        PracticalTourStep.SelectDiagnostic => SelectDiagnosticText,
-        PracticalTourStep.RunDiagnostics => RunDiagnosticsText,
-        PracticalTourStep.InspectFinding => InspectFindingText,
-        PracticalTourStep.OpenHelp => OpenHelpText,
-        PracticalTourStep.ShowElement => ShowElementText,
-        PracticalTourStep.SelectVisualization => SelectVisualizationText,
-        PracticalTourStep.NavigateFindings => NavigateFindingsText,
-        PracticalTourStep.UnderstandFix => UnderstandFixText,
-        PracticalTourStep.UnderstandIgnore => UnderstandIgnoreText,
-        PracticalTourStep.IgnoreList => IgnoreListText,
-        PracticalTourStep.FixList => FixListText,
-        PracticalTourStep.ExportReport when stateMachine.HasCleanRun => CleanRunExportReportText,
-        PracticalTourStep.ExportReport => ExportReportText,
-        PracticalTourStep.ExportReportAnotherFormat => ExportReportAnotherFormatText,
-        _ => string.Empty,
-    };
+        PracticalTourStepDefinition definition = PracticalTourStepCatalog.Get(step);
+        if (step == PracticalTourStep.OpenDocument && _tutorialSampleQueued)
+            return Localize(definition.TutorialSampleInstructionKey);
+        if (step == PracticalTourStep.ExportReport && stateMachine.HasCleanRun)
+            return Localize(definition.CleanRunInstructionKey);
+        return Localize(definition.InstructionKey);
+    }
+
+    private static string Localize(string? resourceKey) =>
+        resourceKey is null
+            ? string.Empty
+            : LocalizationResourceReader.GetString(PracticalTourStepCatalog.ResourceBaseName, resourceKey);
 
     [RelayCommand]
     private void Stop()

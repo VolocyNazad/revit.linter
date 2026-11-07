@@ -347,25 +347,8 @@ internal sealed class PracticalTour(
         }
     }
 
-    private void UpdateHighlight(PracticalTourStep step) => _highlightSession?.SetActiveKey(step switch
-    {
-        PracticalTourStep.OpenConfigurationFolder => "OpenConfiguration",
-        PracticalTourStep.SearchAndFilters => "SearchAndFilters",
-        PracticalTourStep.SelectDiagnostic => "SelectDiagnostic",
-            PracticalTourStep.RunDiagnostics => "RunDiagnostics",
-            PracticalTourStep.InspectFinding => "InspectFinding",
-            PracticalTourStep.OpenHelp => "OpenHelp",
-            PracticalTourStep.ShowElement => "ShowElement",
-            PracticalTourStep.SelectVisualization => "ShowElement",
-        PracticalTourStep.NavigateFindings => "NavigateFindings",
-        PracticalTourStep.UnderstandFix => "UnderstandFix",
-        PracticalTourStep.UnderstandIgnore => "UnderstandFix",
-        PracticalTourStep.IgnoreList => "IgnoreList",
-        PracticalTourStep.FixList => "FixList",
-            PracticalTourStep.ExportReport => "ExportReport",
-            PracticalTourStep.ExportReportAnotherFormat => "ExportReport",
-            _ => null,
-        });
+    private void UpdateHighlight(PracticalTourStep step) =>
+        _highlightSession?.SetActiveKey(PracticalTourStepCatalog.Get(step).HighlightKey);
 
     private void UpdateGuidance(PracticalTourStep step)
     {
@@ -381,7 +364,7 @@ internal sealed class PracticalTour(
     /// </remarks>
     private void UpdateCatalogScope(PracticalTourStep step)
     {
-        if (PracticalTourStateMachine.RequiresTrainingScope(step))
+        if (PracticalTourStepCatalog.RequiresTrainingScope(step))
             FocusCatalogScope();
         else
             ClearCatalogScope();
@@ -413,47 +396,14 @@ internal sealed class PracticalTour(
 
     /// <summary>Brings forward the pane where the current step happens.</summary>
     /// <remarks>
-    /// Step-to-pane map: opening, configuration, search, selection and run steps show Diagnostics;
-    /// finding, help, visualization, navigation and fix-or-ignore steps show Warnings; FixList shows
-    /// the fix list; IgnoreList shows the ignore list. Export steps keep the current pane so the user
-    /// is not yanked away right after selecting a fix row, and completion hides the tour pane itself.
+    /// The pane of every step is part of its catalog definition. A step without a pane keeps the current
+    /// one, so export does not yank the user away right after they selected a fix row, and completion
+    /// hides the tour pane itself.
     /// </remarks>
     private void ShowTargetPane(PracticalTourStep step)
     {
-        // The tour starts on the diagnostics list and returns to it for the early steps:
-        // opening steps carry no target of their own, so they keep the starting pane.
-        if (step is PracticalTourStep.OpenDocument
-            or PracticalTourStep.OpenConfigurationFolder
-            or PracticalTourStep.SearchAndFilters
-            or PracticalTourStep.SelectDiagnostic
-            or PracticalTourStep.RunDiagnostics)
-        {
-            tourHost.ShowPane(OnboardingPane.Diagnostics);
-            return;
-        }
-
-        if (step is PracticalTourStep.FixList)
-        {
-            tourHost.ShowPane(OnboardingPane.FixList);
-            return;
-        }
-
-        if (step is PracticalTourStep.IgnoreList)
-        {
-            tourHost.ShowPane(OnboardingPane.IgnoreList);
-            return;
-        }
-
-        // ExportReport keeps the current pane: yanking the user away right after
-        // they selected a fix row hides what they came to look at.
-        if (step is PracticalTourStep.InspectFinding
-            or PracticalTourStep.OpenHelp
-            or PracticalTourStep.ShowElement
-            or PracticalTourStep.SelectVisualization
-            or PracticalTourStep.NavigateFindings
-            or PracticalTourStep.UnderstandFix
-            or PracticalTourStep.UnderstandIgnore)
-            tourHost.ShowPane(OnboardingPane.Warnings);
+        if (PracticalTourStepCatalog.Get(step).Pane is { } pane)
+            tourHost.ShowPane(pane);
     }
 
     public void ResetProgress()
