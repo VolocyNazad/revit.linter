@@ -191,16 +191,22 @@ internal sealed class ElementVisualizationPipelineFactory(
 
     private static CategoryVisibilityMode ParseCategoryVisibilityMode(ElementVisualizationStepDefinition step)
     {
-        if (string.IsNullOrWhiteSpace(step.Mode)) return CategoryVisibilityMode.OnlyVisible;
+        // A local null check instead of string.IsNullOrWhiteSpace: the net48 reference assemblies
+        // used by the Revit 2021 build carry no nullable annotations, so the compiler cannot tell
+        // from that call that Mode is not null here.
+        string? mode = step.Mode;
+        if (mode is null) return CategoryVisibilityMode.OnlyVisible;
+        string normalizedMode = mode.Trim();
+        if (normalizedMode.Length == 0) return CategoryVisibilityMode.OnlyVisible;
 
-        return step.Mode.Trim().ToUpperInvariant() switch
+        return normalizedMode.ToUpperInvariant() switch
         {
             "ONLYVISIBLE" or "ONLY" => CategoryVisibilityMode.OnlyVisible,
             "ONLYHIDDEN" => CategoryVisibilityMode.OnlyHidden,
             "SHOW" => CategoryVisibilityMode.Show,
             "HIDE" => CategoryVisibilityMode.Hide,
             _ => throw new ArgumentException(
-                $"Unknown category visibility mode '{step.Mode}'. Supported values: " +
+                $"Unknown category visibility mode '{normalizedMode}'. Supported values: " +
                 "onlyVisible, onlyHidden, show, hide.")
         };
     }
