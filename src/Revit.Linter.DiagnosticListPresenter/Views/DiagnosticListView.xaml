@@ -150,7 +150,8 @@
                 <DataGrid.Columns>
                     <!-- Button columns keep fixed widths: accidental header drags must not collapse them. -->
                     <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        MinWidth="{StaticResource LinterGridIconColumnWidth}"
+                        MaxWidth="{StaticResource LinterGridIconColumnWidth}"
                         CanUserResize="False"
                         CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
@@ -300,7 +301,8 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
-                        Width="{StaticResource LinterGridActionColumnWidth}"
+                        MinWidth="{StaticResource LinterGridIconColumnWidth}"
+                        MaxWidth="{StaticResource LinterGridIconColumnWidth}"
                         CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
