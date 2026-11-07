@@ -30,7 +30,6 @@ internal sealed partial class DiagnosticReportViewModel
                 report.Code);
             return [];
         }
-        ElementId visualizationTargetId = maybeTargetId;
 
         ElementDiagnosticRegistration? registration = GetCatalogSnapshot().ElementDiagnostics
             .SingleOrDefault(item => string.Equals(
@@ -47,139 +46,182 @@ internal sealed partial class DiagnosticReportViewModel
             "Created {VisualizationCount} visualization pipelines for diagnostic {DiagnosticCode}",
             registration.VisualizationPipelines.Count, report.Code);
 
-        Element[] dependencies = report.TargetDependencies?.OfType<Element>().ToArray() ?? [];
-        return registration.VisualizationPipelines.Select(pipeline => new VisualizationPipelineViewModel
-        {
-            Title = pipeline.Value,
-            Pipeline = pipeline,
-            ShowDelegate = async (selectedFromMenu, cancellationToken) =>
+        VisualizationRequest request = new(
+            report,
+            target,
+            maybeTargetId,
+            report.TargetDependencies?.OfType<Element>().ToArray() ?? [],
+            registration.VisualizationPipelines.Count);
+
+        return registration.VisualizationPipelines
+            .Select(pipeline => new VisualizationPipelineViewModel
             {
-                _preferredVisualizationName = pipeline.Value;
-                Document document = report.Document;
-                if (document is not { IsValidObject: true })
-                {
-                    _logger.LogWarning(
-                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
-                        "report document is no longer valid",
-                        pipeline.Value, report.Code);
-                    return;
-                }
-                if (target is not { IsValidObject: true })
-                {
-                    _logger.LogWarning(
-                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
-                        "target element is no longer valid",
-                        pipeline.Value, report.Code);
-                    return;
-                }
-                _logger.LogInformation(
-                    "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
-                    pipeline.Value, report.Code, visualizationTargetId);
-                Document? activeDocument = _revitContext.ActiveDocument;
-                if (activeDocument is null || !activeDocument.Equals(document))
-                {
-                    _logger.LogWarning(
-                        "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
-                        "report document is not active",
-                        pipeline.Value, report.Code);
-                    return;
-                }
+                Title = pipeline.Value,
+                Pipeline = pipeline,
+                ShowDelegate = (selectedFromMenu, cancellationToken) =>
+                    ShowVisualizationAsync(request, pipeline, selectedFromMenu, cancellationToken)
+            })
+            .ToArray();
+    }
 
-                try
-                {
-                    (bool success, bool restoredOnly) = await RevitTask.RunAsync(_ =>
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        Document? currentDocument = _revitContext.ActiveDocument;
-                        if (currentDocument is null || !currentDocument.Equals(document))
-                            throw new InvalidOperationException("The report document is no longer active.");
-                        if (!target.IsValidObject)
-                            throw new InvalidOperationException("The visualization target is no longer valid.");
+    private async Task ShowVisualizationAsync(
+        VisualizationRequest request,
+        IElementVisualizationPipeline pipeline,
+        bool selectedFromMenu,
+        CancellationToken cancellationToken)
+    {
+        _preferredVisualizationName = pipeline.Value;
+        if (!CanShowVisualization(request, pipeline)) return;
 
-                        if (ReferenceEquals(_activeVisualizationPipeline, pipeline)
-                            && _activeVisualizationTargetId?.Equals(visualizationTargetId) == true)
-                        {
-                            _logger.LogInformation(
-                                "Visualization {VisualizationName} for diagnostic {DiagnosticCode} is already active; " +
-                                "restoring it",
-                                pipeline.Value, report.Code);
-                            RestoreActiveVisualization();
-                            return (true, true);
-                        }
+        try
+        {
+            (bool success, bool restoredOnly) = await RevitTask.RunAsync(
+                _ => ApplyVisualization(request, pipeline, cancellationToken));
 
-                        // The previous visualization may no longer be restorable, for example after
-                        // the user deleted its view or undid it. The pipeline logs that failure, and
-                        // the request the user has just made must not be blocked by it.
-                        bool previousVisualizationRestored = true;
-                        try
-                        {
-                            RestoreActiveVisualization();
-                        }
-                        catch (Exception)
-                        {
-                            previousVisualizationRestored = false;
-                            ClearActiveVisualization();
-                        }
-                        if (!previousVisualizationRestored)
-                            _logger.LogWarning(
-                                "The active visualization could not be restored before showing " +
-                                "{VisualizationName}; applying the requested visualization anyway",
-                                pipeline.Value);
+            if (!success && !restoredOnly)
+                await _dialog.Show(new DialogRequest(VisualizationFailedMessage), cancellationToken);
+            else if (success && !restoredOnly)
+                _activityStream.Publish(new VisualizationAppliedActivity(
+                    request.Report.Code, selectedFromMenu, request.PipelineCount));
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(
+                exception,
+                "Visualization {VisualizationName} failed for diagnostic {DiagnosticCode}, target {TargetId}",
+                pipeline.Value, request.Report.Code, request.TargetId);
+            throw new InvalidOperationException(
+                $"Visualization '{pipeline.Value}' failed for diagnostic '{request.Report.Code}'.",
+                exception);
+        }
+    }
 
-                        ElementId[] dependencyIds = dependencies
-                            .Select(TryGetElementId)
-                            .OfType<ElementId>()
-                            .ToArray();
-                        var elementSets = new Dictionary<string, IReadOnlyCollection<ElementId>>
-                        {
-                            [ElementVisualizationSetKeys.Target] = [visualizationTargetId],
-                            [ElementVisualizationSetKeys.Dependencies] = dependencyIds
-                        };
-                        bool applied = ExecuteVisualizationMutation(() =>
-                        {
-                            // Visualization views cannot be created in family documents,
-                            // so the pipeline applies to the active view as-is.
-                            if (document.IsFamilyDocument)
-                            {
-                                if (document.ActiveView is not { } activeView)
-                                    throw new InvalidOperationException(
-                                        "The family document has no active view.");
-                                return pipeline.Apply(new(document, activeView, elementSets));
-                            }
+    // A report row outlives the Revit state it was built from, so every precondition is checked again
+    // right before the pipeline runs, and a request that can no longer be served is logged instead of
+    // thrown.
+    private bool CanShowVisualization(VisualizationRequest request, IElementVisualizationPipeline pipeline)
+    {
+        Document document = request.Report.Document;
+        if (document is not { IsValidObject: true })
+        {
+            _logger.LogWarning(
+                "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                "report document is no longer valid",
+                pipeline.Value, request.Report.Code);
+            return false;
+        }
 
-                            View3D visualizationView = _visualizationViewProvider.GetOrCreateView();
-                            return pipeline.Apply(
-                                new(document, visualizationView, elementSets, _visualizationViewProvider.Activate));
-                        });
-                        if (applied)
-                        {
-                            _activeVisualizationPipeline = pipeline;
-                            _activeVisualizationTargetId = visualizationTargetId;
-                            RefreshVisualizationStates();
-                        }
-                        return (applied, false);
-                    });
+        if (request.Target is not { IsValidObject: true })
+        {
+            _logger.LogWarning(
+                "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                "target element is no longer valid",
+                pipeline.Value, request.Report.Code);
+            return false;
+        }
 
-                    if (!success && !restoredOnly)
-                        await _dialog.Show(new DialogRequest(VisualizationFailedMessage), cancellationToken);
-                    else if (success && !restoredOnly)
-                        _activityStream.Publish(new VisualizationAppliedActivity(
-                            report.Code,
-                            selectedFromMenu,
-                            registration.VisualizationPipelines.Count));
-                }
-                catch (Exception exception)
-                {
-                    _logger.LogError(
-                        exception,
-                        "Visualization {VisualizationName} failed for diagnostic {DiagnosticCode}, target {TargetId}",
-                        pipeline.Value, report.Code, visualizationTargetId);
-                    throw new InvalidOperationException(
-                        $"Visualization '{pipeline.Value}' failed for diagnostic '{report.Code}'.",
-                        exception);
-                }
-            }
-        }).ToArray();
+        _logger.LogInformation(
+            "Visualization requested: {VisualizationName}, diagnostic {DiagnosticCode}, target {TargetId}",
+            pipeline.Value, request.Report.Code, request.TargetId);
+
+        Document? activeDocument = _revitContext.ActiveDocument;
+        if (activeDocument is null || !activeDocument.Equals(document))
+        {
+            _logger.LogWarning(
+                "Visualization {VisualizationName} skipped for diagnostic {DiagnosticCode}: " +
+                "report document is not active",
+                pipeline.Value, request.Report.Code);
+            return false;
+        }
+
+        return true;
+    }
+
+    // Runs on the Revit API context: switches between the active visualization and the requested one,
+    // then applies the pipeline.
+    private (bool Success, bool RestoredOnly) ApplyVisualization(
+        VisualizationRequest request,
+        IElementVisualizationPipeline pipeline,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        Document document = request.Report.Document;
+        Document? currentDocument = _revitContext.ActiveDocument;
+        if (currentDocument is null || !currentDocument.Equals(document))
+            throw new InvalidOperationException("The report document is no longer active.");
+        if (!request.Target.IsValidObject)
+            throw new InvalidOperationException("The visualization target is no longer valid.");
+
+        if (ReferenceEquals(_activeVisualizationPipeline, pipeline)
+            && _activeVisualizationTargetId?.Equals(request.TargetId) == true)
+        {
+            _logger.LogInformation(
+                "Visualization {VisualizationName} for diagnostic {DiagnosticCode} is already active; " +
+                "restoring it",
+                pipeline.Value, request.Report.Code);
+            RestoreActiveVisualization();
+            return (true, true);
+        }
+
+        RestorePreviousVisualization(pipeline);
+
+        bool applied = ExecuteVisualizationMutation(() => ApplyPipeline(request, pipeline));
+        if (applied)
+        {
+            _activeVisualizationPipeline = pipeline;
+            _activeVisualizationTargetId = request.TargetId;
+            RefreshVisualizationStates();
+        }
+
+        return (applied, false);
+    }
+
+    // The previous visualization may no longer be restorable, for example after the user deleted its
+    // view or undid it. The pipeline logs that failure, and the request the user has just made must
+    // not be blocked by it.
+    private void RestorePreviousVisualization(IElementVisualizationPipeline pipeline)
+    {
+        try
+        {
+            RestoreActiveVisualization();
+            return;
+        }
+        catch (Exception)
+        {
+            ClearActiveVisualization();
+        }
+
+        _logger.LogWarning(
+            "The active visualization could not be restored before showing " +
+            "{VisualizationName}; applying the requested visualization anyway",
+            pipeline.Value);
+    }
+
+    private bool ApplyPipeline(VisualizationRequest request, IElementVisualizationPipeline pipeline)
+    {
+        Document document = request.Report.Document;
+        var elementSets = new Dictionary<string, IReadOnlyCollection<ElementId>>
+        {
+            [ElementVisualizationSetKeys.Target] = [request.TargetId],
+            [ElementVisualizationSetKeys.Dependencies] = request.Dependencies
+                .Select(TryGetElementId)
+                .OfType<ElementId>()
+                .ToArray()
+        };
+
+        // Visualization views cannot be created in family documents,
+        // so the pipeline applies to the active view as-is.
+        if (document.IsFamilyDocument)
+        {
+            if (document.ActiveView is not { } activeView)
+                throw new InvalidOperationException("The family document has no active view.");
+            return pipeline.Apply(new(document, activeView, elementSets));
+        }
+
+        View3D visualizationView = _visualizationViewProvider.GetOrCreateView();
+        return pipeline.Apply(
+            new(document, visualizationView, elementSets, _visualizationViewProvider.Activate));
     }
 
     private void RestoreActiveVisualization()
@@ -289,5 +331,13 @@ internal sealed partial class DiagnosticReportViewModel
             lock (_restoreScheduleSync) _scheduledRestore = null;
         }
     }
-}
 
+    // Everything one row needs to apply a pipeline, captured when the row is created so the pipeline
+    // delegate does not close over the whole view model state.
+    private sealed record VisualizationRequest(
+        DiagnosticReport Report,
+        Element Target,
+        ElementId TargetId,
+        Element[] Dependencies,
+        int PipelineCount);
+}

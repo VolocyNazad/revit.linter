@@ -198,6 +198,12 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
 - `Revit.Linter.ElementVisualization` composes those operations into diagnostic visualization pipelines.
 - Every visualization session records enough state to restore what it changed. Composite sessions restore
   steps in reverse order.
+- Pipeline steps keep the order the configuration declares. The steps that change the document share one
+  transaction inside the pipeline's transaction group; a step that needs the view on screen splits the
+  pipeline into two, because Revit rejects a change of the active view while the document is modifiable.
+- The host provides `IVisualizationViewProvider`, which creates and prepares the persistent 3D view and
+  activates it from the committed state the pipeline asks for. The pipeline itself delegates transactions,
+  step dispatch and session bookkeeping to small collaborators, so it only states the run order.
 
 ## Element fixing
 
