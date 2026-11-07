@@ -18,9 +18,14 @@ internal sealed class IsolateElementsOnViewService(ILogger<IsolateElementsOnView
         View view,
         IReadOnlyCollection<ElementId> elementIds)
     {
+        // Undoing a restored visualization puts its temporary hide/isolate state back, and the API
+        // cannot read the isolated set to restore it afterwards. The visualization owns the view's
+        // temporary state while it is applied, so a leftover state is replaced and logged instead of
+        // failing the whole pipeline.
         if (view.IsTemporaryHideIsolateActive())
-            throw new InvalidOperationException(
-                "Element isolation cannot replace an existing temporary hide/isolate state.");
+            _logger.LogWarning(
+                "Replacing the temporary hide/isolate state of view {ViewName} for the visualization",
+                view.Name);
 
         if (!Execute(document, view, elementIds.ToArray()))
             return new RestoreSession(static () => { });

@@ -67,6 +67,30 @@ public sealed class ApplyElementAccentServiceTests : RevitApiTest
     }
 
     [Test]
+    public async Task Isolation_replaces_a_leftover_temporary_state_and_restores()
+    {
+        // Undoing a restored visualization puts its temporary hide/isolate state back, and the API
+        // cannot read the isolated set to restore it afterwards. The next visualization replaces that
+        // leftover state instead of failing the pipeline.
+        using ServiceProvider services = CreateServices();
+        IAccentElementsService service = GetService(services, AccentElementsType.IsolateElementsOnView);
+        using (Transaction transaction = new(_document!, "Isolate before the visualization"))
+        {
+            transaction.Start();
+            _view!.IsolateElementsTemporary([_wall!.Id]);
+            transaction.Commit();
+        }
+        await Assert.That(_view.IsTemporaryHideIsolateActive()).IsTrue();
+
+        using IRestoreSession session = service.Apply(_document!, _view, [_wall.Id]);
+
+        await Assert.That(_view.IsTemporaryHideIsolateActive()).IsTrue();
+
+        session.Restore();
+        await Assert.That(_view.IsTemporaryHideIsolateActive()).IsFalse();
+    }
+
+    [Test]
     public async Task Section_box_is_activated_and_restored()
     {
         using ServiceProvider services = CreateServices();
