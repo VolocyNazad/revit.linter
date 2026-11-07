@@ -116,10 +116,37 @@ public sealed class PracticalTourViewModelTests
         Assert.All(viewModel.Steps, row => Assert.False(row.IsCurrent));
     }
 
-    private static PracticalTourViewModel Start(bool hasOpenDocument, bool tutorialSampleQueued = false)
+    [Fact]
+    public void Resumed_checkpoint_uses_the_resume_instruction_for_the_run_step()
+    {
+        PracticalTourViewModel viewModel = Start(
+            hasOpenDocument: true,
+            progress: new PracticalTourProgress { CurrentStep = PracticalTourStep.RunDiagnostics },
+            resumedAtCheckpoint: true);
+
+        Assert.Equal(PracticalTourStep.RunDiagnostics, viewModel.CurrentStep);
+        Assert.Equal(Resolve("resumeFromRun_text"), viewModel.Instruction);
+        Assert.Equal(Resolve("resumeFromRun_text"), RowFor(viewModel, PracticalTourStep.RunDiagnostics).Instruction);
+    }
+
+    [Fact]
+    public void Regular_run_step_keeps_its_own_instruction()
+    {
+        PracticalTourViewModel viewModel = Start(hasOpenDocument: true);
+        ReachSelection(viewModel);
+
+        Assert.Equal(PracticalTourStep.RunDiagnostics, viewModel.CurrentStep);
+        Assert.Equal(Resolve("runDiagnostics_text"), viewModel.Instruction);
+    }
+
+    private static PracticalTourViewModel Start(
+        bool hasOpenDocument,
+        bool tutorialSampleQueued = false,
+        PracticalTourProgress? progress = null,
+        bool resumedAtCheckpoint = false)
     {
         PracticalTourViewModel viewModel = new(new PracticalTourStateMachine());
-        viewModel.Start(hasOpenDocument, progress: null, tutorialSampleQueued);
+        viewModel.Start(hasOpenDocument, progress, tutorialSampleQueued, resumedAtCheckpoint);
         return viewModel;
     }
 

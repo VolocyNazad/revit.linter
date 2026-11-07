@@ -59,6 +59,7 @@ public sealed class PracticalTourStepCatalogTests
             AssertResolvable(definition.UnavailableTitleKey);
             AssertResolvable(definition.CleanRunInstructionKey);
             AssertResolvable(definition.TutorialSampleInstructionKey);
+            AssertResolvable(definition.CheckpointInstructionKey);
         }
     }
 

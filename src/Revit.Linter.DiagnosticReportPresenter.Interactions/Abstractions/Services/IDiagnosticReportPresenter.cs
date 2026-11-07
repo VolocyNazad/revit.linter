@@ -27,13 +27,12 @@ public interface IDiagnosticReportPresenter
     /// <returns>The number of matching findings currently presented.</returns>
     int Refresh(string documentTitle);
 
-    /// <summary>Reports whether the displayed findings include one of the given diagnostic.</summary>
-    /// <param name="documentTitle">The title of the document whose findings are checked.</param>
+    /// <summary>Removes the displayed findings of one diagnostic from every document.</summary>
     /// <param name="diagnosticCode">The diagnostic code, compared ordinally.</param>
-    /// <returns><see langword="true"/> when at least one displayed finding has the code for the document.</returns>
     /// <remarks>
-    /// The practical tour uses this to decide whether a resumed step still has the findings it explains,
-    /// so resuming on another document or after the report was cleared starts from the run step instead.
+    /// Used by a guided session that clears its own training findings when the user pauses it; the
+    /// findings of other diagnostics stay untouched. An active visualization of that diagnostic is
+    /// restored, because the rows that offered it are gone.
     /// </remarks>
-    bool HasFindings(string documentTitle, string diagnosticCode);
+    void ClearFindings(string diagnosticCode);
 }

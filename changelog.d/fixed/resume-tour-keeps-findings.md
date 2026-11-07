@@ -1,1 +1,0 @@
-Resuming the practical tour no longer rewrites the managed training configuration and discards the report: the findings stay, and the tour continues at the saved step only while the active document still shows them, otherwise it restarts at the run step.

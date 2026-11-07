@@ -59,10 +59,31 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
 
 
     /// <inheritdoc />
-    public bool HasFindings(string documentTitle, string diagnosticCode) =>
-        Collection.Any(item =>
-            string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal)
-            && string.Equals(item.Code, diagnosticCode, StringComparison.Ordinal));
+    public void ClearFindings(string diagnosticCode)
+    {
+        if (string.IsNullOrWhiteSpace(diagnosticCode))
+            throw new ArgumentException("The diagnostic code is required.", nameof(diagnosticCode));
+
+        List<DiagnosticReportItemViewModel> remaining = Collection
+            .Where(item => !string.Equals(item.Code, diagnosticCode, StringComparison.Ordinal))
+            .ToList();
+        int removedCount = Collection.Count - remaining.Count;
+        if (removedCount == 0) return;
+
+        if (string.Equals(_activeVisualizationPipeline?.Identity.Code, diagnosticCode, StringComparison.Ordinal))
+            RestoreActiveVisualizationOrSchedule();
+
+        // Removing items one by one makes the sorted collection view handle every item separately, which
+        // takes quadratic time on a large report; the rows are dropped in one operation instead.
+        if (remaining.Count == 0)
+            Collection.Clear();
+        else
+            Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>(remaining);
+
+        ClearFilters();
+        _logger.LogInformation(
+            "Cleared {ReportCount} findings of diagnostic {DiagnosticCode}", removedCount, diagnosticCode);
+    }
 
     public int Refresh(string documentTitle)
     {

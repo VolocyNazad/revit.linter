@@ -27,12 +27,8 @@ internal sealed class PracticalTourHost(
 {
     public bool HasOpenDocument => revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
 
-    public bool HasDiagnosticFindings(string diagnosticCode)
-    {
-        string? documentTitle = revitContext.UIApplication?.ActiveUIDocument?.Document?.Title;
-        return documentTitle is not null
-               && diagnosticReportPresenter.HasFindings(documentTitle, diagnosticCode);
-    }
+    public void ClearDiagnosticFindings(string diagnosticCode) =>
+        diagnosticReportPresenter.ClearFindings(diagnosticCode);
 
     public void ShowPanes() => OnboardingPanes.ShowAll(revitContext.UIApplication, logger);
 

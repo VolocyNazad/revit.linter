@@ -64,6 +64,9 @@ internal sealed partial class PracticalTour(
             PracticalTourProgress? startProgress = savedProgress is null
                 ? null
                 : ResolveStartProgress(savedProgress, hasOpenDocument);
+            bool resumedAtCheckpoint = savedProgress is not null
+                                       && startProgress!.CurrentStep == PracticalTourStep.RunDiagnostics
+                                       && savedProgress.CurrentStep != PracticalTourStep.RunDiagnostics;
 
             PracticalTourViewModel viewModel = new(new PracticalTourStateMachine());
             view.DataContext = viewModel;
@@ -76,7 +79,7 @@ internal sealed partial class PracticalTour(
             activityStream.ActivityPublished += ActivityStream_ActivityPublished;
             themeService.Register(view);
             _optOutRequested = false;
-            viewModel.Start(hasOpenDocument, startProgress, tutorialSampleQueued);
+            viewModel.Start(hasOpenDocument, startProgress, tutorialSampleQueued, resumedAtCheckpoint);
 
             // The guided steps point at the training check row, so a search, filter or column sort left
             // over from earlier work must not hide it.
@@ -97,19 +100,15 @@ internal sealed partial class PracticalTour(
     /// <param name="savedProgress">The saved progress.</param>
     /// <param name="hasOpenDocument">Whether a document is open in Revit.</param>
     /// <remarks>
-    /// A finding-specific step continues only when the active document still shows the training findings;
-    /// otherwise the session restarts at the run step so it never asks for findings that are gone.
+    /// The run of the training check is the checkpoint: a saved step after it continues from the run
+    /// again, because the findings that step explained are not kept across a pause.
     /// </remarks>
     private PracticalTourProgress ResolveStartProgress(PracticalTourProgress savedProgress, bool hasOpenDocument)
     {
-        PracticalTourProgress progress = PracticalTourResume.ResolveStartProgress(
-            savedProgress,
-            hasOpenDocument,
-            tourHost.HasDiagnosticFindings(DiagnosticCode));
+        PracticalTourProgress progress = PracticalTourResume.ResolveStartProgress(savedProgress, hasOpenDocument);
         if (progress.CurrentStep != savedProgress.CurrentStep)
             logger.LogInformation(
-                "The practical tour resumes at {ResumeStep} instead of the saved {SavedStep}: the active document has no training findings",
-                progress.CurrentStep,
+                "The practical tour continues from its run checkpoint instead of the saved {SavedStep}",
                 savedProgress.CurrentStep);
         return progress;
     }
@@ -118,7 +117,13 @@ internal sealed partial class PracticalTour(
     {
         bool isCompleted = _viewModel?.CurrentStep == PracticalTourStep.Completed;
         EndSession(hidePane: true);
-        if (!isCompleted) return;
+        if (!isCompleted)
+        {
+            // The paused session does not keep its findings: it resumes at the run checkpoint and finds
+            // them again, so the user returns to a report that holds only their own results.
+            ClearTrainingFindings();
+            return;
+        }
         RemovePracticalTourConfiguration();
         ResetDiagnosticsSearchAndFilters();
         try
@@ -249,6 +254,18 @@ internal sealed partial class PracticalTour(
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to hide the managed practical-tour checks after the session");
+        }
+    }
+
+    private void ClearTrainingFindings()
+    {
+        try
+        {
+            tourHost.ClearDiagnosticFindings(DiagnosticCode);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to clear the practical-tour findings");
         }
     }
 

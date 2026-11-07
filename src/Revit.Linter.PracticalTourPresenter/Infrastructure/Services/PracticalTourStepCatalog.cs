@@ -15,6 +15,7 @@ namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 /// <param name="UnavailableTitleKey">The title shown when the step is unavailable for the current session.</param>
 /// <param name="CleanRunInstructionKey">The instruction shown after a clean run without findings.</param>
 /// <param name="TutorialSampleInstructionKey">The instruction shown while the tutorial sample is about to open.</param>
+/// <param name="CheckpointInstructionKey">The instruction shown when the session resumes at its run checkpoint.</param>
 internal sealed record PracticalTourStepDefinition(
     PracticalTourStep Step,
     string? TitleKey,
@@ -27,7 +28,8 @@ internal sealed record PracticalTourStepDefinition(
     bool NeedsVisualizationChoice = false,
     string? UnavailableTitleKey = null,
     string? CleanRunInstructionKey = null,
-    string? TutorialSampleInstructionKey = null);
+    string? TutorialSampleInstructionKey = null,
+    string? CheckpointInstructionKey = null);
 
 /// <summary>Holds the ordered steps of the practical tour and what each step presents.</summary>
 /// <remarks>
@@ -55,7 +57,8 @@ internal static class PracticalTourStepCatalog
         new(PracticalTourStep.SelectDiagnostic, "selectDiagnosticStep_text", "selectDiagnostic_text",
             OnboardingPane.Diagnostics, "SelectDiagnostic", RequiresTrainingScope: true),
         new(PracticalTourStep.RunDiagnostics, "runDiagnosticsStep_text", "runDiagnostics_text",
-            OnboardingPane.Diagnostics, "RunDiagnostics", RequiresTrainingScope: true),
+            OnboardingPane.Diagnostics, "RunDiagnostics", RequiresTrainingScope: true,
+            CheckpointInstructionKey: "resumeFromRun_text"),
         new(PracticalTourStep.InspectFinding, "inspectFindingStep_text", "inspectFinding_text",
             OnboardingPane.Warnings, "InspectFinding", RequiresTrainingScope: true, NeedsFindings: true),
         new(PracticalTourStep.OpenHelp, "openHelpStep_text", "openHelp_text",

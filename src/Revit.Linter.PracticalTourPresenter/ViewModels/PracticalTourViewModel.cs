@@ -17,6 +17,7 @@ namespace Revit.Linter.PracticalTourPresenter.ViewModels;
 internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine stateMachine) : ObservableObject
 {
     private bool _tutorialSampleQueued;
+    private bool _resumedAtCheckpoint;
     private IReadOnlyList<PracticalTourStepRow> _steps = [];
 
     public PracticalTourStep CurrentStep => stateMachine.CurrentStep;
@@ -31,9 +32,14 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
     public event EventHandler? OptOutRequested;
     public event EventHandler? RestartRequested;
 
-    public void Start(bool hasOpenDocument, PracticalTourProgress? progress, bool tutorialSampleQueued = false)
+    public void Start(
+        bool hasOpenDocument,
+        PracticalTourProgress? progress,
+        bool tutorialSampleQueued = false,
+        bool resumedAtCheckpoint = false)
     {
         _tutorialSampleQueued = tutorialSampleQueued;
+        _resumedAtCheckpoint = resumedAtCheckpoint;
         stateMachine.Start(
             hasOpenDocument,
             progress?.CurrentStep,
@@ -122,6 +128,8 @@ internal sealed partial class PracticalTourViewModel(PracticalTourStateMachine s
         PracticalTourStepDefinition definition = PracticalTourStepCatalog.Get(step);
         if (step == PracticalTourStep.OpenDocument && _tutorialSampleQueued)
             return Localize(definition.TutorialSampleInstructionKey);
+        if (step == PracticalTourStep.RunDiagnostics && _resumedAtCheckpoint)
+            return Localize(definition.CheckpointInstructionKey);
         if (step == PracticalTourStep.ExportReport && stateMachine.HasCleanRun)
             return Localize(definition.CleanRunInstructionKey);
         return Localize(definition.InstructionKey);

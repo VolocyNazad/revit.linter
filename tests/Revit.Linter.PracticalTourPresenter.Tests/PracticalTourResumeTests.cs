@@ -4,8 +4,8 @@ using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
 namespace Revit.Linter.PracticalTourPresenter.Tests;
 
 /// <summary>
-/// Covers the step a saved session resumes from, so a paused tour never asks for findings that the active
-/// document no longer shows.
+/// Covers the checkpoint a saved session resumes from: the run of the training check. Steps after it are
+/// replayed because their findings are not kept across a pause; steps before it keep their position.
 /// </summary>
 public sealed class PracticalTourResumeTests
 {
@@ -15,54 +15,30 @@ public sealed class PracticalTourResumeTests
     [InlineData(PracticalTourStep.SearchAndFilters)]
     [InlineData(PracticalTourStep.SelectDiagnostic)]
     [InlineData(PracticalTourStep.RunDiagnostics)]
-    public void Steps_before_the_run_resume_as_saved(PracticalTourStep savedStep)
+    public void Steps_up_to_the_run_resume_as_saved(PracticalTourStep savedStep)
     {
         Assert.Equal(
             savedStep,
-            PracticalTourResume.ResolveStartStep(
-                savedStep, hasOpenDocument: true, hasCleanRun: false, hasTrainingFindings: false));
+            PracticalTourResume.ResolveStartStep(savedStep, hasOpenDocument: true));
     }
 
     [Theory]
     [InlineData(PracticalTourStep.InspectFinding)]
     [InlineData(PracticalTourStep.OpenHelp)]
+    [InlineData(PracticalTourStep.ShowElement)]
     [InlineData(PracticalTourStep.SelectVisualization)]
+    [InlineData(PracticalTourStep.NavigateFindings)]
+    [InlineData(PracticalTourStep.UnderstandFix)]
     [InlineData(PracticalTourStep.FixList)]
+    [InlineData(PracticalTourStep.UnderstandIgnore)]
     [InlineData(PracticalTourStep.IgnoreList)]
     [InlineData(PracticalTourStep.ExportReport)]
     [InlineData(PracticalTourStep.ExportReportAnotherFormat)]
-    public void Finding_steps_resume_as_saved_when_the_document_still_shows_the_findings(
-        PracticalTourStep savedStep)
-    {
-        Assert.Equal(
-            savedStep,
-            PracticalTourResume.ResolveStartStep(
-                savedStep, hasOpenDocument: true, hasCleanRun: false, hasTrainingFindings: true));
-    }
-
-    [Theory]
-    [InlineData(PracticalTourStep.InspectFinding)]
-    [InlineData(PracticalTourStep.OpenHelp)]
-    [InlineData(PracticalTourStep.SelectVisualization)]
-    [InlineData(PracticalTourStep.FixList)]
-    [InlineData(PracticalTourStep.IgnoreList)]
-    [InlineData(PracticalTourStep.ExportReport)]
-    [InlineData(PracticalTourStep.ExportReportAnotherFormat)]
-    public void Finding_steps_restart_at_the_run_when_the_findings_are_gone(PracticalTourStep savedStep)
+    public void Steps_after_the_run_restart_at_the_run_checkpoint(PracticalTourStep savedStep)
     {
         Assert.Equal(
             PracticalTourStep.RunDiagnostics,
-            PracticalTourResume.ResolveStartStep(
-                savedStep, hasOpenDocument: true, hasCleanRun: false, hasTrainingFindings: false));
-    }
-
-    [Fact]
-    public void Clean_run_steps_resume_as_saved_because_they_expect_no_findings()
-    {
-        Assert.Equal(
-            PracticalTourStep.ExportReport,
-            PracticalTourResume.ResolveStartStep(
-                PracticalTourStep.ExportReport, hasOpenDocument: true, hasCleanRun: true, hasTrainingFindings: false));
+            PracticalTourResume.ResolveStartStep(savedStep, hasOpenDocument: true));
     }
 
     [Fact]
@@ -70,8 +46,7 @@ public sealed class PracticalTourResumeTests
     {
         Assert.Equal(
             PracticalTourStep.OpenDocument,
-            PracticalTourResume.ResolveStartStep(
-                PracticalTourStep.InspectFinding, hasOpenDocument: false, hasCleanRun: false, hasTrainingFindings: true));
+            PracticalTourResume.ResolveStartStep(PracticalTourStep.InspectFinding, hasOpenDocument: false));
     }
 
     [Fact]
@@ -85,14 +60,19 @@ public sealed class PracticalTourResumeTests
             FirstExportFormat = ".csv",
         };
 
-        PracticalTourProgress resumed = PracticalTourResume.ResolveStartProgress(
-            saved, hasOpenDocument: true, hasTrainingFindings: false);
+        PracticalTourProgress resumed = PracticalTourResume.ResolveStartProgress(saved, hasOpenDocument: true);
 
         Assert.Equal(PracticalTourStep.RunDiagnostics, resumed.CurrentStep);
         Assert.False(resumed.HasCleanRun);
         Assert.True(resumed.HasSingleVisualization);
         Assert.Equal(".csv", resumed.FirstExportFormat);
-        Assert.Same(saved, PracticalTourResume.ResolveStartProgress(
-            saved, hasOpenDocument: true, hasTrainingFindings: true));
+    }
+
+    [Fact]
+    public void Progress_at_the_checkpoint_is_returned_unchanged()
+    {
+        PracticalTourProgress saved = new() { CurrentStep = PracticalTourStep.RunDiagnostics };
+
+        Assert.Same(saved, PracticalTourResume.ResolveStartProgress(saved, hasOpenDocument: true));
     }
 }
