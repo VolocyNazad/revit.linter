@@ -71,6 +71,92 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
     }
 
     [Test]
+    public async Task Apply_activates_the_view_once_after_the_steps_when_no_step_needs_it()
+    {
+        List<string> events = [];
+        bool documentWasModifiable = true;
+        using TestPipeline pipeline = CreatePipeline(new RecordingGraphicsService(events));
+
+        bool result = pipeline.Apply(CreateContext(_ =>
+        {
+            documentWasModifiable = _document!.IsModifiable;
+            events.Add("activate");
+        }));
+
+        await Assert.That(result).IsTrue();
+        await Assert.That(events.SequenceEqual(
+            ["apply:First", "apply:Second", "activate"])).IsTrue();
+        await Assert.That(documentWasModifiable).IsFalse();
+    }
+
+    [Test]
+    public async Task Apply_activates_the_view_before_a_show_step_and_keeps_the_declared_order()
+    {
+        // A step that needs the view on screen splits the pipeline: the preceding steps are committed
+        // and the view is activated in that committed state, then the remaining steps run. The declared
+        // order of the steps never changes.
+        List<string> events = [];
+        List<bool> isolateModifiable = [];
+        List<bool> showModifiable = [];
+        List<bool> activationModifiable = [];
+
+        RecordingAccentService isolateService = new(
+            AccentElementsType.IsolateElementsOnView, events, "isolate", isolateModifiable);
+        RecordingAccentService showService = new(
+            AccentElementsType.ShowElements, events, "show", showModifiable);
+
+        using TestPipeline pipeline = new(
+            CreateIdentity(),
+            new RecordingGraphicsService(),
+            [
+                new AccentElementsStep(AccentElementsType.IsolateElementsOnView, ["First"]),
+                new AccentElementsStep(AccentElementsType.ShowElements, ["First"]),
+                new AccentElementsStep(AccentElementsType.IsolateElementsOnView, ["Second"])
+            ],
+            [isolateService, showService]);
+
+        bool result = pipeline.Apply(CreateContext(_ =>
+        {
+            activationModifiable.Add(_document!.IsModifiable);
+            events.Add("activate");
+        }));
+
+        await Assert.That(result).IsTrue();
+        await Assert.That(events.SequenceEqual(
+            ["apply:isolate:First", "activate", "apply:show:First", "apply:isolate:Second"])).IsTrue();
+        await Assert.That(isolateModifiable.SequenceEqual([true, true])).IsTrue();
+        await Assert.That(showModifiable.SequenceEqual([false])).IsTrue();
+        await Assert.That(activationModifiable.SequenceEqual([false])).IsTrue();
+    }
+
+    [Test]
+    public async Task Apply_activates_the_view_before_the_first_step_when_the_pipeline_starts_with_show()
+    {
+        List<string> events = [];
+        List<bool> showModifiable = [];
+        RecordingAccentService showService = new(
+            AccentElementsType.ShowElements, events, "show", showModifiable);
+        RecordingGraphicsService graphicsService = new();
+
+        using TestPipeline pipeline = new(
+            CreateIdentity(),
+            graphicsService,
+            [
+                new AccentElementsStep(AccentElementsType.ShowElements, ["First"]),
+                new OverrideElementsStep(["Second"], new ViewGraphicsStyle())
+            ],
+            [showService]);
+
+        bool result = pipeline.Apply(CreateContext(_ => events.Add("activate")));
+
+        await Assert.That(result).IsTrue();
+        await Assert.That(events.SequenceEqual(
+            ["activate", "apply:show:First"])).IsTrue();
+        await Assert.That(graphicsService.Events.SequenceEqual(["apply:Second"])).IsTrue();
+        await Assert.That(showModifiable.SequenceEqual([false])).IsTrue();
+    }
+
+    [Test]
     public async Task Restore_failure_throws_and_retains_sessions_for_retry()
     {
         // Locks the failure-containment contract the report presenter relies on when a restore
@@ -162,14 +248,15 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
     private static ElementDiagnosticId CreateIdentity() => new(
         "TEST", "Test", "Test", DiagnosticSeverity.Message, true, false, string.Empty);
 
-    private ElementVisualizationContext CreateContext() => new(
+    private ElementVisualizationContext CreateContext(Action<View>? viewActivator = null) => new(
         _document!,
         GetView(_document!),
         new Dictionary<string, IReadOnlyCollection<ElementId>>
         {
             ["First"] = [CreateElementId(1)],
             ["Second"] = [CreateElementId(2)]
-        });
+        },
+        viewActivator);
 
     private static View GetView(Document document) => new FilteredElementCollector(document)
         .OfClass(typeof(View))
@@ -210,10 +297,15 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
         protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } = steps;
     }
 
-    private sealed class RecordingAccentService(bool restoreThrows = false) : IAccentElementsService
+    private sealed class RecordingAccentService(
+        AccentElementsType type = AccentElementsType.IsolateElementsOnView,
+        List<string>? events = null,
+        string? label = null,
+        List<bool>? modifiableStates = null,
+        bool restoreThrows = false) : IAccentElementsService
     {
-        public AccentElementsType Type => AccentElementsType.IsolateElementsOnView;
-        public List<string> Events { get; } = [];
+        public AccentElementsType Type => type;
+        public List<string> Events { get; } = events ?? [];
 
         public bool RunOnce(Document document, params ElementId[] elementIds) =>
             throw new InvalidOperationException("RunOnce should not be used by the pipeline.");
@@ -224,10 +316,12 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
             IReadOnlyCollection<ElementId> elementIds)
         {
             string key = elementIds.Single() == CreateElementId(1) ? "First" : "Second";
-            Events.Add($"apply:{key}");
+            modifiableStates?.Add(document.IsModifiable);
+            Events.Add(label is null ? $"apply:{key}" : $"apply:{label}:{key}");
             return restoreThrows
                 ? new ThrowingSession()
-                : new TestSession(() => Events.Add($"restore:{key}"));
+                : new TestSession(() =>
+                    Events.Add(label is null ? $"restore:{key}" : $"restore:{label}:{key}"));
         }
     }
 
@@ -247,11 +341,13 @@ public sealed class ElementVisualizationPipelineTests : RevitApiTest
             new TestSession(() => _ = element.Id);
     }
 
-    private sealed class RecordingGraphicsService(int throwOnApply = -1) : IOverrideElementGraphicsService
+    private sealed class RecordingGraphicsService(
+        List<string>? events = null,
+        int throwOnApply = -1) : IOverrideElementGraphicsService
     {
         private int _applyCount;
 
-        public List<string> Events { get; } = [];
+        public List<string> Events { get; } = events ?? [];
 
         public IRestoreSession Apply(
             Document document,

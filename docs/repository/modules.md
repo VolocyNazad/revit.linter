@@ -25,13 +25,14 @@ its checks outside one. A Revit-free type stays there only when it belongs to on
 
 The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `IClipboardService`,
 `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream` and
-`IFormulaCompilationNotifier`. `IRevitIdlingScheduler`, which takes `UIApplication`, stays with the
-Revit-facing contracts in `Revit.Linter.Core/Abstractions`. Their implementations live in
+`IFormulaCompilationNotifier`. `IRevitIdlingScheduler`, which takes `UIApplication`, and
+`IVisualizationViewProvider`, which returns `View3D`, stay with the Revit-facing contracts in
+`Revit.Linter.Core/Abstractions`. Their implementations live in
 `src/Revit.Linter/Infrastructure/Services` and the host registers them; modules depend only on the
 contracts.
 
 `Revit.Linter.DiagnosticReportPresenter.Interactions` holds the contracts other modules and the host
-use for that presenter (`IDiagnosticReportPresenter`, `IVisualizationViewActivator`), so no consumer
+use for that presenter (`IDiagnosticReportPresenter`), so no consumer
 references the presenter project for them. A presenter that needs such an outward contract gets a
 matching `<Module>.Interactions` project instead of exposing it from its implementation assembly.
 
@@ -154,9 +155,11 @@ as show, select, isolate, crop, per-element overrides and temporary-filter overr
 restores their sessions in reverse order; the session and reversal rules are in
 [element highlighting](../architecture.md#element-highlighting).
 
-The diagnostic report presenter activates a persistent `Revit Linter — Visualization` isometric view
-before applying any pipeline. The host owns creation and activation behind `IVisualizationViewActivator`,
-keeping `RevitAPIUI` calls out of the presenter.
+The diagnostic report presenter obtains the persistent `Revit Linter — Visualization` isometric view
+and passes it to the pipeline. The host owns creation, preparation and activation behind
+`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. The pipeline activates
+the view only after the steps declared before the first step that needs it on screen are committed,
+because Revit rejects an active-view change inside a transaction.
 
 `Revit.Linter.ElementFixing` composes configuration-driven destructive fix steps into fixes consumed by
 the diagnostic report presenter. A configured step deletes its element sets or writes one parameter
