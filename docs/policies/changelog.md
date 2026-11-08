@@ -24,6 +24,9 @@ conflict over `CHANGELOG.md`.
   adds both. A change that spans several files is still one fragment; a change with two unrelated
   outcomes has two, one per category.
 - No file lives outside a category directory.
+- Repository documentation — `README.md`, the policies and guides under `docs/`, and the `wiki/`
+  sources — carries no fragment: it does not change what a consumer observes in the product. A
+  product change still carries its own fragment when its documentation changes with it.
 
 One fragment per change: write for the consumer of the release, keep what a consumer can observe,
 and leave out fixes for behaviour that was never released. `CHANGELOG.md` and `## [Unreleased]`
