@@ -30,6 +30,11 @@ otherwise. `<slug>` is a short lowercase kebab-case description, for example
 branch carries no ticket, so its name is only `chore/<slug>` such as
 `chore/rider-ignore-files`. No other prefixes (`bugfix/`, `topic/`, `wip/`).
 
+A documentation-only change — `README.md`, a policy or guide under `docs/`, or a page in
+`wiki/` — is repository maintenance: it uses a `chore/<slug>` branch, targets `dev`, and its
+commits use the `docs` type ([commit message policy](commits.md)). There is no separate `docs/`
+branch prefix.
+
 `main` and `dev` are permanent; every other branch is deleted after it is merged,
 locally and on the remote.
 

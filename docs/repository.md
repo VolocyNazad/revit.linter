@@ -141,6 +141,10 @@ The projects, their responsibilities and the updater and installer mechanics are
 - `wiki/interface/` contains the UI, panes, and ribbon-button documentation.
 - `wiki/examples/` contains configuration files users can copy and edit; the welcome wizard installs the same single `diagnostics.config.yaml`. Keep the discipline `section` comment markers in pairs, and keep the English file and its `ru/` counterpart in step.
 - `wiki/assets/` contains static images shared by Obsidian and GitHub Wiki.
+- The repository front page and the published wiki reflect `main`: GitHub renders `README.md` from
+  the default branch, and the wiki is published only from `main` (see the
+  [wiki policy](policies/wiki.md)); a documentation change merged to `dev` becomes publicly visible
+  with the next release.
 - English pages live in the task-oriented folders directly under `wiki/`; Russian pages mirror that structure under `wiki/ru/`.
 - Wiki page rules — unique page names, language front matter, link syntax and the publishing conversion — are
   in the [wiki policy](policies/wiki.md).
