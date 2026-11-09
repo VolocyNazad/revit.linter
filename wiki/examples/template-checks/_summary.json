@@ -1,0 +1,76 @@
+{
+  "templates": [
+    {
+      "discipline": "АР",
+      "code": "PRMTR401",
+      "bindings": 104,
+      "withGuid": 93,
+      "byName": 11,
+      "invalidGroup": 1,
+      "fillChecks": 81
+    },
+    {
+      "discipline": "ВК",
+      "code": "PRMTR402",
+      "bindings": 65,
+      "withGuid": 64,
+      "byName": 1,
+      "invalidGroup": 0,
+      "fillChecks": 58
+    },
+    {
+      "discipline": "КЖ",
+      "code": "PRMTR403",
+      "bindings": 93,
+      "withGuid": 86,
+      "byName": 7,
+      "invalidGroup": 2,
+      "fillChecks": 72
+    },
+    {
+      "discipline": "КМ",
+      "code": "PRMTR404",
+      "bindings": 93,
+      "withGuid": 90,
+      "byName": 3,
+      "invalidGroup": 0,
+      "fillChecks": 69
+    },
+    {
+      "discipline": "ОВ",
+      "code": "PRMTR405",
+      "bindings": 88,
+      "withGuid": 81,
+      "byName": 7,
+      "invalidGroup": 0,
+      "fillChecks": 68
+    },
+    {
+      "discipline": "СС",
+      "code": "PRMTR406",
+      "bindings": 119,
+      "withGuid": 78,
+      "byName": 41,
+      "invalidGroup": 2,
+      "fillChecks": 97
+    },
+    {
+      "discipline": "ТХ",
+      "code": "PRMTR407",
+      "bindings": 61,
+      "withGuid": 52,
+      "byName": 9,
+      "invalidGroup": 9,
+      "fillChecks": 46
+    },
+    {
+      "discipline": "ЭОМ",
+      "code": "PRMTR408",
+      "bindings": 108,
+      "withGuid": 67,
+      "byName": 41,
+      "invalidGroup": 2,
+      "fillChecks": 93
+    }
+  ]
+}

@@ -11,6 +11,16 @@
   <data name="architecture_text" xml:space="preserve"><value>Architecture</value></data>
   <data name="structure_text" xml:space="preserve"><value>Structure</value></data>
   <data name="contents_text" xml:space="preserve"><value>Each discipline adds collision rules and a project parameter rule based on the ADSK shared parameters. The element checks are installed in any case.</value></data>
+  <data name="adskChecksHeader_text" xml:space="preserve"><value>Project parameter checks and fill checks from the ADSK templates</value></data>
+  <data name="adskChecksIntro_text" xml:space="preserve"><value>Adds checks that compare the project parameters of a document with the ADSK templates and checks that their text parameters are filled. Pick your disciplines: the checks are installed into the same example file.</value></data>
+  <data name="adskCheckArchitecture_text" xml:space="preserve"><value>Architecture (АР)</value></data>
+  <data name="adskCheckWaterSupply_text" xml:space="preserve"><value>Water supply (ВК)</value></data>
+  <data name="adskCheckReinforcedConcrete_text" xml:space="preserve"><value>Reinforced concrete (КЖ)</value></data>
+  <data name="adskCheckSteelStructures_text" xml:space="preserve"><value>Steel structures (КМ)</value></data>
+  <data name="adskCheckHvac_text" xml:space="preserve"><value>Heating and ventilation (ОВ)</value></data>
+  <data name="adskCheckLowCurrent_text" xml:space="preserve"><value>Low-current systems (СС)</value></data>
+  <data name="adskCheckTechnology_text" xml:space="preserve"><value>Technology (ТХ)</value></data>
+  <data name="adskCheckElectrical_text" xml:space="preserve"><value>Electrical systems (ЭОМ)</value></data>
   <data name="target_format" xml:space="preserve"><value>The example is always written to the "examples" subfolder in {0}. An identical example file is left untouched; a different or edited one is saved as a .bak-&lt;timestamp&gt; copy before the shipped example replaces it.</value></data>
   <data name="installButton_text" xml:space="preserve"><value>Load examples</value></data>
   <data name="installed_format" xml:space="preserve"><value>Done. The example configuration was written to {0}. The examples are now available in the diagnostics list.</value></data>

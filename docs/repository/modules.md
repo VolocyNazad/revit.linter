@@ -188,7 +188,16 @@ owned by `Revit.Linter.OnboardingState`: it keeps the completed wizard version, 
 Revit version and the resumable practical-tour progress per Revit version.
 
 The installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/`
-(English) and its `ru/` subfolder, embedded as resources. The host supplies the ribbon tab name, pane
+(English) and its `ru/` subfolder, embedded as resources. The **Examples** step also installs the
+check blocks generated from the ADSK Revit 2021 project templates, stored under
+`wiki/examples/template-checks/`: each block holds one project-parameter rule and one element fill
+check for every text parameter of the template. The blocks ship in two editions: the root `en/` and
+`ru/` folders use the Revit 2021-2023 `PG_*` parameter group spelling, and `2024/en/` and `2024/ru/`
+hold the same rules with the ForgeTypeId group values of Revit 2024 and newer. The step offers the
+blocks on every supported Revit version and installs the edition matching the running version. The
+selected blocks are appended to the same installed example file, so the element checks stay in place
+and the installed checks are marked as examples.
+The host supplies the ribbon tab name, pane
 and link actions through `IWelcomeHost`, and the tour's pane, notification and diagnostics-filter
 actions through `IPracticalTourHost`.
 

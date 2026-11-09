@@ -82,6 +82,8 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - Revit 2021–2023: a `BuiltInParameterGroup` name such as `PG_TEXT`, or its numeric identifier.
 - Revit 2024 and newer: the complete `ForgeTypeId`, for example `autodesk.parameter.group:text-1.0.0`.
 
+The example blocks shipped with the documentation exist in both spellings: the root `template-checks/{en,ru}` blocks use the Revit 2021–2023 names and the `template-checks/2024/{en,ru}` blocks use the ForgeTypeId values. The [[Getting started button|welcome window]] installs the edition that matches the running Revit; a block copied by hand must match the target version. See [[Configuration examples]] for the list of blocks.
+
 The formats are intentionally version-specific. Store each configuration in the folder for its Revit version.
 
 **Validation on load:** each rule is checked when the file is loaded. A rule with an unknown category, a `group` that is not valid for the running Revit version, an invalid `guid`, a `take` formula that cannot be compiled, or a missing `code`, `take`, `parameters`, `name` or `categories` is skipped, and a message names the rule, the parameter and the rejected value. The other rules stay in use. Fix the file and save it to reload the rules.

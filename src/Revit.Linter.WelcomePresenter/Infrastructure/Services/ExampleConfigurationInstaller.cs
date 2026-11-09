@@ -20,22 +20,31 @@ internal sealed class ExampleConfigurationInstaller(
     private const string ExampleFileName = ConfigurationPathUtils.DiagnosticsConfigFileName;
 
     private const string ResourcePrefix = "Revit.Linter.WelcomePresenter.Examples.";
+    private const string CheckResourcePrefix = "Revit.Linter.WelcomePresenter.TemplateChecks.";
+    private const string ForgeCheckResourcePrefix = "Revit.Linter.WelcomePresenter.TemplateChecks2024.";
     private const int FirstRevitVersionWithGroupTypeIds = 2024;
 
     public string TargetDirectory => paths.Directory;
 
-    public ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines)
+    public ExampleInstallationResult Install(IReadOnlyCollection<ExampleDiscipline> disciplines) =>
+        Install(disciplines, []);
+
+    public ExampleInstallationResult Install(
+        IReadOnlyCollection<ExampleDiscipline> disciplines, IReadOnlyCollection<TemplateCheckPack> packs)
     {
         string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
+        bool useLegacyParameterGroups = paths.RevitVersion < FirstRevitVersionWithGroupTypeIds;
         ExampleInstallationResult result = Install(
             TargetDirectory,
             disciplines,
+            packs,
             fileName => ReadTemplate(language, fileName),
-            paths.RevitVersion < FirstRevitVersionWithGroupTypeIds);
+            packs.Count == 0 ? null : pack => ReadCheckBlock(language, pack, useLegacyParameterGroups),
+            useLegacyParameterGroups);
 
         logger.LogInformation(
-            "Installed the example configuration for {Disciplines} into {Directory}: {Files}",
-            disciplines, TargetDirectory, result.Files.Select(file => file.Path));
+            "Installed the example configuration for {Disciplines} and check packs {Packs} into {Directory}: {Files}",
+            disciplines, packs, TargetDirectory, result.Files.Select(file => file.Path));
         return result;
     }
 
@@ -47,12 +56,25 @@ internal sealed class ExampleConfigurationInstaller(
         string targetDirectory,
         IReadOnlyCollection<ExampleDiscipline> disciplines,
         Func<string, string> readTemplate,
+        bool useLegacyParameterGroups) =>
+        Install(targetDirectory, disciplines, [], readTemplate, null, useLegacyParameterGroups);
+
+    /// <summary>
+    /// Installs the example and the selected template check blocks into the examples subfolder.
+    /// </summary>
+    /// <remarks>Separated from the Revit-version and culture lookup so it can be exercised headlessly.</remarks>
+    internal static ExampleInstallationResult Install(
+        string targetDirectory,
+        IReadOnlyCollection<ExampleDiscipline> disciplines,
+        IReadOnlyCollection<TemplateCheckPack> packs,
+        Func<string, string> readTemplate,
+        Func<TemplateCheckPack, string>? readCheckBlock,
         bool useLegacyParameterGroups)
     {
-        if (disciplines.Count == 0)
-            throw new ArgumentException("At least one discipline must be selected.", nameof(disciplines));
+        if (disciplines.Count == 0 && packs.Count == 0)
+            throw new ArgumentException("At least one discipline or check pack must be selected.");
 
-        string[] sections = disciplines.Select(ToSectionName).Distinct().ToArray();
+        string[] sections = disciplines.Distinct().Select(ToSectionName).ToArray();
         UTF8Encoding encoding = new(encoderShouldEmitUTF8Identifier: false);
 
         string examplesDirectory = Path.Combine(targetDirectory, ExamplesFolderName);
@@ -60,6 +82,14 @@ internal sealed class ExampleConfigurationInstaller(
 
         string content = ExampleConfigurationComposer.Compose(
             readTemplate(ExampleFileName), sections, useLegacyParameterGroups);
+        if (packs.Count > 0)
+        {
+            content = TemplateCheckComposer.Append(
+                content,
+                packs.Distinct().OrderBy(TemplateCheckComposer.GetCodeNumber).ToArray(),
+                readCheckBlock ?? throw new ArgumentNullException(nameof(readCheckBlock)));
+        }
+
         string path = Path.Combine(examplesDirectory, ExampleFileName);
 
         // The examples folder is inside the user's configuration folder. An identical file means the example
@@ -127,11 +157,19 @@ internal sealed class ExampleConfigurationInstaller(
         _ => throw new ArgumentOutOfRangeException(nameof(discipline), discipline, "Unknown example discipline."),
     };
 
-    private static string ReadTemplate(string language, string fileName)
+    private static string ReadTemplate(string language, string fileName) =>
+        ReadResource($"{ResourcePrefix}{language}.{fileName}", "example configuration");
+
+    private static string ReadCheckBlock(string language, TemplateCheckPack pack, bool useLegacyParameterGroups) =>
+        ReadResource(
+            $"{(useLegacyParameterGroups ? CheckResourcePrefix : ForgeCheckResourcePrefix)}" +
+            $"{language}.{TemplateCheckComposer.GetFileName(pack)}",
+            "template check block");
+
+    private static string ReadResource(string resourceName, string description)
     {
-        string resourceName = $"{ResourcePrefix}{language}.{fileName}";
         using Stream stream = typeof(ExampleConfigurationInstaller).Assembly.GetManifestResourceStream(resourceName)
-            ?? throw new InvalidOperationException($"The example configuration '{resourceName}' is not embedded.");
+            ?? throw new InvalidOperationException($"The {description} '{resourceName}' is not embedded.");
         using StreamReader reader = new(stream, Encoding.UTF8);
         return reader.ReadToEnd();
     }
