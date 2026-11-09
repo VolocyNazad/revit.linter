@@ -1,0 +1,1602 @@
+# Project-parameter check generated from the ADSK template 'ADSK_Шаблон_АР_R2021_v2.2.3.rte'.
+# Every listed parameter must exist in a project document with the same binding type, group,
+# categories and vary-between-groups flag as in the template.
+# This edition targets Revit 2024 and newer: the groups are ForgeTypeId values, and a
+# parameter without a group identifier has an empty group.
+- type: "parameter"
+  code: "PRMTR401"
+  description: "ADSK architecture template: project parameters match the company standard"
+  severity: "Warning"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Project"]
+  take: "!property('IsFamilyDocument')"
+  parameters:
+    - name: "ADSK_Позиция отделки"
+      guid: "38309243-d45f-4706-8f7c-78deb4ffa333"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Назначение вида"
+      guid: "e313f126-7e51-4a5d-a45a-7c6dfe02124a"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Schedules", "OST_Views"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Владелец вида"
+      guid: "e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Views"]
+      allowVaryBetweenGroups: true
+    - name: "Версия шаблона"
+      group: "autodesk.parameter.group:overallLegend-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Обозначение"
+      guid: "9c98831b-9450-412d-b072-7d69b39f4029"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Planting", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Этаж"
+      guid: "9eabf56c-a6cd-4b5c-a9d0-e9223e19ea3f"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Assemblies", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_EdgeSlab", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Mass", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Rooms", "OST_Site", "OST_SpecialityEquipment", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralFramingSystem", "OST_StructuralTruss", "OST_Topography", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Материал наименование"
+      guid: "87ce1509-068e-400f-afab-75df889463c7"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Материал тип подсчета"
+      guid: "86d9bdff-680f-499d-b4fe-3c15bd427464"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Материал обозначение"
+      guid: "dbe7f282-3606-44cf-ac51-0f274c34c07b"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Единица измерения"
+      guid: "4289cb19-9517-45de-9c02-5a74ebf5c86d"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Ceilings", "OST_Columns", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Materials", "OST_Parking", "OST_Planting", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_StructuralFoundation", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "Разработчики шаблона"
+      group: "autodesk.parameter.group:overallLegend-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Примечание"
+      guid: "a85b7661-26b0-412f-979c-66af80b4b2c3"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_EdgeSlab", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Mass", "OST_Materials", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_Planting", "OST_PlumbingFixtures", "OST_RailingHandRail", "OST_RailingSupport", "OST_RailingTermination", "OST_RailingTopRail", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Rooms", "OST_Sheets", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_SpecialityEquipment", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralTruss", "OST_Topography", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_URL документации изделия"
+      guid: "bddc75f4-8e27-4afc-add0-de7358bbf6d3"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_URL страницы изделия"
+      guid: "c5f25d97-91ad-48c8-96e2-99eac6fbb3f1"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Завод-изготовитель"
+      guid: "a8cdbf7b-d60a-485e-a520-447d2055f351"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Код изделия"
+      guid: "2fd9e8cb-84f3-4297-b8b8-75f444e124ed"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Группирование"
+      guid: "3de5f1a4-d560-4fa8-a74f-25d250fb3401"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Mass", "OST_Materials", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralTruss", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Зона"
+      guid: "c78f0a7d-b68b-4d21-a247-1c8c6ced8bc5"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Mass", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralTruss", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Количество"
+      guid: "8d057bb3-6ccd-4655-9165-55526691fe3a"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_StructuralFoundation", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Индекс квартиры"
+      guid: "a2985e5c-b28e-416a-acf6-7ab7e4ee6d86"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Категория помещения"
+      guid: "4c70cba0-574b-49cb-b5fd-c0637073e720"
+      group: "autodesk.parameter.group:identityData-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Количество комнат"
+      guid: "f52108e1-0813-4ad6-8376-a38a1a23a55b"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Коэффициент площади"
+      guid: "066eab6d-c348-4093-b0ca-1dfe7e78cb6e"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Индекс помещения"
+      guid: "58dc458a-4c0d-447c-9f8f-e230a45bda87"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Масса"
+      guid: "32989501-0d17-4916-8777-da950841c6d7"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_Planting", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Масса_Текст"
+      guid: "a8832df7-0302-4a63-a6e1-47a01632b987"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Planting", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralFramingSystem", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Наименование краткое"
+      guid: "f194bf60-b880-4217-b793-1e0c30dda5e9"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер здания"
+      guid: "eaa57141-68d3-4f89-8272-246328f8e77b"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Ceilings", "OST_Floors", "OST_ProjectInformation", "OST_Rooms", "OST_Walls"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Номер квартиры"
+      guid: "10fb72de-237e-4b9c-915b-8849b8907695"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Ceilings", "OST_Floors", "OST_Rooms", "OST_Walls"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Номер помещения квартиры"
+      guid: "69890ae1-d66e-4fe9-aced-024c27719f53"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Ceilings", "OST_Floors", "OST_Rooms", "OST_Walls"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Номер секции"
+      guid: "b59a3474-a5f4-430a-b087-a20f1a4eb57e"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Ceilings", "OST_Floors", "OST_Rooms", "OST_Walls"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Наименование и номер цвета"
+      guid: "2c1f6e3d-cf4b-4c93-92fe-92e85acacd26"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Наименование элемента фасада"
+      guid: "6a83444c-5937-49e7-b962-9460028281a7"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Норма расхода"
+      guid: "ea7c17d4-0692-452d-a2d2-94c0d8b00169"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials", "OST_Parts"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Предел огнестойкости"
+      guid: "4d902dad-86e1-4713-841a-a196798dbdf9"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Позиция"
+      guid: "ae8ff999-1f22-4ed7-ad33-61503d85f0f4"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Mass", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_SpecialityEquipment", "OST_Stairs", "OST_StairsRailing", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFraming", "OST_StructuralTruss", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Предел огнестойкости экземпляра"
+      guid: "2f2eccb4-ce52-49e3-b09e-9b72291d711d"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Parking", "OST_Parts", "OST_Planting", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Площадь с коэффициентом"
+      guid: "9a0c14fa-b48c-40ce-8f95-6954dfe2a399"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Тип квартиры"
+      guid: "78e3b89c-eb68-4600-84a7-c523de162743"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Площадь квартиры"
+      guid: "d3035d0f-b738-4407-a0e5-30787b92fa49"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Площадь квартиры жилая"
+      guid: "178e222b-903b-48f5-8bfc-b624cd67d13c"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Площадь квартиры общая"
+      guid: "af973552-3d15-48e3-aad8-121fe0dda34e"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Площадь проемов"
+      guid: "18e3f49d-1315-415f-8359-8f045a7a8938"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Тип помещения"
+      guid: "56eb1705-f327-4774-b212-ef9ad2c860b0"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Areas", "OST_Rooms"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Марка"
+      guid: "2204049c-d557-4dfc-8d70-13f19715e46d"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_StructuralFramingSystem", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Наименование"
+      guid: "e6e0f5cd-3e26-485b-9342-23882b20eb43"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: false
+      categories: ["OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralColumns", "OST_StructuralFoundation", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "Данные элементов пола"
+      group: "autodesk.parameter.group:materials-1.0.0"
+      isInstance: true
+      categories: ["OST_Floors", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "Схема пола или тип пола по серии"
+      group: "autodesk.parameter.group:materials-1.0.0"
+      isInstance: true
+      categories: ["OST_Floors", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "Помещение Список номеров"
+      group: "autodesk.parameter.group:materials-1.0.0"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Floors", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "Помещение Список имен"
+      group: "autodesk.parameter.group:materials-1.0.0"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Floors", "OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "Помещение Имя"
+      group: "autodesk.parameter.group:materials-1.0.0"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Floors", "OST_Walls"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Примечание к виду"
+      guid: "e9853794-9790-4a53-a5c9-566106357d81"
+      group: "autodesk.parameter.group:text-1.0.0"
+      isInstance: true
+      categories: ["OST_Views"]
+      allowVaryBetweenGroups: true
+    - name: "Образец материала"
+      group: "autodesk.parameter.group:identityData-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Сведения о проекте"
+      guid: "c5fa63f3-1e9c-4c4e-beaf-f805682cc72b"
+      group: "autodesk.parameter.group:identityData-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "Изображение типоразмера материала"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Floors", "OST_Materials"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Штамп боковой_1 должность"
+      guid: "ab409417-2d5e-4f75-aa6a-204cc4ee6f74"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Год выпуска"
+      guid: "8a6e0145-58ea-4c2a-99b7-79e64e71f365"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Директор"
+      guid: "45d87fac-84ab-4bd0-a852-d6089c156543"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 должность"
+      guid: "c5f4124e-9a7c-49d5-83e0-99bd05213e86"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 фамилия"
+      guid: "03d95fa9-d919-4add-b778-cb2a1208fb86"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 должность"
+      guid: "8ddc6ae4-7741-450d-be39-2838a23a7758"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 фамилия"
+      guid: "ebf4547f-2321-447d-9869-ef8ade144981"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Номер тома"
+      guid: "cf26d231-bbc4-4735-aa83-ecef9f44d030"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Наименование документа"
+      guid: "2f55778b-d403-4e61-b950-23a4e7d6fbc3"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Вид документации"
+      guid: "dd71ff90-123c-47fd-9b73-0855c8f63566"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_Инвентарный номер"
+      guid: "1b54f7b8-55f5-4d54-b27e-7909865a501d"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_1 фамилия"
+      guid: "597f72d5-01a8-416b-805c-a18cbbc49254"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 должность"
+      guid: "aa4e0636-b1b9-4ea6-8123-244a8679db0e"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 фамилия"
+      guid: "73790284-e8c2-4717-a291-62460b2a596f"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 должность"
+      guid: "ca0521c7-fdb9-4868-8047-9e81c665c9c7"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 фамилия"
+      guid: "20e3931e-c22b-43ee-9256-9a2215b576a8"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 должность"
+      guid: "1031a769-0efa-4811-a2bc-d2f2e15b7ba7"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 фамилия"
+      guid: "c58ff5a3-7e40-4be6-af6d-f9fea2507a2d"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 должность"
+      guid: "59e76a65-de10-4091-9763-6e923deab89a"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 фамилия"
+      guid: "0abc2cd5-dab6-4a02-8b67-948c67c4f596"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 должность"
+      guid: "bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 фамилия"
+      guid: "f2f78068-21e1-4e79-8597-6237c46a1399"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Количество листов"
+      guid: "c2f49234-25d3-4abc-8638-dde90c2527aa"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Имя листа пользовательское"
+      guid: "cec3cc8c-d1fb-477b-9954-29cb60ce6656"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Наименование объекта"
+      guid: "c92f2899-a807-468d-8126-610f73aa6ffc"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 должность"
+      guid: "7a9f273e-9664-4950-9bca-3d96b2670ba6"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 фамилия"
+      guid: "a856a784-03da-4238-9bd9-9881b9938b8a"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 должность"
+      guid: "053e616e-cb3c-4dc5-8348-1c407e8e13a6"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 фамилия"
+      guid: "6ca82d36-9c55-450a-a479-002c4736cc06"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 должность"
+      guid: "3dc943bc-1b11-47e6-9cde-880d51a9d861"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 фамилия"
+      guid: "15284426-f3d8-4c55-9a6c-f9eea1393db3"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 должность"
+      guid: "c0f4a14d-0a30-4e08-a233-2a1a23db2403"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 фамилия"
+      guid: "7f45f58c-1a5e-48f5-b292-bbf312c0bf2e"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 должность"
+      guid: "7e974de2-5e90-4af8-ba6a-601fe0c76b0f"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 фамилия"
+      guid: "6153ed75-b3d0-4e9a-ade5-f851a2a4cab6"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 должность"
+      guid: "81f59847-bc5e-41a2-89f6-f840eaeb0258"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 фамилия"
+      guid: "00178540-addd-412e-83e5-76db04dbb325"
+      group: "autodesk.parameter.group:data-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп Раздел проекта"
+      guid: "7f0c8590-53a2-4ddf-aaed-c70eb9b687bc"
+      group: "autodesk.parameter.group:identityData-1.0.0"
+      isInstance: true
+      categories: ["OST_Sheets", "OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Категория здания по взрывопожарной и пожарной опасности"
+      guid: "0a1a578c-f3e6-4106-bb89-1ec9640cf2d0"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Класс конструктивной пожарной опасности здания"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Класс пожарной опасности строительных конструкций"
+      guid: "9516c59a-08fc-420e-8771-7be440959141"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Класс функциональной пожарной опасности здания"
+      guid: "7b463ac6-9152-4ab4-9e7b-c00fa3117f4f"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Количество пожарных отсеков"
+      guid: "b69a994f-edad-45c4-ba1a-54397afa6209"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Степень огнестойкости здания"
+      guid: "4c0bf708-19d9-4070-b6cf-b79606f808e9"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Уровень ответственности здания"
+      guid: "0b311b8f-395f-43b6-8375-ef15940fe631"
+      group: "autodesk.parameter.group:construction-1.0.0"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: true
+    - name: "Уровень элемента"
+      group: ""
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Doors", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Номер корпуса"
+      guid: "32c60a41-a17c-4caa-8a52-6ef0a9e798dd"
+      group: "autodesk.parameter.group:text-1.0.0"
+      isInstance: true
+      categories: ["OST_Rooms"]
+      allowVaryBetweenGroups: true
+    - name: "TN_Теплопроводность_λA"
+      guid: "b5d6ffaa-0e59-46a4-a4a2-65e5a1a052c7"
+      group: "autodesk.parameter.group:text-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: false
+    - name: "TN_Теплопроводность_λБ"
+      guid: "ca613667-69e6-4fc4-8c05-98ee343a1a9a"
+      group: "autodesk.parameter.group:text-1.0.0"
+      isInstance: true
+      categories: ["OST_Materials"]
+      allowVaryBetweenGroups: false
+
+# The element checks below report empty text parameters: one custom rule per text parameter of
+# the template, with the same categories and the same instance or type binding as the template.
+# A finding means the parameter value is empty and should be filled in.
+
+# ADSK_Позиция отделки - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401001"
+  description: "ADSK architecture template: the parameter 'ADSK_Позиция отделки' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Materials'))"
+  check: "!isnullorempty(parameter(me, '38309243-d45f-4706-8f7c-78deb4ffa333'))"
+  message: "Empty ADSK parameter 'ADSK_Позиция отделки': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Назначение вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401002"
+  description: "ADSK architecture template: the parameter 'ADSK_Назначение вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Schedules') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e313f126-7e51-4a5d-a45a-7c6dfe02124a'))"
+  message: "Empty ADSK parameter 'ADSK_Назначение вида': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Владелец вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401003"
+  description: "ADSK architecture template: the parameter 'ADSK_Владелец вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b'))"
+  message: "Empty ADSK parameter 'ADSK_Владелец вида': '{elementName}' ({elementId}). Fill it in."
+
+# Версия шаблона - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401004"
+  description: "ADSK architecture template: the parameter 'Версия шаблона' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, 'Версия шаблона'))"
+  message: "Empty ADSK parameter 'Версия шаблона': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Обозначение - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401005"
+  description: "ADSK architecture template: the type parameter 'ADSK_Обозначение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '9c98831b-9450-412d-b072-7d69b39f4029'))"
+  message: "Empty ADSK type parameter 'ADSK_Обозначение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Этаж - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401006"
+  description: "ADSK architecture template: the parameter 'ADSK_Этаж' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Assemblies') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_EdgeSlab') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Mass') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Rooms') or builtincategory('OST_Site') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralFramingSystem') or builtincategory('OST_StructuralTruss') or builtincategory('OST_Topography') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '9eabf56c-a6cd-4b5c-a9d0-e9223e19ea3f'))"
+  message: "Empty ADSK parameter 'ADSK_Этаж': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Материал наименование - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401007"
+  description: "ADSK architecture template: the parameter 'ADSK_Материал наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Materials'))"
+  check: "!isnullorempty(parameter(me, '87ce1509-068e-400f-afab-75df889463c7'))"
+  message: "Empty ADSK parameter 'ADSK_Материал наименование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Материал обозначение - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401008"
+  description: "ADSK architecture template: the parameter 'ADSK_Материал обозначение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Materials'))"
+  check: "!isnullorempty(parameter(me, 'dbe7f282-3606-44cf-ac51-0f274c34c07b'))"
+  message: "Empty ADSK parameter 'ADSK_Материал обозначение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Единица измерения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401009"
+  description: "ADSK architecture template: the parameter 'ADSK_Единица измерения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Materials') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '4289cb19-9517-45de-9c02-5a74ebf5c86d'))"
+  message: "Empty ADSK parameter 'ADSK_Единица измерения': '{elementName}' ({elementId}). Fill it in."
+
+# Разработчики шаблона - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401010"
+  description: "ADSK architecture template: the parameter 'Разработчики шаблона' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, 'Разработчики шаблона'))"
+  message: "Empty ADSK parameter 'Разработчики шаблона': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Примечание - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401011"
+  description: "ADSK architecture template: the parameter 'ADSK_Примечание' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_EdgeSlab') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Mass') or builtincategory('OST_Materials') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_RailingHandRail') or builtincategory('OST_RailingSupport') or builtincategory('OST_RailingTermination') or builtincategory('OST_RailingTopRail') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Rooms') or builtincategory('OST_Sheets') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralTruss') or builtincategory('OST_Topography') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'a85b7661-26b0-412f-979c-66af80b4b2c3'))"
+  message: "Empty ADSK parameter 'ADSK_Примечание': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Завод-изготовитель - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401012"
+  description: "ADSK architecture template: the type parameter 'ADSK_Завод-изготовитель' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'a8cdbf7b-d60a-485e-a520-447d2055f351'))"
+  message: "Empty ADSK type parameter 'ADSK_Завод-изготовитель': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Код изделия - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401013"
+  description: "ADSK architecture template: the type parameter 'ADSK_Код изделия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '2fd9e8cb-84f3-4297-b8b8-75f444e124ed'))"
+  message: "Empty ADSK type parameter 'ADSK_Код изделия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Группирование - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401014"
+  description: "ADSK architecture template: the parameter 'ADSK_Группирование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Mass') or builtincategory('OST_Materials') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralTruss') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '3de5f1a4-d560-4fa8-a74f-25d250fb3401'))"
+  message: "Empty ADSK parameter 'ADSK_Группирование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Зона - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401015"
+  description: "ADSK architecture template: the parameter 'ADSK_Зона' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Mass') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralTruss') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'c78f0a7d-b68b-4d21-a247-1c8c6ced8bc5'))"
+  message: "Empty ADSK parameter 'ADSK_Зона': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Индекс квартиры - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401016"
+  description: "ADSK architecture template: the parameter 'ADSK_Индекс квартиры' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, 'a2985e5c-b28e-416a-acf6-7ab7e4ee6d86'))"
+  message: "Empty ADSK parameter 'ADSK_Индекс квартиры': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Категория помещения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401017"
+  description: "ADSK architecture template: the parameter 'ADSK_Категория помещения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '4c70cba0-574b-49cb-b5fd-c0637073e720'))"
+  message: "Empty ADSK parameter 'ADSK_Категория помещения': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Индекс помещения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401018"
+  description: "ADSK architecture template: the parameter 'ADSK_Индекс помещения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '58dc458a-4c0d-447c-9f8f-e230a45bda87'))"
+  message: "Empty ADSK parameter 'ADSK_Индекс помещения': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Масса_Текст - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401019"
+  description: "ADSK architecture template: the type parameter 'ADSK_Масса_Текст' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralFramingSystem') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'a8832df7-0302-4a63-a6e1-47a01632b987'))"
+  message: "Empty ADSK type parameter 'ADSK_Масса_Текст': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование краткое - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401020"
+  description: "ADSK architecture template: the type parameter 'ADSK_Наименование краткое' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'f194bf60-b880-4217-b793-1e0c30dda5e9'))"
+  message: "Empty ADSK type parameter 'ADSK_Наименование краткое': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер здания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401021"
+  description: "ADSK architecture template: the parameter 'ADSK_Номер здания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_ProjectInformation') or builtincategory('OST_Rooms') or builtincategory('OST_Walls'))"
+  check: "!isnullorempty(parameter(me, 'eaa57141-68d3-4f89-8272-246328f8e77b'))"
+  message: "Empty ADSK parameter 'ADSK_Номер здания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер квартиры - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401022"
+  description: "ADSK architecture template: the parameter 'ADSK_Номер квартиры' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Rooms') or builtincategory('OST_Walls'))"
+  check: "!isnullorempty(parameter(me, '10fb72de-237e-4b9c-915b-8849b8907695'))"
+  message: "Empty ADSK parameter 'ADSK_Номер квартиры': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер помещения квартиры - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401023"
+  description: "ADSK architecture template: the parameter 'ADSK_Номер помещения квартиры' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Rooms') or builtincategory('OST_Walls'))"
+  check: "!isnullorempty(parameter(me, '69890ae1-d66e-4fe9-aced-024c27719f53'))"
+  message: "Empty ADSK parameter 'ADSK_Номер помещения квартиры': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер секции - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401024"
+  description: "ADSK architecture template: the parameter 'ADSK_Номер секции' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Rooms') or builtincategory('OST_Walls'))"
+  check: "!isnullorempty(parameter(me, 'b59a3474-a5f4-430a-b087-a20f1a4eb57e'))"
+  message: "Empty ADSK parameter 'ADSK_Номер секции': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование и номер цвета - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401025"
+  description: "ADSK architecture template: the parameter 'ADSK_Наименование и номер цвета' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Materials'))"
+  check: "!isnullorempty(parameter(me, '2c1f6e3d-cf4b-4c93-92fe-92e85acacd26'))"
+  message: "Empty ADSK parameter 'ADSK_Наименование и номер цвета': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование элемента фасада - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401026"
+  description: "ADSK architecture template: the parameter 'ADSK_Наименование элемента фасада' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Materials'))"
+  check: "!isnullorempty(parameter(me, '6a83444c-5937-49e7-b962-9460028281a7'))"
+  message: "Empty ADSK parameter 'ADSK_Наименование элемента фасада': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Предел огнестойкости - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401027"
+  description: "ADSK architecture template: the type parameter 'ADSK_Предел огнестойкости' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '4d902dad-86e1-4713-841a-a196798dbdf9'))"
+  message: "Empty ADSK type parameter 'ADSK_Предел огнестойкости': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Позиция - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401028"
+  description: "ADSK architecture template: the parameter 'ADSK_Позиция' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Mass') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFraming') or builtincategory('OST_StructuralTruss') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'ae8ff999-1f22-4ed7-ad33-61503d85f0f4'))"
+  message: "Empty ADSK parameter 'ADSK_Позиция': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Предел огнестойкости экземпляра - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401029"
+  description: "ADSK architecture template: the parameter 'ADSK_Предел огнестойкости экземпляра' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_Planting') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '2f2eccb4-ce52-49e3-b09e-9b72291d711d'))"
+  message: "Empty ADSK parameter 'ADSK_Предел огнестойкости экземпляра': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Тип квартиры - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401030"
+  description: "ADSK architecture template: the parameter 'ADSK_Тип квартиры' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '78e3b89c-eb68-4600-84a7-c523de162743'))"
+  message: "Empty ADSK parameter 'ADSK_Тип квартиры': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Марка - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401031"
+  description: "ADSK architecture template: the type parameter 'ADSK_Марка' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_StructuralFramingSystem') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '2204049c-d557-4dfc-8d70-13f19715e46d'))"
+  message: "Empty ADSK type parameter 'ADSK_Марка': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401032"
+  description: "ADSK architecture template: the type parameter 'ADSK_Наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralColumns') or builtincategory('OST_StructuralFoundation') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'e6e0f5cd-3e26-485b-9342-23882b20eb43'))"
+  message: "Empty ADSK type parameter 'ADSK_Наименование': '{elementName}' ({elementId}). Fill it in."
+
+# Данные элементов пола - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401033"
+  description: "ADSK architecture template: the parameter 'Данные элементов пола' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Floors') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, 'Данные элементов пола'))"
+  message: "Empty ADSK parameter 'Данные элементов пола': '{elementName}' ({elementId}). Fill it in."
+
+# Помещение Список номеров - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401034"
+  description: "ADSK architecture template: the parameter 'Помещение Список номеров' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, 'Помещение Список номеров'))"
+  message: "Empty ADSK parameter 'Помещение Список номеров': '{elementName}' ({elementId}). Fill it in."
+
+# Помещение Список имен - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401035"
+  description: "ADSK architecture template: the parameter 'Помещение Список имен' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, 'Помещение Список имен'))"
+  message: "Empty ADSK parameter 'Помещение Список имен': '{elementName}' ({elementId}). Fill it in."
+
+# Помещение Имя - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401036"
+  description: "ADSK architecture template: the parameter 'Помещение Имя' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Ceilings') or builtincategory('OST_Floors') or builtincategory('OST_Walls'))"
+  check: "!isnullorempty(parameter(me, 'Помещение Имя'))"
+  message: "Empty ADSK parameter 'Помещение Имя': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Примечание к виду - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401037"
+  description: "ADSK architecture template: the parameter 'ADSK_Примечание к виду' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e9853794-9790-4a53-a5c9-566106357d81'))"
+  message: "Empty ADSK parameter 'ADSK_Примечание к виду': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Сведения о проекте - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401038"
+  description: "ADSK architecture template: the parameter 'ADSK_Сведения о проекте' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, 'c5fa63f3-1e9c-4c4e-beaf-f805682cc72b'))"
+  message: "Empty ADSK parameter 'ADSK_Сведения о проекте': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401039"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ab409417-2d5e-4f75-aa6a-204cc4ee6f74'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Директор - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401040"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_Директор' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '45d87fac-84ab-4bd0-a852-d6089c156543'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Директор': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401041"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c5f4124e-9a7c-49d5-83e0-99bd05213e86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401042"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '03d95fa9-d919-4add-b778-cb2a1208fb86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401043"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '8ddc6ae4-7741-450d-be39-2838a23a7758'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401044"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ebf4547f-2321-447d-9869-ef8ade144981'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Номер тома - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401045"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_Номер тома' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cf26d231-bbc4-4735-aa83-ecef9f44d030'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Номер тома': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Наименование документа - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401046"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_Наименование документа' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '2f55778b-d403-4e61-b950-23a4e7d6fbc3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Наименование документа': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Вид документации - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401047"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп титульный_Вид документации' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'dd71ff90-123c-47fd-9b73-0855c8f63566'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Вид документации': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_Инвентарный номер - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401048"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_Инвентарный номер' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1b54f7b8-55f5-4d54-b27e-7909865a501d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_Инвентарный номер': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401049"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '597f72d5-01a8-416b-805c-a18cbbc49254'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401050"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'aa4e0636-b1b9-4ea6-8123-244a8679db0e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401051"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '73790284-e8c2-4717-a291-62460b2a596f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401052"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ca0521c7-fdb9-4868-8047-9e81c665c9c7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401053"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '20e3931e-c22b-43ee-9256-9a2215b576a8'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401054"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1031a769-0efa-4811-a2bc-d2f2e15b7ba7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401055"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c58ff5a3-7e40-4be6-af6d-f9fea2507a2d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401056"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '59e76a65-de10-4091-9763-6e923deab89a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401057"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '0abc2cd5-dab6-4a02-8b67-948c67c4f596'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401058"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401059"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп боковой_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'f2f78068-21e1-4e79-8597-6237c46a1399'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Имя листа пользовательское - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401060"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_Имя листа пользовательское' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cec3cc8c-d1fb-477b-9954-29cb60ce6656'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Имя листа пользовательское': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Наименование объекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401061"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_Наименование объекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c92f2899-a807-468d-8126-610f73aa6ffc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Наименование объекта': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401062"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7a9f273e-9664-4950-9bca-3d96b2670ba6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401063"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'a856a784-03da-4238-9bd9-9881b9938b8a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401064"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '053e616e-cb3c-4dc5-8348-1c407e8e13a6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401065"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6ca82d36-9c55-450a-a479-002c4736cc06'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401066"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '3dc943bc-1b11-47e6-9cde-880d51a9d861'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401067"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '15284426-f3d8-4c55-9a6c-f9eea1393db3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401068"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c0f4a14d-0a30-4e08-a233-2a1a23db2403'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401069"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7f45f58c-1a5e-48f5-b292-bbf312c0bf2e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401070"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7e974de2-5e90-4af8-ba6a-601fe0c76b0f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401071"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6153ed75-b3d0-4e9a-ade5-f851a2a4cab6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401072"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '81f59847-bc5e-41a2-89f6-f840eaeb0258'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401073"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '00178540-addd-412e-83e5-76db04dbb325'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп Раздел проекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401074"
+  description: "ADSK architecture template: the parameter 'ADSK_Штамп Раздел проекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, '7f0c8590-53a2-4ddf-aaed-c70eb9b687bc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп Раздел проекта': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Категория здания по взрывопожарной и пожарной опасности - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401075"
+  description: "ADSK architecture template: the parameter 'ADSK_Категория здания по взрывопожарной и пожарной опасности' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, '0a1a578c-f3e6-4106-bb89-1ec9640cf2d0'))"
+  message: "Empty ADSK parameter 'ADSK_Категория здания по взрывопожарной и пожарной опасности': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Класс конструктивной пожарной опасности здания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401076"
+  description: "ADSK architecture template: the parameter 'ADSK_Класс конструктивной пожарной опасности здания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, 'ADSK_Класс конструктивной пожарной опасности здания'))"
+  message: "Empty ADSK parameter 'ADSK_Класс конструктивной пожарной опасности здания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Класс пожарной опасности строительных конструкций - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401077"
+  description: "ADSK architecture template: the parameter 'ADSK_Класс пожарной опасности строительных конструкций' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, '9516c59a-08fc-420e-8771-7be440959141'))"
+  message: "Empty ADSK parameter 'ADSK_Класс пожарной опасности строительных конструкций': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Класс функциональной пожарной опасности здания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401078"
+  description: "ADSK architecture template: the parameter 'ADSK_Класс функциональной пожарной опасности здания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, '7b463ac6-9152-4ab4-9e7b-c00fa3117f4f'))"
+  message: "Empty ADSK parameter 'ADSK_Класс функциональной пожарной опасности здания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Степень огнестойкости здания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401079"
+  description: "ADSK architecture template: the parameter 'ADSK_Степень огнестойкости здания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, '4c0bf708-19d9-4070-b6cf-b79606f808e9'))"
+  message: "Empty ADSK parameter 'ADSK_Степень огнестойкости здания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Уровень ответственности здания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401080"
+  description: "ADSK architecture template: the parameter 'ADSK_Уровень ответственности здания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, '0b311b8f-395f-43b6-8375-ef15940fe631'))"
+  message: "Empty ADSK parameter 'ADSK_Уровень ответственности здания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер корпуса - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM401081"
+  description: "ADSK architecture template: the parameter 'ADSK_Номер корпуса' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "АР", "Architecture", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '32c60a41-a17c-4caa-8a52-6ef0a9e798dd'))"
+  message: "Empty ADSK parameter 'ADSK_Номер корпуса': '{elementName}' ({elementId}). Fill it in."

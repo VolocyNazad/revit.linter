@@ -225,6 +225,56 @@
                         Margin="0,0,0,12"
                         Content="{Binding StructureText, Mode=OneWay}"
                         IsChecked="{Binding IsStructureSelected}" />
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,6"
+                            FontWeight="SemiBold"
+                            Style="{StaticResource LinterParagraphText}"
+                            Text="{Binding AdskChecksHeaderText, Mode=OneWay}" />
+                        <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AdskChecksIntroText, Mode=OneWay}" />
+                        <WrapPanel Margin="0,4,0,12">
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckArchitectureText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckArchitectureSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckWaterSupplyText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckWaterSupplySelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckReinforcedConcreteText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckReinforcedConcreteSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckSteelStructuresText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckSteelStructuresSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckHvacText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckHvacSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckLowCurrentText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckLowCurrentSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckTechnologyText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckTechnologySelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckElectricalText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckElectricalSelected}" />
+                        </WrapPanel>
+                    </StackPanel>
                     <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ContentsText, Mode=OneWay}" />
                     <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding TargetInfo, Mode=OneWay}" />
                     <Button

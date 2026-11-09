@@ -267,6 +267,67 @@ internal sealed class WelcomeExamplesStepDesignData : WelcomeStepDesignData
     /// <summary>Gets the sample description of the installed content.</summary>
     public string ContentsText => LocalizationResourceReader.GetString(ResourceBaseName, "contents_text");
 
+    /// <summary>Gets the sample header of the ADSK template check block.</summary>
+    public string AdskChecksHeaderText => LocalizationResourceReader.GetString(ResourceBaseName, "adskChecksHeader_text");
+
+    /// <summary>Gets the sample introduction of the ADSK template check block.</summary>
+    public string AdskChecksIntroText => LocalizationResourceReader.GetString(ResourceBaseName, "adskChecksIntro_text");
+
+    /// <summary>Gets the sample label of the architecture check pack.</summary>
+    public string AdskCheckArchitectureText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckArchitecture_text");
+
+    /// <summary>Gets the sample label of the water supply check pack.</summary>
+    public string AdskCheckWaterSupplyText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckWaterSupply_text");
+
+    /// <summary>Gets the sample label of the reinforced concrete check pack.</summary>
+    public string AdskCheckReinforcedConcreteText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckReinforcedConcrete_text");
+
+    /// <summary>Gets the sample label of the steel structures check pack.</summary>
+    public string AdskCheckSteelStructuresText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckSteelStructures_text");
+
+    /// <summary>Gets the sample label of the heating and ventilation check pack.</summary>
+    public string AdskCheckHvacText => LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckHvac_text");
+
+    /// <summary>Gets the sample label of the low-current systems check pack.</summary>
+    public string AdskCheckLowCurrentText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckLowCurrent_text");
+
+    /// <summary>Gets the sample label of the technology check pack.</summary>
+    public string AdskCheckTechnologyText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckTechnology_text");
+
+    /// <summary>Gets the sample label of the electrical check pack.</summary>
+    public string AdskCheckElectricalText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "adskCheckElectrical_text");
+
+    /// <summary>Gets or sets a value indicating whether the architecture check pack is selected.</summary>
+    public bool IsCheckArchitectureSelected { get; set; } = true;
+
+    /// <summary>Gets or sets a value indicating whether the water supply check pack is selected.</summary>
+    public bool IsCheckWaterSupplySelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the reinforced concrete check pack is selected.</summary>
+    public bool IsCheckReinforcedConcreteSelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the steel structures check pack is selected.</summary>
+    public bool IsCheckSteelStructuresSelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the heating and ventilation check pack is selected.</summary>
+    public bool IsCheckHvacSelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the low-current systems check pack is selected.</summary>
+    public bool IsCheckLowCurrentSelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the technology check pack is selected.</summary>
+    public bool IsCheckTechnologySelected { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the electrical check pack is selected.</summary>
+    public bool IsCheckElectricalSelected { get; set; }
+
     /// <summary>Gets the sample sentence naming the installation target.</summary>
     public string TargetInfo => string.Format(
         CultureInfo.CurrentCulture,

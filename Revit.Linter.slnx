@@ -307,6 +307,50 @@
     <File Path="wiki/examples/configuration/ru/diagnostics.config.yaml" />
     <File Path="wiki/examples/configuration/ru/practical-tour.config.yaml" />
   </Folder>
+  <Folder Name="/wiki/examples/template-checks/">
+    <File Path="wiki/examples/template-checks/_summary.json" />
+  </Folder>
+  <Folder Name="/wiki/examples/template-checks/en/">
+    <File Path="wiki/examples/template-checks/en/adsk-401.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-402.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-403.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-404.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-405.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-406.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-407.yaml" />
+    <File Path="wiki/examples/template-checks/en/adsk-408.yaml" />
+  </Folder>
+  <Folder Name="/wiki/examples/template-checks/ru/">
+    <File Path="wiki/examples/template-checks/ru/adsk-401.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-402.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-403.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-404.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-405.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-406.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-407.yaml" />
+    <File Path="wiki/examples/template-checks/ru/adsk-408.yaml" />
+  </Folder>
+  <Folder Name="/wiki/examples/template-checks/2024/" />
+  <Folder Name="/wiki/examples/template-checks/2024/en/">
+    <File Path="wiki/examples/template-checks/2024/en/adsk-401.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-402.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-403.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-404.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-405.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-406.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-407.yaml" />
+    <File Path="wiki/examples/template-checks/2024/en/adsk-408.yaml" />
+  </Folder>
+  <Folder Name="/wiki/examples/template-checks/2024/ru/">
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-401.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-402.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-403.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-404.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-405.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-406.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-407.yaml" />
+    <File Path="wiki/examples/template-checks/2024/ru/adsk-408.yaml" />
+  </Folder>
   <Folder Name="/wiki/getting-started/">
     <File Path="wiki/getting-started/Configuration setup.md" />
     <File Path="wiki/getting-started/Create your first rule.md" />

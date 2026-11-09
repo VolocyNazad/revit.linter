@@ -37,7 +37,7 @@ internal sealed partial class WelcomeViewModel(
     /// The version of the wizard content. Increase it when a new step or new important information must be
     /// shown again to users who already completed an earlier version.
     /// </summary>
-    internal const int CurrentWizardVersion = 4;
+    internal const int CurrentWizardVersion = 5;
 
     private int _currentIndex;
 

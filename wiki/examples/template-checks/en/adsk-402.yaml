@@ -1,0 +1,1100 @@
+# Project-parameter check generated from the ADSK template 'ADSK_Шаблон_ВК_R2021_v2.1.4.rte'.
+# Every listed parameter must exist in a project document with the same binding type, group,
+# categories and vary-between-groups flag as in the template.
+- type: "parameter"
+  code: "PRMTR402"
+  description: "ADSK water supply template: project parameters match the company standard"
+  severity: "Warning"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Project"]
+  take: "!property('IsFamilyDocument')"
+  parameters:
+    - name: "ADSK_Единица измерения"
+      guid: "4289cb19-9517-45de-9c02-5a74ebf5c86d"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_DuctCurves", "OST_DuctInsulations", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_PipeCurves", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Завод-изготовитель"
+      guid: "a8cdbf7b-d60a-485e-a520-447d2055f351"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_DuctCurves", "OST_DuctInsulations", "OST_DuctLinings", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_PipeCurves", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Код изделия"
+      guid: "2fd9e8cb-84f3-4297-b8b8-75f444e124ed"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Количество"
+      guid: "8d057bb3-6ccd-4655-9165-55526691fe3a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctTerminal", "OST_Entourage", "OST_Fascia", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Sprinklers", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Марка"
+      guid: "2204049c-d557-4dfc-8d70-13f19715e46d"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_BuildingPad", "OST_Casework", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_Fascia", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_Parking", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_Sprinklers", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralColumns", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Масса"
+      guid: "32989501-0d17-4916-8777-da950841c6d7"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Масса_Текст"
+      guid: "a8832df7-0302-4a63-a6e1-47a01632b987"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_DuctCurves", "OST_DuctInsulations", "OST_DuctLinings", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_PipeCurves", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Наименование"
+      guid: "e6e0f5cd-3e26-485b-9342-23882b20eb43"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctTerminal", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Обозначение"
+      guid: "9c98831b-9450-412d-b072-7d69b39f4029"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Позиция"
+      guid: "ae8ff999-1f22-4ed7-ad33-61503d85f0f4"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_AnalyticalPipeConnections", "OST_BuildingPad", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_Entourage", "OST_Fascia", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MEPSpaces", "OST_Mass", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Sprinklers", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Примечание"
+      guid: "a85b7661-26b0-412f-979c-66af80b4b2c3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Areas", "OST_BuildingPad", "OST_Ceilings", "OST_Columns", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctTerminal", "OST_EdgeSlab", "OST_Entourage", "OST_Fascia", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_Materials", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_RailingHandRail", "OST_RailingSupport", "OST_RailingTermination", "OST_RailingTopRail", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Rooms", "OST_Sheets", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Sprinklers", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralFraming", "OST_Topography", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Группирование"
+      guid: "3de5f1a4-d560-4fa8-a74f-25d250fb3401"
+      group: "PG_GENERAL"
+      isInstance: true
+      categories: ["OST_AnalyticalPipeConnections", "OST_BuildingPad", "OST_Ceilings", "OST_Columns", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_Entourage", "OST_Fascia", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingFixtures", "OST_MEPSpaces", "OST_Materials", "OST_MechanicalEquipment", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Sprinklers", "OST_Stairs", "OST_StairsRailing", "OST_Walls", "OST_Windows"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Уклон"
+      guid: "80d34cef-47d0-4c21-8409-6305fda3a286"
+      group: "PG_CONSTRUCTION"
+      isInstance: true
+      categories: ["OST_PipeCurves", "OST_PlaceHolderPipes"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Категория помещения"
+      guid: "4c70cba0-574b-49cb-b5fd-c0637073e720"
+      group: "PG_IDENTITY_DATA"
+      isInstance: true
+      categories: ["OST_MEPSpaces", "OST_Rooms"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Назначение вида"
+      guid: "e313f126-7e51-4a5d-a45a-7c6dfe02124a"
+      group: "PG_IDENTITY_DATA"
+      isInstance: true
+      categories: ["OST_Schedules", "OST_Views"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Номер стояка"
+      guid: "77c39bbd-2b91-4602-92a8-cf4e1e3b62c1"
+      group: "PG_CONSTRUCTION"
+      isInstance: true
+      categories: ["OST_PipeCurves", "OST_PlaceHolderPipes"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Штамп Раздел проекта"
+      guid: "7f0c8590-53a2-4ddf-aaed-c70eb9b687bc"
+      group: "PG_IDENTITY_DATA"
+      isInstance: true
+      categories: ["OST_Sheets", "OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Владелец вида"
+      guid: "e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_1 должность"
+      guid: "ab409417-2d5e-4f75-aa6a-204cc4ee6f74"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Год выпуска"
+      guid: "8a6e0145-58ea-4c2a-99b7-79e64e71f365"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Директор"
+      guid: "45d87fac-84ab-4bd0-a852-d6089c156543"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 должность"
+      guid: "c5f4124e-9a7c-49d5-83e0-99bd05213e86"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 фамилия"
+      guid: "03d95fa9-d919-4add-b778-cb2a1208fb86"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 должность"
+      guid: "8ddc6ae4-7741-450d-be39-2838a23a7758"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 фамилия"
+      guid: "ebf4547f-2321-447d-9869-ef8ade144981"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Номер тома"
+      guid: "cf26d231-bbc4-4735-aa83-ecef9f44d030"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Наименование документа"
+      guid: "2f55778b-d403-4e61-b950-23a4e7d6fbc3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Вид документации"
+      guid: "dd71ff90-123c-47fd-9b73-0855c8f63566"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_Инвентарный номер"
+      guid: "1b54f7b8-55f5-4d54-b27e-7909865a501d"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_1 фамилия"
+      guid: "597f72d5-01a8-416b-805c-a18cbbc49254"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 должность"
+      guid: "aa4e0636-b1b9-4ea6-8123-244a8679db0e"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 фамилия"
+      guid: "73790284-e8c2-4717-a291-62460b2a596f"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 должность"
+      guid: "ca0521c7-fdb9-4868-8047-9e81c665c9c7"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 фамилия"
+      guid: "20e3931e-c22b-43ee-9256-9a2215b576a8"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 должность"
+      guid: "1031a769-0efa-4811-a2bc-d2f2e15b7ba7"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 фамилия"
+      guid: "c58ff5a3-7e40-4be6-af6d-f9fea2507a2d"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 должность"
+      guid: "59e76a65-de10-4091-9763-6e923deab89a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 фамилия"
+      guid: "0abc2cd5-dab6-4a02-8b67-948c67c4f596"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 должность"
+      guid: "bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 фамилия"
+      guid: "f2f78068-21e1-4e79-8597-6237c46a1399"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Количество листов"
+      guid: "c2f49234-25d3-4abc-8638-dde90c2527aa"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Имя листа пользовательское"
+      guid: "cec3cc8c-d1fb-477b-9954-29cb60ce6656"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Наименование объекта"
+      guid: "c92f2899-a807-468d-8126-610f73aa6ffc"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 должность"
+      guid: "7a9f273e-9664-4950-9bca-3d96b2670ba6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 фамилия"
+      guid: "a856a784-03da-4238-9bd9-9881b9938b8a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 должность"
+      guid: "053e616e-cb3c-4dc5-8348-1c407e8e13a6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 фамилия"
+      guid: "6ca82d36-9c55-450a-a479-002c4736cc06"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 должность"
+      guid: "3dc943bc-1b11-47e6-9cde-880d51a9d861"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 фамилия"
+      guid: "15284426-f3d8-4c55-9a6c-f9eea1393db3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 должность"
+      guid: "c0f4a14d-0a30-4e08-a233-2a1a23db2403"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 фамилия"
+      guid: "7f45f58c-1a5e-48f5-b292-bbf312c0bf2e"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 должность"
+      guid: "7e974de2-5e90-4af8-ba6a-601fe0c76b0f"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 фамилия"
+      guid: "6153ed75-b3d0-4e9a-ade5-f851a2a4cab6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 должность"
+      guid: "81f59847-bc5e-41a2-89f6-f840eaeb0258"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 фамилия"
+      guid: "00178540-addd-412e-83e5-76db04dbb325"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп Номер страницы"
+      guid: "b4e34c05-d510-468f-bd86-e753486c8add"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ИмяСистемы"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_GenericModel", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Позиция_Комплект"
+      guid: "cb017cdd-3a8f-4bd0-bf2e-577667423f8f"
+      group: "PG_GENERAL"
+      isInstance: true
+      categories: ["OST_AnalyticalPipeConnections", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctTerminal", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_IOSModelGroups", "OST_MechanicalEquipment", "OST_MechanicalEquipmentSet", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Позиция_Сортировка"
+      guid: "5e813a73-c32b-41b5-b601-687b24c850c6"
+      group: "PG_GENERAL"
+      isInstance: true
+      categories: ["OST_AnalyticalPipeConnections", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctTerminal", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_MechanicalEquipment", "OST_MechanicalEquipmentSet", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Техническая характеристика"
+      guid: "8d9d6ace-b918-40ee-9762-600675b81f53"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctTerminal", "OST_FlexPipeCurves", "OST_GenericModel", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Site", "OST_Sprinklers"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Система_Имя"
+      guid: "24c33696-0fa2-4a85-affd-e47d1cf20fb3"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Система_Классификация"
+      guid: "a85c3915-2e8e-4ca3-ad9a-a0a883959656"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Система_Обозначение"
+      guid: "dc4f8698-20e2-4304-b11e-febeb19c2ecc"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Система_Сокращение"
+      guid: "a36a81ac-7c43-43a4-8b0d-2e863c569a01"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Система_Тип"
+      guid: "960a36c5-0e10-49ba-8422-5ddf9726827d"
+      group: "PG_MECHANICAL"
+      isInstance: true
+      categories: ["OST_FlexPipeCurves", "OST_MechanicalEquipment", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_Sprinklers"]
+      allowVaryBetweenGroups: false
+
+# The element checks below report empty text parameters: one custom rule per text parameter of
+# the template, with the same categories and the same instance or type binding as the template.
+# A finding means the parameter value is empty and should be filled in.
+
+# ADSK_Единица измерения - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402001"
+  description: "ADSK water supply template: the type parameter 'ADSK_Единица измерения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_DuctCurves') or builtincategory('OST_DuctInsulations') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '4289cb19-9517-45de-9c02-5a74ebf5c86d'))"
+  message: "Empty ADSK type parameter 'ADSK_Единица измерения': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Завод-изготовитель - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402002"
+  description: "ADSK water supply template: the type parameter 'ADSK_Завод-изготовитель' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_DuctCurves') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes'))"
+  check: "!isnullorempty(parameter(me, 'a8cdbf7b-d60a-485e-a520-447d2055f351'))"
+  message: "Empty ADSK type parameter 'ADSK_Завод-изготовитель': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Код изделия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402003"
+  description: "ADSK water supply template: the parameter 'ADSK_Код изделия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '2fd9e8cb-84f3-4297-b8b8-75f444e124ed'))"
+  message: "Empty ADSK parameter 'ADSK_Код изделия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Марка - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402004"
+  description: "ADSK water supply template: the type parameter 'ADSK_Марка' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_BuildingPad') or builtincategory('OST_Casework') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_Sprinklers') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralColumns') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '2204049c-d557-4dfc-8d70-13f19715e46d'))"
+  message: "Empty ADSK type parameter 'ADSK_Марка': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Масса_Текст - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402005"
+  description: "ADSK water supply template: the parameter 'ADSK_Масса_Текст' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_DuctCurves') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'a8832df7-0302-4a63-a6e1-47a01632b987'))"
+  message: "Empty ADSK parameter 'ADSK_Масса_Текст': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402006"
+  description: "ADSK water supply template: the parameter 'ADSK_Наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctTerminal') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'e6e0f5cd-3e26-485b-9342-23882b20eb43'))"
+  message: "Empty ADSK parameter 'ADSK_Наименование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Обозначение - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402007"
+  description: "ADSK water supply template: the type parameter 'ADSK_Обозначение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '9c98831b-9450-412d-b072-7d69b39f4029'))"
+  message: "Empty ADSK type parameter 'ADSK_Обозначение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Позиция - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402008"
+  description: "ADSK water supply template: the parameter 'ADSK_Позиция' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_AnalyticalPipeConnections') or builtincategory('OST_BuildingPad') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_Mass') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Sprinklers') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'ae8ff999-1f22-4ed7-ad33-61503d85f0f4'))"
+  message: "Empty ADSK parameter 'ADSK_Позиция': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Примечание - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402009"
+  description: "ADSK water supply template: the parameter 'ADSK_Примечание' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_BuildingPad') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctTerminal') or builtincategory('OST_EdgeSlab') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_Materials') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_RailingHandRail') or builtincategory('OST_RailingSupport') or builtincategory('OST_RailingTermination') or builtincategory('OST_RailingTopRail') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Rooms') or builtincategory('OST_Sheets') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Sprinklers') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralFraming') or builtincategory('OST_Topography') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, 'a85b7661-26b0-412f-979c-66af80b4b2c3'))"
+  message: "Empty ADSK parameter 'ADSK_Примечание': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Группирование - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402010"
+  description: "ADSK water supply template: the parameter 'ADSK_Группирование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_AnalyticalPipeConnections') or builtincategory('OST_BuildingPad') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_Entourage') or builtincategory('OST_Fascia') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_Materials') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Sprinklers') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_Walls') or builtincategory('OST_Windows'))"
+  check: "!isnullorempty(parameter(me, '3de5f1a4-d560-4fa8-a74f-25d250fb3401'))"
+  message: "Empty ADSK parameter 'ADSK_Группирование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Категория помещения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402011"
+  description: "ADSK water supply template: the parameter 'ADSK_Категория помещения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '4c70cba0-574b-49cb-b5fd-c0637073e720'))"
+  message: "Empty ADSK parameter 'ADSK_Категория помещения': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Назначение вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402012"
+  description: "ADSK water supply template: the parameter 'ADSK_Назначение вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Schedules') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e313f126-7e51-4a5d-a45a-7c6dfe02124a'))"
+  message: "Empty ADSK parameter 'ADSK_Назначение вида': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер стояка - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402013"
+  description: "ADSK water supply template: the parameter 'ADSK_Номер стояка' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_PipeCurves') or builtincategory('OST_PlaceHolderPipes'))"
+  check: "!isnullorempty(parameter(me, '77c39bbd-2b91-4602-92a8-cf4e1e3b62c1'))"
+  message: "Empty ADSK parameter 'ADSK_Номер стояка': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп Раздел проекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402014"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп Раздел проекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, '7f0c8590-53a2-4ddf-aaed-c70eb9b687bc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп Раздел проекта': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Владелец вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402015"
+  description: "ADSK water supply template: the parameter 'ADSK_Владелец вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b'))"
+  message: "Empty ADSK parameter 'ADSK_Владелец вида': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402016"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ab409417-2d5e-4f75-aa6a-204cc4ee6f74'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Директор - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402017"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_Директор' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '45d87fac-84ab-4bd0-a852-d6089c156543'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Директор': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402018"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c5f4124e-9a7c-49d5-83e0-99bd05213e86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402019"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '03d95fa9-d919-4add-b778-cb2a1208fb86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402020"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '8ddc6ae4-7741-450d-be39-2838a23a7758'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402021"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ebf4547f-2321-447d-9869-ef8ade144981'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Номер тома - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402022"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_Номер тома' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cf26d231-bbc4-4735-aa83-ecef9f44d030'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Номер тома': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Наименование документа - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402023"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_Наименование документа' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '2f55778b-d403-4e61-b950-23a4e7d6fbc3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Наименование документа': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Вид документации - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402024"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп титульный_Вид документации' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'dd71ff90-123c-47fd-9b73-0855c8f63566'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Вид документации': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_Инвентарный номер - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402025"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_Инвентарный номер' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1b54f7b8-55f5-4d54-b27e-7909865a501d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_Инвентарный номер': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402026"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '597f72d5-01a8-416b-805c-a18cbbc49254'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402027"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'aa4e0636-b1b9-4ea6-8123-244a8679db0e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402028"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '73790284-e8c2-4717-a291-62460b2a596f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402029"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ca0521c7-fdb9-4868-8047-9e81c665c9c7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402030"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '20e3931e-c22b-43ee-9256-9a2215b576a8'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402031"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1031a769-0efa-4811-a2bc-d2f2e15b7ba7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402032"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c58ff5a3-7e40-4be6-af6d-f9fea2507a2d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402033"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '59e76a65-de10-4091-9763-6e923deab89a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402034"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '0abc2cd5-dab6-4a02-8b67-948c67c4f596'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402035"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402036"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп боковой_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'f2f78068-21e1-4e79-8597-6237c46a1399'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Имя листа пользовательское - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402037"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_Имя листа пользовательское' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cec3cc8c-d1fb-477b-9954-29cb60ce6656'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Имя листа пользовательское': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Наименование объекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402038"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_Наименование объекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c92f2899-a807-468d-8126-610f73aa6ffc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Наименование объекта': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402039"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7a9f273e-9664-4950-9bca-3d96b2670ba6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402040"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'a856a784-03da-4238-9bd9-9881b9938b8a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402041"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '053e616e-cb3c-4dc5-8348-1c407e8e13a6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402042"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6ca82d36-9c55-450a-a479-002c4736cc06'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402043"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '3dc943bc-1b11-47e6-9cde-880d51a9d861'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402044"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '15284426-f3d8-4c55-9a6c-f9eea1393db3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402045"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c0f4a14d-0a30-4e08-a233-2a1a23db2403'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402046"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7f45f58c-1a5e-48f5-b292-bbf312c0bf2e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402047"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7e974de2-5e90-4af8-ba6a-601fe0c76b0f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402048"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6153ed75-b3d0-4e9a-ade5-f851a2a4cab6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402049"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '81f59847-bc5e-41a2-89f6-f840eaeb0258'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402050"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '00178540-addd-412e-83e5-76db04dbb325'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп Номер страницы - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402051"
+  description: "ADSK water supply template: the parameter 'ADSK_Штамп Номер страницы' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'b4e34c05-d510-468f-bd86-e753486c8add'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп Номер страницы': '{elementName}' ({elementId}). Fill it in."
+
+# ИмяСистемы - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402052"
+  description: "ADSK water supply template: the parameter 'ИмяСистемы' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'ИмяСистемы'))"
+  message: "Empty ADSK parameter 'ИмяСистемы': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Техническая характеристика - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402053"
+  description: "ADSK water supply template: the parameter 'ADSK_Техническая характеристика' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctTerminal') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Site') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '8d9d6ace-b918-40ee-9762-600675b81f53'))"
+  message: "Empty ADSK parameter 'ADSK_Техническая характеристика': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Система_Имя - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402054"
+  description: "ADSK water supply template: the parameter 'ADSK_Система_Имя' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '24c33696-0fa2-4a85-affd-e47d1cf20fb3'))"
+  message: "Empty ADSK parameter 'ADSK_Система_Имя': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Система_Классификация - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402055"
+  description: "ADSK water supply template: the parameter 'ADSK_Система_Классификация' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'a85c3915-2e8e-4ca3-ad9a-a0a883959656'))"
+  message: "Empty ADSK parameter 'ADSK_Система_Классификация': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Система_Обозначение - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402056"
+  description: "ADSK water supply template: the parameter 'ADSK_Система_Обозначение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'dc4f8698-20e2-4304-b11e-febeb19c2ecc'))"
+  message: "Empty ADSK parameter 'ADSK_Система_Обозначение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Система_Сокращение - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402057"
+  description: "ADSK water supply template: the parameter 'ADSK_Система_Сокращение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, 'a36a81ac-7c43-43a4-8b0d-2e863c569a01'))"
+  message: "Empty ADSK parameter 'ADSK_Система_Сокращение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Система_Тип - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM402058"
+  description: "ADSK water supply template: the parameter 'ADSK_Система_Тип' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "ВК", "Plumbing", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_FlexPipeCurves') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Sprinklers'))"
+  check: "!isnullorempty(parameter(me, '960a36c5-0e10-49ba-8422-5ddf9726827d'))"
+  message: "Empty ADSK parameter 'ADSK_Система_Тип': '{elementName}' ({elementId}). Fill it in."

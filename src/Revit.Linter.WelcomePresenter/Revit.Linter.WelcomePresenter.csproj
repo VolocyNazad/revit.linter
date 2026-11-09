@@ -24,6 +24,13 @@
 		<!-- The installed examples are the Wiki example files themselves, so the documentation and the product cannot drift apart. -->
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.en.diagnostics.config.yaml" Link="Examples\en\diagnostics.config.yaml" />
 		<EmbeddedResource Include="..\..\wiki\examples\configuration\ru\diagnostics.config.yaml" LogicalName="Revit.Linter.WelcomePresenter.Examples.ru.diagnostics.config.yaml" Link="Examples\ru\diagnostics.config.yaml" />
+		<!-- Project-parameter check blocks generated from the ADSK Revit 2021 templates; the files document
+		     themselves in the Wiki and are appended to the installed example configuration. The root
+		     folders hold the Revit 2021-2023 PG_* edition; the 2024 folders hold the ForgeTypeId edition. -->
+		<EmbeddedResource Include="..\..\wiki\examples\template-checks\en\*.yaml" LogicalName="Revit.Linter.WelcomePresenter.TemplateChecks.en.%(Filename)%(Extension)" Link="TemplateChecks\en\%(Filename)%(Extension)" />
+		<EmbeddedResource Include="..\..\wiki\examples\template-checks\ru\*.yaml" LogicalName="Revit.Linter.WelcomePresenter.TemplateChecks.ru.%(Filename)%(Extension)" Link="TemplateChecks\ru\%(Filename)%(Extension)" />
+		<EmbeddedResource Include="..\..\wiki\examples\template-checks\2024\en\*.yaml" LogicalName="Revit.Linter.WelcomePresenter.TemplateChecks2024.en.%(Filename)%(Extension)" Link="TemplateChecks\2024\en\%(Filename)%(Extension)" />
+		<EmbeddedResource Include="..\..\wiki\examples\template-checks\2024\ru\*.yaml" LogicalName="Revit.Linter.WelcomePresenter.TemplateChecks2024.ru.%(Filename)%(Extension)" Link="TemplateChecks\2024\ru\%(Filename)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
