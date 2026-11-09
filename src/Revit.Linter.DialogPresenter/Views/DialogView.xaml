@@ -6,7 +6,7 @@
     xmlns:designData="clr-namespace:Revit.Linter.DialogPresenter.DesignData"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     Width="500"
     MinWidth="250"
     MinHeight="175"
