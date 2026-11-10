@@ -49,6 +49,9 @@ lang: en
 | **SHRD0035** | Checks whether levels are pinned (projects only). | ⚠️ Warning | `Level 'Уровень 2' (ID:55667) is not pinned. (5 ms)` |
 | **SHRD0036** | Checks whether grids are pinned (projects only). | ⚠️ Warning | `Grid 'Ось 1' (ID:77665) is not pinned. (5 ms)` |
 | **SHRD0037** | Checks whether Revit links are pinned (projects only). | ⚠️ Warning | `Revit link 'АР' (ID:12345) is not pinned. (5 ms)` |
+| **SHRD0038** | Checks for materials that duplicate another material's settings under a different name. | 💬 Message | `Material 'Бетон_02' (ID:99017) duplicates material 'Бетон_01'. (5 ms)` |
+| **SHRD0039** | Checks for appearance assets that no material uses. | 💬 Message | `Appearance asset 'Кирпич_01' (ID:99018) is not used. (5 ms)` |
+| **SHRD0040** | Checks materials whose render appearance is used in shaded views and contains a texture. | 💬 Message | `Material 'Кирпич_01' (ID:99019) uses its render appearance for shaded views. (6 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

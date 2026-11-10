@@ -7,6 +7,9 @@
   <data name="deleteUnusedFamily_fix" xml:space="preserve"><value>Delete unused family</value></data>
   <data name="deleteImportInstance_fix" xml:space="preserve"><value>Delete imported object</value></data>
   <data name="deleteUnusedMaterial_fix" xml:space="preserve"><value>Delete unused material</value></data>
+  <data name="deleteUnusedAppearanceAsset_fix" xml:space="preserve"><value>Delete unused appearance asset</value></data>
+  <data name="deleteDuplicateMaterial_fix" xml:space="preserve"><value>Delete unused duplicate material</value></data>
+  <data name="disableRenderAppearanceForShading_fix" xml:space="preserve"><value>Disable render appearance for shading</value></data>
   <data name="deletePurgeableElement_fix" xml:space="preserve"><value>Delete unused element</value></data>
   <data name="deleteModelCurve_fix" xml:space="preserve"><value>Delete model line</value></data>
   <data name="deleteRedundantRoom_fix" xml:space="preserve"><value>Delete redundant room</value></data>
@@ -110,6 +113,12 @@
   <data name="SHRD0036_message" xml:space="preserve"><value>Grid '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
   <data name="SHRD0037_description" xml:space="preserve"><value>Checks whether Revit links are pinned.</value></data>
   <data name="SHRD0037_message" xml:space="preserve"><value>Revit link '{elementName}' ({elementId}) is not pinned. Duration: {duration} ms.</value></data>
+  <data name="SHRD0038_description" xml:space="preserve"><value>Checks for materials that repeat another material's settings under a different name. See Autodesk Revit Help: Troubleshooting performance, crashes, failed opens, and synchronization problems; materials and material assets duplicated in extremely high volumes.</value></data>
+  <data name="SHRD0038_message" xml:space="preserve"><value>Material '{elementName}' ({elementId}) duplicates material '{duplicateName}'. Duration: {duration} ms.</value></data>
+  <data name="SHRD0039_description" xml:space="preserve"><value>Checks for appearance assets that no material uses.</value></data>
+  <data name="SHRD0039_message" xml:space="preserve"><value>Appearance asset '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
+  <data name="SHRD0040_description" xml:space="preserve"><value>Checks materials whose render appearance is used in shaded views and contains a texture. See Autodesk Revit Help: Best Practices: Render Performance and Materials.</value></data>
+  <data name="SHRD0040_message" xml:space="preserve"><value>Material '{elementName}' ({elementId}) uses its render appearance for shaded views. Duration: {duration} ms.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>
