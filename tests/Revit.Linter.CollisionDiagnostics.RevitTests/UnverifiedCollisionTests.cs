@@ -1,14 +1,12 @@
 using Autodesk.Revit.DB;
 using Microsoft.Extensions.Logging.Abstractions;
 using Nice3point.TUnit.Revit;
-using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
 using Revit.Linter.Testing;
-using TUnit.Core.Executors;
 using CollisionElementDiagnostic = Revit.Linter.CollisionDiagnostics.ElementDiagnostic;
 
 namespace Revit.Linter.CollisionDiagnostics.RevitTests;
@@ -24,13 +22,12 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
     private const string RuleMessage = "Rule message: {elementName}";
     private const double OverlapVolume = 1.0;
 
-    private Document? _document;
-    private Wall? _target;
-    private Wall? _candidate;
+    private static Document? _document;
+    private static Wall? _target;
+    private static Wall? _candidate;
 
-    [Before(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CreateModel()
+    [Before(Class)]
+    public static void CreateModel()
     {
         _document = Application.NewProjectDocument(UnitSystem.Metric);
         using Transaction transaction = new(_document, "Create collision walls");
@@ -45,9 +42,8 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
         transaction.Commit();
     }
 
-    [After(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CloseModel()
+    [After(Class)]
+    public static void CloseModel()
     {
         _document?.Close(false);
         _document = null;

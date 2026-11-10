@@ -1,9 +1,7 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
-using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.DocumentDiagnostics.Diagnostics.PerformanceAdviser;
-using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -12,15 +10,17 @@ public sealed class PerformanceAdviserTests : RevitApiTest
     // The "unused families and types" rule is reported as the RVT003 element diagnostic.
     private static readonly Guid PurgeableElementsRuleGuid = new("e8c63650-70b7-435a-9010-ec97660c1bda");
 
-    private Document? _document;
+    private static Document? _document;
 
-    [Before(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CreateDocument() => _document = Application.NewProjectDocument(UnitSystem.Metric);
+    [Before(Class)]
+    public static void CreateDocument() => _document = Application.NewProjectDocument(UnitSystem.Metric);
 
-    [After(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CloseDocument() => _document?.Close(false);
+    [After(Class)]
+    public static void CloseDocument()
+    {
+        _document?.Close(false);
+        _document = null;
+    }
 
     [Test]
     public async Task Empty_project_reports_findings_with_rule_details()

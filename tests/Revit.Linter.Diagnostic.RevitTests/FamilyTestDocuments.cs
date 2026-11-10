@@ -6,14 +6,26 @@ namespace Revit.Linter.Diagnostic.RevitTests;
 
 internal static class FamilyTestDocuments
 {
+    // Resolving a template means enumerating the whole family-template library and opening
+    // candidate family documents until one fits. The result depends only on the installation, so
+    // it is remembered for the lifetime of the test assembly; every caller runs its Revit API calls
+    // on the single Revit thread of that assembly, one test at a time.
+    private static string[]? _templateFiles;
+    private static string? _templateRoot;
+    private static string? _firstTemplatePath;
+    private static string? _modelFamilyTemplatePath;
+    private static string? _titleBlockTemplatePath;
+
     public static Document OpenTemplateFamily(Application application)
     {
+        string? cachedPath = _firstTemplatePath;
+        if (cachedPath is not null && File.Exists(cachedPath))
+            return application.NewFamilyDocument(cachedPath);
         // Family templates live in locale subfolders below FamilyTemplatePath on some installations.
-        string templatePath = Directory
-            .EnumerateFiles(application.FamilyTemplatePath, "*.rft", SearchOption.AllDirectories)
-            .FirstOrDefault()
+        string templatePath = GetTemplateFiles(application).FirstOrDefault()
             ?? throw new InvalidOperationException(
                 $"No family template (*.rft) was found below '{application.FamilyTemplatePath}'.");
+        _firstTemplatePath = templatePath;
         return application.NewFamilyDocument(templatePath);
     }
 
@@ -21,16 +33,21 @@ internal static class FamilyTestDocuments
     // an annotation template, where type creation does not behave like in model families.
     public static Document OpenModelFamilyTemplate(Application application)
     {
-        string[] candidates = Directory
-            .EnumerateFiles(application.FamilyTemplatePath, "*.rft", SearchOption.AllDirectories)
-            .ToArray();
+        string? cachedPath = _modelFamilyTemplatePath;
+        if (cachedPath is not null && File.Exists(cachedPath))
+            return application.NewFamilyDocument(cachedPath);
+
+        string[] candidates = GetTemplateFiles(application);
         if (candidates.Length == 0)
             throw new InvalidOperationException(
                 $"No family template (*.rft) was found below '{application.FamilyTemplatePath}'.");
         string? preferredPath = candidates.FirstOrDefault(path =>
             IsLikelyGenericModel(Path.GetFileNameWithoutExtension(path)));
         if (preferredPath is not null)
+        {
+            _modelFamilyTemplatePath = preferredPath;
             return application.NewFamilyDocument(preferredPath);
+        }
         List<string> tried = [];
 #pragma warning disable S3267 // The loop opens and closes candidate documents: not a pure filter.
         foreach (string path in candidates.Take(40))
@@ -40,7 +57,10 @@ internal static class FamilyTestDocuments
             try
             {
                 if (candidate.OwnerFamily?.FamilyCategory?.CategoryType == CategoryType.Model)
+                {
+                    _modelFamilyTemplatePath = path;
                     return candidate;
+                }
             }
             catch
             {
@@ -133,8 +153,16 @@ internal static class FamilyTestDocuments
     {
         Autodesk.Revit.ApplicationServices.Application application = document.Application
             ?? throw new InvalidOperationException("The test document has no application.");
-        string[] candidates = Directory
-            .EnumerateFiles(application.FamilyTemplatePath, "*.rft", SearchOption.AllDirectories)
+
+        string? cachedPath = _titleBlockTemplatePath;
+        if (cachedPath is not null && File.Exists(cachedPath))
+        {
+            FamilySymbol? cachedSymbol = TryCreateTitleblockSymbol(application, document, cachedPath);
+            if (cachedSymbol is not null)
+                return cachedSymbol;
+        }
+
+        string[] candidates = GetTemplateFiles(application)
             .OrderByDescending(path => IsLikelyAnnotation(Path.GetFileNameWithoutExtension(path)))
             .Take(40)
             .ToArray();
@@ -146,49 +174,84 @@ internal static class FamilyTestDocuments
         foreach (string path in candidates)
         {
             tried.Add(Path.GetFileName(path));
-            Document familyDocument = application.NewFamilyDocument(path);
-            try
-            {
-                bool committed = false;
-                using (Transaction transaction = new(familyDocument, "Create test title block type"))
-                {
-                    transaction.Start();
-                    try
-                    {
-                        familyDocument.OwnerFamily.FamilyCategory = familyDocument.Settings.Categories
-                            .get_Item(BuiltInCategory.OST_TitleBlocks);
-                        familyDocument.FamilyManager.NewType("LinterTitleblock");
-                        transaction.Commit();
-                        committed = true;
-                    }
-                    catch (ArgumentException)
-                    {
-                        transaction.RollBack();
-                    }
-                }
-                if (!committed) continue;
-                try
-                {
-                    Family family = familyDocument.LoadFamily(document);
-                    return new FilteredElementCollector(document)
-                        .OfClass(typeof(FamilySymbol))
-                        .Cast<FamilySymbol>()
-                        .First(candidate => candidate.Family.Id == family.Id);
-                }
-                catch
-                {
-                    // Not loadable: close and try the next template.
-                }
-            }
-            finally
-            {
-                familyDocument.Close(false);
-            }
+            FamilySymbol? symbol = TryCreateTitleblockSymbol(application, document, path);
+            if (symbol is null)
+                continue;
+            _titleBlockTemplatePath = path;
+            return symbol;
         }
 #pragma warning restore S3267
         throw new InvalidOperationException(
             $"No title block family template was found below '{application.FamilyTemplatePath}'. " +
             $"Tried: {string.Join(", ", tried)}.");
+    }
+
+    /// <summary>
+    /// Opens one family template, reassigns its category to title blocks and loads it into
+    /// <paramref name="projectDocument"/>.
+    /// </summary>
+    /// <returns>The loaded symbol, or <see langword="null"/> when the template rejects the category or cannot be loaded.</returns>
+    private static FamilySymbol? TryCreateTitleblockSymbol(
+        Autodesk.Revit.ApplicationServices.Application application,
+        Document projectDocument,
+        string templatePath)
+    {
+        Document familyDocument = application.NewFamilyDocument(templatePath);
+        try
+        {
+            bool committed = false;
+            using (Transaction transaction = new(familyDocument, "Create test title block type"))
+            {
+                transaction.Start();
+                try
+                {
+                    familyDocument.OwnerFamily.FamilyCategory = familyDocument.Settings.Categories
+                        .get_Item(BuiltInCategory.OST_TitleBlocks);
+                    familyDocument.FamilyManager.NewType("LinterTitleblock");
+                    transaction.Commit();
+                    committed = true;
+                }
+                catch (ArgumentException)
+                {
+                    transaction.RollBack();
+                }
+            }
+            if (!committed)
+                return null;
+            try
+            {
+                Family family = familyDocument.LoadFamily(projectDocument);
+                return new FilteredElementCollector(projectDocument)
+                    .OfClass(typeof(FamilySymbol))
+                    .Cast<FamilySymbol>()
+                    .First(candidate => candidate.Family.Id == family.Id);
+            }
+            catch
+            {
+                // Not loadable: the caller tries the next template.
+                return null;
+            }
+        }
+        finally
+        {
+            familyDocument.Close(false);
+        }
+    }
+
+    private static string[] GetTemplateFiles(Application application)
+    {
+        string templateRoot = application.FamilyTemplatePath;
+        string[]? cachedFiles = _templateFiles;
+        if (cachedFiles is not null
+            && string.Equals(_templateRoot, templateRoot, StringComparison.OrdinalIgnoreCase))
+            return cachedFiles;
+
+        string[] files = Directory
+            .EnumerateFiles(templateRoot, "*.rft", SearchOption.AllDirectories)
+            .ToArray();
+        _templateRoot = templateRoot;
+        _templateFiles = files;
+        return files;
     }
 
     private static bool IsLikelyAnnotation(string templateName) =>
