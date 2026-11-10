@@ -10,15 +10,14 @@ namespace Revit.Linter.DocumentQueries.RevitTests;
 
 public sealed class DocumentQueryServiceTests : RevitApiTest
 {
-    private Document? _document;
-    private Document? _otherDocument;
-    private Level? _level;
-    private Wall? _wall;
+    private static Document? _document;
+    private static Document? _otherDocument;
+    private static Level? _level;
+    private static Wall? _wall;
     private IDocumentQueryService? _queries;
 
-    [Before(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CreateModel()
+    [Before(Class)]
+    public static void CreateModel()
     {
         _document = Application.NewProjectDocument(UnitSystem.Metric);
         _otherDocument = Application.NewProjectDocument(UnitSystem.Metric);
@@ -32,17 +31,23 @@ public sealed class DocumentQueryServiceTests : RevitApiTest
             _level.Id,
             false);
         transaction.Commit();
-
-        // Created after the model is seeded: the test cache never invalidates on transactions.
-        _queries = TestDocumentQueries.Create();
     }
 
-    [After(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CloseModel()
+    [After(Class)]
+    public static void CloseModel()
     {
         _document?.Close(false);
         _otherDocument?.Close(false);
+        _document = null;
+        _otherDocument = null;
+    }
+
+    [Before(Test)]
+    [HookExecutor<RevitThreadExecutor>]
+    public void CreateQueries()
+    {
+        // A fresh cache per test: the test cache never invalidates on transactions.
+        _queries = TestDocumentQueries.Create();
     }
 
     [Test]

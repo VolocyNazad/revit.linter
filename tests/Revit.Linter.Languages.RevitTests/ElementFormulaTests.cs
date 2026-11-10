@@ -1,20 +1,17 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
-using Nice3point.TUnit.Revit.Executors;
 using System.Globalization;
-using TUnit.Core.Executors;
 
 namespace Revit.Linter.Languages.RevitTests;
 
 public sealed class ElementFormulaTests : RevitApiTest
 {
-    private Document? _document;
-    private Wall? _wall;
-    private Level? _level;
+    private static Document? _document;
+    private static Wall? _wall;
+    private static Level? _level;
 
-    [Before(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CreateModel()
+    [Before(Class)]
+    public static void CreateModel()
     {
         _document = Application.NewProjectDocument(UnitSystem.Metric);
 
@@ -33,11 +30,11 @@ public sealed class ElementFormulaTests : RevitApiTest
         transaction.Commit();
     }
 
-    [After(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CloseModel()
+    [After(Class)]
+    public static void CloseModel()
     {
         _document?.Close(false);
+        _document = null;
     }
 
     [Test]
