@@ -205,6 +205,11 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   pipeline into two, because Revit rejects a change of the active view while the document is modifiable.
   The built-in view-changing pipelines hide scope boxes with the `SetCategoryVisibility` step
   in `hide` mode.
+- A built-in finding whose target is a view is visualized by opening that view. The registration gives
+  every built-in diagnostic a target-view pipeline; the report presenter offers it only for findings
+  whose target is a `View` (a sheet included) and applies it in that view without creating the
+  three-dimensional visualization view. A built-in check that later starts reporting views needs no
+  visualization of its own, while a configured rule keeps the pipelines it declares.
 - The host provides `IVisualizationViewProvider`, which creates and prepares the persistent 3D view
   (coarse detail, shaded display) and activates it from the committed state the pipeline asks for. The
   pipeline itself delegates transactions, step dispatch and session bookkeeping to small collaborators,

@@ -48,8 +48,7 @@ internal sealed class VisualizationViewProvider(
         if (uiDocument is null || !uiDocument.Document.Equals(view.Document))
         {
             logger.LogWarning(
-                "The visualization view {ViewName} was not activated because it does not belong " +
-                "to the active document",
+                "The view {ViewName} was not activated because it does not belong to the active document",
                 view.Name);
             return;
         }
@@ -57,7 +56,7 @@ internal sealed class VisualizationViewProvider(
         if (uiDocument.ActiveView is { } activeView && activeView.Id.Equals(view.Id)) return;
         uiDocument.ActiveView = view;
         logger.LogDebug(
-            "Activated diagnostic visualization view {ViewName} in document {DocumentTitle}",
+            "Activated view {ViewName} in document {DocumentTitle}",
             view.Name, uiDocument.Document.Title);
     }
 

@@ -56,6 +56,8 @@ lang: en
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 
+> **Note:** For a built-in check that reports a view or a sheet (**SHRD004**, **SHRD0017**, **SHRD0018**, **SHRD0019**, **SHRD0020**, **SHRD0041**), the eye button opens that view or sheet instead of the `Revit Linter — Visualization` 3D view.
+
 ---
 
 See [[Diagnostic severity|severity levels]] for the meaning of each result level.

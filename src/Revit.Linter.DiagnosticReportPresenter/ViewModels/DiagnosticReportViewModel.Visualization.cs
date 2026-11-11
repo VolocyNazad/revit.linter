@@ -42,18 +42,20 @@ internal sealed partial class DiagnosticReportViewModel
             return [];
         }
 
+        IReadOnlyList<IElementVisualizationPipeline> pipelines =
+            SelectVisualizationPipelines(registration, target);
         _logger.LogDebug(
             "Created {VisualizationCount} visualization pipelines for diagnostic {DiagnosticCode}",
-            registration.VisualizationPipelines.Count, report.Code);
+            pipelines.Count, report.Code);
 
         VisualizationRequest request = new(
             report,
             target,
             maybeTargetId,
             report.TargetDependencies?.OfType<Element>().ToArray() ?? [],
-            registration.VisualizationPipelines.Count);
+            pipelines.Count);
 
-        return registration.VisualizationPipelines
+        return pipelines
             .Select(pipeline => new VisualizationPipelineViewModel
             {
                 Title = pipeline.Value,
@@ -62,6 +64,26 @@ internal sealed partial class DiagnosticReportViewModel
                     ShowVisualizationAsync(request, pipeline, selectedFromMenu, cancellationToken)
             })
             .ToArray();
+    }
+
+    // A finding whose target is a view is visualized by opening that view: the target-view pipeline
+    // replaces the pipelines that would run in the three-dimensional visualization view. A configured
+    // rule keeps the pipelines it declares, because the product rules of built-in findings do not
+    // apply to it.
+    private static IReadOnlyList<IElementVisualizationPipeline> SelectVisualizationPipelines(
+        ElementDiagnosticRegistration registration,
+        Element target)
+    {
+        IElementVisualizationPipeline[] targetViewPipelines = registration.VisualizationPipelines
+            .Where(pipeline => pipeline is ITargetViewVisualizationPipeline)
+            .ToArray();
+        if (target is View && targetViewPipelines.Length > 0)
+            return targetViewPipelines;
+
+        IElementVisualizationPipeline[] otherPipelines = registration.VisualizationPipelines
+            .Where(pipeline => pipeline is not ITargetViewVisualizationPipeline)
+            .ToArray();
+        return otherPipelines.Length > 0 ? otherPipelines : registration.VisualizationPipelines;
     }
 
     private async Task ShowVisualizationAsync(
@@ -209,6 +231,11 @@ internal sealed partial class DiagnosticReportViewModel
                 .OfType<ElementId>()
                 .ToArray()
         };
+
+        // Opening the found view is the visualization for a view finding: the target-view pipeline
+        // runs in that view, and no three-dimensional visualization view is created.
+        if (pipeline is ITargetViewVisualizationPipeline && request.Target is View targetView)
+            return pipeline.Apply(new(document, targetView, elementSets, _visualizationViewProvider.Activate));
 
         // Visualization views cannot be created in family documents,
         // so the pipeline applies to the active view as-is.
