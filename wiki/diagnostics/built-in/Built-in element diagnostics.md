@@ -52,6 +52,7 @@ lang: en
 | **SHRD0038** | Checks for materials that duplicate another material's settings under a different name. | 💬 Message | `Material 'Бетон_02' (ID:99017) duplicates material 'Бетон_01'. (5 ms)` |
 | **SHRD0039** | Checks for appearance assets that no material uses. | 💬 Message | `Appearance asset 'Кирпич_01' (ID:99018) is not used. (5 ms)` |
 | **SHRD0040** | Checks materials whose render appearance is used in shaded views and contains a texture. | 💬 Message | `Material 'Кирпич_01' (ID:99019) uses its render appearance for shaded views. (6 ms)` |
+| **SHRD0041** | Checks whether a graphical view has elements hidden in the view with Hide in View (projects only). | ⚠️ Warning | `View 'Разрез А-А' (ID:55443) has 2 hidden element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

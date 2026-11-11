@@ -17,6 +17,7 @@
   <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Delete unplaced room</value></data>
   <data name="deleteTextNote_fix" xml:space="preserve"><value>Delete text note</value></data>
   <data name="deleteEmptySheet_fix" xml:space="preserve"><value>Delete empty sheet</value></data>
+  <data name="showAllHiddenViewElements_fix" xml:space="preserve"><value>Show all hidden elements</value></data>
   <data name="deleteUnusedProfileSymbol_fix" xml:space="preserve"><value>Delete unused profile type</value></data>
   <data name="deleteUnusedReferencePlane_fix" xml:space="preserve"><value>Delete unused reference plane</value></data>
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Delete unused reference line</value></data>
@@ -119,6 +120,8 @@
   <data name="SHRD0039_message" xml:space="preserve"><value>Appearance asset '{elementName}' ({elementId}) is not used. Duration: {duration} ms.</value></data>
   <data name="SHRD0040_description" xml:space="preserve"><value>Checks materials whose render appearance is used in shaded views and contains a texture. See Autodesk Revit Help: Best Practices: Render Performance and Materials.</value></data>
   <data name="SHRD0040_message" xml:space="preserve"><value>Material '{elementName}' ({elementId}) uses its render appearance for shaded views. Duration: {duration} ms.</value></data>
+  <data name="SHRD0041_description" xml:space="preserve"><value>Checks whether a graphical view has elements hidden in the view with Hide in View.</value></data>
+  <data name="SHRD0041_message" xml:space="preserve"><value>View '{elementName}' ({elementId}) has {hidden.count} hidden element(s): '{hidden.elementNames}' ({hidden.elementIds}). Duration: {duration} ms.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>

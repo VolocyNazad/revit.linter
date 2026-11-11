@@ -17,6 +17,7 @@
   <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Удалить неразмещённое помещение</value></data>
   <data name="deleteTextNote_fix" xml:space="preserve"><value>Удалить текстовое примечание</value></data>
   <data name="deleteEmptySheet_fix" xml:space="preserve"><value>Удалить пустой лист</value></data>
+  <data name="showAllHiddenViewElements_fix" xml:space="preserve"><value>Показать все скрытые элементы</value></data>
   <data name="deleteUnusedProfileSymbol_fix" xml:space="preserve"><value>Удалить неиспользуемый типоразмер профиля</value></data>
   <data name="deleteUnusedReferencePlane_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную плоскость</value></data>
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную линию</value></data>
@@ -119,6 +120,8 @@
   <data name="SHRD0039_message" xml:space="preserve"><value>Ассет внешнего вида «{elementName}» ({elementId}) не используется ни одним материалом. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0040_description" xml:space="preserve"><value>Ищет материалы, у которых в режиме затенения используется внешний вид визуализации с текстурой. См. справку Autodesk Revit: «Практические рекомендации: производительность при визуализации и материалы».</value></data>
   <data name="SHRD0040_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) показывает текстуру внешнего вида в режиме затенения. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0041_description" xml:space="preserve"><value>Проверяет, есть ли в графическом виде элементы, скрытые в этом виде командой «Скрыть в виде».</value></data>
+  <data name="SHRD0041_message" xml:space="preserve"><value>В виде «{elementName}» ({elementId}) скрыто элементов: {hidden.count} — «{hidden.elementNames}» ({hidden.elementIds}). Время выполнения: {duration} мс.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>
