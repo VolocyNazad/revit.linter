@@ -19,6 +19,10 @@ detailed findings table.
 - Click a tag in the **Tags** column to put it in the search box and narrow the list to the diagnostics that match it. The exported report includes the tags of every finding.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 
+## Columns
+
+The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column.
+
 > **Note:** An ignored finding disappears from the report immediately and is not reported again. Ignored findings are listed in the [[Ignoring pane|Ignore list]] pane, where an entry can be removed to report the finding again.
 
 > **Note:** A visualization runs only when the report's document is the active Revit document. Clicking the same visualization for the same finding again restores the previous view state instead of applying it twice. Starting another visualization restores the active one first.

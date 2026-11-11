@@ -11,6 +11,8 @@ using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -30,7 +32,9 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
     private readonly ILogger<IgnoreListViewModel> _logger;
+    private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<IgnoreListItemViewModel>? _rows;
+    private TableColumnsViewModel? _columns;
     private Dispatcher? _dispatcher;
 
     private static readonly DocumentationPage PanePage = new("Ignoring pane", "Панель игнорирования");
@@ -44,6 +48,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         IConfirmationDialog confirmationDialog,
         IDocumentationLauncher documentationLauncher,
         IUserInterfaceActivityStream activityStream,
+        ITableColumnsService tableColumnsService,
         ILogger<IgnoreListViewModel> logger)
         : base(revitEventSource)
     {
@@ -54,6 +59,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         _confirmationDialog = confirmationDialog;
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
+        _tableColumnsService = tableColumnsService;
         _logger = logger;
 
         Collection = [];
@@ -69,6 +75,18 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    /// <remarks>The action columns have no key, so they are not listed and always stay visible.</remarks>
+    public TableColumnsViewModel Columns => _columns ??= new(
+        TableColumnIds.IgnoreList,
+        _tableColumnsService,
+        [
+            new(TableColumnKeys.Code, () => CodeHeader),
+            new(TableColumnKeys.Scope, () => ScopeHeader),
+            new(TableColumnKeys.ElementId, () => IdHeader),
+            new(TableColumnKeys.Target, () => TargetHeader),
+        ]);
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;

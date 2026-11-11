@@ -30,6 +30,7 @@ internal static class IconGeometries
         [IconKind.Play] = Parse("M8,5.14V19.14L19,12.14L8,5.14Z"),
         [IconKind.Refresh] = Parse("M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.82,18.45 20.12,16H18.11C16.82,17.36 14.5,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"),
         [IconKind.SwapHorizontal] = Parse("M21,9L17,5V8H10V10H17V13M7,11L3,15L7,19V16H14V14H7V11Z"),
+        [IconKind.ViewColumnOutline] = Parse("M4,5V18H21V5H4M14,7V16H11V7H14M6,7H9V16H6V7M19,16H16V7H19V16Z"),
     };
 
     /// <summary>

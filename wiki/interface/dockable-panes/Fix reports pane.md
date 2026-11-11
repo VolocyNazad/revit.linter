@@ -6,4 +6,6 @@ lang: en
 
 Panel with the results of the fixes applied in the current session. Ignoring a finding and removing an ignore entry are reported here as well.
 
+The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible.
+
 Hover over a toolbar button to see what it does; the question-mark button of the tool bar opens this page. While the tooltip is shown, press **F1** to open this page in the default browser.

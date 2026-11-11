@@ -12,4 +12,7 @@
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows.</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows only the fix results of the selected open document.</value></data>
   <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
 </root>

@@ -8,6 +8,8 @@ using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
 using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Models;
 using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
@@ -127,7 +129,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticReportExportService _exportService;
     private readonly IClipboardService _clipboardService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
+    private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
+    private TableColumnsViewModel? _columns;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
     private readonly Dictionary<string, IReadOnlyList<string>> _tagsByCode = new(StringComparer.Ordinal);
@@ -157,6 +161,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IVisualizationViewProvider visualizationViewProvider,
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
+            ITableColumnsService tableColumnsService,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
         _accentElementsServices = accentElementsServices;
@@ -176,6 +181,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
         _clipboardService = clipboardService;
+        _tableColumnsService = tableColumnsService;
         OpenedDocuments = openedDocuments;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
@@ -196,6 +202,19 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    /// <remarks>The action columns have no key, so they are not listed and always stay visible.</remarks>
+    public TableColumnsViewModel Columns => _columns ??= new(
+        TableColumnIds.DiagnosticReport,
+        _tableColumnsService,
+        [
+            new(TableColumnKeys.Code, () => CodeHeader),
+            new(TableColumnKeys.Message, () => MessageHeader),
+            new(TableColumnKeys.Document, () => DocumentHeader),
+            new(TableColumnKeys.Created, () => CreatedHeader),
+            new(TableColumnKeys.Tags, () => TagsHeader),
+        ]);
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;

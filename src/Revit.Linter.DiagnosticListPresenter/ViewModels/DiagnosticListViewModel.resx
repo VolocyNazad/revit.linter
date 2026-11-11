@@ -44,4 +44,7 @@
   <data name="resetSettings_description" xml:space="preserve"><value>Clears your saved check settings and restores the values from the rules.</value></data>
   <data name="resetConfirm_message" xml:space="preserve"><value>Clear your saved check settings and restore the values from the rules?</value></data>
   <data name="resetFailed_message" xml:space="preserve"><value>The diagnostic settings could not be reset.&#xA;&#xA;{0}</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
 </root>

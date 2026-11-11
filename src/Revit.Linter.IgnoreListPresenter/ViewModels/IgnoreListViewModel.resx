@@ -29,4 +29,7 @@
   <data name="details_message" xml:space="preserve"><value>Details: {0}</value></data>
   <data name="removeEntries_transaction" xml:space="preserve"><value>Remove ignore entries</value></data>
   <data name="clearEntries_transaction" xml:space="preserve"><value>Clear ignore entries</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
 </root>

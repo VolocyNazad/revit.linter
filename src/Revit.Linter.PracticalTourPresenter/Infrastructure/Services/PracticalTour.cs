@@ -33,6 +33,7 @@ internal sealed partial class PracticalTour(
 
     private PracticalTourViewModel? _viewModel;
     private OnboardingHighlightSession? _highlightSession;
+    private IDisposable? _columnReveal;
     private bool _optOutRequested;
 
     public void Start(bool hasOpenDocument, bool restart = false, bool tutorialSampleQueued = false)
@@ -209,6 +210,34 @@ internal sealed partial class PracticalTour(
     {
         ShowTargetPane(step);
         UpdateHighlight(step);
+        UpdateColumnReveal(step);
+    }
+
+    /// <summary>Shows the column a step points at for as long as the step lasts.</summary>
+    /// <remarks>
+    /// A hidden column would leave the spotlight over an empty header. The step reveals the column and
+    /// restores the visibility the user chose when the tour moves on, pauses or ends; the reveal is
+    /// session state, so it never writes the stored column choice.
+    /// </remarks>
+    private void UpdateColumnReveal(PracticalTourStep step)
+    {
+        ReleaseColumnReveal();
+        if (PracticalTourStepCatalog.Get(step).Column is not { } column) return;
+
+        try
+        {
+            _columnReveal = tourHost.RevealTableColumn(column);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to reveal the column of the practical-tour step");
+        }
+    }
+
+    private void ReleaseColumnReveal()
+    {
+        _columnReveal?.Dispose();
+        _columnReveal = null;
     }
 
     /// <summary>Publishes only the training check while the tour works with it.</summary>
@@ -370,6 +399,7 @@ internal sealed partial class PracticalTour(
                 view.DataContext = null;
             }
 
+            ReleaseColumnReveal();
             EndCatalogScope();
             if (hidePane) tourHost.HidePracticalTourPane();
         }

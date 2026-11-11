@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Revit.Context.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.FixReportProvider.Abstractions.Models;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
@@ -24,7 +26,9 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly IEnumerable<IAccentElementsService> _accentElementsServices;
     private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
     private readonly Core.Abstractions.Services.IUserInterfaceActivityStream _activityStream;
+    private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<FixReportItemViewModel>? _rows;
+    private TableColumnsViewModel? _columns;
     private ReportRowAgeTicker? _rowAgeTicker;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
@@ -34,7 +38,8 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         IEnumerable<IAccentElementsService> accentElementsServices,
         Core.Abstractions.Services.IDocumentationLauncher documentationLauncher,
         Core.Abstractions.Services.IUserInterfaceActivityStream activityStream,
-        IOpenedDocuments openedDocuments)
+        IOpenedDocuments openedDocuments,
+        ITableColumnsService tableColumnsService)
     {
         _documentationLauncher = documentationLauncher;
         _fixReportReceiver = fixReportReceiver;
@@ -42,6 +47,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         _revitContext = revitContext;
         _accentElementsServices = accentElementsServices;
         _activityStream = activityStream;
+        _tableColumnsService = tableColumnsService;
         OpenedDocuments = openedDocuments;
     }
 
@@ -64,6 +70,17 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsViewModel Columns => _columns ??= new(
+        TableColumnIds.FixReport,
+        _tableColumnsService,
+        [
+            new(TableColumnKeys.Code, () => CodeHeader),
+            new(TableColumnKeys.Message, () => MessageHeader),
+            new(TableColumnKeys.Document, () => DocumentHeader),
+            new(TableColumnKeys.Created, () => CreatedHeader),
+        ]);
 
     [ObservableProperty]
     public partial FixReportItemViewModel? SelectedFixReport { get; set; }

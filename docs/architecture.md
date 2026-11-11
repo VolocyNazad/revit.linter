@@ -101,7 +101,9 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   is the session's only checkpoint, so resuming continues at that step and finds fresh findings for the
   remaining tasks. Starting a session also clears any leftover training findings and restores the
   diagnostics pane view — search, filters and sort order — so the training row the first steps point at
-  cannot be hidden by earlier work.
+  cannot be hidden by earlier work. A step that points at a table column reveals that column for the
+  duration of the step through the host and restores the saved visibility afterwards, so the spotlight
+  never lands on a hidden header and the user's column choice is never overwritten.
 - Onboarding is realized by two presenter modules with one primary responsibility each: the modal one-shot
   welcome wizard and the optional modeless practical tour. The tour publishes its contracts from
   `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend only on the

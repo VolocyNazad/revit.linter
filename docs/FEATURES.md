@@ -8,6 +8,7 @@ The concise contract for the product's current scope. Detailed user instructions
 - Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; clicking a tag searches for it.
 - Apply configured fixes through Revit-safe transactions and report their results: a fix pipeline can delete its elements or write a parameter value computed by the formula language.
 - Ignore a finding for its element or for the whole document, review and remove entries in the built-in **Ignore list** pane, and keep the list inside the model.
+- Choose which data columns each of the four tables shows from a tool bar button, with the choice remembered per user across Revit versions; the row action buttons always stay visible, at least one data column stays visible, the current sort survives hiding its column, and a guided step shows a hidden column only for the duration of that step.
 - Highlight diagnostic targets through reversible, composable visualization pipelines.
 - Export the displayed findings as a self-contained HTML report or as CSV, JSON and YAML data, including each finding's tags.
 - Configure every rule in one `diagnostics.config.yaml` per Revit version: `type` selects the module, `builtIn` entries override the activity, severity and visibility of product checks, and `isHidden` removes a diagnostic from the interface, execution and reports.
