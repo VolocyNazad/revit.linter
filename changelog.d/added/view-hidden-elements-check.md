@@ -1,0 +1,1 @@
+Added the built-in SHRD0041 check that reports a graphical view when elements are hidden in it with Hide in View, lists every hidden element in the finding as a clickable link and as a dependency, and offers the "Show all hidden elements" fix that unhides every hidden element of that view in one step.
