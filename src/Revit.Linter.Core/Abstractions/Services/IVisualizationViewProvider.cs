@@ -3,7 +3,8 @@ using Autodesk.Revit.DB;
 namespace Revit.Linter.Core.Abstractions.Services;
 
 /// <summary>
-/// Provides the three-dimensional view used by diagnostic visualization pipelines.
+/// Provides the three-dimensional view used by diagnostic visualization pipelines and activates the
+/// view a visualization runs in.
 /// </summary>
 public interface IVisualizationViewProvider
 {
@@ -18,7 +19,10 @@ public interface IVisualizationViewProvider
     View3D GetOrCreateView();
 
     /// <summary>Shows the view as the active view of the active document.</summary>
-    /// <param name="view">The visualization view returned by <see cref="GetOrCreateView"/>.</param>
+    /// <param name="view">
+    /// The view to show: the visualization view returned by <see cref="GetOrCreateView"/>, or the view
+    /// that is the finding target when the finding itself is a view.
+    /// </param>
     /// <remarks>
     /// The call must run in a Revit API context, and it must not run inside a transaction: Revit
     /// rejects a change of the active view while the document is modifiable. The pipeline calls it

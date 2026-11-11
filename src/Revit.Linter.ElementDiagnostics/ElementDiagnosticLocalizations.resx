@@ -26,6 +26,7 @@
   <data name="ungroupGroup_fix" xml:space="preserve"><value>Ungroup</value></data>
   <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Ungroup nested group</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Select</value></data>
+  <data name="open_view_visualization" xml:space="preserve"><value>Open view</value></data>
   <data name="show_and_select_visualization" xml:space="preserve"><value>Show and select</value></data>
   <data name="cut_show_and_select_visualization" xml:space="preserve"><value>Cut, show and select</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Checks pipes, ducts, conduits, cable trays, and family instances for unconnected connectors.</value></data>

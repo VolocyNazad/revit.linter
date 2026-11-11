@@ -164,7 +164,9 @@ restores their sessions in reverse order; the session and reversal rules are in
 
 The diagnostic report presenter obtains the persistent `Revit Linter — Visualization` isometric view
 and passes it to the pipeline. The host owns creation, preparation and activation behind
-`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. The pipeline activates
+`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. When a built-in finding's
+target is itself a view, the presenter instead passes that view and applies the target-view pipeline in
+it, so the visualization opens the found view and creates no isometric view. The pipeline activates
 the view only after the steps declared before the first step that needs it on screen are committed,
 because Revit rejects an active-view change inside a transaction.
 

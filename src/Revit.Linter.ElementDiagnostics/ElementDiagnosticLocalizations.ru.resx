@@ -26,6 +26,7 @@
   <data name="ungroupGroup_fix" xml:space="preserve"><value>Разгруппировать</value></data>
   <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Разгруппировать вложенную группу</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="open_view_visualization" xml:space="preserve"><value>Открыть вид</value></data>
   <data name="show_and_select_visualization" xml:space="preserve"><value>Показать и выбрать</value></data>
   <data name="cut_show_and_select_visualization" xml:space="preserve"><value>Обрезать, показать и выбрать</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Проверяет экземпляры труб, воздуховодов, коробов, лотков и семейств на наличие неприсоединённых коннекторов.</value></data>
