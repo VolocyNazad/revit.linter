@@ -1,0 +1,1 @@
+Show or hide the data columns of the diagnostics, findings, fixes and ignore-list tables from a toolbar button, with the choice remembered per user across Revit versions and the action buttons always visible.

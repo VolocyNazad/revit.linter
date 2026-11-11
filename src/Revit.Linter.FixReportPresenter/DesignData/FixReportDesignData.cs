@@ -53,6 +53,13 @@ internal sealed class FixReportDesignData
         CollectionViewSource = new() { Source = rows };
         SelectedFixReport = rows[0];
         TargetDocumentTitle = SampleDocumentTitle;
+        Columns = new(
+        [
+            new(CodeHeader),
+            new(MessageHeader),
+            new(DocumentHeader),
+            new(CreatedHeader),
+        ]);
     }
 
     /// <summary>Gets the opened-document selector shown in the filter popup.</summary>
@@ -96,6 +103,18 @@ internal sealed class FixReportDesignData
 
     /// <summary>Gets the localized additional-filters tooltip description.</summary>
     public string MoreFiltersDescription => Localized("moreFilters_description");
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsDesignData Columns { get; }
+
+    /// <summary>Gets the localized column popup tooltip title.</summary>
+    public string ColumnsTitle => Localized("columns_title");
+
+    /// <summary>Gets the localized column popup tooltip description.</summary>
+    public string ColumnsDescription => Localized("columns_description");
+
+    /// <summary>Gets the localized text of the show-all-columns action.</summary>
+    public string ResetColumnsText => Localized("resetColumns_text");
 
     /// <summary>Gets the localized code column header.</summary>
     public string CodeHeader => Localized("code_header");

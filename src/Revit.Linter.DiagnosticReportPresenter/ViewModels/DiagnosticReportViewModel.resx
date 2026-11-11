@@ -44,4 +44,7 @@
   <data name="showPrevious_description" xml:space="preserve"><value>Selects the previous row of the table and shows it in the active view, the same way it was shown last time. Rows that cannot be shown are skipped. In the table, Up and Down select a row and Enter shows it.</value></data>
   <data name="showNext_text" xml:space="preserve"><value>Next finding</value></data>
   <data name="showNext_description" xml:space="preserve"><value>Selects the next row of the table and shows it in the active view, the same way it was shown last time. Rows that cannot be shown are skipped. In the table, Up and Down select a row and Enter shows it.</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
 </root>

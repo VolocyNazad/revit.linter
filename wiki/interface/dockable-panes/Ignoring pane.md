@@ -25,6 +25,7 @@ The pane follows the active document: switching documents shows the ignore list 
 - **Remove** (trash can in the row) stops ignoring that entry. Its diagnostic reports the finding again on the next run.
 - **Clear all** (toolbar) removes every entry of the active document after a confirmation.
 - **Refresh** (toolbar) reloads the list.
+- **Columns** (toolbar) chooses which data columns the table shows; the row action buttons stay visible, and the choice is remembered for every Revit version.
 - The tool bar also carries the shared diagnostic controls (run, pause, on active view) and shows the title of the active document.
 - The search box filters the list by code and target, ignoring case. The list is updated when you leave the field.
 

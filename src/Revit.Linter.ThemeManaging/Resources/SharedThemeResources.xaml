@@ -337,6 +337,14 @@
             IsChecked="{Binding IsActive, Mode=TwoWay}" />
     </DataTemplate>
 
+    <!--  One column of a table visibility popup. Expects an item with a Title and an IsVisible property.  -->
+    <DataTemplate x:Key="LinterColumnCheckBoxTemplate">
+        <CheckBox
+            Margin="0,2"
+            Content="{Binding Title}"
+            IsChecked="{Binding IsVisible, Mode=TwoWay}" />
+    </DataTemplate>
+
     <!--  Radio buttons  -->
 
     <Style x:Key="LinterRadioButton" TargetType="{x:Type RadioButton}">

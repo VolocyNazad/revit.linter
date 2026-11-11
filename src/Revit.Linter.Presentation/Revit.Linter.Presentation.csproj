@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
     <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
+    <PackageReference Include="VolocyNazad.ValueStore" />
     <PackageReference Include="XamlConstructor">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

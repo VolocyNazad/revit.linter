@@ -8,6 +8,7 @@ namespace Revit.Linter.PracticalTourPresenter.Infrastructure.Services;
 /// <param name="InstructionKey">The resource key of the instruction shown for the step.</param>
 /// <param name="Pane">The pane brought forward for the step, or <see langword="null"/> to keep the current pane.</param>
 /// <param name="HighlightKey">The registered key of the spotlight target, or <see langword="null"/> when the step has no target.</param>
+/// <param name="Column">The table column the step points at, or <see langword="null"/> when its target is always visible.</param>
 /// <param name="IsVisible">Whether the step appears in the visible step list.</param>
 /// <param name="RequiresTrainingScope">Whether the catalog publishes only the training check during the step.</param>
 /// <param name="NeedsFindings">Whether the step is unavailable after a clean run without findings.</param>
@@ -22,6 +23,7 @@ internal sealed record PracticalTourStepDefinition(
     string? InstructionKey,
     OnboardingPane? Pane = null,
     string? HighlightKey = null,
+    OnboardingTableColumn? Column = null,
     bool IsVisible = true,
     bool RequiresTrainingScope = false,
     bool NeedsFindings = false,
@@ -55,7 +57,8 @@ internal static class PracticalTourStepCatalog
         new(PracticalTourStep.SearchAndFilters, "searchAndFiltersStep_text", "searchAndFilters_text",
             OnboardingPane.Diagnostics, "SearchAndFilters"),
         new(PracticalTourStep.SelectDiagnostic, "selectDiagnosticStep_text", "selectDiagnostic_text",
-            OnboardingPane.Diagnostics, "SelectDiagnostic", RequiresTrainingScope: true),
+            OnboardingPane.Diagnostics, "SelectDiagnostic", OnboardingTableColumn.DiagnosticActive,
+            RequiresTrainingScope: true),
         new(PracticalTourStep.RunDiagnostics, "runDiagnosticsStep_text", "runDiagnostics_text",
             OnboardingPane.Diagnostics, "RunDiagnostics", RequiresTrainingScope: true,
             CheckpointInstructionKey: "resumeFromRun_text"),

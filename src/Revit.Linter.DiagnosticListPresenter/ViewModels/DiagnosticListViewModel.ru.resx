@@ -44,4 +44,7 @@
   <data name="resetSettings_description" xml:space="preserve"><value>Убирает ваши сохранённые настройки проверок и возвращает значения из правил.</value></data>
   <data name="resetConfirm_message" xml:space="preserve"><value>Убрать ваши сохранённые настройки проверок и вернуть значения из правил?</value></data>
   <data name="resetFailed_message" xml:space="preserve"><value>Не удалось сбросить настройки проверок.&#xA;&#xA;{0}</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Выберите, какие столбцы показывает таблица. Кнопки действий остаются видимыми всегда.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Вернуть все столбцы</value></data>
 </root>

@@ -82,8 +82,15 @@ host-published `IRevitEventSource` events and reports them as `RevitEventType`),
 for the diagnostic and fix row state, `FilteredRowCollection` for the collection-view, sort and filter
 plumbing shared by the list panes, and `BindingProxy` for bindings outside the visual tree.
 
-It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers, and
-`Revit.Linter.ReportMessaging` for the shared message parser.
+The project also remembers which data columns of the four tables the user hides: `Abstractions` and
+`Services` hold `ITableColumnsService`, which stores the `columns.yml` choice and the temporary reveal
+of a guided step, `ViewModels` holds the popup of one table, `Models` holds the table and column keys
+and the stored settings, and the `TableColumns` attached properties at the project root apply the
+choice to a `DataGrid`. Only data columns carry a key, so the action icon columns always stay visible.
+
+It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers,
+`Revit.Linter.ReportMessaging` for the shared message parser, and `VolocyNazad.ValueStore` for the
+per-user column choice.
 
 The dependency properties of this project, of `Revit.Linter.Behaviors` and of
 `Revit.Linter.ReportMessaging` are declared with the `VolocyNazad.Wpf.DependencyPropertyGenerator`

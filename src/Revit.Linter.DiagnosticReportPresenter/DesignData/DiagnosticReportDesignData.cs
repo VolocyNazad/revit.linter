@@ -15,6 +15,19 @@ internal sealed class DiagnosticReportDesignData
 {
     private const string ResourceBaseName = "Revit.Linter.Localization.DiagnosticReportPresenter.ViewModels.DiagnosticReportViewModel";
 
+    /// <summary>Initializes the column visibility popup with the localized headers of the table.</summary>
+    public DiagnosticReportDesignData()
+    {
+        Columns = new(
+        [
+            new(CodeHeader),
+            new(MessageHeader),
+            new(DocumentHeader),
+            new(CreatedHeader),
+            new(TagsHeader),
+        ]);
+    }
+
     private static readonly string ShowElementToolTipTemplate =
         LocalizationResourceReader.GetString(ResourceBaseName, "showElement_toolTip");
 
@@ -197,6 +210,18 @@ internal sealed class DiagnosticReportDesignData
 
     /// <summary>Gets the localized filter popup tooltip description.</summary>
     public string MoreFiltersDescription => LocalizationResourceReader.GetString(ResourceBaseName, "moreFilters_description");
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsDesignData Columns { get; }
+
+    /// <summary>Gets the localized column popup tooltip title.</summary>
+    public string ColumnsTitle => LocalizationResourceReader.GetString(ResourceBaseName, "columns_title");
+
+    /// <summary>Gets the localized column popup tooltip description.</summary>
+    public string ColumnsDescription => LocalizationResourceReader.GetString(ResourceBaseName, "columns_description");
+
+    /// <summary>Gets the localized text of the show-all-columns action.</summary>
+    public string ResetColumnsText => LocalizationResourceReader.GetString(ResourceBaseName, "resetColumns_text");
 
     /// <summary>Gets the localized header of the code column.</summary>
     public string CodeHeader => LocalizationResourceReader.GetString(ResourceBaseName, "code_header");

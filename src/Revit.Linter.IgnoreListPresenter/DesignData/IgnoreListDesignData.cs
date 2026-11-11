@@ -47,6 +47,13 @@ internal sealed class IgnoreListDesignData
 
         CollectionViewSource = new() { Source = rows };
         SelectedEntry = rows[0];
+        Columns = new(
+        [
+            new(CodeHeader),
+            new(ScopeHeader),
+            new(IdHeader),
+            new(TargetHeader),
+        ]);
     }
 
     /// <summary>Gets the collection view the grid reads its rows from.</summary>
@@ -69,6 +76,18 @@ internal sealed class IgnoreListDesignData
 
     /// <summary>Gets the localized entry-count label of the toolbar.</summary>
     public string EntriesText => Localized("entries_text");
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsDesignData Columns { get; }
+
+    /// <summary>Gets the localized column popup tooltip title.</summary>
+    public string ColumnsTitle => Localized("columns_title");
+
+    /// <summary>Gets the localized column popup tooltip description.</summary>
+    public string ColumnsDescription => Localized("columns_description");
+
+    /// <summary>Gets the localized text of the show-all-columns action.</summary>
+    public string ResetColumnsText => Localized("resetColumns_text");
 
     /// <summary>Gets the localized refresh button text.</summary>
     public string RefreshText => Localized("refresh_text");

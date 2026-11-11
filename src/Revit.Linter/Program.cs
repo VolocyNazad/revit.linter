@@ -29,6 +29,7 @@ using Revit.Linter.Infrastructure.Extensions;
 using Revit.Linter.OpenedDocuments.DI;
 using Revit.Linter.ParameterElementDiagnostics.DI;
 using Revit.Linter.Presentation;
+using Revit.Linter.Presentation.DI;
 using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
@@ -139,6 +140,7 @@ internal sealed class Program
                 .AddPracticalTourPresenterModule()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
+                .AddTableColumnsModule()
                 .AddValueStore<YamlValueStoreSerializer>(options =>
                 {
                     options.DirectoryPath = Path.Combine(

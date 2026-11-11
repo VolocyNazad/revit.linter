@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:composition="clr-namespace:Revit.Linter.Presentation;assembly=Revit.Linter.Presentation"
+    xmlns:models="clr-namespace:Revit.Linter.Presentation.Models;assembly=Revit.Linter.Presentation"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:designData="clr-namespace:Revit.Linter.DiagnosticReportPresenter.DesignData"
@@ -78,6 +79,28 @@
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarIconButton}" />
                 <ToggleButton
+                    x:Name="ColumnsButton"
+                    behaviors:HelpToolTip.Description="{Binding ColumnsDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding ColumnsTitle, Mode=OneWay}"
+                    Content="{controls:Icon Kind=ViewColumnOutline}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LinterToolBarPopupToggleButton}" />
+                <Popup
+                    IsOpen="{Binding IsChecked, ElementName=ColumnsButton, Mode=TwoWay}"
+                    PlacementTarget="{Binding ElementName=ColumnsButton}"
+                    Style="{StaticResource LinterToolBarPopup}">
+                    <Border Style="{StaticResource LinterPopupPanel}">
+                        <StackPanel>
+                            <ItemsControl ItemTemplate="{StaticResource LinterColumnCheckBoxTemplate}" ItemsSource="{Binding Columns.Columns}" />
+                            <Rectangle Margin="0,4" Style="{StaticResource LinterHorizontalDivider}" />
+                            <Button
+                                Command="{Binding Columns.ShowAllCommand}"
+                                Content="{Binding ResetColumnsText}"
+                                Style="{StaticResource LinterDialogButton}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+                <ToggleButton
                     x:Name="FiltersButton"
                     behaviors:HelpToolTip.Description="{Binding MoreFiltersDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding MoreFiltersTitle, Mode=OneWay}"
@@ -125,6 +148,7 @@
                 x:Name="FindingsGrid"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
+                composition:TableColumns.Source="{Binding Columns}"
                 FrozenColumnCount="2"
                 IsReadOnly="True"
                 IsSynchronizedWithCurrentItem="True"
@@ -237,6 +261,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.Code}"
                         Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Code">
                         <DataGridTemplateColumn.CellTemplate>
@@ -248,6 +273,7 @@
                     <DataGridTemplateColumn
                         Width="*"
                         MinWidth="{StaticResource LinterStretchColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.Message}"
                         Header="{Binding DataContext.MessageHeader, Source={StaticResource proxy}}"
                         SortMemberPath="MessageText">
                         <DataGridTemplateColumn.CellTemplate>
@@ -274,6 +300,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridDocumentColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.Document}"
                         Header="{Binding DataContext.DocumentHeader, Source={StaticResource proxy}}"
                         SortMemberPath="DocumentTitle">
                         <DataGridTemplateColumn.CellTemplate>
@@ -285,6 +312,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridCreatedColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.Created}"
                         Header="{Binding DataContext.CreatedHeader, Source={StaticResource proxy}}"
                         SortMemberPath="Created">
                         <DataGridTemplateColumn.CellTemplate>
@@ -296,6 +324,7 @@
                     <DataGridTemplateColumn
                         Width="Auto"
                         MinWidth="{StaticResource LinterGridTagsColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.Tags}"
                         SortMemberPath="TagsText"
                         Header="{Binding DataContext.TagsHeader, Source={StaticResource proxy}}">
                         <DataGridTemplateColumn.HeaderStyle>

@@ -44,4 +44,7 @@
   <data name="showPrevious_description" xml:space="preserve"><value>Выбирает предыдущую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>
   <data name="showNext_text" xml:space="preserve"><value>Следующее замечание</value></data>
   <data name="showNext_description" xml:space="preserve"><value>Выбирает следующую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Выберите, какие столбцы показывает таблица. Кнопки действий остаются видимыми всегда.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Вернуть все столбцы</value></data>
 </root>

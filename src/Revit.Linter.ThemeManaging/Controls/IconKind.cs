@@ -58,4 +58,7 @@ public enum IconKind
 
     /// <summary>Two opposite arrows: invert.</summary>
     SwapHorizontal,
+
+    /// <summary>Three vertical panels: the data columns of a table.</summary>
+    ViewColumnOutline,
 }
