@@ -21,6 +21,7 @@
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Failed to fix document '{documentTitle}'.</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was fixed successfully.</value></data>
   <data name="ignoreDocumentFailed_message" xml:space="preserve"><value>Failed to ignore document '{documentTitle}'.</value></data><data name="ignoreDocumentSucceeded_message" xml:space="preserve"><value>Document '{documentTitle}' was ignored successfully.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Show element {0} in the model</value></data>
+  <data name="expandList_toolTip" xml:space="preserve"><value>Show the full list</value></data>
   <data name="showVisualization_text" xml:space="preserve"><value>Show</value></data>
   <data name="visualizationFailed_message" xml:space="preserve"><value>The selected visualization could not be applied.</value></data>
   <data name="retry_title" xml:space="preserve"><value>Retry</value></data>

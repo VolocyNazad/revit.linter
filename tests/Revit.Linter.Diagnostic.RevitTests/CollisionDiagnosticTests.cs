@@ -132,7 +132,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         CollisionElementDiagnostic diagnostic = CreateDiagnostic(includeLinks: true);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);

@@ -16,6 +16,7 @@ detailed findings table.
 - Click the eye button to run the only available visualization. If several pipelines are available, the same click opens their menu.
 - Click the question-mark button to open the documentation of the finding's diagnostic in the default browser: the page of built-in element or document diagnostics, or the page of the module whose configuration file defines the rule.
 - Click an element link inside the message to locate that element in the active Revit document.
+- A list of element names or identifiers is folded in the message: only its first items are shown, followed by a `+N` counter. Every name in the folded list is quoted, so a name that itself contains a comma stays readable. Click the counter to open the complete list in a popup, which shows one element per line. Only a list value is folded: a long scalar text such as a Revit warning description is never shortened. The search, the sort and the exported report use the complete message.
 - Click a tag in the **Tags** column to put it in the search box and narrow the list to the diagnostics that match it. The exported report includes the tags of every finding.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 

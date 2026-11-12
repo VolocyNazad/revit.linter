@@ -218,7 +218,7 @@ internal sealed class ElementDiagnostic(
     private static Dictionary<string, object> CreateIntersectionArguments(
         List<Element> elements, List<LinkHit> linkHits) => new()
         {
-            { "intersection.elementNames", string.Join(", ", elements.Select(element => element.Name).Concat(linkHits.Select(hit => $"{hit.Name} [{hit.LinkName}]"))) },
+            { "intersection.elementNames", elements.Select(element => element.Name).Concat(linkHits.Select(hit => $"{hit.Name} [{hit.LinkName}]")).ToArray() },
             { "intersection.elementIds", elements.Select(element => element.Id).ToArray() },
             { "intersection.count", elements.Count + linkHits.Count },
         };

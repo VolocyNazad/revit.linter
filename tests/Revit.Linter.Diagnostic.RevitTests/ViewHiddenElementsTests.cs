@@ -47,7 +47,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
             .ToArray();
         await Assert.That(messageIds.Single().IdValue()).IsEqualTo(wallIds.Single().IdValue());
         await Assert.That(dependencyIds.Single().IdValue()).IsEqualTo(wallIds.Single().IdValue());
-        await Assert.That((string)arguments["hidden.elementNames"])
+        await Assert.That(((string[])arguments["hidden.elementNames"]).Single())
             .IsEqualTo(document.GetElement(wallIds.Single()).Name);
     }
 
@@ -76,8 +76,8 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
             .ToArray();
         await Assert.That(messageIds.SequenceEqual(expectedIds)).IsTrue();
         await Assert.That(dependencyIds.SequenceEqual(expectedIds)).IsTrue();
-        string names = (string)arguments["hidden.elementNames"];
-        await Assert.That(names.Split([", "], StringSplitOptions.None).Length).IsEqualTo(2);
+        string[] names = (string[])arguments["hidden.elementNames"];
+        await Assert.That(names.Length).IsEqualTo(2);
     }
 
     [Test]

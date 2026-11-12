@@ -568,6 +568,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         DiagnosticReportItemViewModel item = new() {
             Created = report.Created,
             ShowElementToolTipFormat = ShowElementToolTip,
+            ExpandListToolTip = ExpandListToolTip,
             Code = report.Code,
             Template = report.Message.Format,
             Target = report.Target,

@@ -26,6 +26,16 @@ namespace Revit.Linter.ReportMessaging;
     IsNullable = true,
     OnChanged = nameof(OnMessagePropertyChanged),
     PropertyXmlDocumentation = "Gets or sets the composite format string used for hyperlink tooltips.")]
+[GenerateDependencyProperty<ICommand>(
+    "ExpanderCommand",
+    IsNullable = true,
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets the command that reveals a folded message list.")]
+[GenerateDependencyProperty<string>(
+    "ExpanderToolTip",
+    IsNullable = true,
+    OnChanged = nameof(OnMessagePropertyChanged),
+    PropertyXmlDocumentation = "Gets or sets the tooltip of the control that reveals a folded message list.")]
 [GenerateDependencyProperty<bool>(
     "IsObsolete",
     OnChanged = nameof(OnMessagePropertyChanged),
@@ -96,6 +106,16 @@ public sealed partial class ReportMessageView : FlowDocumentScrollViewer
                     ? null
                     : string.Format(CultureInfo.CurrentCulture, ToolTipFormat, part.Text)
             },
+            ReportInlineType.Expander => new Hyperlink(run)
+            {
+                Command = ExpanderCommand,
+                CommandParameter = part.Data,
+                FontFamily = FontFamily,
+                FontSize = FontSize,
+                FontWeight = FontWeight,
+                ToolTip = ExpanderToolTip
+            },
+            ReportInlineType.LineBreak => new LineBreak(),
             _ => throw new ArgumentOutOfRangeException(nameof(part), part.Type, "Unsupported report inline type.")
         };
     }

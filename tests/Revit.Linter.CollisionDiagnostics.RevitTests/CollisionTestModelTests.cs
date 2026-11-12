@@ -106,7 +106,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Wall hostWall1 = FindHostWall(0, 0, 1, 0);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall1);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -123,7 +123,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Wall hostWall3 = FindHostWall(30, 0, 1, 0);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall3);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -142,7 +142,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Wall hostWall6 = FindHostWall(80, 0, 0, 1);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall6);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -159,7 +159,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Floor hostFloor1 = FindHostFloor(0, 0, 10, 8);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostFloor1);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(elementNames).Contains("[LinterCollisionLinkA]");
@@ -243,7 +243,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Duct hostDuct1 = FindHostRun<Duct>(0, 2, 9, 1, 0, 0);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct1);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -261,7 +261,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Duct hostDuct2 = FindHostRun<Duct>(30, 2, 9, 1, 0, 0);
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct2);
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -282,7 +282,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostTray1);
         long[] dependencyIds = [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id.IdValue())];
-        string elementNames = (string)feedback.AdditionalMessageArguments!["intersection.elementNames"];
+        string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(dependencyIds).Contains(hostDuct1.Id.Value());

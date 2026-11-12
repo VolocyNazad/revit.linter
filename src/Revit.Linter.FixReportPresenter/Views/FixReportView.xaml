@@ -144,18 +144,45 @@
                                 <DataTemplate.Resources>
                                     <Style BasedOn="{StaticResource LinterReportHyperlink}" TargetType="Hyperlink" />
                                 </DataTemplate.Resources>
-                                <messaging:ReportMessageView
-                                    HorizontalScrollBarVisibility="Disabled"
-                                    IsSelectionEnabled="True"
-                                    LinkCommand="{Binding AccentElementCommand}"
-                                    Parts="{Binding MessageParts}"
-                                    ToolTipFormat="{Binding ShowElementToolTipFormat}"
-                                    VerticalAlignment="Center"
-                                    VerticalScrollBarVisibility="Disabled">
-                                    <i:Interaction.Behaviors>
-                                        <behaviors:PassMouseWheelToParentBehavior />
-                                    </i:Interaction.Behaviors>
-                                </messaging:ReportMessageView>
+                                <Grid>
+                                    <messaging:ReportMessageView
+                                        x:Name="FoldedMessage"
+                                        HorizontalScrollBarVisibility="Disabled"
+                                        IsSelectionEnabled="True"
+                                        ExpanderCommand="{Binding ExpandListCommand}"
+                                        ExpanderToolTip="{Binding ExpandListToolTip}"
+                                        LinkCommand="{Binding AccentElementCommand}"
+                                        Parts="{Binding MessageParts}"
+                                        ToolTipFormat="{Binding ShowElementToolTipFormat}"
+                                        VerticalAlignment="Center"
+                                        VerticalScrollBarVisibility="Disabled">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:PassMouseWheelToParentBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </messaging:ReportMessageView>
+                                    <Popup
+                                        Closed="MessageListPopup_Closed"
+                                        IsOpen="{Binding IsListExpanded, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=FoldedMessage}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Width="420"
+                                            Padding="8"
+                                            Background="{DynamicResource LinterSurfaceBrush}"
+                                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
+                                            BorderThickness="1">
+                                            <messaging:ReportMessageView
+                                                MaxHeight="240"
+                                                HorizontalScrollBarVisibility="Disabled"
+                                                IsSelectionEnabled="True"
+                                                LinkCommand="{Binding AccentElementCommand}"
+                                                Parts="{Binding ExpandedListParts}"
+                                                ToolTipFormat="{Binding ShowElementToolTipFormat}"
+                                                VerticalScrollBarVisibility="Auto" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
