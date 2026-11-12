@@ -8,6 +8,18 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+### Added
+
+- Project-parameter checks and per-parameter element fill checks generated from the ADSK Revit 2021 project templates are installed from the welcome window on every supported Revit version: the Examples step appends the checks of the selected disciplines to the installed example configuration in the parameter group spelling of the running version, `PG_*` names on Revit 2021-2023 and `ForgeTypeId` values on Revit 2024-2027, and a fill check reports an empty text parameter as a Message finding until the parameter is filled.
+- The new `SHRD0038`, `SHRD0039` and `SHRD0040` material checks report duplicated materials, unused appearance assets and render appearances used in shaded views.
+- The diagnostics, findings, fixes and ignore-list tables show or hide their data columns from a toolbar button; the choice is remembered per user across Revit versions and the action buttons stay visible.
+- The new built-in `SHRD0041` check reports a graphical view that hides elements with Hide in View, lists every hidden element in the finding as a clickable link and as a dependency, and offers the "Show all hidden elements" fix that unhides every hidden element of that view in one step.
+
+### Changed
+
+- A long list of element names or identifiers in a report message is folded into its first items and a `+N` counter; clicking the counter opens the complete list in a popup, one element per line. Every name in the folded line is quoted, so a name that contains a comma stays readable. Only list values are folded: long scalar text such as a Revit warning description is not shortened, and the search, the sort and the export still use the complete message.
+- Built-in findings whose target is a view or a sheet are visualized by opening that view or sheet; the shared 3D visualization view is not created for them.
+
 ## [3.1.0] - 2026-11-07
 
 ### Added
