@@ -20,6 +20,7 @@ internal sealed class FixReportDesignData
     public FixReportDesignData()
     {
         string showElementToolTipFormat = Localized("showElement_toolTip");
+        string expandListToolTip = Localized("expandList_toolTip");
         List<FixReportRowDesignData> rows =
         [
             new()
@@ -32,6 +33,7 @@ internal sealed class FixReportDesignData
                     new(ReportInlineType.Text, " has no mark; the fix sets it to 'D-101'."),
                 ],
                 ShowElementToolTipFormat = showElementToolTipFormat,
+                ExpandListToolTip = expandListToolTip,
                 DocumentTitle = SampleDocumentTitle,
                 Created = DateTime.Now.AddHours(-2),
                 CreatedText = "2 hours ago",
@@ -44,6 +46,7 @@ internal sealed class FixReportDesignData
                     new(ReportInlineType.Text, "The required project parameter 'ADSK_ApartmentNumber' is missing."),
                 ],
                 ShowElementToolTipFormat = showElementToolTipFormat,
+                ExpandListToolTip = expandListToolTip,
                 DocumentTitle = SampleDocumentTitle,
                 Created = DateTime.Now.AddDays(-1),
                 CreatedText = "yesterday",
@@ -53,6 +56,13 @@ internal sealed class FixReportDesignData
         CollectionViewSource = new() { Source = rows };
         SelectedFixReport = rows[0];
         TargetDocumentTitle = SampleDocumentTitle;
+        Columns = new(
+        [
+            new(CodeHeader),
+            new(MessageHeader),
+            new(DocumentHeader),
+            new(CreatedHeader),
+        ]);
     }
 
     /// <summary>Gets the opened-document selector shown in the filter popup.</summary>
@@ -97,6 +107,18 @@ internal sealed class FixReportDesignData
     /// <summary>Gets the localized additional-filters tooltip description.</summary>
     public string MoreFiltersDescription => Localized("moreFilters_description");
 
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsDesignData Columns { get; }
+
+    /// <summary>Gets the localized column popup tooltip title.</summary>
+    public string ColumnsTitle => Localized("columns_title");
+
+    /// <summary>Gets the localized column popup tooltip description.</summary>
+    public string ColumnsDescription => Localized("columns_description");
+
+    /// <summary>Gets the localized text of the show-all-columns action.</summary>
+    public string ResetColumnsText => Localized("resetColumns_text");
+
     /// <summary>Gets the localized code column header.</summary>
     public string CodeHeader => Localized("code_header");
 
@@ -127,8 +149,23 @@ internal sealed class FixReportRowDesignData : IHasDiagnosticCode
     /// <summary>Gets the rendered parts of the fix message.</summary>
     public required IReadOnlyList<ReportTextPart> MessageParts { get; init; }
 
+    /// <summary>Gets the complete parts of the list the expander opened, or <see langword="null"/> until one is opened.</summary>
+    public IReadOnlyList<ReportTextPart>? ExpandedListParts { get; init; }
+
+    /// <summary>Gets or sets whether the expanded list popup is open.</summary>
+    public bool IsListExpanded { get; set; }
+
     /// <summary>Gets the localized format of a hyperlink tooltip.</summary>
     public required string ShowElementToolTipFormat { get; init; }
+
+    /// <summary>Gets the localized tooltip of the control that reveals a folded list.</summary>
+    public required string ExpandListToolTip { get; init; }
+
+    /// <summary>Gets the command that opens a folded list with all of its items.</summary>
+    public ICommand ExpandListCommand { get; } = new RelayCommand<object?>(_ => { });
+
+    /// <summary>Gets the command that marks the expanded list popup as closed.</summary>
+    public ICommand CollapseListCommand { get; } = new RelayCommand(() => { });
 
     /// <summary>Gets the title of the document the fix belongs to.</summary>
     public required string DocumentTitle { get; init; }

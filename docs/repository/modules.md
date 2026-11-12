@@ -82,8 +82,15 @@ host-published `IRevitEventSource` events and reports them as `RevitEventType`),
 for the diagnostic and fix row state, `FilteredRowCollection` for the collection-view, sort and filter
 plumbing shared by the list panes, and `BindingProxy` for bindings outside the visual tree.
 
-It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers, and
-`Revit.Linter.ReportMessaging` for the shared message parser.
+The project also remembers which data columns of the four tables the user hides: `Abstractions` and
+`Services` hold `ITableColumnsService`, which stores the `columns.yml` choice and the temporary reveal
+of a guided step, `ViewModels` holds the popup of one table, `Models` holds the table and column keys
+and the stored settings, and the `TableColumns` attached properties at the project root apply the
+choice to a `DataGrid`. Only data columns carry a key, so the action icon columns always stay visible.
+
+It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers,
+`Revit.Linter.ReportMessaging` for the shared message parser, and `VolocyNazad.ValueStore` for the
+per-user column choice.
 
 The dependency properties of this project, of `Revit.Linter.Behaviors` and of
 `Revit.Linter.ReportMessaging` are declared with the `VolocyNazad.Wpf.DependencyPropertyGenerator`
@@ -157,7 +164,9 @@ restores their sessions in reverse order; the session and reversal rules are in
 
 The diagnostic report presenter obtains the persistent `Revit Linter — Visualization` isometric view
 and passes it to the pipeline. The host owns creation, preparation and activation behind
-`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. The pipeline activates
+`IVisualizationViewProvider`, keeping `RevitAPIUI` calls out of the presenter. When a built-in finding's
+target is itself a view, the presenter instead passes that view and applies the target-view pipeline in
+it, so the visualization opens the found view and creates no isometric view. The pipeline activates
 the view only after the steps declared before the first step that needs it on screen are committed,
 because Revit rejects an active-view change inside a transaction.
 
@@ -188,7 +197,16 @@ owned by `Revit.Linter.OnboardingState`: it keeps the completed wizard version, 
 Revit version and the resumable practical-tour progress per Revit version.
 
 The installed example is the `diagnostics.config.yaml` file under `wiki/examples/configuration/`
-(English) and its `ru/` subfolder, embedded as resources. The host supplies the ribbon tab name, pane
+(English) and its `ru/` subfolder, embedded as resources. The **Examples** step also installs the
+check blocks generated from the ADSK Revit 2021 project templates, stored under
+`wiki/examples/template-checks/`: each block holds one project-parameter rule and one element fill
+check for every text parameter of the template. The blocks ship in two editions: the root `en/` and
+`ru/` folders use the Revit 2021-2023 `PG_*` parameter group spelling, and `2024/en/` and `2024/ru/`
+hold the same rules with the ForgeTypeId group values of Revit 2024 and newer. The step offers the
+blocks on every supported Revit version and installs the edition matching the running version. The
+selected blocks are appended to the same installed example file, so the element checks stay in place
+and the installed checks are marked as examples.
+The host supplies the ribbon tab name, pane
 and link actions through `IWelcomeHost`, and the tour's pane, notification and diagnostics-filter
 actions through `IPracticalTourHost`.
 

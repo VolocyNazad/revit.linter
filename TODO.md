@@ -26,6 +26,12 @@
 - [ ] Cover ARCH003 (zero-area room with boundaries) and SHRD0022 (materials cannot be created through the Revit API and empty documents have none to duplicate): no deterministic API construction is known; revisit if one is found.
 - [ ] Cover SHRD0009 when floor types become available in empty test documents.
 
+## Material performance diagnostics
+
+- [ ] Verify on a live Revit 2023 or later session what `ExternalResourceReference.ServerId` and `InSessionPath` return for material textures stored in ACC/Forma and resolved through Desktop Connector. Add the document-level check for cloud-hosted textures only when cloud storage is distinguishable from an ordinary local file; otherwise record the negative result here and close the idea.
+- [ ] Compare appearance assets by content, not only by `AppearanceAssetId`, in SHRD0038: a material whose appearance asset was duplicated along with it has identical settings but a different asset id today and stays unreported.
+- [ ] Decide whether the material checks should run in the active-view scope. The element collector is view-scoped and material and appearance-asset elements are not visible in a view, so SHRD0022, SHRD0038, SHRD0039 and SHRD0040 produce nothing in an active-view run. This is an inherited limitation and a product decision, not a defect of one check.
+
 ## Branching diagnostic report history
 
 - [ ] Persist published full-document diagnostic runs as immutable report snapshots.

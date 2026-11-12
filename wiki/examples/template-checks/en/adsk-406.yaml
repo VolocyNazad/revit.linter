@@ -1,0 +1,1852 @@
+# Project-parameter check generated from the ADSK template 'ADSK_Шаблон_СС_R2021_v2.0.2.rte'.
+# Every listed parameter must exist in a project document with the same binding type, group,
+# categories and vary-between-groups flag as in the template.
+- type: "parameter"
+  code: "PRMTR406"
+  description: "ADSK low-current systems template: project parameters match the company standard"
+  severity: "Warning"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Project"]
+  take: "!property('IsFamilyDocument')"
+  parameters:
+    - name: "ADSK_Обозначение"
+      guid: "9c98831b-9450-412d-b072-7d69b39f4029"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Этаж"
+      guid: "9eabf56c-a6cd-4b5c-a9d0-e9223e19ea3f"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Единица измерения"
+      guid: "4289cb19-9517-45de-9c02-5a74ebf5c86d"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationHangers", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PlaceHolderDucts", "OST_SecurityDevices", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "Разработчики шаблона"
+      group: "PG_OVERALL_LEGEND"
+      isInstance: true
+      categories: ["OST_ProjectInformation"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Примечание"
+      guid: "a85b7661-26b0-412f-979c-66af80b4b2c3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Areas", "OST_BuildingPad", "OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_Ceilings", "OST_Columns", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_CurtaSystem", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DataDevices", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_EdgeSlab", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_Fascia", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_Materials", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_RailingHandRail", "OST_RailingSupport", "OST_RailingTermination", "OST_RailingTopRail", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_Rooms", "OST_SecurityDevices", "OST_Sheets", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_Stairs", "OST_StairsLandings", "OST_StairsRailing", "OST_StairsRuns", "OST_StairsStringerCarriage", "OST_StructuralFraming", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Topography", "OST_Walls", "OST_Windows", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Примечание к виду"
+      guid: "e9853794-9790-4a53-a5c9-566106357d81"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_URL документации изделия"
+      guid: "bddc75f4-8e27-4afc-add0-de7358bbf6d3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_URL страницы изделия"
+      guid: "c5f25d97-91ad-48c8-96e2-99eac6fbb3f1"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Завод-изготовитель"
+      guid: "a8cdbf7b-d60a-485e-a520-447d2055f351"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Код изделия"
+      guid: "2fd9e8cb-84f3-4297-b8b8-75f444e124ed"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Группирование"
+      guid: "3de5f1a4-d560-4fa8-a74f-25d250fb3401"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FabricationContainment", "OST_FabricationHangers", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PlaceHolderDucts", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Зона"
+      guid: "c78f0a7d-b68b-4d21-a247-1c8c6ced8bc5"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_BuildingPad", "OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_Ceilings", "OST_Columns", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_Cornices", "OST_CurtainWallMullions", "OST_CurtainWallPanels", "OST_DataDevices", "OST_DetailComponents", "OST_Doors", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationHangers", "OST_FabricationPipework", "OST_Fascia", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_Floors", "OST_Furniture", "OST_FurnitureSystems", "OST_GenericModel", "OST_Gutter", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_Parking", "OST_Parts", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_Planting", "OST_PlumbingFixtures", "OST_Ramps", "OST_Roads", "OST_RoofSoffit", "OST_Roofs", "OST_SecurityDevices", "OST_Site", "OST_SiteProperty", "OST_SitePropertyLineSegment", "OST_Stairs", "OST_StairsRailing", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Walls", "OST_Windows", "OST_Wire"]
+      allowVaryBetweenGroups: true
+    - name: "ADSK_Количество"
+      guid: "8d057bb3-6ccd-4655-9165-55526691fe3a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Категория помещения"
+      guid: "4c70cba0-574b-49cb-b5fd-c0637073e720"
+      group: "PG_IDENTITY_DATA"
+      isInstance: true
+      categories: ["OST_Areas", "OST_MEPSpaces", "OST_Rooms"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Масса_Текст"
+      guid: "a8832df7-0302-4a63-a6e1-47a01632b987"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Наименование краткое"
+      guid: "f194bf60-b880-4217-b793-1e0c30dda5e9"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Позиция"
+      guid: "ae8ff999-1f22-4ed7-ad33-61503d85f0f4"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Марка"
+      guid: "2204049c-d557-4dfc-8d70-13f19715e46d"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Наименование"
+      guid: "e6e0f5cd-3e26-485b-9342-23882b20eb43"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationDuctworkInsulation", "OST_FabricationDuctworkLining", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FabricationPipeworkInsulation", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MEPSpaces", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_SwitchSystem", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Назначение вида"
+      guid: "e313f126-7e51-4a5d-a45a-7c6dfe02124a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Schedules", "OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Владелец вида"
+      guid: "e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Версия семейства"
+      guid: "85cd0032-c9ee-4cd3-8ffa-b2f1a05328e3"
+      group: "INVALID"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Версия Revit"
+      guid: "37384649-c3c8-4fc2-a08e-c2206438f528"
+      group: "INVALID"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_DuctAccessory", "OST_DuctCurves", "OST_DuctFitting", "OST_DuctInsulations", "OST_DuctLinings", "OST_DuctSystem", "OST_DuctTerminal", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_Entourage", "OST_FabricationContainment", "OST_FabricationDuctwork", "OST_FabricationHangers", "OST_FabricationPipework", "OST_FireAlarmDevices", "OST_FlexDuctCurves", "OST_FlexPipeCurves", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_PipeAccessory", "OST_PipeCurves", "OST_PipeFitting", "OST_PipeInsulations", "OST_PipingSystem", "OST_PlaceHolderDucts", "OST_PlaceHolderPipes", "OST_PlumbingFixtures", "OST_SecurityDevices", "OST_SpecialityEquipment", "OST_Sprinklers", "OST_TelephoneDevices", "OST_Wire"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Класс взрывоопасной зоны"
+      guid: "3894e623-d201-447e-976e-a438cc8eb4b2"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Класс пожароопасной зоны"
+      guid: "c2706852-82e1-4780-8445-42385057ba51"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Диаметр проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Внутренний диаметр трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Наименование трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Марка трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Код изделия трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Масса_Текст трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Завод-изготовитель трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Группирование трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Позиция трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Единица измерения трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Примечание трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Позиция проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Наименование проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Код изделия проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Группирование проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Марка проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Запас проводника_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Примечание проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Единица измерения проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Завод-изготовитель проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Масса_Текст проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Запас на разделку проводника_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Длина трубы_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Горизонтальная плоскость расчета освещенности"
+      group: "PG_ELECTRICAL_LIGHTING"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Класс пожароопасной зоны"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Класс взрывоопасной зоны"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Категория помещения"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Нормативная освещенность"
+      group: "PG_ELECTRICAL_LIGHTING"
+      isInstance: true
+      categories: ["OST_MEPSpaces"]
+      allowVaryBetweenGroups: false
+    - name: "Участок трассы кабеля_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Количество жил и сечение проводника_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Проложен_Марка кабеля_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Проложен_Количество жил и сечение_Электрические цепи"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Проложен_Длина"
+      group: "PG_ELECTRICAL_CIRCUITING"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "Диаметр по стандарту трубы_Электрические цепи"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_ElectricalCircuit"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_1 должность"
+      guid: "ab409417-2d5e-4f75-aa6a-204cc4ee6f74"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Год выпуска"
+      guid: "8a6e0145-58ea-4c2a-99b7-79e64e71f365"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Директор"
+      guid: "45d87fac-84ab-4bd0-a852-d6089c156543"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 должность"
+      guid: "c5f4124e-9a7c-49d5-83e0-99bd05213e86"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_1 фамилия"
+      guid: "03d95fa9-d919-4add-b778-cb2a1208fb86"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 должность"
+      guid: "8ddc6ae4-7741-450d-be39-2838a23a7758"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_2 фамилия"
+      guid: "ebf4547f-2321-447d-9869-ef8ade144981"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Номер тома"
+      guid: "cf26d231-bbc4-4735-aa83-ecef9f44d030"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Наименование документа"
+      guid: "2f55778b-d403-4e61-b950-23a4e7d6fbc3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп титульный_Вид документации"
+      guid: "dd71ff90-123c-47fd-9b73-0855c8f63566"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_Инвентарный номер"
+      guid: "1b54f7b8-55f5-4d54-b27e-7909865a501d"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_1 фамилия"
+      guid: "597f72d5-01a8-416b-805c-a18cbbc49254"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 должность"
+      guid: "aa4e0636-b1b9-4ea6-8123-244a8679db0e"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_2 фамилия"
+      guid: "73790284-e8c2-4717-a291-62460b2a596f"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 должность"
+      guid: "ca0521c7-fdb9-4868-8047-9e81c665c9c7"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_3 фамилия"
+      guid: "20e3931e-c22b-43ee-9256-9a2215b576a8"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 должность"
+      guid: "1031a769-0efa-4811-a2bc-d2f2e15b7ba7"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_4 фамилия"
+      guid: "c58ff5a3-7e40-4be6-af6d-f9fea2507a2d"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 должность"
+      guid: "59e76a65-de10-4091-9763-6e923deab89a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_5 фамилия"
+      guid: "0abc2cd5-dab6-4a02-8b67-948c67c4f596"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 должность"
+      guid: "bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп боковой_6 фамилия"
+      guid: "f2f78068-21e1-4e79-8597-6237c46a1399"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Количество листов"
+      guid: "c2f49234-25d3-4abc-8638-dde90c2527aa"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Имя листа пользовательское"
+      guid: "cec3cc8c-d1fb-477b-9954-29cb60ce6656"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_Наименование объекта"
+      guid: "c92f2899-a807-468d-8126-610f73aa6ffc"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 должность"
+      guid: "7a9f273e-9664-4950-9bca-3d96b2670ba6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_1 фамилия"
+      guid: "a856a784-03da-4238-9bd9-9881b9938b8a"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 должность"
+      guid: "053e616e-cb3c-4dc5-8348-1c407e8e13a6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_2 фамилия"
+      guid: "6ca82d36-9c55-450a-a479-002c4736cc06"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 должность"
+      guid: "3dc943bc-1b11-47e6-9cde-880d51a9d861"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_3 фамилия"
+      guid: "15284426-f3d8-4c55-9a6c-f9eea1393db3"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 должность"
+      guid: "c0f4a14d-0a30-4e08-a233-2a1a23db2403"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_4 фамилия"
+      guid: "7f45f58c-1a5e-48f5-b292-bbf312c0bf2e"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 должность"
+      guid: "7e974de2-5e90-4af8-ba6a-601fe0c76b0f"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_5 фамилия"
+      guid: "6153ed75-b3d0-4e9a-ade5-f851a2a4cab6"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 должность"
+      guid: "81f59847-bc5e-41a2-89f6-f840eaeb0258"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп_6 фамилия"
+      guid: "00178540-addd-412e-83e5-76db04dbb325"
+      group: "PG_DATA"
+      isInstance: true
+      categories: ["OST_Sheets"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Штамп Раздел проекта"
+      guid: "7f0c8590-53a2-4ddf-aaed-c70eb9b687bc"
+      group: "PG_IDENTITY_DATA"
+      isInstance: true
+      categories: ["OST_Sheets", "OST_Views"]
+      allowVaryBetweenGroups: false
+    - name: "Лоток или Короб_Наименование"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayRun", "OST_Conduit", "OST_ConduitRun"]
+      allowVaryBetweenGroups: false
+    - name: "Лоток или Короб_Длина прямой секции"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayRun", "OST_Conduit", "OST_ConduitRun"]
+      allowVaryBetweenGroups: false
+    - name: "Лоток или Короб_Толщина стенки"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_CableTray", "OST_CableTrayRun", "OST_Conduit", "OST_ConduitRun"]
+      allowVaryBetweenGroups: false
+    - name: "Воздуховод_Наименование"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_DuctCurves", "OST_DuctSystem", "OST_PlaceHolderDucts"]
+      allowVaryBetweenGroups: false
+    - name: "Воздуховод_Длина прямой секции"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_DuctCurves", "OST_DuctSystem", "OST_PlaceHolderDucts"]
+      allowVaryBetweenGroups: false
+    - name: "Воздуховод_Префикс размера"
+      group: "PG_DATA"
+      isInstance: false
+      categories: ["OST_DuctCurves", "OST_DuctSystem", "OST_PlaceHolderDucts"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Принадлежность к разделу"
+      guid: "b5fdbc30-6107-4aac-b13e-0dd300c771a1"
+      group: "PG_ADSK_MODEL_PROPERTIES"
+      isInstance: true
+      categories: ["OST_CableTray", "OST_CableTrayFitting", "OST_CableTrayRun", "OST_CommunicationDevices", "OST_Conduit", "OST_ConduitFitting", "OST_ConduitRun", "OST_DataDevices", "OST_DetailComponents", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FabricationContainment", "OST_FabricationHangers", "OST_FireAlarmDevices", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Максимальная потребляемая мощность"
+      guid: "a0ae6379-9034-4bc9-ad02-2a809dc5aa71"
+      group: "PG_ELECTRICAL"
+      isInstance: false
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_DetailComponents", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_GenericModel", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Нижний порог напряжения"
+      guid: "d0793a52-9689-40e2-9d07-9b8111827148"
+      group: "PG_ELECTRICAL"
+      isInstance: false
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Верхний порог напряжения"
+      guid: "2467a67d-4c34-4605-aac9-d5f0fc668e18"
+      group: "PG_ELECTRICAL"
+      isInstance: false
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Имя устройства"
+      guid: "f0923809-76d6-45a4-b60a-419571f546f1"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Ток дежурного режима"
+      guid: "915dc48e-049f-4c59-b4ce-5b0ddf2c291a"
+      group: "PG_ELECTRICAL_LOADS"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Ток тревожного режима"
+      guid: "90305e3e-5f55-4d60-a559-ed2b4f0df33a"
+      group: "PG_ELECTRICAL_LOADS"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Имя источника питания"
+      guid: "f24c1b5b-c0f0-48fb-a052-30b6568d688c"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер ЗКПС"
+      guid: "9d69633e-67b7-4cab-9756-0653bc7666ba"
+      group: "PG_FIRE_PROTECTION"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Имя панели"
+      guid: "62802840-a43e-4208-be3b-4e5eeee5ac73"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер контроллера"
+      guid: "14c9214c-b8c6-4aa9-b8ec-24943eea9478"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер точки доступа"
+      guid: "03d0c751-1fa8-46bb-844e-23a1206cb6ef"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер линии"
+      guid: "ec866554-5f04-4b98-bc87-c938d7240077"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalCircuit", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FabricationContainment", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер устройства"
+      guid: "e6ba3076-867d-43bf-8bfd-10bbc7d93edd"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Номер в шлейфе"
+      guid: "4debe0a8-b5a4-43eb-b90d-df63e66113ce"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+    - name: "ADSK_Количество занимаемых адресов"
+      guid: "ea9691ca-5aec-43bb-a215-ce659ff44021"
+      group: "PG_ELECTRICAL"
+      isInstance: true
+      categories: ["OST_CommunicationDevices", "OST_DataDevices", "OST_ElectricalEquipment", "OST_ElectricalFixtures", "OST_FireAlarmDevices", "OST_LightingDevices", "OST_LightingFixtures", "OST_MechanicalEquipment", "OST_NurseCallDevices", "OST_SecurityDevices", "OST_TelephoneDevices"]
+      allowVaryBetweenGroups: false
+
+# The element checks below report empty text parameters: one custom rule per text parameter of
+# the template, with the same categories and the same instance or type binding as the template.
+# A finding means the parameter value is empty and should be filled in.
+
+# ADSK_Обозначение - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406001"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Обозначение' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '9c98831b-9450-412d-b072-7d69b39f4029'))"
+  message: "Empty ADSK parameter 'ADSK_Обозначение': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Этаж - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406002"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Этаж' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '9eabf56c-a6cd-4b5c-a9d0-e9223e19ea3f'))"
+  message: "Empty ADSK parameter 'ADSK_Этаж': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Единица измерения - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406003"
+  description: "ADSK low-current systems template: the type parameter 'ADSK_Единица измерения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '4289cb19-9517-45de-9c02-5a74ebf5c86d'))"
+  message: "Empty ADSK type parameter 'ADSK_Единица измерения': '{elementName}' ({elementId}). Fill it in."
+
+# Разработчики шаблона - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406004"
+  description: "ADSK low-current systems template: the parameter 'Разработчики шаблона' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ProjectInformation'))"
+  check: "!isnullorempty(parameter(me, 'Разработчики шаблона'))"
+  message: "Empty ADSK parameter 'Разработчики шаблона': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Примечание - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406005"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Примечание' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_BuildingPad') or builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_CurtaSystem') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_EdgeSlab') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_Fascia') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_Materials') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_RailingHandRail') or builtincategory('OST_RailingSupport') or builtincategory('OST_RailingTermination') or builtincategory('OST_RailingTopRail') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_Rooms') or builtincategory('OST_SecurityDevices') or builtincategory('OST_Sheets') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_Stairs') or builtincategory('OST_StairsLandings') or builtincategory('OST_StairsRailing') or builtincategory('OST_StairsRuns') or builtincategory('OST_StairsStringerCarriage') or builtincategory('OST_StructuralFraming') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Topography') or builtincategory('OST_Walls') or builtincategory('OST_Windows') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'a85b7661-26b0-412f-979c-66af80b4b2c3'))"
+  message: "Empty ADSK parameter 'ADSK_Примечание': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Примечание к виду - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406006"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Примечание к виду' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e9853794-9790-4a53-a5c9-566106357d81'))"
+  message: "Empty ADSK parameter 'ADSK_Примечание к виду': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Завод-изготовитель - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406007"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Завод-изготовитель' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'a8cdbf7b-d60a-485e-a520-447d2055f351'))"
+  message: "Empty ADSK parameter 'ADSK_Завод-изготовитель': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Код изделия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406008"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Код изделия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '2fd9e8cb-84f3-4297-b8b8-75f444e124ed'))"
+  message: "Empty ADSK parameter 'ADSK_Код изделия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Группирование - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406009"
+  description: "ADSK low-current systems template: the type parameter 'ADSK_Группирование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, '3de5f1a4-d560-4fa8-a74f-25d250fb3401'))"
+  message: "Empty ADSK type parameter 'ADSK_Группирование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Зона - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406010"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Зона' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_BuildingPad') or builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_Ceilings') or builtincategory('OST_Columns') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_Cornices') or builtincategory('OST_CurtainWallMullions') or builtincategory('OST_CurtainWallPanels') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_Doors') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_Fascia') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_Floors') or builtincategory('OST_Furniture') or builtincategory('OST_FurnitureSystems') or builtincategory('OST_GenericModel') or builtincategory('OST_Gutter') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_Parking') or builtincategory('OST_Parts') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_Planting') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_Ramps') or builtincategory('OST_Roads') or builtincategory('OST_RoofSoffit') or builtincategory('OST_Roofs') or builtincategory('OST_SecurityDevices') or builtincategory('OST_Site') or builtincategory('OST_SiteProperty') or builtincategory('OST_SitePropertyLineSegment') or builtincategory('OST_Stairs') or builtincategory('OST_StairsRailing') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Walls') or builtincategory('OST_Windows') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'c78f0a7d-b68b-4d21-a247-1c8c6ced8bc5'))"
+  message: "Empty ADSK parameter 'ADSK_Зона': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Категория помещения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406011"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Категория помещения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Areas') or builtincategory('OST_MEPSpaces') or builtincategory('OST_Rooms'))"
+  check: "!isnullorempty(parameter(me, '4c70cba0-574b-49cb-b5fd-c0637073e720'))"
+  message: "Empty ADSK parameter 'ADSK_Категория помещения': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Масса_Текст - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406012"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Масса_Текст' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'a8832df7-0302-4a63-a6e1-47a01632b987'))"
+  message: "Empty ADSK parameter 'ADSK_Масса_Текст': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование краткое - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406013"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Наименование краткое' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'f194bf60-b880-4217-b793-1e0c30dda5e9'))"
+  message: "Empty ADSK parameter 'ADSK_Наименование краткое': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Позиция - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406014"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Позиция' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'ae8ff999-1f22-4ed7-ad33-61503d85f0f4'))"
+  message: "Empty ADSK parameter 'ADSK_Позиция': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Марка - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406015"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Марка' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '2204049c-d557-4dfc-8d70-13f19715e46d'))"
+  message: "Empty ADSK parameter 'ADSK_Марка': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Наименование - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406016"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationDuctworkInsulation') or builtincategory('OST_FabricationDuctworkLining') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FabricationPipeworkInsulation') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MEPSpaces') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_SwitchSystem') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, 'e6e0f5cd-3e26-485b-9342-23882b20eb43'))"
+  message: "Empty ADSK parameter 'ADSK_Наименование': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Назначение вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406017"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Назначение вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Schedules') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e313f126-7e51-4a5d-a45a-7c6dfe02124a'))"
+  message: "Empty ADSK parameter 'ADSK_Назначение вида': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Владелец вида - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406018"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Владелец вида' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, 'e166f8d8-b4ec-4488-a7a1-b7ee4ebdce1b'))"
+  message: "Empty ADSK parameter 'ADSK_Владелец вида': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Версия семейства - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406019"
+  description: "ADSK low-current systems template: the type parameter 'ADSK_Версия семейства' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '85cd0032-c9ee-4cd3-8ffa-b2f1a05328e3'))"
+  message: "Empty ADSK type parameter 'ADSK_Версия семейства': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Версия Revit - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406020"
+  description: "ADSK low-current systems template: the type parameter 'ADSK_Версия Revit' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_DuctAccessory') or builtincategory('OST_DuctCurves') or builtincategory('OST_DuctFitting') or builtincategory('OST_DuctInsulations') or builtincategory('OST_DuctLinings') or builtincategory('OST_DuctSystem') or builtincategory('OST_DuctTerminal') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_Entourage') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationDuctwork') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FabricationPipework') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_FlexDuctCurves') or builtincategory('OST_FlexPipeCurves') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_PipeAccessory') or builtincategory('OST_PipeCurves') or builtincategory('OST_PipeFitting') or builtincategory('OST_PipeInsulations') or builtincategory('OST_PipingSystem') or builtincategory('OST_PlaceHolderDucts') or builtincategory('OST_PlaceHolderPipes') or builtincategory('OST_PlumbingFixtures') or builtincategory('OST_SecurityDevices') or builtincategory('OST_SpecialityEquipment') or builtincategory('OST_Sprinklers') or builtincategory('OST_TelephoneDevices') or builtincategory('OST_Wire'))"
+  check: "!isnullorempty(parameter(me, '37384649-c3c8-4fc2-a08e-c2206438f528'))"
+  message: "Empty ADSK type parameter 'ADSK_Версия Revit': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Класс взрывоопасной зоны - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406021"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Класс взрывоопасной зоны' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, '3894e623-d201-447e-976e-a438cc8eb4b2'))"
+  message: "Empty ADSK parameter 'ADSK_Класс взрывоопасной зоны': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Класс пожароопасной зоны - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406022"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Класс пожароопасной зоны' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, 'c2706852-82e1-4780-8445-42385057ba51'))"
+  message: "Empty ADSK parameter 'ADSK_Класс пожароопасной зоны': '{elementName}' ({elementId}). Fill it in."
+
+# Наименование трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406023"
+  description: "ADSK low-current systems template: the parameter 'Наименование трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Наименование трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Наименование трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Марка трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406024"
+  description: "ADSK low-current systems template: the parameter 'Марка трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Марка трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Марка трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Код изделия трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406025"
+  description: "ADSK low-current systems template: the parameter 'Код изделия трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Код изделия трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Код изделия трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Завод-изготовитель трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406026"
+  description: "ADSK low-current systems template: the parameter 'Завод-изготовитель трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Завод-изготовитель трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Завод-изготовитель трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Группирование трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406027"
+  description: "ADSK low-current systems template: the parameter 'Группирование трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Группирование трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Группирование трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Позиция трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406028"
+  description: "ADSK low-current systems template: the parameter 'Позиция трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Позиция трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Позиция трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Единица измерения трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406029"
+  description: "ADSK low-current systems template: the parameter 'Единица измерения трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Единица измерения трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Единица измерения трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Примечание трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406030"
+  description: "ADSK low-current systems template: the parameter 'Примечание трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Примечание трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Примечание трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Позиция проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406031"
+  description: "ADSK low-current systems template: the parameter 'Позиция проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Позиция проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Позиция проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Наименование проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406032"
+  description: "ADSK low-current systems template: the parameter 'Наименование проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Наименование проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Наименование проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Код изделия проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406033"
+  description: "ADSK low-current systems template: the parameter 'Код изделия проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Код изделия проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Код изделия проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Группирование проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406034"
+  description: "ADSK low-current systems template: the parameter 'Группирование проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Группирование проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Группирование проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Марка проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406035"
+  description: "ADSK low-current systems template: the parameter 'Марка проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Марка проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Марка проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Примечание проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406036"
+  description: "ADSK low-current systems template: the parameter 'Примечание проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Примечание проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Примечание проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Единица измерения проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406037"
+  description: "ADSK low-current systems template: the parameter 'Единица измерения проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Единица измерения проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Единица измерения проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Завод-изготовитель проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406038"
+  description: "ADSK low-current systems template: the parameter 'Завод-изготовитель проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Завод-изготовитель проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Завод-изготовитель проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Масса_Текст проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406039"
+  description: "ADSK low-current systems template: the parameter 'Масса_Текст проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Масса_Текст проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Масса_Текст проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Класс пожароопасной зоны - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406040"
+  description: "ADSK low-current systems template: the parameter 'Класс пожароопасной зоны' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, 'Класс пожароопасной зоны'))"
+  message: "Empty ADSK parameter 'Класс пожароопасной зоны': '{elementName}' ({elementId}). Fill it in."
+
+# Класс взрывоопасной зоны - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406041"
+  description: "ADSK low-current systems template: the parameter 'Класс взрывоопасной зоны' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, 'Класс взрывоопасной зоны'))"
+  message: "Empty ADSK parameter 'Класс взрывоопасной зоны': '{elementName}' ({elementId}). Fill it in."
+
+# Категория помещения - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406042"
+  description: "ADSK low-current systems template: the parameter 'Категория помещения' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, 'Категория помещения'))"
+  message: "Empty ADSK parameter 'Категория помещения': '{elementName}' ({elementId}). Fill it in."
+
+# Нормативная освещенность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406043"
+  description: "ADSK low-current systems template: the parameter 'Нормативная освещенность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_MEPSpaces'))"
+  check: "!isnullorempty(parameter(me, 'Нормативная освещенность'))"
+  message: "Empty ADSK parameter 'Нормативная освещенность': '{elementName}' ({elementId}). Fill it in."
+
+# Участок трассы кабеля_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406044"
+  description: "ADSK low-current systems template: the parameter 'Участок трассы кабеля_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Участок трассы кабеля_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Участок трассы кабеля_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Количество жил и сечение проводника_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406045"
+  description: "ADSK low-current systems template: the parameter 'Количество жил и сечение проводника_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Количество жил и сечение проводника_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Количество жил и сечение проводника_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Проложен_Марка кабеля_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406046"
+  description: "ADSK low-current systems template: the parameter 'Проложен_Марка кабеля_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Проложен_Марка кабеля_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Проложен_Марка кабеля_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Проложен_Количество жил и сечение_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406047"
+  description: "ADSK low-current systems template: the parameter 'Проложен_Количество жил и сечение_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Проложен_Количество жил и сечение_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Проложен_Количество жил и сечение_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# Проложен_Длина - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406048"
+  description: "ADSK low-current systems template: the parameter 'Проложен_Длина' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Проложен_Длина'))"
+  message: "Empty ADSK parameter 'Проложен_Длина': '{elementName}' ({elementId}). Fill it in."
+
+# Диаметр по стандарту трубы_Электрические цепи - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406049"
+  description: "ADSK low-current systems template: the parameter 'Диаметр по стандарту трубы_Электрические цепи' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_ElectricalCircuit'))"
+  check: "!isnullorempty(parameter(me, 'Диаметр по стандарту трубы_Электрические цепи'))"
+  message: "Empty ADSK parameter 'Диаметр по стандарту трубы_Электрические цепи': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406050"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ab409417-2d5e-4f75-aa6a-204cc4ee6f74'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Директор - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406051"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_Директор' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '45d87fac-84ab-4bd0-a852-d6089c156543'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Директор': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406052"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c5f4124e-9a7c-49d5-83e0-99bd05213e86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406053"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '03d95fa9-d919-4add-b778-cb2a1208fb86'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406054"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '8ddc6ae4-7741-450d-be39-2838a23a7758'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406055"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ebf4547f-2321-447d-9869-ef8ade144981'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Номер тома - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406056"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_Номер тома' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cf26d231-bbc4-4735-aa83-ecef9f44d030'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Номер тома': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Наименование документа - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406057"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_Наименование документа' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '2f55778b-d403-4e61-b950-23a4e7d6fbc3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Наименование документа': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп титульный_Вид документации - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406058"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп титульный_Вид документации' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'dd71ff90-123c-47fd-9b73-0855c8f63566'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп титульный_Вид документации': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_Инвентарный номер - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406059"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_Инвентарный номер' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1b54f7b8-55f5-4d54-b27e-7909865a501d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_Инвентарный номер': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406060"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '597f72d5-01a8-416b-805c-a18cbbc49254'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406061"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'aa4e0636-b1b9-4ea6-8123-244a8679db0e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406062"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '73790284-e8c2-4717-a291-62460b2a596f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406063"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'ca0521c7-fdb9-4868-8047-9e81c665c9c7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406064"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '20e3931e-c22b-43ee-9256-9a2215b576a8'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406065"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '1031a769-0efa-4811-a2bc-d2f2e15b7ba7'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406066"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c58ff5a3-7e40-4be6-af6d-f9fea2507a2d'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406067"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '59e76a65-de10-4091-9763-6e923deab89a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406068"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '0abc2cd5-dab6-4a02-8b67-948c67c4f596'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406069"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'bbdefec1-06b8-45e7-8e89-9e3ccbaf29b2'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп боковой_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406070"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп боковой_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'f2f78068-21e1-4e79-8597-6237c46a1399'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп боковой_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Имя листа пользовательское - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406071"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_Имя листа пользовательское' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'cec3cc8c-d1fb-477b-9954-29cb60ce6656'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Имя листа пользовательское': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_Наименование объекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406072"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_Наименование объекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c92f2899-a807-468d-8126-610f73aa6ffc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_Наименование объекта': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406073"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_1 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7a9f273e-9664-4950-9bca-3d96b2670ba6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_1 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406074"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_1 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'a856a784-03da-4238-9bd9-9881b9938b8a'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_1 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406075"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_2 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '053e616e-cb3c-4dc5-8348-1c407e8e13a6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_2 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406076"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_2 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6ca82d36-9c55-450a-a479-002c4736cc06'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_2 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406077"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_3 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '3dc943bc-1b11-47e6-9cde-880d51a9d861'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_3 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406078"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_3 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '15284426-f3d8-4c55-9a6c-f9eea1393db3'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_3 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406079"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_4 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, 'c0f4a14d-0a30-4e08-a233-2a1a23db2403'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_4 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406080"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_4 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7f45f58c-1a5e-48f5-b292-bbf312c0bf2e'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_4 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406081"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_5 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '7e974de2-5e90-4af8-ba6a-601fe0c76b0f'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_5 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406082"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_5 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '6153ed75-b3d0-4e9a-ade5-f851a2a4cab6'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_5 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 должность - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406083"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_6 должность' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '81f59847-bc5e-41a2-89f6-f840eaeb0258'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 должность': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп_6 фамилия - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406084"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп_6 фамилия' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets'))"
+  check: "!isnullorempty(parameter(me, '00178540-addd-412e-83e5-76db04dbb325'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп_6 фамилия': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Штамп Раздел проекта - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406085"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Штамп Раздел проекта' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_Sheets') or builtincategory('OST_Views'))"
+  check: "!isnullorempty(parameter(me, '7f0c8590-53a2-4ddf-aaed-c70eb9b687bc'))"
+  message: "Empty ADSK parameter 'ADSK_Штамп Раздел проекта': '{elementName}' ({elementId}). Fill it in."
+
+# Лоток или Короб_Наименование - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406086"
+  description: "ADSK low-current systems template: the type parameter 'Лоток или Короб_Наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayRun') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitRun'))"
+  check: "!isnullorempty(parameter(me, 'Лоток или Короб_Наименование'))"
+  message: "Empty ADSK type parameter 'Лоток или Короб_Наименование': '{elementName}' ({elementId}). Fill it in."
+
+# Лоток или Короб_Толщина стенки - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406087"
+  description: "ADSK low-current systems template: the type parameter 'Лоток или Короб_Толщина стенки' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayRun') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitRun'))"
+  check: "!isnullorempty(parameter(me, 'Лоток или Короб_Толщина стенки'))"
+  message: "Empty ADSK type parameter 'Лоток или Короб_Толщина стенки': '{elementName}' ({elementId}). Fill it in."
+
+# Воздуховод_Наименование - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406088"
+  description: "ADSK low-current systems template: the type parameter 'Воздуховод_Наименование' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_DuctCurves') or builtincategory('OST_DuctSystem') or builtincategory('OST_PlaceHolderDucts'))"
+  check: "!isnullorempty(parameter(me, 'Воздуховод_Наименование'))"
+  message: "Empty ADSK type parameter 'Воздуховод_Наименование': '{elementName}' ({elementId}). Fill it in."
+
+# Воздуховод_Префикс размера - type text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406089"
+  description: "ADSK low-current systems template: the type parameter 'Воздуховод_Префикс размера' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "type and (builtincategory('OST_DuctCurves') or builtincategory('OST_DuctSystem') or builtincategory('OST_PlaceHolderDucts'))"
+  check: "!isnullorempty(parameter(me, 'Воздуховод_Префикс размера'))"
+  message: "Empty ADSK type parameter 'Воздуховод_Префикс размера': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Принадлежность к разделу - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406090"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Принадлежность к разделу' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CableTray') or builtincategory('OST_CableTrayFitting') or builtincategory('OST_CableTrayRun') or builtincategory('OST_CommunicationDevices') or builtincategory('OST_Conduit') or builtincategory('OST_ConduitFitting') or builtincategory('OST_ConduitRun') or builtincategory('OST_DataDevices') or builtincategory('OST_DetailComponents') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FabricationContainment') or builtincategory('OST_FabricationHangers') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_GenericModel') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, 'b5fdbc30-6107-4aac-b13e-0dd300c771a1'))"
+  message: "Empty ADSK parameter 'ADSK_Принадлежность к разделу': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Имя устройства - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406091"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Имя устройства' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, 'f0923809-76d6-45a4-b60a-419571f546f1'))"
+  message: "Empty ADSK parameter 'ADSK_Имя устройства': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Имя источника питания - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406092"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Имя источника питания' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, 'f24c1b5b-c0f0-48fb-a052-30b6568d688c'))"
+  message: "Empty ADSK parameter 'ADSK_Имя источника питания': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер ЗКПС - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406093"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Номер ЗКПС' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, '9d69633e-67b7-4cab-9756-0653bc7666ba'))"
+  message: "Empty ADSK parameter 'ADSK_Номер ЗКПС': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Имя панели - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406094"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Имя панели' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalCircuit') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, '62802840-a43e-4208-be3b-4e5eeee5ac73'))"
+  message: "Empty ADSK parameter 'ADSK_Имя панели': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер контроллера - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406095"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Номер контроллера' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, '14c9214c-b8c6-4aa9-b8ec-24943eea9478'))"
+  message: "Empty ADSK parameter 'ADSK_Номер контроллера': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер точки доступа - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406096"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Номер точки доступа' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, '03d0c751-1fa8-46bb-844e-23a1206cb6ef'))"
+  message: "Empty ADSK parameter 'ADSK_Номер точки доступа': '{elementName}' ({elementId}). Fill it in."
+
+# ADSK_Номер устройства - instance text parameter; a finding means the value is empty.
+- type: "custom"
+  code: "CSTM406097"
+  description: "ADSK low-current systems template: the parameter 'ADSK_Номер устройства' is filled"
+  severity: "Message"
+  isActive: true
+  tags: ["ADSK", "СС", "LowCurrent", "Parameters", "Project"]
+  takeDocument: "!property('IsFamilyDocument')"
+  take: "instance and (builtincategory('OST_CommunicationDevices') or builtincategory('OST_DataDevices') or builtincategory('OST_ElectricalEquipment') or builtincategory('OST_ElectricalFixtures') or builtincategory('OST_FireAlarmDevices') or builtincategory('OST_LightingDevices') or builtincategory('OST_LightingFixtures') or builtincategory('OST_MechanicalEquipment') or builtincategory('OST_NurseCallDevices') or builtincategory('OST_SecurityDevices') or builtincategory('OST_TelephoneDevices'))"
+  check: "!isnullorempty(parameter(me, 'e6ba3076-867d-43bf-8bfd-10bbc7d93edd'))"
+  message: "Empty ADSK parameter 'ADSK_Номер устройства': '{elementName}' ({elementId}). Fill it in."

@@ -12,6 +12,19 @@ internal sealed class DiagnosticListDesignData
 {
     private const string ResourceBaseName = "Revit.Linter.Localization.DiagnosticListPresenter.ViewModels.DiagnosticListViewModel";
 
+    /// <summary>Initializes the column visibility popup with the localized headers of the table.</summary>
+    public DiagnosticListDesignData()
+    {
+        Columns = new(
+        [
+            new(IsActiveHeader),
+            new(CodeHeader),
+            new(SeverityHeader),
+            new(DescriptionHeader),
+            new(TagsHeader),
+        ]);
+    }
+
     private static readonly IReadOnlyList<DiagnosticRowDesignData> Rows =
     [
         new DiagnosticRowDesignData
@@ -125,6 +138,18 @@ internal sealed class DiagnosticListDesignData
 
     /// <summary>Gets the localized filter popup tooltip description.</summary>
     public string MoreFiltersDescription => LocalizationResourceReader.GetString(ResourceBaseName, "moreFilters_description");
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    public TableColumnsDesignData Columns { get; }
+
+    /// <summary>Gets the localized column popup tooltip title.</summary>
+    public string ColumnsTitle => LocalizationResourceReader.GetString(ResourceBaseName, "columns_title");
+
+    /// <summary>Gets the localized column popup tooltip description.</summary>
+    public string ColumnsDescription => LocalizationResourceReader.GetString(ResourceBaseName, "columns_description");
+
+    /// <summary>Gets the localized text of the show-all-columns action.</summary>
+    public string ResetColumnsText => LocalizationResourceReader.GetString(ResourceBaseName, "resetColumns_text");
 
     /// <summary>Gets the localized text of the check all action.</summary>
     public string CheckAllText => LocalizationResourceReader.GetString(ResourceBaseName, "checkAll_text");

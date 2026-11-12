@@ -31,6 +31,7 @@ Only Autodesk samples for the running Revit version are offered. Your original s
 
 Progress is kept separately for each Revit version.
 
+- A step that points at a hidden table column shows that column while the step lasts and hides it again when the tour moves on, pauses or ends; your own column choice is never overwritten.
 - **Continue later** hides the tour pane, ends the session and remembers the current step. The training check disappears from the Diagnostics pane and your own checks return with the states you set; the training findings are removed from the Warnings pane, so only your own results remain.
 - Starting the tour again continues from the **Run checks** step: any leftover training findings are removed first, then the training check runs again and finds fresh findings for the remaining tasks, while the steps before the run stay completed. The tour says so on that step instead of asking you to run the checks for the first time.
 - **Do not show again** opts out for the running Revit version.

@@ -7,6 +7,9 @@
   <data name="deleteUnusedFamily_fix" xml:space="preserve"><value>Удалить неиспользуемое семейство</value></data>
   <data name="deleteImportInstance_fix" xml:space="preserve"><value>Удалить импортированный объект</value></data>
   <data name="deleteUnusedMaterial_fix" xml:space="preserve"><value>Удалить неиспользуемый материал</value></data>
+  <data name="deleteUnusedAppearanceAsset_fix" xml:space="preserve"><value>Удалить неиспользуемый ассет внешнего вида</value></data>
+  <data name="deleteDuplicateMaterial_fix" xml:space="preserve"><value>Удалить неиспользуемый дубликат материала</value></data>
+  <data name="disableRenderAppearanceForShading_fix" xml:space="preserve"><value>Отключить внешний вид для затенения</value></data>
   <data name="deletePurgeableElement_fix" xml:space="preserve"><value>Удалить неиспользуемый элемент</value></data>
   <data name="deleteModelCurve_fix" xml:space="preserve"><value>Удалить линию модели</value></data>
   <data name="deleteRedundantRoom_fix" xml:space="preserve"><value>Удалить избыточное помещение</value></data>
@@ -14,6 +17,7 @@
   <data name="deleteUnplacedRoom_fix" xml:space="preserve"><value>Удалить неразмещённое помещение</value></data>
   <data name="deleteTextNote_fix" xml:space="preserve"><value>Удалить текстовое примечание</value></data>
   <data name="deleteEmptySheet_fix" xml:space="preserve"><value>Удалить пустой лист</value></data>
+  <data name="showAllHiddenViewElements_fix" xml:space="preserve"><value>Показать все скрытые элементы</value></data>
   <data name="deleteUnusedProfileSymbol_fix" xml:space="preserve"><value>Удалить неиспользуемый типоразмер профиля</value></data>
   <data name="deleteUnusedReferencePlane_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную плоскость</value></data>
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную линию</value></data>
@@ -22,6 +26,7 @@
   <data name="ungroupGroup_fix" xml:space="preserve"><value>Разгруппировать</value></data>
   <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Разгруппировать вложенную группу</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="open_view_visualization" xml:space="preserve"><value>Открыть вид</value></data>
   <data name="show_and_select_visualization" xml:space="preserve"><value>Показать и выбрать</value></data>
   <data name="cut_show_and_select_visualization" xml:space="preserve"><value>Обрезать, показать и выбрать</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Проверяет экземпляры труб, воздуховодов, коробов, лотков и семейств на наличие неприсоединённых коннекторов.</value></data>
@@ -110,6 +115,14 @@
   <data name="SHRD0036_message" xml:space="preserve"><value>Ось «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0037_description" xml:space="preserve"><value>Проверяет, закреплены ли экземпляры связей.</value></data>
   <data name="SHRD0037_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0038_description" xml:space="preserve"><value>Ищет дубликаты материалов — материалы с одинаковыми настройками и разными именами. См. статью Autodesk о массовом дублировании материалов и ассетов внешнего вида.</value></data>
+  <data name="SHRD0038_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) — дубликат материала «{duplicateName}». Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0039_description" xml:space="preserve"><value>Ищет ассеты внешнего вида, на которые не ссылается ни один материал.</value></data>
+  <data name="SHRD0039_message" xml:space="preserve"><value>Ассет внешнего вида «{elementName}» ({elementId}) не используется ни одним материалом. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0040_description" xml:space="preserve"><value>Ищет материалы, у которых в режиме затенения используется внешний вид визуализации с текстурой. См. справку Autodesk Revit: «Практические рекомендации: производительность при визуализации и материалы».</value></data>
+  <data name="SHRD0040_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) показывает текстуру внешнего вида в режиме затенения. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0041_description" xml:space="preserve"><value>Проверяет, есть ли в графическом виде элементы, скрытые в этом виде командой «Скрыть в виде».</value></data>
+  <data name="SHRD0041_message" xml:space="preserve"><value>В виде «{elementName}» ({elementId}) скрыто элементов: {hidden.count} — «{hidden.elementNames}» ({hidden.elementIds}). Время выполнения: {duration} мс.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>

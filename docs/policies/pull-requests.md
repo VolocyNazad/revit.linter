@@ -19,6 +19,8 @@ the `build-and-test` workflow and the `repository-policy` workflow.
 | `release/<version>` | `dev` | `main` |
 | `hotfix/<version>` | `main` | `main` |
 
+- A documentation-only change is a `chore/<slug>` branch that targets `dev`, as the
+  [branching policy](branching.md#branches) defines; there is no separate `docs/` branch kind.
 - Branch names, base branches and lifetimes are defined in the [branching policy](branching.md); the
   table is the pull request view of that contract.
 - A hotfix is also merged back into `dev`, or into the open release branch when one exists.

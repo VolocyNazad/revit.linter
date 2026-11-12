@@ -42,4 +42,13 @@ public interface IPracticalTourHost
 
     /// <summary>Clears the diagnostics pane search and re-enables its filters.</summary>
     void ResetDiagnosticsSearchAndFilters();
+
+    /// <summary>Shows a hidden table column while a guided step needs it.</summary>
+    /// <param name="column">The table column the step points at.</param>
+    /// <returns>A scope that restores the visibility the user chose when it is disposed.</returns>
+    /// <remarks>
+    /// The reveal is temporary and never overwrites the stored choice, so a column the user hid
+    /// disappears again when the step ends, is paused or the tour fails.
+    /// </remarks>
+    IDisposable RevealTableColumn(OnboardingTableColumn column);
 }

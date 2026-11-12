@@ -1,17 +1,17 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.ViewOnSheetWithoutTemplate;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.DuplicateMaterial;
 
-internal sealed class SelectViewWithoutTemplate(
+internal sealed class SelectDuplicateMaterial(
     IEnumerable<IAccentElementsService> services,
     IOverrideElementGraphicsService overrideElementGraphicsService,
     IOverrideFilterGraphicsService overrideFilterGraphicsService,
     ISetCategoryVisibilityService setCategoryVisibilityService,
     IViewSettingsService viewSettingsService,
-    ILogger<SelectViewWithoutTemplate> logger)
+    ILogger<SelectDuplicateMaterial> logger)
     : SelectOnlyVisualizationPipeline(
-        ElementDiagnosticIdCollector.ViewOnSheetWithoutTemplate,
+        ElementDiagnosticIdCollector.DuplicateMaterial,
         ElementDiagnosticLocalizations.GetString("select_visualization"),
         services,
         overrideElementGraphicsService,

@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:designData="clr-namespace:Revit.Linter.WelcomePresenter.DesignData"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:behaviors="clr-namespace:Revit.Linter.Behaviors;assembly=Revit.Linter.Behaviors"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -72,7 +72,7 @@
                     </StackPanel>
                 </StackPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:WelcomeRulesStepViewModel}">
+            <DataTemplate x:Key="WelcomeRulesStepTemplate">
                 <StackPanel>
                     <Grid Margin="0,0,0,16">
                         <Grid.ColumnDefinitions>
@@ -126,13 +126,14 @@
                             FontWeight="SemiBold"
                             Style="{StaticResource LinterParagraphText}"
                             Text="{Binding ElementPreviewTitleText, Mode=OneWay}" />
-                        <views:YamlPreviewView
+                        <Border
                             Height="116"
                             Padding="12"
                             Background="{DynamicResource LinterInputBackgroundBrush}"
                             BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1"
-                            Text="{Binding RulePreviewText, Mode=OneWay}" />
+                            BorderThickness="1">
+                            <views:YamlPreviewView Text="{Binding RulePreviewText, Mode=OneWay}" />
+                        </Border>
                         <Grid Margin="0,12,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -155,13 +156,14 @@
                             FontWeight="SemiBold"
                             Style="{StaticResource LinterParagraphText}"
                             Text="{Binding CollisionPreviewTitleText, Mode=OneWay}" />
-                        <views:YamlPreviewView
+                        <Border
                             Height="132"
                             Padding="12"
                             Background="{DynamicResource LinterInputBackgroundBrush}"
                             BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1"
-                            Text="{Binding CollisionRulePreviewText, Mode=OneWay}" />
+                            BorderThickness="1">
+                            <views:YamlPreviewView Text="{Binding CollisionRulePreviewText, Mode=OneWay}" />
+                        </Border>
                         <Grid Margin="0,8,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -182,13 +184,14 @@
                             FontWeight="SemiBold"
                             Style="{StaticResource LinterParagraphText}"
                             Text="{Binding ProjectParameterPreviewTitleText, Mode=OneWay}" />
-                        <views:YamlPreviewView
+                        <Border
                             Height="164"
                             Padding="12"
                             Background="{DynamicResource LinterInputBackgroundBrush}"
                             BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1"
-                            Text="{Binding ProjectParameterRulePreviewText, Mode=OneWay}" />
+                            BorderThickness="1">
+                            <views:YamlPreviewView Text="{Binding ProjectParameterRulePreviewText, Mode=OneWay}" />
+                        </Border>
                         <Grid Margin="0,8,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -210,6 +213,11 @@
                     </StackPanel>
                 </StackPanel>
             </DataTemplate>
+            <!-- The keyed template also serves the design-time preview. The implicit template keyed by the
+                 view-model type is what a ContentControl resolves at run time, so it must stay implicit. -->
+            <DataTemplate DataType="{x:Type viewModels:WelcomeRulesStepViewModel}">
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource WelcomeRulesStepTemplate}" />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:WelcomeExamplesStepViewModel}">
                 <StackPanel>
                     <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding IntroText, Mode=OneWay}" />
@@ -225,6 +233,56 @@
                         Margin="0,0,0,12"
                         Content="{Binding StructureText, Mode=OneWay}"
                         IsChecked="{Binding IsStructureSelected}" />
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,6"
+                            FontWeight="SemiBold"
+                            Style="{StaticResource LinterParagraphText}"
+                            Text="{Binding AdskChecksHeaderText, Mode=OneWay}" />
+                        <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AdskChecksIntroText, Mode=OneWay}" />
+                        <UniformGrid Columns="4" Margin="0,4,0,12">
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckArchitectureText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckArchitectureSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckWaterSupplyText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckWaterSupplySelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckReinforcedConcreteText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckReinforcedConcreteSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckSteelStructuresText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckSteelStructuresSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckHvacText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckHvacSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckLowCurrentText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckLowCurrentSelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckTechnologyText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckTechnologySelected}" />
+                            <CheckBox
+                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding AdskCheckElectricalText, Mode=OneWay}"
+                                IsChecked="{Binding IsCheckElectricalSelected}" />
+                        </UniformGrid>
+                    </StackPanel>
                     <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ContentsText, Mode=OneWay}" />
                     <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding TargetInfo, Mode=OneWay}" />
                     <Button
@@ -437,7 +495,7 @@
                 <ContentControl
                     HorizontalContentAlignment="Stretch"
                     Content="{Binding CurrentStep}"
-                    d:ContentTemplate="{StaticResource {x:Type viewModels:WelcomeRulesStepViewModel}}"
+                    d:ContentTemplate="{StaticResource WelcomeRulesStepTemplate}"
                     Focusable="False" />
             </ScrollViewer>
             <DockPanel Grid.Row="4" Margin="0,16,0,0">

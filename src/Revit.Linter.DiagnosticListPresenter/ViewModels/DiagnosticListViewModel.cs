@@ -8,6 +8,8 @@ using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -32,7 +34,9 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IDiagnosticConfigurationWriter _configurationWriter;
     private readonly IConfigurationPaths _configurationPaths;
     private readonly IShellLauncher _shellLauncher;
+    private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
+    private TableColumnsViewModel? _columns;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
@@ -49,6 +53,19 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
 
     [ObservableProperty]
     public partial CollectionViewSource? CollectionViewSource { get; private set; }
+
+    /// <summary>Gets the popup that hides and shows the data columns of the table.</summary>
+    /// <remarks>The action columns have no key, so they are not listed and always stay visible.</remarks>
+    public TableColumnsViewModel Columns => _columns ??= new(
+        TableColumnIds.Diagnostics,
+        _tableColumnsService,
+        [
+            new(TableColumnKeys.IsActive, () => IsActiveHeader),
+            new(TableColumnKeys.Code, () => CodeHeader),
+            new(TableColumnKeys.Severity, () => SeverityHeader),
+            new(TableColumnKeys.Description, () => DescriptionHeader),
+            new(TableColumnKeys.Tags, () => TagsHeader),
+        ]);
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;

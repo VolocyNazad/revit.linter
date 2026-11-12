@@ -16,6 +16,9 @@ namespace Revit.Linter.Presentation.ViewModels;
 /// </remarks>
 public abstract partial class ReportRowViewModel : ObservableObject
 {
+    private static readonly Func<object?, IReadOnlyList<ReportLink>?> LinkProvider =
+        static value => ReportLinks.TryGetLinks<ElementId>(value, static id => id.ToString());
+
     /// <summary>Gets the diagnostic code that produced the row.</summary>
     public required string Code { get; init; }
 
@@ -37,6 +40,9 @@ public abstract partial class ReportRowViewModel : ObservableObject
     /// <summary>Gets the localized tooltip format of the show-element command.</summary>
     public required string ShowElementToolTipFormat { get; init; }
 
+    /// <summary>Gets the localized tooltip of the control that reveals a folded list.</summary>
+    public required string ExpandListToolTip { get; init; }
+
     /// <summary>Gets the row creation time as relative text in the current user interface culture.</summary>
     /// <remarks>
     /// The text is measured against the current time on every read, so it only stays correct while the
@@ -47,18 +53,61 @@ public abstract partial class ReportRowViewModel : ObservableObject
     /// <summary>Re-raises <see cref="CreatedText"/> so a bound cell re-reads the age against the current time.</summary>
     public void RefreshCreatedText() => OnPropertyChanged(nameof(CreatedText));
 
-    private ReportMessage? _message;
+    private ReportMessageDisplay? _display;
+    private IReadOnlyList<ReportTextPart>? _expandedListParts;
 
-    private ReportMessage Message => _message ??= ReportMessageParser.Parse(
+    private ReportMessageDisplay Display => _display ??= new ReportMessageDisplay(
         Template,
         Args,
-        static value => ReportLinks.TryGetLinks<ElementId>(value, static id => id.ToString()));
+        LinkProvider,
+        ReportDisplayBudget.Default);
 
     /// <summary>Gets the message parts with the element links the message template produced.</summary>
-    public IReadOnlyList<ReportTextPart> MessageParts => Message.Parts;
+    /// <remarks>
+    /// A list value with many elements or names is folded here, so the row of the report table stays
+    /// readable. <see cref="MessageText"/> keeps the complete message: folding only changes what the
+    /// table renders inline, and the expander of the list carries the complete list.
+    /// </remarks>
+    public IReadOnlyList<ReportTextPart> MessageParts => Display.Parts;
+
+    /// <summary>Gets the complete parts of the list the expander opened, or <see langword="null"/> until one is opened.</summary>
+    public IReadOnlyList<ReportTextPart>? ExpandedListParts => _expandedListParts;
 
     /// <summary>Gets the plain message text of the row.</summary>
-    public string MessageText => Message.Text;
+    public string MessageText => Display.Text;
+
+    /// <summary>Gets or sets whether the expanded list is shown in the popup of the row.</summary>
+    /// <remarks>
+    /// A popup that closes on its own (a click outside it) does not write that state back through a
+    /// two-way binding, so the view reports the close through <see cref="CollapseListCommand"/>.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isListExpanded;
+
+    /// <summary>Gets the command that opens a folded list with all of its items.</summary>
+    /// <param name="parameter">The complete parts of the list, carried by the expander part.</param>
+    /// <remarks>
+    /// The state is set to closed first so a popup that is already open closes and opens again for the
+    /// newly clicked list; a popup that closed by itself never reported that through the two-way binding.
+    /// </remarks>
+    [RelayCommand]
+    private void ExpandList(object? parameter)
+    {
+        if (parameter is not IReadOnlyList<ReportTextPart> parts) return;
+
+        _expandedListParts = parts;
+        OnPropertyChanged(nameof(ExpandedListParts));
+        IsListExpanded = false;
+        IsListExpanded = true;
+    }
+
+    /// <summary>Gets the command that marks the expanded list popup as closed.</summary>
+    /// <remarks>
+    /// Called when the popup closes by itself, so the next expander click opens it again instead of
+    /// setting a state the popup already has.
+    /// </remarks>
+    [RelayCommand]
+    private void CollapseList() => IsListExpanded = false;
 
     [RelayCommand]
     private void AccentElement(object? parameter)

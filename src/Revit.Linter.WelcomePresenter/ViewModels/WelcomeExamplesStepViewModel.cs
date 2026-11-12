@@ -10,7 +10,8 @@ using System.IO;
 namespace Revit.Linter.WelcomePresenter.ViewModels;
 
 /// <summary>
-/// Presents the optional example-configuration step and installs the example for the selected disciplines.
+/// Presents the optional example-configuration step and installs the example for the selected disciplines
+/// together with the selected template check packs: project-parameter checks and text-parameter fill checks.
 /// </summary>
 [GenerateLocalizedProperties]
 internal sealed partial class WelcomeExamplesStepViewModel(
@@ -35,6 +36,38 @@ internal sealed partial class WelcomeExamplesStepViewModel(
     [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
     public partial bool IsStructureSelected { get; set; }
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckArchitectureSelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckWaterSupplySelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckReinforcedConcreteSelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckSteelStructuresSelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckHvacSelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckLowCurrentSelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckTechnologySelected { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    public partial bool IsCheckElectricalSelected { get; set; }
+
     /// <summary>Gets a value indicating whether the examples were installed during this wizard session.</summary>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
@@ -51,7 +84,14 @@ internal sealed partial class WelcomeExamplesStepViewModel(
     [ObservableProperty]
     public partial string? StatusMessage { get; private set; }
 
-    private bool CanInstall() => !IsInstalled && (IsMepSelected || IsArchitectureSelected || IsStructureSelected);
+    private bool CanInstall() =>
+        !IsInstalled
+        && (IsMepSelected || IsArchitectureSelected || IsStructureSelected || HasSelectedCheckPack());
+
+    private bool HasSelectedCheckPack() =>
+        IsCheckArchitectureSelected || IsCheckWaterSupplySelected || IsCheckReinforcedConcreteSelected
+        || IsCheckSteelStructuresSelected || IsCheckHvacSelected || IsCheckLowCurrentSelected
+        || IsCheckTechnologySelected || IsCheckElectricalSelected;
 
     [RelayCommand(CanExecute = nameof(CanInstall))]
     private void Install()
@@ -61,9 +101,19 @@ internal sealed partial class WelcomeExamplesStepViewModel(
         if (IsArchitectureSelected) disciplines.Add(ExampleDiscipline.Architecture);
         if (IsStructureSelected) disciplines.Add(ExampleDiscipline.Structure);
 
+        List<TemplateCheckPack> packs = [];
+        if (IsCheckArchitectureSelected) packs.Add(TemplateCheckPack.Architecture);
+        if (IsCheckWaterSupplySelected) packs.Add(TemplateCheckPack.WaterSupply);
+        if (IsCheckReinforcedConcreteSelected) packs.Add(TemplateCheckPack.ReinforcedConcrete);
+        if (IsCheckSteelStructuresSelected) packs.Add(TemplateCheckPack.SteelStructures);
+        if (IsCheckHvacSelected) packs.Add(TemplateCheckPack.Hvac);
+        if (IsCheckLowCurrentSelected) packs.Add(TemplateCheckPack.LowCurrentSystems);
+        if (IsCheckTechnologySelected) packs.Add(TemplateCheckPack.Technology);
+        if (IsCheckElectricalSelected) packs.Add(TemplateCheckPack.Electrical);
+
         try
         {
-            ExampleInstallationResult result = installer.Install(disciplines);
+            ExampleInstallationResult result = installer.Install(disciplines, packs);
 
             IsInstalled = true;
             string examplesDirectory = Path.Combine(
@@ -79,7 +129,7 @@ internal sealed partial class WelcomeExamplesStepViewModel(
             };
             StatusMessage = null;
         }
-        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or NotSupportedException)
         {
             logger.LogError(
                 exception, "Failed to install example configurations into {Directory}", installer.TargetDirectory);

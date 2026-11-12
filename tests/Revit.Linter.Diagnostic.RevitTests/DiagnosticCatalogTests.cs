@@ -10,7 +10,7 @@ using Revit.Linter.Testing;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
-public sealed class DiagnosticCatalogTests : DiagnosticTestBase
+public sealed class DiagnosticCatalogTests : DiagnosticTestFixture
 {
     [Test]
     public async Task Catalog_aggregates_registrations_and_fixes_from_providers()
@@ -240,12 +240,17 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         IDiagnosticCatalog catalog = services.GetRequiredService<IDiagnosticCatalog>();
         using IDiagnosticCatalogSnapshotLease initial = catalog.AcquireSnapshot();
         DiagnosticCatalogChangeOrigin? changeOrigin = null;
-        catalog.Changed += (_, args) => changeOrigin = args.Origin;
+        TaskCompletionSource<bool> changed = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        catalog.Changed += (_, args) =>
+        {
+            changeOrigin = args.Origin;
+            changed.TrySetResult(true);
+        };
 
         changeSource.Notify();
         changeSource.Notify();
         changeSource.Notify();
-        await Task.Delay(700);
+        await WaitForAsync(changed.Task, "catalog changed event");
         using IDiagnosticCatalogSnapshotLease refreshed = catalog.AcquireSnapshot();
 
         await Assert.That(initial.Version).IsEqualTo(1);
@@ -267,20 +272,24 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
         using IDiagnosticCatalogSnapshotLease initial = catalog.AcquireSnapshot();
         Exception? refreshError = null;
         int refreshFailureCount = 0;
+        TaskCompletionSource<bool> failed = new(TaskCreationOptions.RunContinuationsAsynchronously);
         catalog.RefreshFailed += (_, args) =>
         {
             refreshError = args.Exception;
             refreshFailureCount++;
+            failed.TrySetResult(true);
         };
         provider.ThrowOnCreate = true;
 
         changeSource.Notify();
-        await Task.Delay(700);
+        await WaitForAsync(failed.Task, "catalog refresh failure");
         using IDiagnosticCatalogSnapshotLease afterFailure = catalog.AcquireSnapshot();
 
+        TaskCompletionSource<bool> recoveredChange = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        catalog.Changed += (_, _) => recoveredChange.TrySetResult(true);
         provider.ThrowOnCreate = false;
         changeSource.Notify();
-        await Task.Delay(700);
+        await WaitForAsync(recoveredChange.Task, "catalog recovery refresh");
         using IDiagnosticCatalogSnapshotLease recovered = catalog.AcquireSnapshot();
 
         await Assert.That(afterFailure.Version).IsEqualTo(initial.Version);
@@ -446,6 +455,23 @@ public sealed class DiagnosticCatalogTests : DiagnosticTestBase
             await Assert.That(systemTags.Skip(documentKindStart)
                 .All(tag => tag == DiagnosticTags.Project || tag == DiagnosticTags.Family)).IsTrue();
         }
+    }
+
+    /// <summary>
+    /// Waits until the background catalog work signals <paramref name="signal"/>, failing the test
+    /// when it does not happen within the timeout.
+    /// </summary>
+    /// <remarks>
+    /// The catalog debounces file notifications, so the refresh is not observable immediately. A
+    /// fixed delay would make every passing run pay the whole debounce interval and would fail as
+    /// soon as a slower machine needs more margin.
+    /// </remarks>
+    private static async Task WaitForAsync(Task signal, string description)
+    {
+        Task completed = await Task.WhenAny(signal, Task.Delay(TimeSpan.FromSeconds(5)));
+        if (!ReferenceEquals(completed, signal))
+            throw new TimeoutException($"The {description} was not signalled within the timeout.");
+        await signal;
     }
 
     private sealed class TestElementVisualizationPipelineFactory : IElementVisualizationPipelineFactory

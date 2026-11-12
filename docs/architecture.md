@@ -101,7 +101,9 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   is the session's only checkpoint, so resuming continues at that step and finds fresh findings for the
   remaining tasks. Starting a session also clears any leftover training findings and restores the
   diagnostics pane view — search, filters and sort order — so the training row the first steps point at
-  cannot be hidden by earlier work.
+  cannot be hidden by earlier work. A step that points at a table column reveals that column for the
+  duration of the step through the host and restores the saved visibility afterwards, so the spotlight
+  never lands on a hidden header and the user's column choice is never overwritten.
 - Onboarding is realized by two presenter modules with one primary responsibility each: the modal one-shot
   welcome wizard and the optional modeless practical tour. The tour publishes its contracts from
   `Revit.Linter.PracticalTourPresenter.Interactions`, so the wizard and the host depend only on the
@@ -203,6 +205,11 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   pipeline into two, because Revit rejects a change of the active view while the document is modifiable.
   The built-in view-changing pipelines hide scope boxes with the `SetCategoryVisibility` step
   in `hide` mode.
+- A built-in finding whose target is a view is visualized by opening that view. The registration gives
+  every built-in diagnostic a target-view pipeline; the report presenter offers it only for findings
+  whose target is a `View` (a sheet included) and applies it in that view without creating the
+  three-dimensional visualization view. A built-in check that later starts reporting views needs no
+  visualization of its own, while a configured rule keeps the pipelines it declares.
 - The host provides `IVisualizationViewProvider`, which creates and prepares the persistent 3D view
   (coarse detail, shaded display) and activates it from the committed state the pipeline asks for. The
   pipeline itself delegates transactions, step dispatch and session bookkeeping to small collaborators,

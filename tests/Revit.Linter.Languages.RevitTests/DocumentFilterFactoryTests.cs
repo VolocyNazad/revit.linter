@@ -1,24 +1,24 @@
 using Autodesk.Revit.DB;
 using Microsoft.Extensions.Logging.Abstractions;
 using Nice3point.TUnit.Revit;
-using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Languages.Factories;
-using TUnit.Core.Executors;
 
 namespace Revit.Linter.Languages.RevitTests;
 
 public sealed class DocumentFilterFactoryTests : RevitApiTest
 {
-    private Document? _document;
+    private static Document? _document;
 
-    [Before(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CreateDocument() => _document = Application.NewProjectDocument(UnitSystem.Metric);
+    [Before(Class)]
+    public static void CreateDocument() => _document = Application.NewProjectDocument(UnitSystem.Metric);
 
-    [After(Test)]
-    [HookExecutor<RevitThreadExecutor>]
-    public void CloseDocument() => _document?.Close(false);
+    [After(Class)]
+    public static void CloseDocument()
+    {
+        _document?.Close(false);
+        _document = null;
+    }
 
     [Test]
     public async Task Boxed_boolean_document_condition_compiles_and_evaluates()

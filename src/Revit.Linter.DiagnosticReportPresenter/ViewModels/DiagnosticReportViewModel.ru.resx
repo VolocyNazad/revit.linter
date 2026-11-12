@@ -21,6 +21,7 @@
   <data name="fixDocumentFailed_message" xml:space="preserve"><value>Не удалось исправить документ «{documentTitle}».</value></data><data name="fixDocumentSucceeded_message" xml:space="preserve"><value>Документ «{documentTitle}» успешно исправлен.</value></data>
   <data name="ignoreDocumentFailed_message" xml:space="preserve"><value>Не удалось игнорировать документ «{documentTitle}».</value></data><data name="ignoreDocumentSucceeded_message" xml:space="preserve"><value>Документ «{documentTitle}» успешно проигнорирован.</value></data>
   <data name="showElement_toolTip" xml:space="preserve"><value>Показать элемент {0} в модели</value></data>
+  <data name="expandList_toolTip" xml:space="preserve"><value>Показать список полностью</value></data>
   <data name="showVisualization_text" xml:space="preserve"><value>Показать</value></data>
   <data name="visualizationFailed_message" xml:space="preserve"><value>Не удалось применить выбранную визуализацию.</value></data>
   <data name="retry_title" xml:space="preserve"><value>Повторить</value></data>
@@ -44,4 +45,7 @@
   <data name="showPrevious_description" xml:space="preserve"><value>Выбирает предыдущую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>
   <data name="showNext_text" xml:space="preserve"><value>Следующее замечание</value></data>
   <data name="showNext_description" xml:space="preserve"><value>Выбирает следующую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>
+  <data name="columns_title" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="columns_description" xml:space="preserve"><value>Выберите, какие столбцы показывает таблица. Кнопки действий остаются видимыми всегда.</value></data>
+  <data name="resetColumns_text" xml:space="preserve"><value>Вернуть все столбцы</value></data>
 </root>

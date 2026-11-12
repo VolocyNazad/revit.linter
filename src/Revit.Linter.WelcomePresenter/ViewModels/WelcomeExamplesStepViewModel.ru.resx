@@ -11,6 +11,16 @@
   <data name="architecture_text" xml:space="preserve"><value>Архитектура (АР)</value></data>
   <data name="structure_text" xml:space="preserve"><value>Конструкции (КР)</value></data>
   <data name="contents_text" xml:space="preserve"><value>Каждый раздел добавляет правила коллизий и правило параметров проекта на основе общих параметров ADSK. Проверки элементов устанавливаются в любом случае.</value></data>
+  <data name="adskChecksHeader_text" xml:space="preserve"><value>Проверки параметров проекта и их заполнения по шаблонам ADSK</value></data>
+  <data name="adskChecksIntro_text" xml:space="preserve"><value>Добавляет проверки параметров проекта по шаблонам ADSK и проверки заполнения их текстовых параметров. Отметьте свои разделы: проверки устанавливаются в тот же файл примеров.</value></data>
+  <data name="adskCheckArchitecture_text" xml:space="preserve"><value>Архитектура (АР)</value></data>
+  <data name="adskCheckWaterSupply_text" xml:space="preserve"><value>Водоснабжение (ВК)</value></data>
+  <data name="adskCheckReinforcedConcrete_text" xml:space="preserve"><value>Железобетон (КЖ)</value></data>
+  <data name="adskCheckSteelStructures_text" xml:space="preserve"><value>Металлоконструкции (КМ)</value></data>
+  <data name="adskCheckHvac_text" xml:space="preserve"><value>Отопление и вентиляция (ОВ)</value></data>
+  <data name="adskCheckLowCurrent_text" xml:space="preserve"><value>Слаботочные системы (СС)</value></data>
+  <data name="adskCheckTechnology_text" xml:space="preserve"><value>Технология (ТХ)</value></data>
+  <data name="adskCheckElectrical_text" xml:space="preserve"><value>Электроснабжение (ЭОМ)</value></data>
   <data name="target_format" xml:space="preserve"><value>Пример всегда записывается в подпапку «examples» в {0}. Идентичный файл примера не затрагивается; отличающийся или изменённый файл перед заменой сохраняется как копия .bak-&lt;timestamp&gt;.</value></data>
   <data name="installButton_text" xml:space="preserve"><value>Загрузить примеры</value></data>
   <data name="installed_format" xml:space="preserve"><value>Готово. Пример конфигурации записан в {0}. Примеры уже доступны в списке проверок.</value></data>

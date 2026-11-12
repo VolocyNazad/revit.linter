@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
+using Revit.Linter.ElementVisualization;
 
 namespace Revit.Linter.ElementDiagnostics;
 
@@ -36,6 +38,15 @@ internal sealed class ElementDiagnosticRegistrationProvider(
                         ElementDiagnosticLocalizations.GetString("show_and_select_visualization"),
                         [new ElementVisualizationStepDefinition { Type = "Show" },
                             new ElementVisualizationStepDefinition { Type = "Select" }])];
+
+            // Every built-in diagnostic carries the target-view pipeline, although only findings whose
+            // target is a view offer it: the presenter decides per finding, so a check that starts
+            // reporting views later needs no visualization of its own.
+            IElementVisualizationPipeline openViewPipeline = new OpenViewVisualizationPipeline(
+                identity,
+                ElementDiagnosticLocalizations.GetString("open_view_visualization"),
+                serviceProvider.GetRequiredService<ILogger<OpenViewVisualizationPipeline>>());
+            diagnosticVisualizationPipelines = [.. diagnosticVisualizationPipelines, openViewPipeline];
 
             yield return new ElementDiagnosticRegistration(
                 identity,

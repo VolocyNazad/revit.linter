@@ -1,17 +1,17 @@
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 
-namespace Revit.Linter.ElementDiagnostics.Diagnostics.ViewUnused;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.RenderAppearanceForShading;
 
-internal sealed class SelectUnplacedView(
+internal sealed class SelectRenderAppearanceForShading(
     IEnumerable<IAccentElementsService> services,
     IOverrideElementGraphicsService overrideElementGraphicsService,
     IOverrideFilterGraphicsService overrideFilterGraphicsService,
     ISetCategoryVisibilityService setCategoryVisibilityService,
     IViewSettingsService viewSettingsService,
-    ILogger<SelectUnplacedView> logger)
+    ILogger<SelectRenderAppearanceForShading> logger)
     : SelectOnlyVisualizationPipeline(
-        ElementDiagnosticIdCollector.ViewUnplaced,
+        ElementDiagnosticIdCollector.RenderAppearanceForShading,
         ElementDiagnosticLocalizations.GetString("select_visualization"),
         services,
         overrideElementGraphicsService,

@@ -10,6 +10,9 @@ using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
+using Revit.Linter.Presentation;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 
 namespace Revit.Linter.Infrastructure.Services;
 
@@ -23,6 +26,7 @@ internal sealed class PracticalTourHost(
     IDialog dialog,
     IDiagnosticListFilterReset diagnosticListFilterReset,
     IDiagnosticReportPresenter diagnosticReportPresenter,
+    ITableColumnsService tableColumnsService,
     IStringLocalizer<GlobalLocalizations> localizer) : IPracticalTourHost
 {
     public bool HasOpenDocument => revitContext.UIApplication?.ActiveUIDocument?.Document is not null;
@@ -53,6 +57,13 @@ internal sealed class PracticalTourHost(
         => _ = dialog.Show(new DialogRequest(localizer["practicalTour_completed_message"]));
 
     public void ResetDiagnosticsSearchAndFilters() => diagnosticListFilterReset.ResetSearchAndFilters();
+
+    public IDisposable RevealTableColumn(OnboardingTableColumn column) => column switch
+    {
+        OnboardingTableColumn.DiagnosticActive =>
+            tableColumnsService.Reveal(TableColumnIds.Diagnostics, TableColumnKeys.IsActive),
+        _ => throw new ArgumentOutOfRangeException(nameof(column), column, "Unknown onboarding table column."),
+    };
 
     private void QueuePracticalTourPaneVisibility(bool visible)
         => _ = idlingScheduler.RunAsync(application => SetPracticalTourPaneVisibility(application, visible));
