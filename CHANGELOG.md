@@ -8,6 +8,8 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-11-12
+
 ### Added
 
 - Project-parameter checks and per-parameter element fill checks generated from the ADSK Revit 2021 project templates are installed from the welcome window on every supported Revit version: the Examples step appends the checks of the selected disciplines to the installed example configuration in the parameter group spelling of the running version, `PG_*` names on Revit 2021-2023 and `ForgeTypeId` values on Revit 2024-2027, and a fill check reports an empty text parameter as a Message finding until the parameter is filled.

@@ -1,1 +1,0 @@
-Test suites run faster: the headless test projects run in parallel instead of one after another, and the Revit integration tests create one project document per test class and remember the resolved family templates instead of recreating them for every test.
