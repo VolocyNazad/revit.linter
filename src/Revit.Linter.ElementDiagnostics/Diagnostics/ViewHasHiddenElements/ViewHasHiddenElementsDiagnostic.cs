@@ -24,7 +24,7 @@ internal sealed class ViewHasHiddenElementsDiagnostic(IDocumentQueryService docu
             new Dictionary<string, object>
             {
                 ["hidden.count"] = hidden.Count,
-                ["hidden.elementNames"] = string.Join(", ", hidden.Select(element => element.Name)),
+                ["hidden.elementNames"] = hidden.Select(element => element.Name).ToArray(),
                 ["hidden.elementIds"] = hidden.Select(element => element.Id).ToArray(),
             },
             [.. hidden]);

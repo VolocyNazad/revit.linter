@@ -177,6 +177,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             Args = report.Message.Args.ToDictionary(i => i.Item1, i => i.Item2),
             AccentElementDelegate = i => SelectElement(i),
             ShowElementToolTipFormat = ShowElementToolTip,
+            ExpandListToolTip = ExpandListToolTip,
         };
         Collection.Add(item);
     }

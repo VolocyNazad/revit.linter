@@ -60,7 +60,7 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
         await Assert.That(feedback.MessageFormat)
             .IsEqualTo(CollisionDiagnosticLocalizations.GetString("Unverified_message"));
         await Assert.That(GetArgument<int>(feedback, "intersection.count")).IsEqualTo(1);
-        await Assert.That(GetArgument<string>(feedback, "intersection.elementNames"))
+        await Assert.That(string.Join(", ", GetArgument<string[]>(feedback, "intersection.elementNames")))
             .Contains(_candidate!.Name);
         Element dependency = feedback.AdditionalTargetDependencies.OfType<Element>().Single();
         await Assert.That(dependency.Id.Equals(_candidate.Id)).IsTrue();
@@ -75,7 +75,7 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(feedback.MessageFormat).IsNull();
-        await Assert.That(GetArgument<string>(feedback, "intersection.elementNames"))
+        await Assert.That(string.Join(", ", GetArgument<string[]>(feedback, "intersection.elementNames")))
             .Contains(_candidate!.Name);
     }
 

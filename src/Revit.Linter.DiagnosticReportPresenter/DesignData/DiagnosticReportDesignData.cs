@@ -31,22 +31,63 @@ internal sealed class DiagnosticReportDesignData
     private static readonly string ShowElementToolTipTemplate =
         LocalizationResourceReader.GetString(ResourceBaseName, "showElement_toolTip");
 
+    private static readonly string ExpandListToolTipTemplate =
+        LocalizationResourceReader.GetString(ResourceBaseName, "expandList_toolTip");
+
+    private static readonly IReadOnlyList<ReportTextPart> FoldedHiddenNames =
+    [
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Text, "Walls 1"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Text, "Wall 2"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Text, "Walls 3"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Text, "Grids 1"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Text, "Doors 1"),
+    ];
+
+    private static readonly IReadOnlyList<ReportTextPart> FoldedHiddenIds =
+    [
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Hyperlink, "1234567", "1234567"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Hyperlink, "1234568", "1234568"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Hyperlink, "1234569", "1234569"),
+        new ReportTextPart(ReportInlineType.LineBreak, "\n"),
+        new ReportTextPart(ReportInlineType.Text, "• "),
+        new ReportTextPart(ReportInlineType.Hyperlink, "1234570", "1234570"),
+    ];
+
     private static readonly IReadOnlyList<DiagnosticReportRowDesignData> Rows =
     [
         new DiagnosticReportRowDesignData
         {
-            Severity = DiagnosticSeverity.Error,
-            Code = "STDR201",
+            Severity = DiagnosticSeverity.Warning,
+            Code = "SHRD0041",
             DocumentTitle = "Sample Project.rvt",
             IsObsolete = false,
             ObsoleteDescription = string.Empty,
             MessageParts =
             [
-                new ReportTextPart(ReportInlineType.Text, "Element "),
-                new ReportTextPart(ReportInlineType.Hyperlink, "1234567", "1234567"),
-                new ReportTextPart(ReportInlineType.Text, " has no mark parameter."),
+                new ReportTextPart(ReportInlineType.Text, "View 'Level 1' (1234567) has 137 hidden element(s): '"),
+                new ReportTextPart(ReportInlineType.Text, "\u201CWalls 1\u201D, \u201CWall 2\u201D, \u201CWalls 3\u201D, "),
+                new ReportTextPart(ReportInlineType.Expander, "+134", FoldedHiddenNames),
+                new ReportTextPart(ReportInlineType.Text, "' (1234567, 1234568, 1234569"),
+                new ReportTextPart(ReportInlineType.Expander, "+134", FoldedHiddenIds),
+                new ReportTextPart(ReportInlineType.Text, "). Duration: 12 ms."),
             ],
+            ExpandedListParts = FoldedHiddenNames,
             ShowElementToolTipFormat = ShowElementToolTipTemplate,
+            ExpandListToolTip = ExpandListToolTipTemplate,
             Fixes =
             [
                 new DiagnosticReportFixDesignData { Title = "Assign the next free mark" },
@@ -61,7 +102,7 @@ internal sealed class DiagnosticReportDesignData
         },
         new DiagnosticReportRowDesignData
         {
-            Severity = DiagnosticSeverity.Warning,
+            Severity = DiagnosticSeverity.Error,
             Code = "CLN101",
             DocumentTitle = "Sample Project.rvt",
             IsObsolete = true,
@@ -72,6 +113,7 @@ internal sealed class DiagnosticReportDesignData
                 new ReportTextPart(ReportInlineType.Hyperlink, "A-101", "A-101"),
             ],
             ShowElementToolTipFormat = ShowElementToolTipTemplate,
+            ExpandListToolTip = ExpandListToolTipTemplate,
             HasActiveVisualization = true,
             VisualizationPipelines =
             [
@@ -94,6 +136,7 @@ internal sealed class DiagnosticReportDesignData
                 new ReportTextPart(ReportInlineType.Text, "Family parameter 'Height' is not used by any dimension."),
             ],
             ShowElementToolTipFormat = ShowElementToolTipTemplate,
+            ExpandListToolTip = ExpandListToolTipTemplate,
             Fixes =
             [
                 new DiagnosticReportFixDesignData { Title = "Remove the unused parameter" },
@@ -294,11 +337,26 @@ internal sealed class DiagnosticReportRowDesignData
     /// <summary>Gets the rendered parts of the finding message.</summary>
     public required IReadOnlyList<ReportTextPart> MessageParts { get; init; }
 
+    /// <summary>Gets the complete parts of the list the expander opened, or <see langword="null"/> until one is opened.</summary>
+    public IReadOnlyList<ReportTextPart>? ExpandedListParts { get; init; }
+
+    /// <summary>Gets or sets whether the expanded list popup is open.</summary>
+    public bool IsListExpanded { get; set; }
+
     /// <summary>Gets the plain text of the finding message, used to sort the column.</summary>
     public string MessageText => ReportMessageParser.BuildPlainText(MessageParts);
 
     /// <summary>Gets the composite format string of an element link tooltip.</summary>
     public required string ShowElementToolTipFormat { get; init; }
+
+    /// <summary>Gets the localized tooltip of the control that reveals a folded list.</summary>
+    public required string ExpandListToolTip { get; init; }
+
+    /// <summary>Gets the command that opens a folded list with all of its items.</summary>
+    public ICommand ExpandListCommand { get; } = new RelayCommand<object?>(_ => { });
+
+    /// <summary>Gets the command that marks the expanded list popup as closed.</summary>
+    public ICommand CollapseListCommand { get; } = new RelayCommand(() => { });
 
     /// <summary>Gets the fixes and ignore actions of the finding.</summary>
     public IReadOnlyList<DiagnosticReportFixDesignData> Fixes { get; init; } = [];

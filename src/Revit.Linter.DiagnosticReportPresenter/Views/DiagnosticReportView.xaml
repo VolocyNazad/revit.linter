@@ -281,19 +281,47 @@
                                 <DataTemplate.Resources>
                                     <Style BasedOn="{StaticResource LinterReportHyperlink}" TargetType="Hyperlink" />
                                 </DataTemplate.Resources>
-                                <messaging:ReportMessageView
-                                    VerticalAlignment="Center"
-                                    HorizontalScrollBarVisibility="Disabled"
-                                    IsObsolete="{Binding IsObsolete}"
-                                    IsSelectionEnabled="True"
-                                    LinkCommand="{Binding AccentElementCommand}"
-                                    Parts="{Binding MessageParts}"
-                                    ToolTipFormat="{Binding ShowElementToolTipFormat}"
-                                    VerticalScrollBarVisibility="Disabled">
-                                    <i:Interaction.Behaviors>
-                                        <behaviors:PassMouseWheelToParentBehavior />
-                                    </i:Interaction.Behaviors>
-                                </messaging:ReportMessageView>
+                                <Grid>
+                                    <messaging:ReportMessageView
+                                        x:Name="FoldedMessage"
+                                        VerticalAlignment="Center"
+                                        ExpanderCommand="{Binding ExpandListCommand}"
+                                        ExpanderToolTip="{Binding ExpandListToolTip}"
+                                        HorizontalScrollBarVisibility="Disabled"
+                                        IsObsolete="{Binding IsObsolete}"
+                                        IsSelectionEnabled="True"
+                                        LinkCommand="{Binding AccentElementCommand}"
+                                        Parts="{Binding MessageParts}"
+                                        ToolTipFormat="{Binding ShowElementToolTipFormat}"
+                                        VerticalScrollBarVisibility="Disabled">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:PassMouseWheelToParentBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </messaging:ReportMessageView>
+                                    <Popup
+                                        Closed="MessageListPopup_Closed"
+                                        IsOpen="{Binding IsListExpanded, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=FoldedMessage}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Width="420"
+                                            Padding="8"
+                                            Background="{DynamicResource LinterSurfaceBrush}"
+                                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
+                                            BorderThickness="1">
+                                            <messaging:ReportMessageView
+                                                MaxHeight="240"
+                                                HorizontalScrollBarVisibility="Disabled"
+                                                IsObsolete="{Binding IsObsolete}"
+                                                IsSelectionEnabled="True"
+                                                LinkCommand="{Binding AccentElementCommand}"
+                                                Parts="{Binding ExpandedListParts}"
+                                                ToolTipFormat="{Binding ShowElementToolTipFormat}"
+                                                VerticalScrollBarVisibility="Auto" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
