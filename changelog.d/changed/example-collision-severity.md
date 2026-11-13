@@ -1,0 +1,1 @@
+Reworked the collision rules of the installed example configuration: MEP systems against each other, walls, floors, columns and foundations against each other, furniture against those structures and against itself, and railings against those structures and against themselves; every rule uses the `Error` severity, and the MEP rule skips connector-joined elements.

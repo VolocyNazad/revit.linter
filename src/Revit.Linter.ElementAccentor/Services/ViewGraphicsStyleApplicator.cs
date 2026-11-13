@@ -71,8 +71,16 @@ internal static class ViewGraphicsStyleApplicator
             .Cast<FillPatternElement>()
             .FirstOrDefault(candidate =>
                 string.Equals(name, "SolidFill", StringComparison.OrdinalIgnoreCase)
-                    ? candidate.GetFillPattern().IsSolidFill
+                    ? IsDraftingSolidFill(candidate)
                     : string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase));
         return pattern?.Id ?? throw new InvalidOperationException($"Fill pattern '{name}' was not found.");
+    }
+
+    // Element and filter graphics overrides accept only drafting patterns: passing a model solid fill
+    // makes SetElementOverrides throw ArgumentException even though both patterns report IsSolidFill.
+    private static bool IsDraftingSolidFill(FillPatternElement candidate)
+    {
+        FillPattern pattern = candidate.GetFillPattern();
+        return pattern.IsSolidFill && pattern.Target == FillPatternTarget.Drafting;
     }
 }

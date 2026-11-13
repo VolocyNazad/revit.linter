@@ -266,6 +266,18 @@ internal sealed class DiagnosticReportDesignData
     /// <summary>Gets the localized text of the show-all-columns action.</summary>
     public string ResetColumnsText => LocalizationResourceReader.GetString(ResourceBaseName, "resetColumns_text");
 
+    /// <summary>Gets the command that applies or removes the findings heat map.</summary>
+    public ICommand ToggleHeatmapCommand { get; } = new RelayCommand(() => { });
+
+    /// <summary>Gets or sets whether the findings heat map is applied.</summary>
+    public bool IsHeatmapActive { get; set; } = true;
+
+    /// <summary>Gets the localized text of the findings heat map action.</summary>
+    public string HeatmapText => LocalizationResourceReader.GetString(ResourceBaseName, "heatmap_text");
+
+    /// <summary>Gets the localized description of the findings heat map action.</summary>
+    public string HeatmapDescription => LocalizationResourceReader.GetString(ResourceBaseName, "heatmap_description");
+
     /// <summary>Gets the localized header of the code column.</summary>
     public string CodeHeader => LocalizationResourceReader.GetString(ResourceBaseName, "code_header");
 

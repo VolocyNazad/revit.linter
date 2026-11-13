@@ -41,6 +41,9 @@ public enum IconKind
     /// <summary>A question mark in a circle: documentation.</summary>
     HelpCircleOutline,
 
+    /// <summary>A thermometer: the findings heat map.</summary>
+    HeatMap,
+
     /// <summary>A light bulb: a fix is available.</summary>
     Lightbulb,
 

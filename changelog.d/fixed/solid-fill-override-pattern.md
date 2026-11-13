@@ -1,0 +1,1 @@
+Fixed custom visualization graphics overrides that use the `SolidFill` pattern: the drafting solid fill is now selected instead of a model fill, which made `OverrideElements` and `OverrideFilter` fail when the document contained a model solid fill.

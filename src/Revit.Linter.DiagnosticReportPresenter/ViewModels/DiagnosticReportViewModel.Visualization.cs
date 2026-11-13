@@ -188,6 +188,10 @@ internal sealed partial class DiagnosticReportViewModel
 
         RestorePreviousVisualization(pipeline);
 
+        // The heat map colours the same view through its own overrides; showing a finding first restores
+        // its colours, so the two reversible sessions never write stale graphics over each other.
+        RestoreActiveHeatmap();
+
         bool applied = ExecuteVisualizationMutation(() => ApplyPipeline(request, pipeline));
         if (applied)
         {
