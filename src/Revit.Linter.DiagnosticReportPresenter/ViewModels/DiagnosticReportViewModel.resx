@@ -48,4 +48,12 @@
   <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
   <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
   <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
+  <data name="heatmap_text" xml:space="preserve"><value>Heat map</value></data>
+  <data name="heatmap_description" xml:space="preserve"><value>Colours the findings of the active document in the 3D visualization view: the hue shows the most severe check and the brightness shows how many checks fail. Click again to remove the colour.</value></data>
+  <data name="heatmapNoDocument_message" xml:space="preserve"><value>Open a project document to build the findings heat map.</value></data>
+  <data name="heatmapFamilyDocument_message" xml:space="preserve"><value>The findings heat map is available in project documents only.</value></data>
+  <data name="heatmapNoFindings_message" xml:space="preserve"><value>There are no findings to build the heat map from. Run diagnostics first.</value></data>
+  <data name="heatmapNoGeometry_message" xml:space="preserve"><value>None of the findings belongs to an element with 3D geometry in the visualization view.</value></data>
+  <data name="heatmapFailed_message" xml:space="preserve"><value>The findings heat map could not be applied: {0}</value></data>
+  <data name="heatmapRestoreFailed_message" xml:space="preserve"><value>The findings heat map could not be removed: {0}</value></data>
 </root>

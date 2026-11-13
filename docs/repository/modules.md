@@ -13,15 +13,16 @@ contracts are in [module boundaries](../architecture.md#module-boundaries).
 ## Core and shared contracts
 
 `Revit.Linter.Core.Abstractions` owns the shared diagnostic surface that compiles without Revit: rule
-models, rule types, severity, parameters and fix/visualization pipeline definitions, the diagnostic
-identity, state, tags, verdict and feedback models, documentation pages, UI activity facts, product
-identity, the configuration-reading contracts and the host seams that carry no Revit type. It targets
-`netstandard2.0` and must not reference the Revit API, WPF or the Revit SDK.
+models, rule types, severity, parameters and fix/visualization pipeline definitions, the findings heat map
+aggregation and fixed colour table, the diagnostic identity, state, tags, verdict and feedback models,
+documentation pages, UI activity facts, product identity, the configuration-reading contracts and the host
+seams that carry no Revit type. It targets `netstandard2.0` and must not reference the Revit API, WPF or the
+Revit SDK.
 
 `Revit.Linter.Core` owns the Revit-facing contracts of the same surface: element and document
-diagnostics, their filters and fixes, visualization pipelines and contexts, catalog and registration
-types, and the session catalog scope that narrows the published checks for a guided session and hides
-its checks outside one. A Revit-free type stays there only when it belongs to one of those clusters.
+diagnostics, their filters and fixes, visualization pipelines, contexts and the findings heat map service,
+catalog and registration types, and the session catalog scope that narrows the published checks for a
+guided session and hides its checks outside one. A Revit-free type stays there only when it belongs to one of those clusters.
 
 The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `IClipboardService`,
 `IShellLauncher`, `IDocumentationLauncher`, `IUserInterfaceActivityStream` and
@@ -157,10 +158,14 @@ no test-tooling panel.
 ## Element operations
 
 `Revit.Linter.ElementAccentor` owns atomic, reversible element interaction and graphics operations such
-as show, select, isolate, crop, per-element overrides and temporary-filter overrides.
+as show, select, isolate, crop, per-element and per-category overrides and temporary-filter overrides.
 `Revit.Linter.ElementVisualization` composes those operations into diagnostic visualization pipelines and
 restores their sessions in reverse order; the session and reversal rules are in
-[element highlighting](../architecture.md#element-highlighting).
+[element highlighting](../architecture.md#element-highlighting). It also owns the findings heat map: it
+filters the report targets to the model elements that the visualization view displays, groups them by the
+fixed severity and count colours, colours them through reversible per-element overrides, makes every other
+model element 99% transparent through its own reversible override, and hides the levels, scope boxes, grids
+and untargeted linked models while the map is applied.
 
 The diagnostic report presenter obtains the persistent `Revit Linter — Visualization` isometric view
 and passes it to the pipeline. The host owns creation, preparation and activation behind

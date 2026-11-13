@@ -20,6 +20,32 @@ detailed findings table.
 - Click a tag in the **Tags** column to put it in the search box and narrow the list to the diagnostics that match it. The exported report includes the tags of every finding.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 
+## Findings heat map
+
+The thermometer button of the tool bar colours the findings of the active document in the persistent
+**Revit Linter — Visualization** 3D view. The colour of an element follows its most severe check:
+
+- the hue is the severity: red is an error, orange is a warning, and blue-grey is an informational message;
+- the brightness grows with the number of distinct checks of that severity that the element fails. Only
+  the most severe checks count, so an element with one error and many warnings uses the error colour with
+  a count of one.
+
+The counts use fixed bands — 1, 2, 3–4, 5–8, 9–16 and 17 or more — so the same number of checks always
+maps to the same colour. The heat map is built from every finding of the active document in the report; the
+search and the filters of the table do not change the map.
+
+Only elements with model geometry that the visualization view displays are coloured. Findings whose target
+is not such an element are skipped. The visualization view uses fine detail and a shaded display, and it is
+colourless apart from the findings: the surfaces of the other elements become 99% transparent and their
+lines are drawn in the background colour, so pipe, duct and other centre lines fade away as well. The colour
+steps and the background are applied as reversible per-element overrides, so the coloured findings stay
+fully opaque and stand out from the model. While the map is applied, the levels, the scope boxes, the grids
+and the linked models are hidden in the visualization view; a linked model stays visible only when a finding
+targets one of its instances. Click the button again to remove the colour and restore the previous graphics,
+including the visibility of those categories. A new diagnostics run, switching to another document and
+closing the document also remove the map; editing the model does not, so the map stays a snapshot until the
+button is pressed again.
+
 ## Columns
 
 The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column.
