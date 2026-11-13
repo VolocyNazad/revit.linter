@@ -1,7 +1,7 @@
 # Practical-tour diagnostic. Revit Linter installs and manages this file automatically.
 # It checks collisions between walls, floors, roofs, pipes, ducts, cable trays, conduits
-# and their fittings (CLSN101 pipelines), so tour findings always have visible geometry
-# to work with instead of junk elements with small or invisible geometry.
+# and their fittings (the same collision approach as the example configuration), so tour findings
+# always have visible geometry to work with instead of junk elements with small or invisible geometry.
 
 # File format version for compatibility checks.
 version: 2
