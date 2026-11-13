@@ -511,6 +511,12 @@
     <File Path=".github/dependabot.yml" />
     <File Path=".github/pull_request_template.md" />
   </Folder>
+  <Folder Name="/solutionItems/.github/PULL_REQUEST_TEMPLATE/">
+    <File Path=".github/PULL_REQUEST_TEMPLATE/hotfix-to-dev.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE/hotfix-to-main.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE/release-to-dev.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE/release-to-main.md" />
+  </Folder>
   <Folder Name="/solutionItems/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
     <File Path=".github/workflows/codeql.yml" />

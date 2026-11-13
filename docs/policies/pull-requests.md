@@ -6,8 +6,9 @@ Read when: preparing, reviewing or merging a pull request.
 
 Every change reaches `main` and `dev` through a short-lived branch and a pull request. The
 [branching policy](branching.md) owns branch kinds, base branches, merge strategy and protection
-settings. The template is `.github/pull_request_template.md`; the required checks are `CI gate` from
-the `build-and-test` workflow and the `repository-policy` workflow.
+settings. The templates are under `.github/` and the default is `.github/pull_request_template.md`;
+the required checks are `CI gate` from the `build-and-test` workflow and the `repository-policy`
+workflow.
 
 ## Source branch and target
 
@@ -91,14 +92,44 @@ Before opening a pull request, check every item that applies to the change:
 
 ## Template
 
-A pull request uses `.github/pull_request_template.md` and keeps its three sections:
+Every pull request starts from a template under `.github/`. GitHub fills the body from the default
+file `.github/pull_request_template.md`; the four files in `.github/PULL_REQUEST_TEMPLATE/` cover the
+release and hotfix pull requests:
+
+| Pull request | Template file |
+| --- | --- |
+| `feature/`, `fix/` or `chore/` into `dev` | `pull_request_template.md`, applied automatically |
+| `release/<version>` into `main` | `PULL_REQUEST_TEMPLATE/release-to-main.md` |
+| `release/<version>` back into `dev` | `PULL_REQUEST_TEMPLATE/release-to-dev.md` |
+| `hotfix/<version>` into `main` | `PULL_REQUEST_TEMPLATE/hotfix-to-main.md` |
+| `hotfix/<version>` back into `dev` | `PULL_REQUEST_TEMPLATE/hotfix-to-dev.md` |
+
+GitHub offers no picker for the others: select one with the `template` query parameter on the
+comparison URL, which replaces the body GitHub filled in.
+
+```text
+https://github.com/VolocyNazad/revit.linter/compare/<target>...<source-branch>?quick_pull=1&template=<template-file>
+```
+
+The parameter takes the file name alone, without the directory: a `hotfix/1.2.4` branch opened
+against `main` uses `.../compare/main...hotfix/1.2.4?quick_pull=1&template=hotfix-to-main.md`. GitHub
+fills the body from the template that exists on the branch the pull request targets: `dev` has these
+files once the template set is merged, `main` after the next release or hotfix merge. Until `main`
+has them, paste the matching template into the body by hand.
+
+Every template keeps the same three sections; a release or hotfix template adds one section of its
+own before the checklist:
 
 - **Summary** — what changed and why; link the issue when there is one.
 - **Branch** — the source branch, its base and target, and confirmation that `main` and `dev` are
   not changed by a direct push.
+- **Release** or **Merge** — the one extra section of a release or hotfix template. `Release`, in
+  the template into `main`, carries the changelog composition and finalize, the test matrix before
+  the tag, the tag on the merge commit and the follow-up merges. `Merge`, in the template back into
+  `dev`, carries what that merge takes over.
 - **Checklist** — the build and test result for the affected projects,
-  `./scripts/Validate-Repository.ps1`, and the changelog fragment when the development policy
-  requires it.
+  `./scripts/Validate-Repository.ps1`, and the changelog fragment for a change that carries one. A
+  merge back into `dev` carries the deleted fragments instead and has none of its own.
 
 The Branch and Checklist items restate rules owned by the [branching policy](branching.md) and the
 [changelog policy](changelog.md); complete them.
