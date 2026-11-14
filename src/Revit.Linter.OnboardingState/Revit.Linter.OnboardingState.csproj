@@ -1,5 +1,6 @@
 <Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" VersionOverride="11.0.0" />
 		<PackageReference Include="VolocyNazad.ValueStore" />
 	</ItemGroup>
 	<ItemGroup>
