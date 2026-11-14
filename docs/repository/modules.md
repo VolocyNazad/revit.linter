@@ -93,6 +93,10 @@ It references `Revit.Linter.Core` and the Revit API for the row type's element i
 `Revit.Linter.ReportMessaging` for the shared message parser, and `VolocyNazad.ValueStore` for the
 per-user column choice.
 
+The project also holds the samples that several presenters show at design time: `DesignData/` keeps
+`TableColumnsDesignData` and `TableColumnDesignData`, the designer counterpart of the shared column
+popup, so a presenter keeps only the samples of its own views.
+
 The dependency properties of this project, of `Revit.Linter.Behaviors` and of
 `Revit.Linter.ReportMessaging` are declared with the `VolocyNazad.Wpf.DependencyPropertyGenerator`
 package: the registration, the CLR property or the `Get`/`Set` accessors, the XML documentation and

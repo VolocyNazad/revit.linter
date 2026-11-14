@@ -214,7 +214,10 @@ invariant culture.
 
 `Revit.Linter.Architecture.Tests` guards the documented coupling between UI presenter projects: it
 fails when a presenter project references another UI module or uses that module's view model outside
-the composition points recorded in the [architecture decisions](architecture.md).
+the composition points recorded in the [architecture decisions](architecture.md). The same project
+guards the design-time data of the views: a view without a designer data context, a design data class
+the view locator cannot resolve, a binding path the design data does not provide, or a localization key
+missing from the resource file fails it.
 
 What must be tested, on which Revit versions and how the suites are run is defined by the
 [testing policy](policies/testing.md).

@@ -62,9 +62,13 @@ the stable module boundaries and the decisions behind them belong to
 ## Design-time data
 
 - Make every WPF view, window and dialog render representative content in the XAML designer.
-- Keep design-time data in the owning presenter project's `DesignData/` folder as a
-  `<ViewName>DesignData` class whose instance properties mirror every binding path of the view,
-  including item templates, converters and behaviors, with sample values and no-op commands.
+- Keep design-time data in the owning presenter project's `DesignData/` folder as a class named after
+  the view without its `View` suffix plus `DesignData` (`DiagnosticListView` becomes
+  `DiagnosticListDesignData`), which is the name `ViewLocatorExtension` resolves; its instance
+  properties mirror every binding path of the view, including item templates, converters and
+  behaviors, with sample values and no-op commands.
+- Keep the sample of a shared view-model type in `Revit.Linter.Presentation/DesignData` next to that
+  view model instead of copying it into every presenter that shows the type.
 - Declare on the view root a `d:DataContext` that is a `d:DesignInstance` of that class with
   `IsDesignTimeCreatable=True`.
 - Provide sample rows to item templates through the collection the design data exposes.
@@ -78,6 +82,9 @@ the stable module boundaries and the decisions behind them belong to
   parameterless designer constructor that only loads its XAML; runtime composition keeps the service
   constructor.
 - Design data exists for the XAML designer, not for runtime.
+- `Revit.Linter.Architecture.Tests` fails when a view has no designer data context, a design data class
+  does not follow the name above, a binding path has no design data member, or design data reads a
+  localization key its resource file does not declare.
 
 ## Styles, theme and resources
 
