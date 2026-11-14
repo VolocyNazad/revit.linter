@@ -56,6 +56,17 @@ internal sealed partial class InitExternalApplication
         });
 
     /// <summary>
+    /// Queues the silent startup update check and, when a newer stable release exists, its prompt.
+    /// </summary>
+    /// <remarks>
+    /// The check runs in the separate updater process, so Revit never contacts GitHub. It is queued
+    /// after the welcome wizard, so a first-run wizard is not covered by the update prompt. A failure
+    /// is logged inside the service and never affects add-in startup.
+    /// </remarks>
+    private static void ScheduleUpdateNotification() =>
+        GetService<StartupUpdateNotificationService>().Schedule();
+
+    /// <summary>
     /// Hides the practical-tour pane that Revit may have restored visible from the previous session.
     /// </summary>
     /// <remarks>

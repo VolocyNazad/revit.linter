@@ -276,6 +276,11 @@ and the [release policy](policies/releases.md).
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no Revit API
   dependency; the add-in may launch it but must not perform release HTTP requests or create Windows
   notifications itself.
+- A Revit start launches the updater in a one-shot startup-check mode that writes the available version and
+  release page to a temporary result file. The add-in reads that file and shows a three-button prompt
+  (**Close**, **Skip this update**, **Update**); **Update** opens the validated GitHub release page and
+  **Skip this update** persists the version in the updater state, so both the Revit prompt and Windows
+  notifications stop offering it until a newer stable release exists.
 - Only one updater process performs work in a Windows user session. Concurrent manual launches signal the
   active process through named synchronization objects; pending requests are coalesced and reuse an
   already-running release check.

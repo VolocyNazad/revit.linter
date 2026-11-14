@@ -1,0 +1,1 @@
+Revit asks at startup when a newer stable release is available: the dialog offers **Close**, **Skip this update** and **Update**, where **Skip this update** suppresses the release in both the Revit prompt and Windows notifications until the next stable version and **Update** opens the GitHub release page.

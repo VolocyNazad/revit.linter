@@ -2,13 +2,11 @@ using Autodesk.Revit.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Revit.Linter.Core.Abstractions;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.ExternalCommands;
+using Revit.Linter.Infrastructure.Services;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 
 namespace Revit.Linter;
 
@@ -25,14 +23,7 @@ public sealed class CheckForUpdatesCommand : ExternalCommand
     {
         try
         {
-            string updaterPath = ResolveUpdaterPath();
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = updaterPath,
-                Arguments = "--check-now",
-                WorkingDirectory = Path.GetDirectoryName(updaterPath),
-                UseShellExecute = true
-            });
+            UpdaterProcessRunner.Start("--check-now");
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException or Win32Exception)
         {
@@ -43,24 +34,5 @@ public sealed class CheckForUpdatesCommand : ExternalCommand
             _ = provider.GetRequiredService<IDialog>().Show(new DialogRequest(
                 localizer["updater_startFailed_message", exception.Message]));
         }
-    }
-
-    private static string ResolveUpdaterPath()
-    {
-        string installedPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Programs",
-            ProductIdentity.InstallVendor,
-            ProductIdentity.AddInName,
-            ProductIdentity.UpdaterExecutableName);
-        if (File.Exists(installedPath))
-            return installedPath;
-
-        string? assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        string adjacentPath = Path.Combine(assemblyDirectory ?? string.Empty, ProductIdentity.UpdaterExecutableName);
-        if (File.Exists(adjacentPath))
-            return adjacentPath;
-
-        throw new FileNotFoundException("The Revit Linter updater executable was not found.", installedPath);
     }
 }

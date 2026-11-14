@@ -53,11 +53,12 @@ public sealed class UpdateCoordinator
             return new UpdateCheckResult(UpdateCheckStatus.Failed, currentVersion, Error: exception.Message);
         }
 
-        if (mode == UpdateCheckMode.Automatic)
+        if (mode is UpdateCheckMode.Automatic or UpdateCheckMode.Startup)
         {
             if (!_configuration.AutomaticChecksEnabled)
                 return new UpdateCheckResult(UpdateCheckStatus.Disabled, currentVersion);
-            if (state.LastCheckedAt is { } lastChecked &&
+            if (mode == UpdateCheckMode.Automatic &&
+                state.LastCheckedAt is { } lastChecked &&
                 _timeProvider.GetUtcNow() - lastChecked < _configuration.AutomaticCheckInterval)
             {
                 return new UpdateCheckResult(UpdateCheckStatus.NotDue, currentVersion);

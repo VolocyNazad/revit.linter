@@ -25,6 +25,13 @@ When an update notification's **Download** action is used, the updater stores th
 digest match the release metadata. Explorer opens with that file selected, but setup is not started
 automatically. Close Revit and run the verified MSI explicitly.
 
+At Revit startup, Revit Linter asks the separate updater whether a newer stable release exists. When
+one does, a dialog offers **Close**, **Skip this update** and **Update**. **Close** asks again at the
+next Revit start. **Skip this update** hides that release from this dialog and from Windows
+notifications until a newer stable version is published. **Update** opens the GitHub release page in
+the default browser; downloading and installing remain explicit user actions. The startup prompt
+follows the same check settings and is not shown when checks are disabled.
+
 ## Administrator update policies
 
 Revit Linter reads optional policy from `Software\Policies\Volocy\Revit.Linter\Updater` under both
