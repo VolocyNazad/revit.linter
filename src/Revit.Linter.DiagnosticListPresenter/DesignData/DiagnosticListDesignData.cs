@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
+using Revit.Linter.Presentation.DesignData;
 using System.Windows.Data;
 using System.Windows.Input;
 
