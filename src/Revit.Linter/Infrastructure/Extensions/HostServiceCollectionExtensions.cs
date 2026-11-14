@@ -46,6 +46,7 @@ internal static class HostServiceCollectionExtensions
             .AddSingleton<ValueStoreNotifier>()
             .AddSingleton<RevitIdlingScheduler>()
             .AddSingleton<IRevitIdlingScheduler>(provider => provider.GetRequiredService<RevitIdlingScheduler>())
+            .AddSingleton<StartupUpdateNotificationService>()
             .AddSingleton<IFormulaCompilationNotifier, FormulaCompilationNotifier>()
         ;
     }

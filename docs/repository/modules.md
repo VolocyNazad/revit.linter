@@ -281,9 +281,13 @@ also rejects draft and pre-release payloads. Only a newer **stable** version can
 The updater runs at Windows sign-in (at most once every 24 hours by default, subject to policy and user
 settings) and on demand from the ribbon command, and shows one Windows notification per new stable
 version with **Download**, **What's new**, **Later** and **Skip this version**. A version that was
-already notified, skipped or postponed is remembered in the updater state. The add-in itself never
-contacts GitHub and the command does not modify the model. What the download may do is in
-[packaging, releases and updates](../architecture.md#packaging-releases-and-updates).
+already notified, skipped or postponed is remembered in the updater state. Every Revit start also
+starts the updater in a one-shot startup-check mode; the updater writes the available version and
+GitHub release page to a temporary result file and, when a newer stable version exists, the add-in
+shows a **Close** / **Skip this update** / **Update** dialog. **Skip this update** persists the version
+in the same updater state, so neither channel offers it again before a newer stable release. The
+add-in itself never contacts GitHub and the command does not modify the model. What the download may
+do is in [packaging, releases and updates](../architecture.md#packaging-releases-and-updates).
 
 Release packaging produces one per-user MSI containing every supported Revit build and the shared
 updater. It installs under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific

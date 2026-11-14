@@ -18,7 +18,7 @@ The concise contract for the product's current scope. Detailed user instructions
 - Back the tour with a managed TOUR001 training check that is visible only while a tour session is active: from the selection step on the diagnostics pane shows that check alone, pausing hides it, returns the user's own checks with their states untouched and clears the training findings, and starting a tour restores the pane search, filters and sort order. Progress and opt-out are stored separately for each Revit version; a resumed tour continues at its run checkpoint so it always explains fresh findings.
 - Show the tour pane only while a tour session is active; after opt-out, completion or refusal it stays hidden.
 - Offer disposable copies of the official Autodesk samples of the running Revit version as tour starting points, with a ribbon fallback when automatic opening fails.
-- Check for new stable releases through the standalone updater at sign-in or on demand, and announce them with a Windows notification offering a verified download of the release MSI.
+- Check for new stable releases through the standalone updater at sign-in or on demand, announce them with a Windows notification offering a verified download of the release MSI, and at every Revit start show a three-button prompt with **Close**, **Skip this update** and **Update**; **Skip this update** also suppresses the Windows notification for that version until a newer stable release exists.
 - Provide English and Russian UI resources, theme-aware WPF presentation and structured diagnostic logs.
 - Package the supported Revit 2021–2027 variants and the shared updater as one per-user MSI release.
 
