@@ -8,6 +8,19 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+### Added
+
+- The diagnostic reports pane gains a findings heat map: the thermometer button colours the elements of the active document in the 3D visualization view, opened with fine detail and a shaded display, by their most severe failed checks, where the hue shows the severity and the brightness the number of checks of that severity that fail. The rest of the model becomes 99% transparent, its lines fading into the background, and levels, scope boxes, grids and untargeted linked models are hidden, so the coloured findings stand out.
+- Revit asks at startup when a newer stable release is available: the dialog offers **Close**, **Skip this update** and **Update**. **Skip this update** suppresses the release in both the Revit prompt and Windows notifications until the next stable version, and **Update** opens the GitHub release page.
+
+### Changed
+
+- The collision rules of the installed example configuration are reworked: MEP systems against each other, walls, floors, columns and foundations against each other, furniture against those structures and against itself, and railings against those structures and against themselves. Every rule uses the `Error` severity, and the MEP rule skips connector-joined elements.
+
+### Fixed
+
+- Visualization graphics overrides that use the `SolidFill` pattern no longer fail when the document contains a model solid fill: the drafting solid fill is selected instead of a model fill, so `OverrideElements` and `OverrideFilter` apply.
+
 ## [3.1.1] - 2026-11-12
 
 ### Added
