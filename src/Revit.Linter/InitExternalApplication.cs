@@ -126,6 +126,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         // queued warning back until Revit closes, and the next start would have no files left to report.
         ScheduleConfigurationMigrationWarning(migrationWarning, productVersion);
         ScheduleWelcomeWizard();
+        ScheduleUpdateNotification();
     }
 
 

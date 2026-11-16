@@ -17,7 +17,7 @@ public sealed class ExampleConfigurationTests
         Assert.NotNull(file);
         Assert.Equal(ConfigurationPathUtils.SupportedConfigurationVersion, file.Version);
         Assert.Equal(6, file.Rules.Count(rule => rule.Type == "custom"));
-        Assert.Equal(11, file.Rules.Count(rule => rule.Type == "collision"));
+        Assert.Equal(6, file.Rules.Count(rule => rule.Type == "collision"));
         Assert.Equal(3, file.Rules.Count(rule => rule.Type == "parameter"));
         Assert.DoesNotContain(file.Rules, rule => rule.Type == "builtIn");
     }

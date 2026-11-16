@@ -9,9 +9,10 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        /// <summary>Adds the visualization pipeline factory to the application service collection.</summary>
+        /// <summary>Adds the visualization pipeline factory and the findings heat map to the application service collection.</summary>
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddElementVisualization() => services
-            .AddSingleton<IElementVisualizationPipelineFactory, ElementVisualizationPipelineFactory>();
+            .AddSingleton<IElementVisualizationPipelineFactory, ElementVisualizationPipelineFactory>()
+            .AddSingleton<IElementHeatmapService, ElementHeatmapService>();
     }
 }

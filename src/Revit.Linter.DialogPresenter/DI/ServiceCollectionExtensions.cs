@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddDialogModule()
             => services.AddTransient<IDialog, DialogViewModel>()
                 .AddTransient<IConfirmationDialog, ConfirmationDialogViewModel>()
+                .AddTransient<IUpdateAvailableDialog, UpdateAvailableDialogViewModel>()
                 .AddTransient<DialogWindowFactory>()
         ;
     }

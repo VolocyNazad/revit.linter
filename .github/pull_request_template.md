@@ -1,3 +1,6 @@
+<!-- Default template: a feature, fix or chore branch into dev. A release or hotfix pull request uses
+     the matching template from .github/PULL_REQUEST_TEMPLATE/; the pull request policy lists them. -->
+
 ## Summary
 
 <!-- What changed and why. Link the issue when there is one. -->
@@ -5,10 +8,9 @@
 ## Branch
 
 - [ ] The source branch follows the [branching policy](../docs/policies/branching.md):
-  `feature/<ticket>-<slug>`, `fix/<ticket>-<slug>` or `chore/<slug>` from `dev`,
-  `release/<version>` from `dev`, or `hotfix/<version>` from `main`.
-- [ ] The pull request targets `dev` for a feature, a fix or a chore, and `main` for a
-  release or a hotfix. A hotfix is also merged back into `dev` or into the open release branch.
+  `feature/<ticket>-<slug>`, `fix/<ticket>-<slug>` or `chore/<slug>`, cut from `dev`.
+- [ ] The pull request targets `dev`. A `release/<version>` or `hotfix/<version>` pull request is
+  opened with its own template instead of this one.
 - [ ] `main` and `dev` are not changed by a direct push.
 
 ## Checklist

@@ -60,6 +60,65 @@ public sealed class UpdateCoordinatorTests
     }
 
     [Fact]
+    public async Task CheckAsync_StartupCheckBypassesInterval()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState { LastCheckedAt = Now.AddHours(-1) });
+        var coordinator = CreateCoordinator(releases, state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Startup, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
+        Assert.Equal(1, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_StartupCheckWithAutomaticChecksDisabled_DoesNotCallGitHub()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var state = new FakeStateStore(new UpdaterState());
+        var coordinator = CreateCoordinator(
+            releases,
+            state,
+            DefaultConfiguration() with { AutomaticChecksEnabled = false });
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Startup, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Disabled, result.Status);
+        Assert.Equal(0, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_StartupCheckWithAdministrativePolicyDisabled_DoesNotCallGitHub()
+    {
+        var releases = new FakeReleaseClient(NewRelease());
+        var coordinator = CreateCoordinator(
+            releases,
+            new FakeStateStore(new UpdaterState()),
+            DefaultConfiguration() with { ChecksEnabled = false });
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Startup, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Disabled, result.Status);
+        Assert.Equal(0, releases.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckAsync_StartupCheckHonorsSkippedVersion()
+    {
+        var state = new FakeStateStore(new UpdaterState { SkippedVersion = "2.0.0" });
+        var coordinator = CreateCoordinator(new FakeReleaseClient(NewRelease()), state);
+
+        UpdateCheckResult result = await coordinator.CheckAsync(
+            CurrentVersion, UpdateCheckMode.Startup, TestContext.Current.CancellationToken);
+
+        Assert.Equal(UpdateCheckStatus.Skipped, result.Status);
+    }
+
+    [Fact]
     public async Task CheckAsync_ManualCheckBypassesInterval()
     {
         var releases = new FakeReleaseClient(NewRelease());

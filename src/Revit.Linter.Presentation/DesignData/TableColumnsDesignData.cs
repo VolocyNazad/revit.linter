@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 
-namespace Revit.Linter.DiagnosticListPresenter.DesignData;
+namespace Revit.Linter.Presentation.DesignData;
 
-/// <summary>Provides the sample column visibility popup of <see cref="Views.DiagnosticListView"/> in the XAML designer.</summary>
-internal sealed partial class TableColumnsDesignData(IEnumerable<TableColumnDesignData> columns)
+/// <summary>Provides the sample column visibility popup of a table in the XAML designer.</summary>
+public sealed partial class TableColumnsDesignData(IEnumerable<TableColumnDesignData> columns)
 {
     /// <summary>Gets the sample data columns in display order.</summary>
     public IReadOnlyList<TableColumnDesignData> Columns { get; } = [.. columns];

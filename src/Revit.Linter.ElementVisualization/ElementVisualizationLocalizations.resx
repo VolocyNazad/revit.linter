@@ -5,4 +5,6 @@
   <data name="applyVisualization_transactionGroup" xml:space="preserve"><value>Apply visualization: {0}</value></data>
   <data name="applyVisualization_transactionStep" xml:space="preserve"><value>Apply visualization step: {0}</value></data>
   <data name="restoreVisualization_transactionGroup" xml:space="preserve"><value>Restore visualization: {0}</value></data>
+  <data name="heatmapApply_transactionGroup" xml:space="preserve"><value>Apply findings heat map</value></data>
+  <data name="heatmapRestore_transactionGroup" xml:space="preserve"><value>Restore findings heat map</value></data>
 </root>

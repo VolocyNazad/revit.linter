@@ -211,9 +211,17 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   three-dimensional visualization view. A built-in check that later starts reporting views needs no
   visualization of its own, while a configured rule keeps the pipelines it declares.
 - The host provides `IVisualizationViewProvider`, which creates and prepares the persistent 3D view
-  (coarse detail, shaded display) and activates it from the committed state the pipeline asks for. The
+  (fine detail, shaded display) and activates it from the committed state the pipeline asks for. The
   pipeline itself delegates transactions, step dispatch and session bookkeeping to small collaborators,
   so it only states the run order.
+- The report pane builds the findings heat map from its displayed report: `Revit.Linter.Core.Abstractions`
+  owns the Revit-free aggregation and the fixed colour table, `Revit.Linter.ElementVisualization` filters
+  the targets to the model elements the visualization view displays, applies the reversible per-element
+  overrides so the coloured findings stay opaque, makes every other model element 99% transparent through
+  its own reversible override, hides the levels, scope boxes and grids for the duration of the map and hides
+  linked models unless a finding targets one of their instances, and the presenter owns the toggle and the
+  lifetime of the applied map. Heating a document is a snapshot of the report and is removed by a new run, a
+  closed or switched document or a second press of the button, not by a model change.
 
 ## Element fixing
 
@@ -268,6 +276,11 @@ and the [release policy](policies/releases.md).
 - Update discovery runs in the separate short-lived `Revit.Linter.Updater` process. Its core has no Revit API
   dependency; the add-in may launch it but must not perform release HTTP requests or create Windows
   notifications itself.
+- A Revit start launches the updater in a one-shot startup-check mode that writes the available version and
+  release page to a temporary result file. The add-in reads that file and shows a three-button prompt
+  (**Close**, **Skip this update**, **Update**); **Update** opens the validated GitHub release page and
+  **Skip this update** persists the version in the updater state, so both the Revit prompt and Windows
+  notifications stop offering it until a newer stable release exists.
 - Only one updater process performs work in a Windows user session. Concurrent manual launches signal the
   active process through named synchronization objects; pending requests are coalesced and reuse an
   already-running release check.

@@ -23,6 +23,9 @@ internal sealed class DialogWindowFactory(IThemeService themeService, IRevitCont
     /// <summary>Creates the confirmation dialog window for the given view model.</summary>
     public Window CreateConfirmationDialog(object dataContext) => Create(new ConfirmationDialogView(), dataContext);
 
+    /// <summary>Creates the update-available dialog window for the given view model.</summary>
+    public Window CreateUpdateAvailableDialog(object dataContext) => Create(new UpdateAvailableDialogView(), dataContext);
+
     private Window Create(Window window, object dataContext)
     {
         window.DataContext = dataContext;

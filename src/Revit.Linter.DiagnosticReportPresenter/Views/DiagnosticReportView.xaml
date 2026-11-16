@@ -79,6 +79,15 @@
                     DockPanel.Dock="Right"
                     Style="{StaticResource LinterToolBarIconButton}" />
                 <ToggleButton
+                    x:Name="HeatmapButton"
+                    behaviors:HelpToolTip.Description="{Binding HeatmapDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding HeatmapText, Mode=OneWay}"
+                    Command="{Binding ToggleHeatmapCommand}"
+                    Content="{controls:Icon Kind=HeatMap}"
+                    DockPanel.Dock="Right"
+                    IsChecked="{Binding IsHeatmapActive, Mode=TwoWay}"
+                    Style="{StaticResource LinterToolBarOptionToggleButton}" />
+                <ToggleButton
                     x:Name="ColumnsButton"
                     behaviors:HelpToolTip.Description="{Binding ColumnsDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding ColumnsTitle, Mode=OneWay}"

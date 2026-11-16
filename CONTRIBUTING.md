@@ -8,7 +8,8 @@ Branches follow the [branching policy](docs/policies/branching.md): `main` holds
 the released state, `dev` integrates the next release, and every change arrives
 through a short-lived `feature/`, `fix/`, `chore/`, `release/` or `hotfix/` branch and a
 pull request. The [pull request policy](docs/policies/pull-requests.md) defines what a pull
-request must contain.
+request must contain and which of the [templates](docs/policies/pull-requests.md#template)
+matches the branch.
 
 Commit messages follow the [commit message policy](docs/policies/commits.md).
 

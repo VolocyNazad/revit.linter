@@ -33,6 +33,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     public void Clear()
     {
         RestoreActiveVisualizationOrSchedule();
+        RestoreHeatmapOrSchedule();
         Collection.Clear();
         ClearFilters();
     }
@@ -41,6 +42,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         RestoreActiveVisualizationOrSchedule();
+        RestoreHeatmapOrSchedule();
         List<DiagnosticReportItemViewModel> remaining =
             Collection.Where(i => i.DocumentTitle != documentTitle).ToList();
         int removedCount = Collection.Count - remaining.Count;
@@ -66,6 +68,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
         if (string.IsNullOrWhiteSpace(diagnosticCode))
             throw new ArgumentException("The diagnostic code is required.", nameof(diagnosticCode));
 
+        RestoreHeatmapOrSchedule();
         List<DiagnosticReportItemViewModel> remaining = Collection
             .Where(item => !string.Equals(item.Code, diagnosticCode, StringComparison.Ordinal))
             .ToList();
@@ -124,6 +127,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
     private readonly IVisualizationViewProvider _visualizationViewProvider;
+    private readonly IElementHeatmapService _heatmapService;
     private readonly ILogger<DiagnosticReportViewModel> _logger;
     private readonly IConfirmationDialog _confirmationDialog;
     private readonly IDiagnosticReportExportService _exportService;
@@ -159,6 +163,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
             IVisualizationViewProvider visualizationViewProvider,
+            IElementHeatmapService heatmapService,
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ITableColumnsService tableColumnsService,
@@ -177,6 +182,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
         _visualizationViewProvider = visualizationViewProvider;
+        _heatmapService = heatmapService;
         _logger = logger;
         _confirmationDialog = confirmationDialog;
         _exportService = exportService;
@@ -350,6 +356,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _rowAgeTicker?.Dispose();
         _rowAgeTicker = null;
         await RestoreActiveVisualizationAsync(cancellationToken);
+        await RestoreHeatmapScheduledAsync(cancellationToken);
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
@@ -434,6 +441,12 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             _ = RestoreActiveVisualizationAsync();
         }
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
+
+        // A heat map belongs to the document whose view it colours, so switching to another document or
+        // closing that document drops it. Any other Revit event, including a model change, keeps the
+        // snapshot as it is.
+        if (revitEventType is RevitEventType.DocumentFocusChanged or RevitEventType.DocumentClosed)
+            RestoreHeatmapIfDocumentChanged();
     }
 
     private void ElementChangesReceiver_ElementChangesSent(object? sender, ElementChangesSentEventArgs e)

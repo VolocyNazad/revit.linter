@@ -48,4 +48,12 @@
   <data name="columns_title" xml:space="preserve"><value>Столбцы</value></data>
   <data name="columns_description" xml:space="preserve"><value>Выберите, какие столбцы показывает таблица. Кнопки действий остаются видимыми всегда.</value></data>
   <data name="resetColumns_text" xml:space="preserve"><value>Вернуть все столбцы</value></data>
+  <data name="heatmap_text" xml:space="preserve"><value>Тепловая карта</value></data>
+  <data name="heatmap_description" xml:space="preserve"><value>Раскрашивает находки активного документа в 3D-виде визуализации: оттенок показывает самую серьёзную проверку, яркость — сколько проверок не пройдено. Повторное нажатие убирает раскраску.</value></data>
+  <data name="heatmapNoDocument_message" xml:space="preserve"><value>Откройте документ проекта, чтобы построить тепловую карту находок.</value></data>
+  <data name="heatmapFamilyDocument_message" xml:space="preserve"><value>Тепловая карта находок доступна только в документах проекта.</value></data>
+  <data name="heatmapNoFindings_message" xml:space="preserve"><value>Нет находок, по которым можно построить тепловую карту. Сначала запустите диагностику.</value></data>
+  <data name="heatmapNoGeometry_message" xml:space="preserve"><value>Ни одна находка не относится к элементу с 3D-геометрией в виде визуализации.</value></data>
+  <data name="heatmapFailed_message" xml:space="preserve"><value>Не удалось применить тепловую карту находок: {0}</value></data>
+  <data name="heatmapRestoreFailed_message" xml:space="preserve"><value>Не удалось убрать тепловую карту находок: {0}</value></data>
 </root>

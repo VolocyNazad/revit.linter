@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+		<ProjectReference Include="..\Revit.Linter.DocumentQueries\Revit.Linter.DocumentQueries.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 	</ItemGroup>

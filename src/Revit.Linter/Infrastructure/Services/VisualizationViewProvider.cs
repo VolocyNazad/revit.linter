@@ -12,10 +12,10 @@ internal sealed class VisualizationViewProvider(
 {
     private const string VisualizationViewName = "Revit Linter — Visualization";
 
-    // A large model regenerates this view on every activation, so it opens in the cheapest useful
-    // mode: coarse geometry and shaded surfaces. A pipeline can still change the detail level or the
-    // display style with its own steps.
-    private const ViewDetailLevel VisualizationDetailLevel = ViewDetailLevel.Coarse;
+    // The visualization needs the fine geometry of the findings and shaded surfaces so the heat map
+    // colours read correctly. A large model regenerates this view slower, so a pipeline can still change
+    // the detail level or the display style with its own steps.
+    private const ViewDetailLevel VisualizationDetailLevel = ViewDetailLevel.Fine;
     private const DisplayStyle VisualizationDisplayStyle = DisplayStyle.Shading;
 
     public View3D GetOrCreateView()

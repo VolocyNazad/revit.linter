@@ -16,13 +16,13 @@ public sealed class ExampleConfigurationInstallerTests : IDisposable
 
     public static TheoryData<string, ExampleDiscipline[], int, int, int> RealExampleCases => new()
     {
-        { "", [ExampleDiscipline.Mep], 6, 5, 1 },
-        { "", [ExampleDiscipline.Architecture], 6, 3, 1 },
-        { "", [ExampleDiscipline.Structure], 6, 3, 1 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture], 6, 8, 2 },
-        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 11, 3 },
-        { "ru", [ExampleDiscipline.Mep], 6, 5, 1 },
-        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 11, 3 },
+        { "", [ExampleDiscipline.Mep], 6, 1, 1 },
+        { "", [ExampleDiscipline.Architecture], 6, 4, 1 },
+        { "", [ExampleDiscipline.Structure], 6, 1, 1 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture], 6, 5, 2 },
+        { "", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 6, 3 },
+        { "ru", [ExampleDiscipline.Mep], 6, 1, 1 },
+        { "ru", [ExampleDiscipline.Mep, ExampleDiscipline.Architecture, ExampleDiscipline.Structure], 6, 6, 3 },
     };
 
     public ExampleConfigurationInstallerTests() => Directory.CreateDirectory(_tempDirectory);

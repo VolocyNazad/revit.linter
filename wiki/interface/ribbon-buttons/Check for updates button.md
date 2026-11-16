@@ -8,6 +8,11 @@ lang: en
 
 The **Updates** button starts the standalone Revit Linter updater in manual mode. Manual checks ignore the 24-hour automatic-check interval and report both an up-to-date result and a failure.
 
+Revit Linter also checks silently at every Revit start. When a newer stable release exists, a dialog
+offers **Close**, **Skip this update** and **Update**. **Close** asks again at the next start;
+**Skip this update** hides that release until a newer stable version is published; **Update** opens
+the GitHub release page in the browser.
+
 When a newer release is available, Windows shows a local notification with **Download**, **What's new**,
 **Later**, and **Skip this version** actions. **Download** fetches the exact MSI from the matching GitHub
 release, verifies its expected size and SHA-256 digest, and shows the verified file in Explorer. It does

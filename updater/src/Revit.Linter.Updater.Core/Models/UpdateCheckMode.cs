@@ -7,5 +7,8 @@ public enum UpdateCheckMode
     Automatic,
 
     /// <summary>An explicit user request that bypasses the automatic check interval.</summary>
-    Manual
+    Manual,
+
+    /// <summary>A silent check requested when Revit starts; it bypasses the interval but follows user settings.</summary>
+    Startup
 }

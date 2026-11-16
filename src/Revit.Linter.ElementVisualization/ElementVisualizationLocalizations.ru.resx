@@ -5,4 +5,6 @@
   <data name="applyVisualization_transactionGroup" xml:space="preserve"><value>Применение визуализации: {0}</value></data>
   <data name="applyVisualization_transactionStep" xml:space="preserve"><value>Применение шага визуализации: {0}</value></data>
   <data name="restoreVisualization_transactionGroup" xml:space="preserve"><value>Восстановление визуализации: {0}</value></data>
+  <data name="heatmapApply_transactionGroup" xml:space="preserve"><value>Применение тепловой карты находок</value></data>
+  <data name="heatmapRestore_transactionGroup" xml:space="preserve"><value>Восстановление тепловой карты находок</value></data>
 </root>

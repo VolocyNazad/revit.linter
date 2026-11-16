@@ -7,5 +7,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\Revit.Linter.Core.Abstractions\ProductIdentity.cs" Link="ProductIdentity.cs" />
+    <Compile Include="..\..\..\src\Revit.Linter.Core.Abstractions\Models\RevitUpdateNotification.cs" Link="RevitUpdateNotification.cs" />
   </ItemGroup>
 </Project>
