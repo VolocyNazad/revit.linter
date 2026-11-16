@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Linter.OpenedDocuments.Abstractions.Models;
+using Revit.Linter.Presentation.DesignData;
 using Revit.Linter.ReportMessaging;
 using Revit.Linter.ThemeManaging.Controls;
 using System.Windows.Data;
