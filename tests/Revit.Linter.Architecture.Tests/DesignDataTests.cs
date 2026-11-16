@@ -53,7 +53,7 @@ public sealed class DesignDataTests
 
     private static readonly Lazy<IReadOnlyList<ViewFile>> Views = new(LoadViews);
     private static readonly Lazy<IReadOnlyDictionary<string, ProjectDesignData>> Projects = new(LoadProjects);
-    private static readonly Lazy<IReadOnlyDictionary<string, IReadOnlySet<string>>> ResourceKeys = new(LoadResourceKeys);
+    private static readonly Lazy<IReadOnlyDictionary<string, HashSet<string>>> ResourceKeys = new(LoadResourceKeys);
 
     [Fact]
     public void EveryView_DeclaresDesignerDataThatTheViewLocatorCanFind()
@@ -62,8 +62,8 @@ public sealed class DesignDataTests
         {
             string viewClass = view.Document.Root!.Attribute(Xaml + "Class")!.Value;
             int separator = viewClass.LastIndexOf('.');
-            string viewNamespace = viewClass[..separator];
-            string viewName = viewClass[(separator + 1)..];
+            string viewNamespace = viewClass.Substring(0, separator);
+            string viewName = viewClass.Substring(separator + 1);
 
             XAttribute? context = view.Document.Root.Attribute(Design + "DataContext");
             Assert.True(
@@ -96,9 +96,9 @@ public sealed class DesignDataTests
                 $"{view.RelativePath}: the design data must live in the presenter project itself, not in '{assembly}'.");
 
             string expectedName = viewName.EndsWith("View", StringComparison.Ordinal)
-                ? viewName[..^"View".Length] + "DesignData"
+                ? viewName.Substring(0, viewName.Length - "View".Length) + "DesignData"
                 : viewName + "DesignData";
-            string expectedNamespace = viewNamespace.Replace(".Views", ".DesignData", StringComparison.Ordinal);
+            string expectedNamespace = viewNamespace.Replace(".Views", ".DesignData");
 
             Assert.Equal(expectedNamespace, designNamespace);
             Assert.Equal(expectedName, declaredType);
@@ -141,7 +141,7 @@ public sealed class DesignDataTests
     [Fact]
     public void DesignData_ReadsOnlyResourceKeysThatExist()
     {
-        IReadOnlyDictionary<string, IReadOnlySet<string>> resourceKeys = ResourceKeys.Value;
+        IReadOnlyDictionary<string, HashSet<string>> resourceKeys = ResourceKeys.Value;
         var failures = new List<string>();
 
         foreach (string file in DesignFiles())
@@ -190,7 +190,7 @@ public sealed class DesignDataTests
     private static IEnumerable<string> ResourceHelpers(TypeDeclarationSyntax type) =>
         type.Members.OfType<MethodDeclarationSyntax>()
             .Where(method => method.ParameterList.Parameters.Any(parameter => parameter.Type?.ToString() == "string")
-                && method.ToString().Contains("GetString(ResourceBaseName", StringComparison.Ordinal))
+                && method.ToString().IndexOf("GetString(ResourceBaseName", StringComparison.Ordinal) >= 0)
             .Select(method => method.Identifier.ValueText);
 
     private static void Check(
@@ -200,7 +200,7 @@ public sealed class DesignDataTests
         TypeDeclarationSyntax type,
         string? baseName,
         Match read,
-        IReadOnlyDictionary<string, IReadOnlySet<string>> resourceKeys,
+        IReadOnlyDictionary<string, HashSet<string>> resourceKeys,
         List<string> failures)
     {
         string? owner = read.Groups["base"].Success ? read.Groups["base"].Value : baseName;
@@ -208,7 +208,7 @@ public sealed class DesignDataTests
 
         string resource = ResourceName(owner);
         string position = $"{ToRelativePath(file)}:{LineOf(text, offset)}: {type.Identifier.ValueText}";
-        if (!resourceKeys.TryGetValue(resource, out IReadOnlySet<string>? keys))
+        if (!resourceKeys.TryGetValue(resource, out HashSet<string>? keys))
         {
             failures.Add($"{position} reads '{resource}', but no resource file with that name exists.");
             return;
@@ -223,12 +223,12 @@ public sealed class DesignDataTests
         string file,
         string text,
         Match read,
-        IReadOnlyDictionary<string, IReadOnlySet<string>> resourceKeys,
+        IReadOnlyDictionary<string, HashSet<string>> resourceKeys,
         List<string> failures)
     {
         string resource = read.Groups["localizer"].Value;
         string position = $"{ToRelativePath(file)}:{LineOf(text, read.Index)}";
-        if (!resourceKeys.TryGetValue(resource, out IReadOnlySet<string>? keys))
+        if (!resourceKeys.TryGetValue(resource, out HashSet<string>? keys))
         {
             failures.Add($"{position} uses the localization class '{resource}', which has no resource file.");
             return;
@@ -243,9 +243,9 @@ public sealed class DesignDataTests
     {
         const string root = "Revit.Linter.Localization.";
         string relative = resourceBaseName.StartsWith(root, StringComparison.Ordinal)
-            ? resourceBaseName[root.Length..]
+            ? resourceBaseName.Substring(root.Length)
             : resourceBaseName;
-        return relative[(relative.LastIndexOf('.') + 1)..];
+        return relative.Substring(relative.LastIndexOf('.') + 1);
     }
 
     private static string? ConstantString(TypeDeclarationSyntax type, string name) =>
@@ -263,7 +263,7 @@ public sealed class DesignDataTests
         {
             foreach (XAttribute attribute in element.Attributes())
             {
-                if (!attribute.Value.Contains("{Binding", StringComparison.Ordinal)) continue;
+                if (attribute.Value.IndexOf("{Binding", StringComparison.Ordinal) < 0) continue;
                 foreach (Match match in BindingExpression.Matches(attribute.Value))
                 {
                     string? path = BindingPath(match.Groups["body"].Value);
@@ -281,7 +281,7 @@ public sealed class DesignDataTests
     {
         // Markup extensions inside the binding carry their own commas and equals signs; flatten them first.
         string flattened = NestedMarkupExtension.Replace(body, "{}");
-        if (SkippedBindingOptions.Any(option => flattened.Contains(option, StringComparison.Ordinal)))
+        if (SkippedBindingOptions.Any(option => flattened.IndexOf(option, StringComparison.Ordinal) >= 0))
             return null;
 
         string first = flattened.Split(',')[0].Trim();
@@ -290,11 +290,11 @@ public sealed class DesignDataTests
         int equals = first.IndexOf('=');
         if (equals >= 0)
         {
-            if (!string.Equals(first[..equals].Trim(), "Path", StringComparison.Ordinal)) return null;
-            first = first[(equals + 1)..].Trim();
+            if (!string.Equals(first.Substring(0, equals).Trim(), "Path", StringComparison.Ordinal)) return null;
+            first = first.Substring(equals + 1).Trim();
         }
 
-        return first.Length == 0 || first.StartsWith('{') ? null : first;
+        return first.Length == 0 || first.StartsWith("{", StringComparison.Ordinal) ? null : first;
     }
 
     private static IReadOnlyList<ViewFile> LoadViews()
@@ -303,7 +303,7 @@ public sealed class DesignDataTests
         foreach (string file in Directory.EnumerateFiles(Path.Combine(RepositoryRoot, "src"), "*.xaml", SearchOption.AllDirectories))
         {
             if (IsBuildOutput(file)) continue;
-            if (!ToRelativePath(file).Contains("/Views/", StringComparison.Ordinal)) continue;
+            if (ToRelativePath(file).IndexOf("/Views/", StringComparison.Ordinal) < 0) continue;
 
             XDocument document;
             try
@@ -343,13 +343,15 @@ public sealed class DesignDataTests
                 declared.Add(type);
             }
 
-            data.DesignSources.Add(string.Join(' ', declared.Select(type => type.ToFullString())));
+            data.DesignSources.Add(string.Join(" ", declared.Select(type => type.ToFullString())));
         }
 
         foreach (ProjectDesignData data in projects.Values)
         {
-            string designText = WithoutStringLiterals(string.Join(' ', data.DesignSources));
-            var mentioned = Word.Matches(designText).Select(match => match.Value).ToHashSet(StringComparer.Ordinal);
+            string designText = WithoutStringLiterals(string.Join(" ", data.DesignSources));
+            var mentioned = new HashSet<string>(
+                Word.Matches(designText).Cast<Match>().Select(match => match.Value),
+                StringComparer.Ordinal);
             foreach (string file in ProjectFiles(data.Project, "*.cs"))
             {
                 if (IsDesignFile(file)) continue;
@@ -366,23 +368,24 @@ public sealed class DesignDataTests
         return projects;
     }
 
-    private static IReadOnlyDictionary<string, IReadOnlySet<string>> LoadResourceKeys()
+    private static IReadOnlyDictionary<string, HashSet<string>> LoadResourceKeys()
     {
-        var keys = new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal);
+        var keys = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
         var sources = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (string file in Directory.EnumerateFiles(Path.Combine(RepositoryRoot, "src"), "*.resx", SearchOption.AllDirectories))
         {
             if (IsBuildOutput(file)) continue;
 
             string name = Path.GetFileNameWithoutExtension(file);
-            if (name.Contains('.')) continue;
+            if (name.IndexOf('.') >= 0) continue;
 
-            sources[name] = sources.GetValueOrDefault(name) + 1;
-            keys[name] = XDocument.Load(file).Root!.Elements("data")
-                .Select(element => element.Attribute("name")?.Value)
-                .Where(value => !string.IsNullOrWhiteSpace(value))
-                .Select(value => value!)
-                .ToHashSet(StringComparer.Ordinal);
+            sources[name] = (sources.TryGetValue(name, out int existing) ? existing : 0) + 1;
+            keys[name] = new HashSet<string>(
+                XDocument.Load(file).Root!.Elements("data")
+                    .Select(element => element.Attribute("name")?.Value)
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Select(value => value!),
+                StringComparer.Ordinal);
         }
 
         string[] ambiguous = sources.Where(pair => pair.Value > 1).Select(pair => pair.Key).ToArray();
@@ -410,7 +413,7 @@ public sealed class DesignDataTests
                     .Any(attribute => attribute.Name.ToString() is "RelayCommand" or "RelayCommandAttribute"):
                     string command = method.Identifier.ValueText;
                     if (command.EndsWith("Async", StringComparison.Ordinal))
-                        command = command[..^"Async".Length];
+                        command = command.Substring(0, command.Length - "Async".Length);
                     yield return command + "Command";
                     break;
             }
@@ -439,7 +442,7 @@ public sealed class DesignDataTests
             }
         }
 
-        return string.Join('.', names);
+        return string.Join(".", names);
     }
 
     private static IEnumerable<string> DesignFiles() =>
@@ -462,8 +465,11 @@ public sealed class DesignDataTests
     private static int Line(XObject node) =>
         node is IXmlLineInfo info && info.HasLineInfo() ? info.LineNumber : 0;
 
-    private static int LineOf(string text, int offset) =>
-        text[..Math.Clamp(offset, 0, text.Length)].Count(character => character == '\n') + 1;
+    private static int LineOf(string text, int offset)
+    {
+        int length = Math.Min(Math.Max(offset, 0), text.Length);
+        return text.Substring(0, length).Count(character => character == '\n') + 1;
+    }
 
     private static string ToRelativePath(string file)
     {
@@ -472,14 +478,14 @@ public sealed class DesignDataTests
             ? RepositoryRoot
             : RepositoryRoot + separator;
         string relative = file.StartsWith(root, StringComparison.OrdinalIgnoreCase)
-            ? file[root.Length..]
+            ? file.Substring(root.Length)
             : file;
         return relative.Replace('\\', '/');
     }
 
     private static bool IsBuildOutput(string file) =>
-        ToRelativePath(file).Contains("/bin/", StringComparison.Ordinal)
-        || ToRelativePath(file).Contains("/obj/", StringComparison.Ordinal);
+        ToRelativePath(file).IndexOf("/bin/", StringComparison.Ordinal) >= 0
+        || ToRelativePath(file).IndexOf("/obj/", StringComparison.Ordinal) >= 0;
 
     private static string WithoutStringLiterals(string content) => StringLiteral.Replace(content, "\"\"");
 
