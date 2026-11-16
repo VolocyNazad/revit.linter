@@ -8,6 +8,8 @@ Older releases are in the [changelog archive](docs/changelog/archive.md).
 
 ## [Unreleased]
 
+## [3.1.2] - 2026-11-16
+
 ### Added
 
 - The diagnostic reports pane gains a findings heat map: the thermometer button colours the elements of the active document in the 3D visualization view, opened with fine detail and a shaded display, by their most severe failed checks, where the hue shows the severity and the brightness the number of checks of that severity that fail. The rest of the model becomes 99% transparent, its lines fading into the background, and levels, scope boxes, grids and untargeted linked models are hidden, so the coloured findings stand out.
