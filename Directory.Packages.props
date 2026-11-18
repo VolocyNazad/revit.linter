@@ -4,8 +4,8 @@
     <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.14" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="10.0.14" />
     <PackageVersion Include="Polyfill" Version="11.4.5" />
@@ -14,7 +14,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.9" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.14" />
+    <PackageVersion Include="System.Text.Json" Version="11.0.0" />
     <!--
       Revit-versioned package versions exist only for projects built by VolocyNazad.Revit.Sdk,
       which defines MajorRevitVersion from the build configuration. Revit-independent projects
@@ -37,10 +37,10 @@
     <PackageVersion Include="VolocyNazad.Revit.Context" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="VolocyNazad.Revit.Events" Version="$(MajorRevitVersion).0.10" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="VolocyNazad.ValueStore" Version="1.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <PackageVersion Include="Nice3point.TUnit.Revit" Version="$(MajorRevitVersion).*" Condition="'$(MajorRevitVersion)' != ''" />
     <PackageVersion Include="XamlConstructor" Version="1.4.1" />
-    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageVersion Include="ILRepack" Version="2.0.48" />
     <PackageVersion Include="Serilog" Version="4.4.0" />
@@ -51,7 +51,7 @@
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <GlobalPackageReference Include="PolySharp" Version="1.16.0">
+    <GlobalPackageReference Include="PolySharp" Version="1.17.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </GlobalPackageReference>
