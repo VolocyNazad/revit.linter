@@ -53,6 +53,9 @@ of a class, element types, element geometry) and the typed `DocumentQueryKey` un
 are kept in the transaction cache. Diagnostic modules, the diagnostic service and the dependency
 definers reach `IRevitTransactionMemoryCache` only through its `IDocumentQueryService`; the query keys
 and their caching rules are in [diagnostics and reports](../architecture.md#diagnostics-and-reports).
+It also exposes `MepConnections`, the one reading of the elements joined to an element through MEP
+connectors: it asks `Connector.AllRefs`, because Revit refuses `Connector.IsConnected` for a logical
+connector.
 
 `Revit.Linter.ParameterValues` owns the parameter value model used by configuration-driven logic. It
 resolves a parameter identifier (a `BuiltInParameter` name, a shared parameter GUID or the display
