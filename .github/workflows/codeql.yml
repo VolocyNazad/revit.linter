@@ -28,10 +28,10 @@ jobs:
       # C# supports build-mode none: CodeQL extracts the source without running the build, so the
       # custom Revit SDK and the Revit version matrix are not involved.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4.39.2
+        uses: github/codeql-action/init@v4.39.3
         with:
           languages: csharp
           build-mode: none
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v4.39.2
+        uses: github/codeql-action/analyze@v4.39.3
