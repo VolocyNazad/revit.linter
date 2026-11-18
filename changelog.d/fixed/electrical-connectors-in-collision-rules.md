@@ -1,0 +1,1 @@
+Collision rules with `ignoreConnectedElements` no longer fail on electrical models: connected elements are read through `Connector.AllRefs`, which answers for every connector type, instead of `Connector.IsConnected`, which Revit throws for a logical connector, and the `connected` formula definer reads them the same way.

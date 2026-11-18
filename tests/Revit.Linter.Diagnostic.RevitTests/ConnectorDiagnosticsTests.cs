@@ -6,8 +6,11 @@ using Autodesk.Revit.DB.Plumbing;
 #endif
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
+using Revit.Linter.CollisionDiagnostics.Infrastructure.Services;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.DocumentQueries;
 using Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -211,13 +214,64 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
     }
 #endif
 
-    // No connected-electrical test: Revit forbids device-to-device ConnectTo for
-    // electrical connectors ("Electrical device or equipment cannot connect to
-    // electrical device or equipment directly") — they connect only through a
-    // Wire, which needs a WireType and a plan view that empty test documents
-    // do not have. Same asset/template gap as the MEPCurve branch.
+    // Revit forbids device-to-device ConnectTo for electrical connectors ("Electrical device or
+    // equipment cannot connect to electrical device or equipment directly"), so an electrical
+    // connection needs a wire and its wire type. The tests below skip when the project template has
+    // no wire type and keep the device case for the connector type the test family builds.
 
 #if !IS2021
+    [Test]
+    public async Task Electrical_device_with_logical_connector_does_not_break_connected_element_collection()
+    {
+        Document document = _document!;
+        FamilyInstance device = PlaceConnectorInstance(Application, document, CreateElectricalConnector);
+        Connector connector = FindConnector(device);
+        if (connector.ConnectorType != ConnectorType.Logical)
+        {
+            Skip.Test(
+                $"The test family builds a {connector.ConnectorType} connector instead of a logical one, " +
+                "so the regression cannot be reproduced on this Revit version.");
+            return;
+        }
+
+        var service = new GetConnectedElementIdsService(TestDocumentQueries.Create());
+
+        HashSet<long> connectedIds = service.Execute(device);
+
+        await Assert.That(connectedIds).IsEmpty();
+    }
+
+    [Test]
+    public async Task Wire_joins_a_logical_connector_to_the_element_it_connects()
+    {
+        Document document = _document!;
+        Level level = CreateLevel(document, 0);
+        ViewPlan view = CreatePlanView(document, level);
+        WireType? wireType = FindWireType(document);
+        if (wireType is null)
+        {
+            Skip.Test("The project template has no wire type, so a wire cannot be created.");
+            return;
+        }
+
+        FamilyInstance first = PlaceConnectorInstance(Application, document, CreateElectricalConnector);
+        FamilyInstance second = PlaceConnectorInstance(
+            Application, document, CreateElectricalConnector, new XYZ(3000 * MmInFeet, 0, 0));
+        Wire wire;
+        using (Transaction transaction = new(document, "Create test wire"))
+        {
+            transaction.Start();
+            wire = Wire.Create(
+                document, wireType.Id, view.Id, WiringType.Arc, [],
+                FindConnector(first), FindConnector(second));
+            transaction.Commit();
+        }
+
+        Element[] connected = [.. MepConnections.GetConnectedElements(first)];
+
+        await Assert.That(connected.Select(element => element.Id)).Contains(wire.Id);
+    }
+
     private static DiagnosticFeedback ExecuteOnConnectedPair(
         Autodesk.Revit.ApplicationServices.Application application,
         Document document,
@@ -255,17 +309,46 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
     private static FamilyInstance PlaceConnectorInstance(
         Autodesk.Revit.ApplicationServices.Application application,
         Document document,
-        Func<Document, Reference, ConnectorElement> createConnector)
+        Func<Document, Reference, ConnectorElement> createConnector,
+        XYZ? point = null)
     {
         Level level = CreateLevel(document, 0);
         Family family = CreateConnectorFamily(application, document, createConnector);
         FamilySymbol symbol = FindSymbol(document, family);
         using Transaction transaction = new(document, "Place test connector instance");
         transaction.Start();
-        FamilyInstance instance = FamilyTestDocuments.PlaceInstance(document, symbol, level, XYZ.Zero);
+        FamilyInstance instance = FamilyTestDocuments.PlaceInstance(
+            document, symbol, level, point ?? XYZ.Zero);
         transaction.Commit();
         return instance;
     }
+
+    private static ConnectorElement CreateElectricalConnector(Document familyDocument, Reference face) =>
+        ConnectorElement.CreateElectricalConnector(
+            familyDocument, ElectricalSystemType.PowerCircuit, face);
+
+    private static ViewPlan CreatePlanView(Document document, Level level)
+    {
+        ViewFamilyType planType = new FilteredElementCollector(document)
+            .OfClass(typeof(ViewFamilyType))
+            .Cast<ViewFamilyType>()
+            .First(candidate => candidate.ViewFamily == ViewFamily.FloorPlan);
+        ViewPlan view;
+        using (Transaction transaction = new(document, "Create test plan view"))
+        {
+            transaction.Start();
+            view = ViewPlan.Create(document, planType.Id, level.Id);
+            transaction.Commit();
+        }
+
+        return view;
+    }
+
+    private static WireType? FindWireType(Document document) =>
+        new FilteredElementCollector(document)
+            .OfClass(typeof(WireType))
+            .Cast<WireType>()
+            .FirstOrDefault();
 
     private static Family CreateConnectorFamily(
         Autodesk.Revit.ApplicationServices.Application application,

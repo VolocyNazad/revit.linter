@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Mechanical;
+using Revit.Linter.DocumentQueries;
 using Revit.Sugar;
 
 namespace Revit.Linter.ElementDependencyDefiners.Infrastructure;
@@ -109,28 +110,8 @@ internal static class ElementDependencyExtensions
         }
     }
 
-    public static IEnumerable<Element> FindConnected(this Element element)
-    {
-        HashSet<ElementId> visited = [];
-        ConnectorManager? manager = element switch
-        {
-            MEPCurve curve => curve.ConnectorManager,
-            FamilyInstance instance => instance.MEPModel?.ConnectorManager,
-            _ => null,
-        };
-        if (manager is null)
-            yield break;
-
-        foreach (Connector connector in manager.Connectors)
-        {
-            if (!connector.IsConnected)
-                continue;
-
-            foreach (Connector reference in connector.AllRefs)
-                if (reference.Owner.Id != element.Id && visited.Add(reference.Owner.Id))
-                    yield return reference.Owner;
-        }
-    }
+    public static IEnumerable<Element> FindConnected(this Element element) =>
+        MepConnections.GetConnectedElements(element);
 
     public static Element? FindRoom(this Element element)
         => element.FindRooms().FirstOrDefault();
