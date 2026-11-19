@@ -217,23 +217,17 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
     // Revit forbids device-to-device ConnectTo for electrical connectors ("Electrical device or
     // equipment cannot connect to electrical device or equipment directly"), so an electrical
     // connection needs a wire and its wire type. The tests below skip when the project template has
-    // no wire type and keep the device case for the connector type the test family builds.
+    // no wire type. A logical connector cannot be built through the API: the connector this test
+    // family receives stays an End connector on every supported Revit version, so the
+    // logical-connector branch of MepConnections is checked on a real electrical model, see
+    // docs/testing/diagnostics-manual-checklist.md.
 
 #if !IS2021
     [Test]
-    public async Task Electrical_device_with_logical_connector_does_not_break_connected_element_collection()
+    public async Task Electrical_device_without_connections_has_no_connected_elements()
     {
         Document document = _document!;
         FamilyInstance device = PlaceConnectorInstance(Application, document, CreateElectricalConnector);
-        Connector connector = FindConnector(device);
-        if (connector.ConnectorType != ConnectorType.Logical)
-        {
-            Skip.Test(
-                $"The test family builds a {connector.ConnectorType} connector instead of a logical one, " +
-                "so the regression cannot be reproduced on this Revit version.");
-            return;
-        }
-
         var service = new GetConnectedElementIdsService(TestDocumentQueries.Create());
 
         HashSet<long> connectedIds = service.Execute(device);
@@ -242,7 +236,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
     }
 
     [Test]
-    public async Task Wire_joins_a_logical_connector_to_the_element_it_connects()
+    public async Task Wire_is_listed_among_the_elements_connected_to_a_device()
     {
         Document document = _document!;
         Level level = CreateLevel(document, 0);
