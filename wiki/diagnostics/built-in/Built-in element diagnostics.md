@@ -53,6 +53,7 @@ lang: en
 | **SHRD0039** | Checks for appearance assets that no material uses. | 💬 Message | `Appearance asset 'Кирпич_01' (ID:99018) is not used. (5 ms)` |
 | **SHRD0040** | Checks materials whose render appearance is used in shaded views and contains a texture. | 💬 Message | `Material 'Кирпич_01' (ID:99019) uses its render appearance for shaded views. (6 ms)` |
 | **SHRD0041** | Checks whether a graphical view has elements hidden in the view with Hide in View (projects only). | ⚠️ Warning | `View 'Разрез А-А' (ID:55443) has 2 hidden element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
+| **SHRD0042** | Checks whether a link shares its workset with model elements (workshared projects only). | ⚠️ Warning | `Link 'АР' (ID:12345) is on workset 'Модель', which also holds 2 other element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 
