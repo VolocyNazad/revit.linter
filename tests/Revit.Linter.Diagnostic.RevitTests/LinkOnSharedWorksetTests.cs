@@ -134,7 +134,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
     public async Task Elements_are_listed_in_identifier_order()
     {
         Document document = _document!;
-        Wall secondWall = CreateWall(document, GetWorksetId(document, SharedWorksetName));
+        Wall secondWall = CreateWall(document, GetWorksetId(document, SharedWorksetName), 5.0);
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
         DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!);
@@ -149,7 +149,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
     }
 
     [Test]
-    public async Task Views_on_the_link_workset_do_not_count_as_occupants()
+    public async Task Creating_a_view_keeps_the_link_alone_on_its_workset_valid()
     {
         Document document = _document!;
         ViewPlan view = CreatePlan(document, _linkWorksetId!, "Link workset view");
@@ -157,7 +157,9 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
 
         DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!);
 
-        await Assert.That(view.WorksetId.IntegerValue).IsEqualTo(_linkWorksetId!.IntegerValue);
+        // A view belongs to its own view workset, so creating it while the link workset is active
+        // leaves the link alone on that workset and keeps the link clean.
+        await Assert.That(view.WorksetId.IntegerValue).IsNotEqualTo(_linkWorksetId!.IntegerValue);
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
@@ -240,14 +242,14 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         return instance;
     }
 
-    private static Wall CreateWall(Document document, WorksetId worksetId)
+    private static Wall CreateWall(Document document, WorksetId worksetId, double y = 0.0)
     {
         Level level = GetLevel(document);
         document.GetWorksetTable().SetActiveWorksetId(worksetId);
         using Transaction transaction = new(document, "Create test wall");
         transaction.Start();
         Wall wall = Wall.Create(
-            document, Line.CreateBound(new XYZ(0, 0, 0), new XYZ(10, 0, 0)), level.Id, false);
+            document, Line.CreateBound(new XYZ(0, y, 0), new XYZ(10, y, 0)), level.Id, false);
         transaction.Commit();
         return wall;
     }

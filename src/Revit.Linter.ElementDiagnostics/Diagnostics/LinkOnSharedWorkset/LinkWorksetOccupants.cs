@@ -12,9 +12,11 @@ namespace Revit.Linter.ElementDiagnostics.Diagnostics.LinkOnSharedWorkset;
 /// <remarks>
 /// Links themselves are excluded, so a workset with two links and nothing else stays clean. Views
 /// and element types are excluded too: they are not model content of the workset, and the link type
-/// of the checked link would otherwise turn every link into a finding. The result is cached per
-/// workset and ordered by identifier, so the message and the dependency list stay the same on every
-/// run however many links share the workset.
+/// of the checked link would otherwise turn every link into a finding. Elements without a category
+/// are excluded for the same reason: Revit keeps document settings such as the copy/monitor options
+/// of a link on the workset that was active when the link was placed, and such an element is not
+/// model content either. The result is cached per workset and ordered by identifier, so the message
+/// and the dependency list stay the same on every run however many links share the workset.
 /// </remarks>
 internal static class LinkWorksetOccupants
 {
@@ -34,7 +36,9 @@ internal static class LinkWorksetOccupants
             .WherePasses(new ElementWorksetFilter(worksetId))
             .WhereElementIsNotElementType()
             .ToElements()
-            .Where(element => element is not View && !LinkElement.IsLink(element))
+            .Where(element => element is not View
+                && element.Category is not null
+                && !LinkElement.IsLink(element))
             .OrderBy(element => element.Id.IdValue())
             .ToArray();
 }
