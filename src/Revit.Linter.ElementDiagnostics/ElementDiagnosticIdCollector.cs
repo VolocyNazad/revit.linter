@@ -59,6 +59,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId UnusedAppearanceAsset = Create("SHRD0039", DiagnosticSeverity.Message, ProjectAndFamily);
     public static readonly ElementDiagnosticId RenderAppearanceForShading = Create("SHRD0040", DiagnosticSeverity.Message, ProjectAndFamily);
     public static readonly ElementDiagnosticId ViewHasHiddenElements = Create("SHRD0041", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId LinkOnSharedWorkset = Create("SHRD0042", DiagnosticSeverity.Warning, DiagnosticTags.Project);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)

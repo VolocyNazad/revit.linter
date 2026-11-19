@@ -25,6 +25,7 @@
 - [ ] SHRD003 has no fix: `FamilyInstance.Mirrored` is get-only, and no in-place API mirror clears the flag (verified live: re-mirroring a mirrored instance about the same plane and about an orthogonal plane through its origin leaves `Mirrored` set); any odd-mirror alternative displaces the element, so there is no safe automatic unmirror.
 - [ ] Cover ARCH003 (zero-area room with boundaries) and SHRD0022 (materials cannot be created through the Revit API and empty documents have none to duplicate): no deterministic API construction is known; revisit if one is found.
 - [ ] Cover SHRD0009 when floor types become available in empty test documents.
+- [ ] Cover the CAD branches of SHRD0042 with a checked-in binary test asset: `ImportInstance` needs a real CAD file that the Revit API cannot create, so neither a linked CAD file on a dedicated workset nor an embedded CAD file that shares the workset can be built in code. `LinkOnSharedWorksetTests` compiles but still needs a live Revit run: it relies on `Document.EnableWorksharing` on a new project document and on elements created through the API landing on the active workset.
 
 ## Material performance diagnostics
 
