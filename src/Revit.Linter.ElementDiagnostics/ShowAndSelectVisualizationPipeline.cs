@@ -24,7 +24,9 @@ internal abstract class ShowAndSelectVisualizationPipeline(
     protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } =
         [HideScopeBoxesStep,
             new AccentElementsStep(AccentElementsType.ShowElements, []),
-            new AccentElementsStep(AccentElementsType.SelectElements, [])];
+            new AccentElementsStep(
+                AccentElementsType.SelectElements,
+                [ElementVisualizationSetKeys.Target])];
 
     // Scope boxes only cover the shown elements in a visualization view.
     private static SetCategoryVisibilityStep HideScopeBoxesStep =>

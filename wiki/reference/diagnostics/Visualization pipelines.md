@@ -24,6 +24,8 @@ visualizations:
 
 `elementSets` selects named groups supplied by the diagnostic. An omitted or empty list combines every available group. Unknown names stop the pipeline with a configuration error.
 
+A built-in check names only `Target` in its `Select` step, so its visualization selects the finding target and leaves `Dependencies` unselected. The other steps of built-in pipelines leave the list empty and take every set.
+
 | Key | Meaning |
 | --- | --- |
 | `Target` | Elements that directly produced the finding. |

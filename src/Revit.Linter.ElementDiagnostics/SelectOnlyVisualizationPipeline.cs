@@ -22,5 +22,7 @@ internal abstract class SelectOnlyVisualizationPipeline(
         setCategoryVisibilityService, viewSettingsService, logger)
 {
     protected override IReadOnlyList<ElementVisualizationStep> Steps { get; } =
-        [new AccentElementsStep(AccentElementsType.SelectElements, [])];
+        [new AccentElementsStep(
+            AccentElementsType.SelectElements,
+            [ElementVisualizationSetKeys.Target])];
 }
