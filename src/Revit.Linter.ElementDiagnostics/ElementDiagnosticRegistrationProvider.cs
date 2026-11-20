@@ -37,7 +37,11 @@ internal sealed class ElementDiagnosticRegistrationProvider(
                         identity,
                         ElementDiagnosticLocalizations.GetString("show_and_select_visualization"),
                         [new ElementVisualizationStepDefinition { Type = "Show" },
-                            new ElementVisualizationStepDefinition { Type = "Select" }])];
+                            new ElementVisualizationStepDefinition
+                            {
+                                Type = "Select",
+                                ElementSets = [ElementVisualizationSetKeys.Target]
+                            }])];
 
             // Every built-in diagnostic carries the target-view pipeline, although only findings whose
             // target is a view offer it: the presenter decides per finding, so a check that starts

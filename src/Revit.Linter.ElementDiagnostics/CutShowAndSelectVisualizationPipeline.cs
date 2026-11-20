@@ -25,7 +25,9 @@ internal abstract class CutShowAndSelectVisualizationPipeline(
         [HideScopeBoxesStep,
             new AccentElementsStep(AccentElementsType.CutViewByElements, []),
             new AccentElementsStep(AccentElementsType.ShowElements, []),
-            new AccentElementsStep(AccentElementsType.SelectElements, [])];
+            new AccentElementsStep(
+                AccentElementsType.SelectElements,
+                [ElementVisualizationSetKeys.Target])];
 
     // Scope boxes only cover the framed elements in a visualization view.
     private static SetCategoryVisibilityStep HideScopeBoxesStep =>
