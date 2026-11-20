@@ -27,10 +27,8 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<IExampleConfigurationInstaller, ExampleConfigurationInstaller>()
                 .AddSingleton<ITutorialSampleCopyService, TutorialSampleCopyService>()
                 .AddTransient<WelcomeIntroStepViewModel>()
-                .AddTransient<WelcomeRulesStepViewModel>()
                 .AddTransient<WelcomeExamplesStepViewModel>()
                 .AddTransient<WelcomePracticalStepViewModel>()
-                .AddTransient<WelcomeFinishStepViewModel>()
                 .AddTransient<WelcomeWindowFactory>()
                 .AddTransient<IWelcomeWizard, WelcomeViewModel>()
         ;

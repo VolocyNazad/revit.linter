@@ -9,13 +9,11 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
-    xmlns:views="clr-namespace:Revit.Linter.WelcomePresenter.Views"
     xmlns:viewModels="clr-namespace:Revit.Linter.WelcomePresenter.ViewModels"
     Title="{Binding WindowTitle}"
     Width="760"
     Height="600"
     d:DataContext="{d:DesignInstance Type={x:Type designData:WelcomeDesignData}, IsDesignTimeCreatable=True}"
-    FocusManager.FocusedElement="{Binding ElementName=NextButton}"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     Style="{DynamicResource LinterViewRoot}"
@@ -28,269 +26,157 @@
                 <theme:SharedThemeResources />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-            <DataTemplate x:Key="ImportantItemTemplate">
-                <Grid Margin="4,2,0,7">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+            <!--  A row of the main-page contents: a whole-width flat button with a hover surface.  -->
+            <Style
+                x:Key="WelcomeContentsButton"
+                BasedOn="{StaticResource LinterStepButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="BorderBrush" Value="{DynamicResource LinterBorderBrush}" />
+                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
+                                <ContentPresenter
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="Center"
+                                    RecognizesAccessKey="True" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LinterHoverBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <DataTemplate x:Key="WelcomeIntroStepTemplate">
+                <StackPanel>
                     <TextBlock
-                        Margin="0,0,9,0"
-                        FontWeight="SemiBold"
-                        Foreground="{DynamicResource LinterAccentBrush}"
-                        Text="&#x2022;" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Text="{Binding}"
-                        TextWrapping="Wrap" />
-                </Grid>
+                        Margin="0,16,0,8"
+                        Style="{StaticResource LinterParagraphText}"
+                        Text="{Binding AboutText, Mode=OneWay}" />
+                    <ItemsControl
+                        Margin="0,0,0,12"
+                        Focusable="False"
+                        ItemsSource="{Binding Contents, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Command="{Binding Command}"
+                                    CommandParameter="{Binding CommandParameter}"
+                                    Style="{StaticResource WelcomeContentsButton}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Title, Mode=OneWay}"
+                                                TextWrapping="Wrap" />
+                                            <TextBlock
+                                                Foreground="{DynamicResource LinterSecondaryForegroundBrush}"
+                                                Text="{Binding Summary, Mode=OneWay}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Foreground="{DynamicResource LinterAccentBrush}"
+                                            Text="{Binding ActionGlyph, Mode=OneWay}" />
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:WelcomeIntroStepViewModel}">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AboutText, Mode=OneWay}" />
-                    <Border
-                        Margin="0,4,0,16"
-                        Padding="12"
-                        Background="{DynamicResource LinterInputBackgroundBrush}"
-                        BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                        BorderThickness="1">
-                        <TextBlock
-                            Margin="0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontWeight="SemiBold"
-                            Style="{StaticResource LinterParagraphText}"
-                            Text="{Binding WorkflowText, Mode=OneWay}"
-                            TextAlignment="Center" />
-                    </Border>
-                    <TextBlock
-                        FontWeight="SemiBold"
-                        Style="{StaticResource LinterParagraphText}"
-                        Text="{Binding ImportantHeaderText, Mode=OneWay}" />
-                    <StackPanel>
-                        <ContentControl Content="{Binding TabInfo, Mode=OneWay}" ContentTemplate="{StaticResource ImportantItemTemplate}" />
-                    </StackPanel>
-                </StackPanel>
-            </DataTemplate>
-            <DataTemplate x:Key="WelcomeRulesStepTemplate">
-                <StackPanel>
-                    <Grid Margin="0,0,0,16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="12" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            Padding="12"
-                            Background="{DynamicResource LinterInputBackgroundBrush}"
-                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1">
-                            <StackPanel>
-                                <TextBlock
-                                    FontWeight="SemiBold"
-                                    Style="{StaticResource LinterParagraphText}"
-                                    Text="{Binding BuiltInTitleText, Mode=OneWay}" />
-                                <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding BuiltInDescriptionText, Mode=OneWay}" />
-                            </StackPanel>
-                        </Border>
-                        <Border
-                            Grid.Column="2"
-                            Padding="12"
-                            Background="{DynamicResource LinterInputBackgroundBrush}"
-                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1">
-                            <StackPanel>
-                                <TextBlock
-                                    FontWeight="SemiBold"
-                                    Style="{StaticResource LinterParagraphText}"
-                                    Text="{Binding UserTitleText, Mode=OneWay}" />
-                                <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding UserDescriptionText, Mode=OneWay}" />
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                    <TextBlock
-                        FontWeight="SemiBold"
-                        Style="{StaticResource LinterParagraphText}"
-                        Text="{Binding RuleKindsTitleText, Mode=OneWay}" />
-                    <StackPanel Margin="0,0,0,12">
-                        <ContentControl Content="{Binding ElementRuleKindText, Mode=OneWay}" ContentTemplate="{StaticResource ImportantItemTemplate}" />
-                        <ContentControl Content="{Binding CollisionRuleKindText, Mode=OneWay}" ContentTemplate="{StaticResource ImportantItemTemplate}" />
-                        <ContentControl Content="{Binding ParameterRuleKindText, Mode=OneWay}" ContentTemplate="{StaticResource ImportantItemTemplate}" />
-                    </StackPanel>
-                    <TextBlock
-                        FontWeight="SemiBold"
-                        Style="{StaticResource LinterParagraphText}"
-                        Text="{Binding VisualizerTitleText, Mode=OneWay}" />
-                    <StackPanel Margin="0,0,0,12">
-                        <TextBlock
-                            FontWeight="SemiBold"
-                            Style="{StaticResource LinterParagraphText}"
-                            Text="{Binding ElementPreviewTitleText, Mode=OneWay}" />
-                        <Border
-                            Height="116"
-                            Padding="12"
-                            Background="{DynamicResource LinterInputBackgroundBrush}"
-                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1">
-                            <views:YamlPreviewView Text="{Binding RulePreviewText, Mode=OneWay}" />
-                        </Border>
-                        <Grid Margin="0,12,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="16" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding CodeExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Style="{StaticResource LinterParagraphText}" Text="{Binding DescriptionExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="2" Style="{StaticResource LinterParagraphText}" Text="{Binding SeverityExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding TakeExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding CheckExplanationText, Mode=OneWay}" />
-                        </Grid>
-                        <TextBlock
-                            Margin="0,6,0,0"
-                            FontWeight="SemiBold"
-                            Style="{StaticResource LinterParagraphText}"
-                            Text="{Binding CollisionPreviewTitleText, Mode=OneWay}" />
-                        <Border
-                            Height="132"
-                            Padding="12"
-                            Background="{DynamicResource LinterInputBackgroundBrush}"
-                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1">
-                            <views:YamlPreviewView Text="{Binding CollisionRulePreviewText, Mode=OneWay}" />
-                        </Border>
-                        <Grid Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="16" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AndTakeExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Style="{StaticResource LinterParagraphText}" Text="{Binding GroupByExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding IntersectionExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding CollisionTakeExplanationText, Mode=OneWay}" />
-                        </Grid>
-                        <TextBlock
-                            Margin="0,12,0,0"
-                            FontWeight="SemiBold"
-                            Style="{StaticResource LinterParagraphText}"
-                            Text="{Binding ProjectParameterPreviewTitleText, Mode=OneWay}" />
-                        <Border
-                            Height="164"
-                            Padding="12"
-                            Background="{DynamicResource LinterInputBackgroundBrush}"
-                            BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                            BorderThickness="1">
-                            <views:YamlPreviewView Text="{Binding ProjectParameterRulePreviewText, Mode=OneWay}" />
-                        </Border>
-                        <Grid Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="16" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ParametersExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Style="{StaticResource LinterParagraphText}" Text="{Binding GuidExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="2" Style="{StaticResource LinterParagraphText}" Text="{Binding GroupExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding CategoriesExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding IsInstanceExplanationText, Mode=OneWay}" />
-                            <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource LinterParagraphText}" Text="{Binding AllowVaryExplanationText, Mode=OneWay}" />
-                        </Grid>
-                    </StackPanel>
-                </StackPanel>
-            </DataTemplate>
-            <!-- The keyed template also serves the design-time preview. The implicit template keyed by the
-                 view-model type is what a ContentControl resolves at run time, so it must stay implicit. -->
-            <DataTemplate DataType="{x:Type viewModels:WelcomeRulesStepViewModel}">
-                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource WelcomeRulesStepTemplate}" />
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource WelcomeIntroStepTemplate}" />
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:WelcomeExamplesStepViewModel}">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding IntroText, Mode=OneWay}" />
-                    <CheckBox
-                        Margin="0,0,0,8"
-                        Content="{Binding MepText, Mode=OneWay}"
-                        IsChecked="{Binding IsMepSelected}" />
-                    <CheckBox
-                        Margin="0,0,0,8"
-                        Content="{Binding ArchitectureText, Mode=OneWay}"
-                        IsChecked="{Binding IsArchitectureSelected}" />
-                    <CheckBox
-                        Margin="0,0,0,12"
-                        Content="{Binding StructureText, Mode=OneWay}"
-                        IsChecked="{Binding IsStructureSelected}" />
-                    <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <TextBlock
-                            Margin="0,0,0,6"
                             FontWeight="SemiBold"
                             Style="{StaticResource LinterParagraphText}"
-                            Text="{Binding AdskChecksHeaderText, Mode=OneWay}" />
-                        <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding AdskChecksIntroText, Mode=OneWay}" />
-                        <UniformGrid Columns="4" Margin="0,4,0,12">
+                            Text="{Binding ExamplesHeaderText, Mode=OneWay}"
+                            ToolTip="{Binding ContentsText, Mode=OneWay}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            FontWeight="SemiBold"
+                            Style="{StaticResource LinterParagraphText}"
+                            Text="{Binding AdskChecksHeaderText, Mode=OneWay}"
+                            ToolTip="{Binding AdskChecksIntroText, Mode=OneWay}" />
+                        <StackPanel Grid.Row="1">
                             <CheckBox
-                                Width="170"
+                                Margin="0,0,0,8"
+                                Content="{Binding MepText, Mode=OneWay}"
+                                IsChecked="{Binding IsMepSelected}" />
+                            <CheckBox
+                                Margin="0,0,0,8"
+                                Content="{Binding ArchitectureText, Mode=OneWay}"
+                                IsChecked="{Binding IsArchitectureSelected}" />
+                            <CheckBox
+                                Margin="0,0,0,8"
+                                Content="{Binding StructureText, Mode=OneWay}"
+                                IsChecked="{Binding IsStructureSelected}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2">
+                            <CheckBox
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckArchitectureText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckArchitectureSelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckWaterSupplyText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckWaterSupplySelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckReinforcedConcreteText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckReinforcedConcreteSelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckSteelStructuresText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckSteelStructuresSelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckHvacText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckHvacSelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckLowCurrentText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckLowCurrentSelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckTechnologyText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckTechnologySelected}" />
                             <CheckBox
-                                Width="170"
                                 Margin="0,0,0,8"
                                 Content="{Binding AdskCheckElectricalText, Mode=OneWay}"
                                 IsChecked="{Binding IsCheckElectricalSelected}" />
-                        </UniformGrid>
-                    </StackPanel>
-                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ContentsText, Mode=OneWay}" />
-                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding TargetInfo, Mode=OneWay}" />
-                    <Button
-                        Margin="0,0,0,12"
-                        HorizontalAlignment="Left"
-                        Command="{Binding InstallCommand}"
-                        Content="{Binding InstallButtonText, Mode=OneWay}"
-                        Style="{StaticResource LinterDialogButton}" />
+                        </StackPanel>
+                    </Grid>
                     <Border
                         Margin="0,0,0,12"
                         Padding="12"
@@ -333,7 +219,9 @@
                         Margin="0,0,0,8"
                         Content="{Binding StartPracticalTourText, Mode=OneWay}"
                         IsChecked="{Binding StartPracticalTour}" />
-                    <StackPanel Visibility="{Binding CanUseTutorialSample, Converter={StaticResource BooleanToVisibility}}">
+                    <StackPanel
+                        Margin="20,0,0,0"
+                        Visibility="{Binding CanUseTutorialSample, Converter={StaticResource BooleanToVisibility}}">
                         <CheckBox
                             Margin="0,0,0,8"
                             Content="{Binding UseTutorialSampleText, Mode=OneWay}"
@@ -379,30 +267,9 @@
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:WelcomeFinishStepViewModel}">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource LinterParagraphText}" Text="{Binding ReopenInfo, Mode=OneWay}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button
-                            Command="{Binding OpenQuickStartCommand}"
-                            Content="{Binding QuickStartText, Mode=OneWay}"
-                            Style="{StaticResource LinterDialogButton}" />
-                        <Button
-                            Margin="8,0,0,0"
-                            Command="{Binding OpenDocumentationCommand}"
-                            Content="{Binding DocumentationText, Mode=OneWay}"
-                            Style="{StaticResource LinterDialogButton}" />
-                        <Button
-                            Margin="8,0,0,0"
-                            Command="{Binding OpenSupportCommand}"
-                            Content="{Binding SupportText, Mode=OneWay}"
-                            Style="{StaticResource LinterDialogButton}" />
-                    </StackPanel>
-                </StackPanel>
-            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
-    <!--  Enter presses the default button (Next, or Finish on the last step) and Esc the cancel button.  -->
+    <!--  Enter presses the start-tour button on the practical step and Esc the cancel button.  -->
     <i:Interaction.Behaviors>
         <behaviors:WindowDialogResultBehavior DialogResult="{Binding DialogResult}" />
     </i:Interaction.Behaviors>
@@ -411,17 +278,11 @@
             Key="Left"
             Command="{Binding GoBackCommand}"
             Modifiers="Alt" />
-        <KeyBinding
-            Key="Right"
-            Command="{Binding GoNextCommand}"
-            Modifiers="Alt" />
         <KeyBinding Key="PageUp" Command="{Binding GoBackCommand}" />
-        <KeyBinding Key="PageDown" Command="{Binding GoNextCommand}" />
     </Window.InputBindings>
     <Border Style="{StaticResource LinterWindowPanel}">
         <Grid Style="{StaticResource LinterDialogContent}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -429,106 +290,70 @@
             </Grid.RowDefinitions>
             <DockPanel>
                 <TextBlock
-                    VerticalAlignment="Center"
-                    DockPanel.Dock="Right"
-                    Opacity="0.6"
-                    Text="{Binding Progress, Mode=OneWay}" />
-                <TextBlock
                     Margin="0,0,12,0"
                     VerticalAlignment="Center"
                     DockPanel.Dock="Right"
                     Opacity="0.6"
                     Text="{Binding VersionText, Mode=OneWay}" />
-                <TextBlock Style="{StaticResource LinterDialogTitleText}" Text="{Binding WindowTitle, Mode=OneWay}" />
+                <Button
+                    MinWidth="28"
+                    MinHeight="28"
+                    Margin="0,0,8,0"
+                    Padding="4,0"
+                    VerticalAlignment="Center"
+                    AutomationProperties.Name="{Binding BackButtonText, Mode=OneWay}"
+                    Command="{Binding GoBackCommand}"
+                    Content="&#x2190;"
+                    DockPanel.Dock="Left"
+                    Focusable="False"
+                    FontSize="{StaticResource LinterTitleFontSize}"
+                    Style="{StaticResource LinterStepButton}"
+                    ToolTip="{Binding BackButtonText, Mode=OneWay}"
+                    Visibility="{Binding CanGoBack, Converter={StaticResource BooleanToVisibility}}" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource LinterDialogTitleText}"
+                    Text="{Binding CurrentStep.Title, Mode=OneWay}" />
             </DockPanel>
-            <ItemsControl
-                Grid.Row="1"
-                Margin="0,12,0,0"
-                Focusable="False"
-                ItemsSource="{Binding Steps}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                x:Name="StepArrow"
-                                Margin="10,0,10,0"
-                                Opacity="0.5"
-                                Text="&#x2192;" />
-                            <Button
-                                Command="{Binding DataContext.GoToStepCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-                                CommandParameter="{Binding}"
-                                Focusable="False"
-                                Style="{StaticResource LinterStepButton}">
-                                <TextBlock x:Name="StepLabel" Opacity="0.5">
-                                    <Run Text="{Binding Number, Mode=OneWay}" /><Run Text=". " /><Run Text="{Binding Title, Mode=OneWay}" />
-                                </TextBlock>
-                            </Button>
-                        </StackPanel>
-                        <DataTemplate.Triggers>
-                            <!-- The arrow separates a step from the previous one, so the first step has none. -->
-                            <DataTrigger Binding="{Binding Number}" Value="1">
-                                <Setter TargetName="StepArrow" Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                <Setter TargetName="StepLabel" Property="Opacity" Value="1" />
-                                <Setter TargetName="StepLabel" Property="FontWeight" Value="SemiBold" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
             <Border
-                Grid.Row="2"
+                Grid.Row="1"
                 Margin="0,16,0,16"
-                Style="{StaticResource LinterRemarkBorder}">
+                Style="{StaticResource LinterRemarkBorder}"
+                Visibility="{Binding CurrentStep.HasCaption, Converter={StaticResource BooleanToVisibility}}">
                 <TextBlock Style="{StaticResource LinterRemarkText}" Text="{Binding CurrentStep.Caption, Mode=OneWay}" />
             </Border>
             <ScrollViewer
-                Grid.Row="3"
+                Grid.Row="2"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
                 <ContentControl
                     HorizontalContentAlignment="Stretch"
                     Content="{Binding CurrentStep}"
-                    d:ContentTemplate="{StaticResource WelcomeRulesStepTemplate}"
+                    d:ContentTemplate="{StaticResource WelcomeIntroStepTemplate}"
                     Focusable="False" />
             </ScrollViewer>
-            <DockPanel Grid.Row="4" Margin="0,16,0,0">
+            <DockPanel Grid.Row="3" Margin="0,16,0,4">
                 <Button
+                    MinHeight="28"
+                    Margin="-8,0,0,0"
+                    Padding="8,4"
+                    VerticalAlignment="Center"
                     Content="{Binding CloseButtonText, Mode=OneWay}"
                     DockPanel.Dock="Left"
                     IsCancel="True"
-                    Style="{StaticResource LinterDialogButton}" />
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button
-                        Command="{Binding GoBackCommand}"
-                        Content="{Binding BackButtonText, Mode=OneWay}"
-                        Style="{StaticResource LinterDialogButton}" />
-                    <Button
-                        x:Name="NextButton"
-                        Margin="8,0,0,0"
-                        Command="{Binding GoNextCommand}"
-                        Content="{Binding NextButtonText, Mode=OneWay}"
-                        IsDefault="{Binding HasNextStep}"
-                        Style="{StaticResource LinterDialogButton}"
-                        Visibility="{Binding HasNextStep, Converter={StaticResource BooleanToVisibility}}" />
-                    <Button
-                        Margin="8,0,0,0"
-                        Command="{Binding CloseWithResultCommand}"
-                        Content="{Binding FinishButtonText, Mode=OneWay}"
-                        IsDefault="{Binding IsLastStep}"
-                        Style="{StaticResource LinterDialogButton}"
-                        Visibility="{Binding IsLastStep, Converter={StaticResource BooleanToVisibility}}">
-                        <Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Button.CommandParameter>
-                    </Button>
-                </StackPanel>
+                    Style="{StaticResource LinterStepButton}" />
+                <Button
+                    HorizontalAlignment="Right"
+                    Command="{Binding PrimaryActionCommand}"
+                    Content="{Binding CurrentStep.PrimaryActionText, Mode=OneWay}"
+                    IsDefault="{Binding CurrentStep.HasPrimaryAction}"
+                    Style="{StaticResource LinterDialogButton}"
+                    ToolTip="{Binding CurrentStep.PrimaryActionToolTip, Mode=OneWay}"
+                    Visibility="{Binding CurrentStep.HasPrimaryAction, Converter={StaticResource BooleanToVisibility}}">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
             </DockPanel>
         </Grid>
     </Border>

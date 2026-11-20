@@ -5,9 +5,12 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="title_text" xml:space="preserve"><value>Welcome</value></data>
-  <data name="caption_text" xml:space="preserve"><value>Find model problems early and save your time.</value></data>
-  <data name="about_text" xml:space="preserve"><value>Revit Linter checks projects and families, collects findings and helps you inspect or fix the affected elements.</value></data>
-  <data name="workflow_text" xml:space="preserve"><value>Revit model  →  Diagnostics  →  Findings  →  Show or fix  →  Export report</value></data>
-  <data name="tab_format" xml:space="preserve"><value>Revit Linter adds the "{0}" tab to the Revit ribbon at startup.</value></data>
-  <data name="importantHeader_text" xml:space="preserve"><value>Good to know</value></data>
+  <data name="summary_text" xml:space="preserve"><value>What Revit Linter does</value></data>
+  <data name="about_text" xml:space="preserve"><value>Revit Linter finds model problems early: it checks projects and families, collects findings and helps you inspect or fix the affected elements.</value></data>
+  <data name="quickStart_text" xml:space="preserve"><value>Quick start</value></data>
+  <data name="quickStartSummary_text" xml:space="preserve"><value>First steps with Revit Linter</value></data>
+  <data name="documentation_text" xml:space="preserve"><value>Documentation</value></data>
+  <data name="documentationSummary_text" xml:space="preserve"><value>The full guide by topic</value></data>
+  <data name="support_text" xml:space="preserve"><value>Support</value></data>
+  <data name="supportSummary_text" xml:space="preserve"><value>Ask a question or report a problem</value></data>
 </root>

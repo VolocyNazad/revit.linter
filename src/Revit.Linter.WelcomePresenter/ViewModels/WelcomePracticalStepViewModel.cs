@@ -24,6 +24,14 @@ internal sealed partial class WelcomePracticalStepViewModel(
 
     public override string Caption => CaptionText;
 
+    public override string Summary => SummaryText;
+
+    /// <summary>Gets a value indicating whether the footer starts the practical tour after the window closes.</summary>
+    public override bool HasPrimaryAction => StartPracticalTour;
+
+    /// <summary>Gets the label of the footer action that starts the practical tour.</summary>
+    public override string PrimaryActionText => StartButtonText;
+
     /// <summary>Gets the action that follows completion of the welcome wizard.</summary>
     public string NextActionText
     {
@@ -43,15 +51,9 @@ internal sealed partial class WelcomePracticalStepViewModel(
 
     public bool CanSelectTutorialSample => StartPracticalTour && UseTutorialSample;
 
-    public string TutorialSampleStatusText
-    {
-        get
-        {
-            if (host.HasOpenDocument)
-                return OpenDocumentHintText;
-            return CanUseTutorialSample ? TutorialSampleHintText : TutorialSampleUnavailableText;
-        }
-    }
+    /// <summary>Gets the note shown when no compatible Autodesk sample can be offered; empty otherwise.</summary>
+    public string? TutorialSampleStatusText =>
+        host.HasOpenDocument || CanUseTutorialSample ? null : TutorialSampleUnavailableText;
 
     [ObservableProperty]
     public partial TutorialSampleCandidate? SelectedTutorialSample { get; set; }
@@ -61,6 +63,7 @@ internal sealed partial class WelcomePracticalStepViewModel(
 
     /// <summary>Gets or sets whether the practical tour starts after the wizard closes.</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPrimaryAction))]
     public partial bool StartPracticalTour { get; set; } = true;
 
     /// <summary>Gets or sets an optional remark about the example-installation step.</summary>

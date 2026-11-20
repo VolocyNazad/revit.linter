@@ -1314,7 +1314,7 @@
         </Setter>
     </Style>
 
-    <!--  Flat text button for the welcome step breadcrumb: no chrome, theme foreground, accent on hover.  -->
+    <!--  Flat text button: no chrome, theme foreground, accent on hover. Used for the back arrow and the close link.  -->
     <Style x:Key="LinterStepButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />

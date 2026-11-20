@@ -22,6 +22,17 @@ internal sealed partial class WelcomeExamplesStepViewModel(
 
     public override string Caption => CaptionText;
 
+    public override string Summary => SummaryText;
+
+    /// <summary>Gets a value indicating whether the footer offers the install action; it hides once the examples are written.</summary>
+    public override bool HasPrimaryAction => !IsInstalled;
+
+    /// <summary>Gets the label of the footer action that writes the selected examples.</summary>
+    public override string PrimaryActionText => InstallButtonText;
+
+    /// <summary>Gets the note about the folder that receives the examples.</summary>
+    public override string PrimaryActionToolTip => TargetInfo;
+
     public string TargetInfo => GetLocalizedString("target_format", installer.TargetDirectory);
 
     [ObservableProperty]
@@ -71,6 +82,7 @@ internal sealed partial class WelcomeExamplesStepViewModel(
     /// <summary>Gets a value indicating whether the examples were installed during this wizard session.</summary>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
+    [NotifyPropertyChangedFor(nameof(HasPrimaryAction))]
     public partial bool IsInstalled { get; private set; }
 
     /// <summary>Gets the success message shown after examples have been written.</summary>

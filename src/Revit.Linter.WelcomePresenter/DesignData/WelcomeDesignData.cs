@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Windows.Input;
@@ -12,33 +13,55 @@ namespace Revit.Linter.WelcomePresenter.DesignData;
 /// <summary>
 /// Provides representative sample values for <see cref="Views.WelcomeView"/> in the XAML designer.
 /// </summary>
-/// <remarks>The preview shows the rules step, matching the design-time content template of the view.</remarks>
+/// <remarks>The preview shows the main page, matching the design-time content template of the view.</remarks>
 internal sealed class WelcomeDesignData
 {
     private const string ResourceBaseName = "Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeViewModel";
 
-    /// <summary>Initializes the sample wizard state with the rules step selected.</summary>
+    /// <summary>Initializes the sample wizard state with the main page selected.</summary>
     public WelcomeDesignData()
     {
-        Steps =
-        [
-            new WelcomeIntroStepDesignData { Number = 1 },
-            CurrentStep,
-            new WelcomeExamplesStepDesignData { Number = 3 },
-            new WelcomePracticalStepDesignData { Number = 4 },
-            new WelcomeFinishStepDesignData { Number = 5 },
-        ];
+        WelcomePracticalStepDesignData practical = new();
+        WelcomeExamplesStepDesignData examples = new();
+        WelcomeIntroStepDesignData intro = new();
+        AddStepRows(intro, practical, examples);
+        intro.Contents.Add(new WelcomeContentsEntryDesignData
+        {
+            Title = intro.QuickStartText,
+            Summary = intro.QuickStartSummaryText,
+            ActionGlyph = "\u2197",
+        });
+        intro.Contents.Add(new WelcomeContentsEntryDesignData
+        {
+            Title = intro.DocumentationText,
+            Summary = intro.DocumentationSummaryText,
+            ActionGlyph = "\u2197",
+        });
+        intro.Contents.Add(new WelcomeContentsEntryDesignData
+        {
+            Title = intro.SupportText,
+            Summary = intro.SupportSummaryText,
+            ActionGlyph = "\u2197",
+        });
+        CurrentStep = intro;
+    }
+
+    private static void AddStepRows(WelcomeIntroStepDesignData intro, params WelcomeStepDesignData[] steps)
+    {
+        foreach (WelcomeStepDesignData step in steps)
+        {
+            intro.Contents.Add(new WelcomeContentsEntryDesignData
+            {
+                Title = step.Title,
+                Summary = step.Summary,
+                CommandParameter = step,
+                ActionGlyph = "\u2192",
+            });
+        }
     }
 
     /// <summary>Gets the sample window title.</summary>
     public string WindowTitle => LocalizationResourceReader.GetString(ResourceBaseName, "window_title");
-
-    /// <summary>Gets the sample progress caption of the selected step.</summary>
-    public string Progress => string.Format(
-        CultureInfo.CurrentCulture,
-        LocalizationResourceReader.GetString(ResourceBaseName, "step_format"),
-        2,
-        5);
 
     /// <summary>Gets the sample version of the installed product.</summary>
     public string VersionText => string.Format(
@@ -52,17 +75,8 @@ internal sealed class WelcomeDesignData
     /// <summary>Gets the localized back button text.</summary>
     public string BackButtonText => LocalizationResourceReader.GetString(ResourceBaseName, "backButton_text");
 
-    /// <summary>Gets the localized next button text.</summary>
-    public string NextButtonText => LocalizationResourceReader.GetString(ResourceBaseName, "nextButton_text");
-
-    /// <summary>Gets the localized finish button text.</summary>
-    public string FinishButtonText => LocalizationResourceReader.GetString(ResourceBaseName, "finishButton_text");
-
-    /// <summary>Gets a value indicating whether a following step exists; the rules step is not the last one.</summary>
-    public bool HasNextStep => true;
-
-    /// <summary>Gets a value indicating whether the selected step ends the wizard; the rules step does not.</summary>
-    public bool IsLastStep => false;
+    /// <summary>Gets a value indicating whether the back arrow is shown; the main page has nowhere to go back.</summary>
+    public bool CanGoBack => false;
 
     /// <summary>Gets the dialog result requested by the finish command; no preset result is shown.</summary>
     public bool? DialogResult => null;
@@ -70,36 +84,61 @@ internal sealed class WelcomeDesignData
     /// <summary>Gets the command that moves to the previous step.</summary>
     public ICommand GoBackCommand { get; } = new RelayCommand(() => { });
 
-    /// <summary>Gets the command that moves to the next step.</summary>
-    public ICommand GoNextCommand { get; } = new RelayCommand(() => { });
-
     /// <summary>Gets the command that moves to the clicked step.</summary>
     public ICommand GoToStepCommand { get; } = new RelayCommand<WelcomeStepDesignData?>(_ => { });
 
     /// <summary>Gets the command that closes the wizard with the requested result.</summary>
     public ICommand CloseWithResultCommand { get; } = new RelayCommand<bool>(_ => { });
 
-    /// <summary>Gets the sample steps shown in the step strip.</summary>
-    public IReadOnlyList<WelcomeStepDesignData> Steps { get; }
+    /// <summary>Gets the command of the window footer action; it does nothing in the designer.</summary>
+    public ICommand PrimaryActionCommand { get; } = new RelayCommand(() => { });
 
     /// <summary>Gets the sample step rendered in the content area.</summary>
-    public WelcomeRulesStepDesignData CurrentStep { get; } = new() { Number = 2, IsCurrent = true };
+    public WelcomeIntroStepDesignData CurrentStep { get; }
 }
 
 /// <summary>Provides the state shared by the sample wizard steps.</summary>
 internal abstract class WelcomeStepDesignData
 {
-    /// <summary>Gets the one-based position of the step among the shown steps.</summary>
-    public int Number { get; init; }
-
-    /// <summary>Gets a value indicating whether the wizard currently displays this step.</summary>
-    public bool IsCurrent { get; init; }
-
-    /// <summary>Gets the short step name shown in the step strip.</summary>
+    /// <summary>Gets the short step name shown in the step list.</summary>
     public abstract string Title { get; }
 
     /// <summary>Gets the caption shown above the step content.</summary>
     public abstract string Caption { get; }
+
+    /// <summary>Gets a value indicating whether the step shows a caption above its content.</summary>
+    public bool HasCaption => Caption.Length > 0;
+
+    /// <summary>Gets the one-line description shown in the contents of the welcome window.</summary>
+    public abstract string Summary { get; }
+
+    /// <summary>Gets a value indicating whether the window footer shows the action of the step; the main page has none.</summary>
+    public virtual bool HasPrimaryAction => false;
+
+    /// <summary>Gets the label of the window footer action; it is empty when the step has none.</summary>
+    public virtual string PrimaryActionText => string.Empty;
+
+    /// <summary>Gets the tooltip of the window footer action; it is empty when the step has none.</summary>
+    public virtual string? PrimaryActionToolTip => null;
+}
+
+/// <summary>Describes one sample row of the main-page contents.</summary>
+internal sealed class WelcomeContentsEntryDesignData
+{
+    /// <summary>Gets the row title.</summary>
+    public required string Title { get; init; }
+
+    /// <summary>Gets the one-line description shown under the title.</summary>
+    public required string Summary { get; init; }
+
+    /// <summary>Gets the command the row runs; it does nothing in the designer.</summary>
+    public ICommand Command { get; } = new RelayCommand(() => { });
+
+    /// <summary>Gets the command parameter of a step row.</summary>
+    public object? CommandParameter { get; init; }
+
+    /// <summary>Gets the glyph that shows where the row leads.</summary>
+    public required string ActionGlyph { get; init; }
 }
 
 /// <summary>Provides sample values for the intro step content of <see cref="Views.WelcomeView"/>.</summary>
@@ -111,126 +150,37 @@ internal sealed class WelcomeIntroStepDesignData : WelcomeStepDesignData
     public override string Title => LocalizationResourceReader.GetString(ResourceBaseName, "title_text");
 
     /// <inheritdoc />
-    public override string Caption => LocalizationResourceReader.GetString(ResourceBaseName, "caption_text");
+    public override string Caption => string.Empty;
+
+    /// <inheritdoc />
+    public override string Summary => LocalizationResourceReader.GetString(ResourceBaseName, "summary_text");
+
+    /// <summary>Gets the sample rows listed in the contents of the main page.</summary>
+    public ObservableCollection<WelcomeContentsEntryDesignData> Contents { get; } = [];
 
     /// <summary>Gets the sample introduction sentence.</summary>
     public string AboutText => LocalizationResourceReader.GetString(ResourceBaseName, "about_text");
 
-    /// <summary>Gets the sample workflow pipeline.</summary>
-    public string WorkflowText => LocalizationResourceReader.GetString(ResourceBaseName, "workflow_text");
+    /// <summary>Gets the localized quick-start text.</summary>
+    public string QuickStartText => LocalizationResourceReader.GetString(ResourceBaseName, "quickStart_text");
 
-    /// <summary>Gets the sample header of the important information block.</summary>
-    public string ImportantHeaderText => LocalizationResourceReader.GetString(ResourceBaseName, "importantHeader_text");
+    /// <summary>Gets the localized quick-start description.</summary>
+    public string QuickStartSummaryText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "quickStartSummary_text");
 
-    /// <summary>Gets the sample sentence naming the ribbon tab.</summary>
-    public string TabInfo => string.Format(
-        CultureInfo.CurrentCulture,
-        LocalizationResourceReader.GetString(ResourceBaseName, "tab_format"),
-        "Revit Linter");
-}
+    /// <summary>Gets the localized documentation text.</summary>
+    public string DocumentationText => LocalizationResourceReader.GetString(ResourceBaseName, "documentation_text");
 
-/// <summary>Provides sample values for the rules step content of <see cref="Views.WelcomeView"/>.</summary>
-internal sealed class WelcomeRulesStepDesignData : WelcomeStepDesignData
-{
-    private const string ResourceBaseName = "Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeRulesStepViewModel";
+    /// <summary>Gets the localized documentation description.</summary>
+    public string DocumentationSummaryText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "documentationSummary_text");
 
-    /// <inheritdoc />
-    public override string Title => LocalizationResourceReader.GetString(ResourceBaseName, "title_text");
+    /// <summary>Gets the localized support text.</summary>
+    public string SupportText => LocalizationResourceReader.GetString(ResourceBaseName, "support_text");
 
-    /// <inheritdoc />
-    public override string Caption => LocalizationResourceReader.GetString(ResourceBaseName, "caption_text");
-
-    /// <summary>Gets the sample title of the built-in diagnostics column.</summary>
-    public string BuiltInTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "builtInTitle_text");
-
-    /// <summary>Gets the sample description of the built-in diagnostics column.</summary>
-    public string BuiltInDescriptionText => LocalizationResourceReader.GetString(ResourceBaseName, "builtInDescription_text");
-
-    /// <summary>Gets the sample title of the user-defined rules column.</summary>
-    public string UserTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "userTitle_text");
-
-    /// <summary>Gets the sample description of the user-defined rules column.</summary>
-    public string UserDescriptionText => LocalizationResourceReader.GetString(ResourceBaseName, "userDescription_text");
-
-    /// <summary>Gets the sample title of the rule-kind list.</summary>
-    public string RuleKindsTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "ruleKindsTitle_text");
-
-    /// <summary>Gets the sample description of the element rule kind.</summary>
-    public string ElementRuleKindText => LocalizationResourceReader.GetString(ResourceBaseName, "elementRuleKind_text");
-
-    /// <summary>Gets the sample description of the collision rule kind.</summary>
-    public string CollisionRuleKindText => LocalizationResourceReader.GetString(ResourceBaseName, "collisionRuleKind_text");
-
-    /// <summary>Gets the sample description of the project parameter rule kind.</summary>
-    public string ParameterRuleKindText => LocalizationResourceReader.GetString(ResourceBaseName, "parameterRuleKind_text");
-
-    /// <summary>Gets the sample title of the YAML examples section.</summary>
-    public string VisualizerTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "visualizerTitle_text");
-
-    /// <summary>Gets the sample title of the element rule preview.</summary>
-    public string ElementPreviewTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "elementPreviewTitle_text");
-
-    /// <summary>Gets the sample element rule in YAML.</summary>
-    public string RulePreviewText => LocalizationResourceReader.GetString(ResourceBaseName, "rulePreview_text");
-
-    /// <summary>Gets the sample explanation of the code key.</summary>
-    public string CodeExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "codeExplanation_text");
-
-    /// <summary>Gets the sample explanation of the description key.</summary>
-    public string DescriptionExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "descriptionExplanation_text");
-
-    /// <summary>Gets the sample explanation of the severity key.</summary>
-    public string SeverityExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "severityExplanation_text");
-
-    /// <summary>Gets the sample explanation of the take key.</summary>
-    public string TakeExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "takeExplanation_text");
-
-    /// <summary>Gets the sample explanation of the check key.</summary>
-    public string CheckExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "checkExplanation_text");
-
-    /// <summary>Gets the sample title of the collision rule preview.</summary>
-    public string CollisionPreviewTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "collisionPreviewTitle_text");
-
-    /// <summary>Gets the sample collision rule in YAML.</summary>
-    public string CollisionRulePreviewText => LocalizationResourceReader.GetString(ResourceBaseName, "collisionRulePreview_text");
-
-    /// <summary>Gets the sample explanation of the andTake key.</summary>
-    public string AndTakeExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "andTakeExplanation_text");
-
-    /// <summary>Gets the sample explanation of the groupBy key.</summary>
-    public string GroupByExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "groupByExplanation_text");
-
-    /// <summary>Gets the sample explanation of the intersection placeholder.</summary>
-    public string IntersectionExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "intersectionExplanation_text");
-
-    /// <summary>Gets the sample explanation of the collision take key.</summary>
-    public string CollisionTakeExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "collisionTakeExplanation_text");
-
-    /// <summary>Gets the sample title of the project parameter rule preview.</summary>
-    public string ProjectParameterPreviewTitleText => LocalizationResourceReader.GetString(ResourceBaseName, "projectParameterPreviewTitle_text");
-
-    /// <summary>Gets the sample project parameter rule in YAML, with the current Revit parameter group.</summary>
-    public string ProjectParameterRulePreviewText => LocalizationResourceReader
-        .GetString(ResourceBaseName, "projectParameterRuleTemplate_text")
-        .Replace("{parameterGroup}", "autodesk.parameter.group:data-1.0.0");
-
-    /// <summary>Gets the sample explanation of the parameters key.</summary>
-    public string ParametersExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "parametersExplanation_text");
-
-    /// <summary>Gets the sample explanation of the guid key.</summary>
-    public string GuidExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "guidExplanation_text");
-
-    /// <summary>Gets the sample explanation of the group key.</summary>
-    public string GroupExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "groupExplanation_text");
-
-    /// <summary>Gets the sample explanation of the categories key.</summary>
-    public string CategoriesExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "categoriesExplanation_text");
-
-    /// <summary>Gets the sample explanation of the isInstance key.</summary>
-    public string IsInstanceExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "isInstanceExplanation_text");
-
-    /// <summary>Gets the sample explanation of the allowVaryBetweenGroups key.</summary>
-    public string AllowVaryExplanationText => LocalizationResourceReader.GetString(ResourceBaseName, "allowVaryExplanation_text");
+    /// <summary>Gets the localized support description.</summary>
+    public string SupportSummaryText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "supportSummary_text");
 }
 
 /// <summary>Provides sample values for the examples step content of <see cref="Views.WelcomeView"/>.</summary>
@@ -252,8 +202,21 @@ internal sealed class WelcomeExamplesStepDesignData : WelcomeStepDesignData
     /// <inheritdoc />
     public override string Caption => LocalizationResourceReader.GetString(ResourceBaseName, "caption_text");
 
-    /// <summary>Gets the sample introduction sentence.</summary>
-    public string IntroText => LocalizationResourceReader.GetString(ResourceBaseName, "intro_text");
+    /// <inheritdoc />
+    public override string Summary => LocalizationResourceReader.GetString(ResourceBaseName, "summary_text");
+
+    /// <inheritdoc />
+    public override bool HasPrimaryAction => true;
+
+    /// <inheritdoc />
+    public override string PrimaryActionText => InstallButtonText;
+
+    /// <inheritdoc />
+    public override string? PrimaryActionToolTip => TargetInfo;
+
+    /// <summary>Gets the sample header of the regular examples column.</summary>
+    public string ExamplesHeaderText =>
+        LocalizationResourceReader.GetString(ResourceBaseName, "examplesHeader_text");
 
     /// <summary>Gets the sample label of the MEP discipline.</summary>
     public string MepText => LocalizationResourceReader.GetString(ResourceBaseName, "mep_text");
@@ -397,6 +360,9 @@ internal sealed class WelcomePracticalStepDesignData : WelcomeStepDesignData
     /// <inheritdoc />
     public override string Caption => LocalizationResourceReader.GetString(ResourceBaseName, "caption_text");
 
+    /// <inheritdoc />
+    public override string Summary => LocalizationResourceReader.GetString(ResourceBaseName, "summary_text");
+
     /// <summary>Gets the localized practical-tour checkbox text.</summary>
     public string StartPracticalTourText => LocalizationResourceReader.GetString(ResourceBaseName, "startPracticalTour_text");
 
@@ -418,8 +384,8 @@ internal sealed class WelcomePracticalStepDesignData : WelcomeStepDesignData
     /// <summary>Gets or sets the selected Autodesk sample; it is an item of <see cref="TutorialSamples"/>.</summary>
     public TutorialSampleCandidate? SelectedTutorialSample { get; set; }
 
-    /// <summary>Gets the sample status of the Autodesk sample selection.</summary>
-    public string TutorialSampleStatusText => LocalizationResourceReader.GetString(ResourceBaseName, "tutorialSampleHint_text");
+    /// <summary>Gets the sample note of the Autodesk sample selection; no note is shown in the designer.</summary>
+    public string? TutorialSampleStatusText => null;
 
     /// <summary>Gets the sample action that follows completion of the wizard.</summary>
     public string NextActionText => LocalizationResourceReader.GetString(ResourceBaseName, "prepareSample_text");
@@ -432,42 +398,6 @@ internal sealed class WelcomePracticalStepDesignData : WelcomeStepDesignData
 
     /// <summary>Gets the command that resets the practical tour; it does nothing in the designer.</summary>
     public ICommand ResetPracticalTourCommand { get; } = new RelayCommand(() => { });
-}
-
-/// <summary>Provides sample values for the finish step content of <see cref="Views.WelcomeView"/>.</summary>
-internal sealed class WelcomeFinishStepDesignData : WelcomeStepDesignData
-{
-    private const string ResourceBaseName = "Revit.Linter.Localization.WelcomePresenter.ViewModels.WelcomeFinishStepViewModel";
-
-    /// <inheritdoc />
-    public override string Title => LocalizationResourceReader.GetString(ResourceBaseName, "title_text");
-
-    /// <inheritdoc />
-    public override string Caption => LocalizationResourceReader.GetString(ResourceBaseName, "caption_text");
-
-    /// <summary>Gets the sample sentence explaining how to reopen the wizard.</summary>
-    public string ReopenInfo => string.Format(
-        CultureInfo.CurrentCulture,
-        LocalizationResourceReader.GetString(ResourceBaseName, "reopen_format"),
-        "Revit Linter");
-
-    /// <summary>Gets the localized quick-start button text.</summary>
-    public string QuickStartText => LocalizationResourceReader.GetString(ResourceBaseName, "quickStart_text");
-
-    /// <summary>Gets the localized documentation button text.</summary>
-    public string DocumentationText => LocalizationResourceReader.GetString(ResourceBaseName, "documentation_text");
-
-    /// <summary>Gets the localized support button text.</summary>
-    public string SupportText => LocalizationResourceReader.GetString(ResourceBaseName, "support_text");
-
-    /// <summary>Gets the command that opens the quick start; it does nothing in the designer.</summary>
-    public ICommand OpenQuickStartCommand { get; } = new RelayCommand(() => { });
-
-    /// <summary>Gets the command that opens the documentation; it does nothing in the designer.</summary>
-    public ICommand OpenDocumentationCommand { get; } = new RelayCommand(() => { });
-
-    /// <summary>Gets the command that opens the support page; it does nothing in the designer.</summary>
-    public ICommand OpenSupportCommand { get; } = new RelayCommand(() => { });
 }
 
 /// <summary>Describes one sample row of the practical tour.</summary>
