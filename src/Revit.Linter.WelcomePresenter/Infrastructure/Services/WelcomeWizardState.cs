@@ -3,7 +3,7 @@ using Revit.Linter.OnboardingState.Models;
 namespace Revit.Linter.WelcomePresenter.Infrastructure.Services;
 
 /// <summary>
-/// Names the optional wizard steps that one showing of the wizard includes; the final step is always shown.
+/// Names the optional wizard steps that one showing of the wizard includes; the practical-tour step is always shown.
 /// </summary>
 /// <param name="IncludeIntro">Whether the introduction step is shown.</param>
 /// <param name="IncludeExamples">Whether the examples step is shown.</param>

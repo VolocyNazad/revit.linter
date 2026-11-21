@@ -120,19 +120,28 @@
   <data name="title_text" xml:space="preserve">
     <value>Добро пожаловать</value>
   </data>
-  <data name="caption_text" xml:space="preserve">
-    <value>Находите проблемы в моделях уже на ранних стадиях и экономьте свое время.</value>
+  <data name="summary_text" xml:space="preserve">
+    <value>Что делает Revit Linter</value>
   </data>
   <data name="about_text" xml:space="preserve">
-    <value>Revit Linter проверяет проекты и семейства, собирает замечания и помогает визуализировать или исправить проблемные элементы.</value>
+    <value>Revit Linter находит проблемы в моделях на ранних стадиях: проверяет проекты и семейства, собирает замечания и помогает визуализировать или исправить проблемные элементы.</value>
   </data>
-  <data name="workflow_text" xml:space="preserve">
-    <value>Проект или семейство Revit  →  Проверки  →  Список проблем  →  Просмотр и исправление  →  Экспрот отчета  →  Анализ</value>
+  <data name="quickStart_text" xml:space="preserve">
+    <value>Быстрый старт</value>
   </data>
-  <data name="tab_format" xml:space="preserve">
-    <value>При запуске Revit Linter добавляет на ленту Revit вкладку «{0}».</value>
+  <data name="quickStartSummary_text" xml:space="preserve">
+    <value>Первые шаги в Revit Linter</value>
   </data>
-  <data name="importantHeader_text" xml:space="preserve">
-    <value>Важно знать</value>
+  <data name="documentation_text" xml:space="preserve">
+    <value>Документация</value>
+  </data>
+  <data name="documentationSummary_text" xml:space="preserve">
+    <value>Полное руководство по разделам</value>
+  </data>
+  <data name="support_text" xml:space="preserve">
+    <value>Поддержка</value>
+  </data>
+  <data name="supportSummary_text" xml:space="preserve">
+    <value>Задать вопрос или сообщить о проблеме</value>
   </data>
 </root>

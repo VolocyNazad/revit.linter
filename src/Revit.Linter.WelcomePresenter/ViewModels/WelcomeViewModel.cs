@@ -11,6 +11,7 @@ using Revit.Linter.WelcomePresenter.Infrastructure.Services;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Input;
 using Toolkit.ValueStore.Abstractions;
 
 namespace Revit.Linter.WelcomePresenter.ViewModels;
@@ -26,10 +27,8 @@ internal sealed partial class WelcomeViewModel(
     IPracticalTour practicalTour,
     ILogger<WelcomeViewModel> logger,
     WelcomeIntroStepViewModel introStep,
-    WelcomeRulesStepViewModel rulesStep,
     WelcomeExamplesStepViewModel examplesStep,
     WelcomePracticalStepViewModel practicalStep,
-    WelcomeFinishStepViewModel finishStep,
     WelcomeWindowFactory windowFactory,
     IConfigurationPaths paths) : ObservableObject, IWelcomeWizard
 {
@@ -56,13 +55,21 @@ internal sealed partial class WelcomeViewModel(
     [RelayCommand]
     private void CloseWithResult(bool result) => DialogResult = result;
 
-    public bool IsLastStep => _currentIndex == Steps.Count - 1;
+    /// <summary>Gets a value indicating whether the wizard shows a step other than the main page.</summary>
+    public bool CanGoBack => _currentIndex > 0;
 
-    public bool HasNextStep => _currentIndex < Steps.Count - 1;
+    /// <summary>
+    /// Gets the command of the window footer action: it writes the examples on their step and closes the
+    /// window with the tour request on the practical step.
+    /// </summary>
+    public ICommand? PrimaryActionCommand => CurrentStep switch
+    {
+        WelcomeExamplesStepViewModel examples => examples.InstallCommand,
+        _ when CurrentStep?.HasPrimaryAction == true => CloseWithResultCommand,
+        _ => null,
+    };
 
-    public string Progress => GetLocalizedString("step_format", _currentIndex + 1, Steps.Count);
-
-    /// <summary>Gets the installed product version shown next to the progress caption.</summary>
+    /// <summary>Gets the installed product version shown next to the title.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S2325",
         Justification = "XAML binds to instance members only.")]
     public string VersionText => GetLocalizedString("version_format", ProductVersion);
@@ -105,14 +112,18 @@ internal sealed partial class WelcomeViewModel(
         Steps.Clear();
         if (plan.IncludeIntro)
         {
+            // The practical tour follows the main page; the examples step closes the wizard.
             Steps.Add(introStep);
-            Steps.Add(rulesStep);
+            Steps.Add(practicalStep);
+            if (plan.IncludeExamples) Steps.Add(examplesStep);
         }
-        if (plan.IncludeExamples) Steps.Add(examplesStep);
-        Steps.Add(practicalStep);
-        Steps.Add(finishStep);
-        for (int index = 0; index < Steps.Count; index++)
-            Steps[index].Number = index + 1;
+        else
+        {
+            // A pending examples offer stays the first step of the wizard.
+            if (plan.IncludeExamples) Steps.Add(examplesStep);
+            Steps.Add(practicalStep);
+        }
+        if (plan.IncludeIntro) introStep.SetContents(Steps.Skip(1), GoToStepCommand);
         MoveTo(0);
 
         Window window = windowFactory.Create(this);
@@ -150,15 +161,15 @@ internal sealed partial class WelcomeViewModel(
         }
     }
 
-    private bool CanGoBack() => _currentIndex > 0;
+    private bool CanGoBackStep() => CanGoBack;
 
-    [RelayCommand(CanExecute = nameof(CanGoBack))]
-    private void GoBack() => MoveTo(_currentIndex - 1);
-
-    private bool CanGoNext() => HasNextStep;
-
-    [RelayCommand(CanExecute = nameof(CanGoNext))]
-    private void GoNext() => MoveTo(_currentIndex + 1);
+    [RelayCommand(CanExecute = nameof(CanGoBackStep))]
+    private void GoBack()
+    {
+        // The main page is the home of every step, so Back returns to it instead of the previous step.
+        int homeIndex = Steps.IndexOf(introStep);
+        MoveTo(homeIndex >= 0 ? homeIndex : _currentIndex - 1);
+    }
 
     [RelayCommand]
     private void GoToStep(WelcomeStepViewModel? step)
@@ -172,8 +183,6 @@ internal sealed partial class WelcomeViewModel(
     private void MoveTo(int index)
     {
         _currentIndex = index;
-        for (int stepIndex = 0; stepIndex < Steps.Count; stepIndex++)
-            Steps[stepIndex].IsCurrent = stepIndex == index;
         CurrentStep = Steps[index];
 
         if (ReferenceEquals(CurrentStep, practicalStep))
@@ -185,10 +194,8 @@ internal sealed partial class WelcomeViewModel(
             practicalStep.RefreshTutorialSamples(disciplines);
         }
 
-        OnPropertyChanged(nameof(IsLastStep));
-        OnPropertyChanged(nameof(HasNextStep));
-        OnPropertyChanged(nameof(Progress));
+        OnPropertyChanged(nameof(CanGoBack));
+        OnPropertyChanged(nameof(PrimaryActionCommand));
         GoBackCommand.NotifyCanExecuteChanged();
-        GoNextCommand.NotifyCanExecuteChanged();
     }
 }

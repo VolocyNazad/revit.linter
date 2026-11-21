@@ -13,11 +13,18 @@ internal abstract partial class WelcomeStepViewModel : ObservableObject
     /// <summary>Gets the light-hearted caption shown above the step content.</summary>
     public abstract string Caption { get; }
 
-    /// <summary>Gets or sets the one-based position of the step among the shown steps.</summary>
-    [ObservableProperty]
-    public partial int Number { get; set; }
+    /// <summary>Gets a value indicating whether the step shows a caption above its content.</summary>
+    public bool HasCaption => Caption.Length > 0;
 
-    /// <summary>Gets or sets a value indicating whether the wizard currently displays this step.</summary>
-    [ObservableProperty]
-    public partial bool IsCurrent { get; set; }
+    /// <summary>Gets the one-line description shown in the contents of the welcome window.</summary>
+    public abstract string Summary { get; }
+
+    /// <summary>Gets a value indicating whether the window footer shows the action of the step.</summary>
+    public virtual bool HasPrimaryAction => false;
+
+    /// <summary>Gets the label of the window footer action; it is empty when the step has none.</summary>
+    public virtual string PrimaryActionText => string.Empty;
+
+    /// <summary>Gets the tooltip of the window footer action; it is empty when the step has none.</summary>
+    public virtual string? PrimaryActionToolTip => null;
 }
