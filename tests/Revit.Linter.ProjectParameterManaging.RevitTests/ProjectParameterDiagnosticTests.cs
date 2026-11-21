@@ -120,7 +120,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
         ParameterElementUnusedDiagnostic diagnostic = new(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -133,7 +133,7 @@ public sealed class ProjectParameterDiagnosticTests : RevitApiTest
         SharedParameterElement parameter = SharedParameterElement.Lookup(_document!, ParameterId);
         ParameterElementUnusedDiagnostic diagnostic = new(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, parameter).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

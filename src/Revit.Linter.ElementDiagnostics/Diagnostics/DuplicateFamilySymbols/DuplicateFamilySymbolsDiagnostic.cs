@@ -12,7 +12,7 @@ internal sealed class DuplicateFamilySymbolsDiagnostic(IDocumentQueryService doc
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.DuplicateFamilySymbols;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // Projects have no FamilyManager: symbols are compared through their own parameters,
         // like the two sides of a collision. The family counterpart SHRD0026 compares
@@ -39,10 +39,10 @@ internal sealed class DuplicateFamilySymbolsDiagnostic(IDocumentQueryService doc
                 break;
             }
         }
-        return duplicateName is null
+        return DiagnosticFeedbacks.Of(duplicateName is null
             ? new(DiagnosticVerdict.Valid)
             : new(DiagnosticVerdict.NotValid,
-                new Dictionary<string, object> { ["duplicateNames"] = duplicateName });
+                new Dictionary<string, object> { ["duplicateNames"] = duplicateName }));
     }
 
     private Dictionary<ElementId, string> GetSignatures(Document document)

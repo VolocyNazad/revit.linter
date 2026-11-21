@@ -26,7 +26,7 @@ public sealed class NestedGroupTests : RevitApiTest
         Group group = CreateGroup(document);
         var diagnostic = new GroupNestedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, group);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, group).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -49,7 +49,7 @@ public sealed class NestedGroupTests : RevitApiTest
             ?? throw new InvalidOperationException("The test inner group was not found.");
         var diagnostic = new GroupNestedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, inner);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, inner).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

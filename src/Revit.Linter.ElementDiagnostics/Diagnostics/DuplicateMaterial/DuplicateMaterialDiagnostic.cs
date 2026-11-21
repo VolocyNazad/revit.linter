@@ -12,7 +12,7 @@ internal sealed class DuplicateMaterialDiagnostic(IDocumentQueryService document
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.DuplicateMaterial;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // The index is built once per document and lives in the transaction cache: without it
         // every target rescans the document and recomputes every signature (O(M^2)).
@@ -22,16 +22,16 @@ internal sealed class DuplicateMaterialDiagnostic(IDocumentQueryService document
         {
             signature = ReadSignature(material);
             if (signature is null)
-                return new(DiagnosticVerdict.Valid);
+                return DiagnosticFeedbacks.Valid;
         }
 
         if (!signatures.CanonicalBySignature.TryGetValue(signature, out ElementId? canonicalId)
             || canonicalId == material.Id)
-            return new(DiagnosticVerdict.Valid);
+            return DiagnosticFeedbacks.Valid;
         if (document.GetElement(canonicalId) is not Material canonical)
-            return new(DiagnosticVerdict.Valid);
-        return new(DiagnosticVerdict.NotValid,
-            new Dictionary<string, object> { ["duplicateName"] = canonical.Name });
+            return DiagnosticFeedbacks.Valid;
+        return DiagnosticFeedbacks.Of(new(DiagnosticVerdict.NotValid,
+            new Dictionary<string, object> { ["duplicateName"] = canonical.Name }));
     }
 
     private MaterialSignatures GetSignatures(Document document)

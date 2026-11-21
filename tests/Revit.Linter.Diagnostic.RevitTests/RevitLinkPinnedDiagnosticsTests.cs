@@ -66,7 +66,7 @@ public sealed class RevitLinkPinnedDiagnosticsTests : RevitApiTest
         Document document = _document!;
         var diagnostic = new RevitLinkNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _link!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _link!).Single();
 
         await Assert.That(diagnostic.Identity.Code).IsEqualTo("SHRD0037");
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -81,7 +81,7 @@ public sealed class RevitLinkPinnedDiagnosticsTests : RevitApiTest
             ?? throw new InvalidOperationException("The test link instance was not found after pinning.");
         var diagnostic = new RevitLinkNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, pinnedLink);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, pinnedLink).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -96,7 +96,7 @@ public sealed class RevitLinkPinnedDiagnosticsTests : RevitApiTest
 
         await Assert.That(filter.IsRelevantFor(document, _link!)).IsTrue();
         await Assert.That(filter.IsRelevantFor(document, level)).IsFalse();
-        await Assert.That(diagnostic.Execute(document, null, level).Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+        await Assert.That(diagnostic.Execute(document, null, level)[0].Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
     [Test]

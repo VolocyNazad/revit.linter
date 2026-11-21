@@ -10,13 +10,13 @@ internal sealed class PurgeableElementUnusedDiagnostic(IDocumentQueryService doc
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.PurgeableElementUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         IReadOnlyCollection<ElementId> unusedIds = documentQueries.GetOrCreate(
             DocumentQueryKey.Create(document, UnusedElementIdsQuery),
             () => PurgeableElementIds.GetIds(document));
-        return unusedIds.Contains(targetElement.Id)
+        return DiagnosticFeedbacks.Of(unusedIds.Contains(targetElement.Id)
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
     }
 }

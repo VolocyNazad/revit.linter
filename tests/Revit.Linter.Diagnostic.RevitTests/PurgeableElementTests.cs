@@ -31,7 +31,7 @@ public sealed class PurgeableElementTests : RevitApiTest
         WallType duplicate = DuplicateWallType(document, wall.WallType);
         var diagnostic = new PurgeableElementUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, duplicate);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, duplicate).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -43,7 +43,7 @@ public sealed class PurgeableElementTests : RevitApiTest
         Wall wall = CreateWall(document, 0, 3000);
         var diagnostic = new PurgeableElementUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, wall.WallType);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, wall.WallType).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -58,7 +58,7 @@ public sealed class PurgeableElementTests : RevitApiTest
         FamilySymbol symbol = (FamilySymbol)document.GetElement(family.GetFamilySymbolIds().First());
         var diagnostic = new PurgeableElementUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

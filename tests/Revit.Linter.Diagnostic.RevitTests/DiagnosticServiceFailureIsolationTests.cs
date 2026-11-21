@@ -81,7 +81,7 @@ public sealed class DiagnosticServiceFailureIsolationTests : DiagnosticTestBase
     {
         public ElementDiagnosticId Identity { get; } = identity;
         public int ExecutionCount { get; private set; }
-        public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+        public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
         {
             ExecutionCount++;
             throw new InvalidOperationException(message);

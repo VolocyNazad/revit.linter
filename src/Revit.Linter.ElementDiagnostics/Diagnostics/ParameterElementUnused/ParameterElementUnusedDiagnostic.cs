@@ -1,4 +1,4 @@
-﻿using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.ParameterElementUnused;
@@ -10,15 +10,15 @@ internal sealed class ParameterElementUnusedDiagnostic(
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ParameterElementUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         HashSet<ElementId> usedParameterIds = documentQueries.GetOrCreate(
             DocumentQueryKey.Create(document, UsedParameterIdsQuery),
             () => BuildUsedParameterIds(document));
 
-        return usedParameterIds.Contains(targetElement.Id)
+        return DiagnosticFeedbacks.Of(usedParameterIds.Contains(targetElement.Id)
             ? new(DiagnosticVerdict.Valid)
-            : new(DiagnosticVerdict.NotValid);
+            : new(DiagnosticVerdict.NotValid));
     }
 
     // Asking every element for every parameter costs (parameters x elements) Revit API calls. The set of

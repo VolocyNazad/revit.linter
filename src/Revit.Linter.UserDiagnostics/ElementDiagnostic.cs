@@ -6,8 +6,8 @@ internal sealed class ElementDiagnostic(ElementFunctionFactory elementFunctionFa
 {
     public required ElementDiagnosticId Identity { get; init; }
     public required string Formula { get; init; }
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
-        => Delegate.Invoke(targetElement) ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
+        => DiagnosticFeedbacks.Of(Delegate.Invoke(targetElement) ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
 
     private Func<Element, bool> Delegate => field ??= elementFunctionFactory.CreateBoolean(Formula, fallback: true);
 }

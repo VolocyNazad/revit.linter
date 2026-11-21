@@ -7,12 +7,12 @@ internal sealed class MaterialUnusedDiagnostic(IDocumentQueryService documentQue
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.MaterialUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var material = (Material)targetElement;
         IReadOnlyCollection<ElementId> usedMaterialIds = UsedMaterialIds.Get(documentQueries, document);
-        return usedMaterialIds.Contains(material.Id)
+        return DiagnosticFeedbacks.Of(usedMaterialIds.Contains(material.Id)
             ? new(DiagnosticVerdict.Valid)
-            : new(DiagnosticVerdict.NotValid);
+            : new(DiagnosticVerdict.NotValid));
     }
 }

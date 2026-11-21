@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.Architecture;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomUnplaced;
 
@@ -6,9 +6,9 @@ internal sealed class RoomUnplacedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomUnplaced;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var room = (Room)targetElement;
-        return room.Location is null ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(room.Location is null ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 }

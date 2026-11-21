@@ -6,7 +6,7 @@ internal sealed class ViewUnplacedDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ViewUnplaced;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var targetView = (View)targetElement;
         // Every view keeps a placeholder viewport that references the view itself
@@ -16,6 +16,6 @@ internal sealed class ViewUnplacedDiagnostic : IElementDiagnostic
             .OfType<Viewport>()
             .Any(viewport => viewport.ViewId == targetView.Id
                 && viewport.SheetId != ElementId.InvalidElementId);
-        return isPlaced ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(isPlaced ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

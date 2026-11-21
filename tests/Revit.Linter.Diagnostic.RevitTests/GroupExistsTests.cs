@@ -42,7 +42,7 @@ public sealed class GroupExistsTests : RevitApiTest
             .Single();
         var diagnostic = new GroupExistsDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, group);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, group).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

@@ -116,6 +116,10 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
 
 - Diagnostic projects discover or calculate findings. Presenters render and interact with them; providers
   transport or retain report state. These roles remain separate.
+- An element diagnostic returns a list of results for one element. Every invalid result becomes its own
+  report row with the element as the target, and a valid result reports nothing; a check that finds
+  several independent problems returns several results. `DiagnosticFeedbacks` supplies the shared valid
+  list, so a clean element allocates nothing.
 - A run is described by `DiagnosticRunOptions` (full or incremental: duration logging and report batching)
   and measured by `DiagnosticRunMetrics`, which owns timings, garbage-collection counters and query-cache
   statistics. The diagnostic service only decides what to run and how to report findings.

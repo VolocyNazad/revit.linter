@@ -8,7 +8,7 @@ internal sealed class FloorWithTolerantSketchCoordinatesDiagnostic : IElementDia
     private const double Epsilon = 1e-9;
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FloorWithTolerantSketchCoordinates;
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var floor = (Floor)targetElement;
 
@@ -39,8 +39,8 @@ internal sealed class FloorWithTolerantSketchCoordinatesDiagnostic : IElementDia
             .Select(Math.Abs)
             .Select(i => Math.Round(i, RoundingDigits)).ToList();
 
-        return convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
-            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
+            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 }
 #endif

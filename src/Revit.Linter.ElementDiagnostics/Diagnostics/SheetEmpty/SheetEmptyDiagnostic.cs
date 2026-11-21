@@ -8,7 +8,7 @@ internal sealed class SheetEmptyDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.SheetEmpty;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // Every sheet keeps a placeholder viewport that references the sheet itself
         // instead of a placed view: only viewports on this sheet showing another view,
@@ -19,8 +19,8 @@ internal sealed class SheetEmptyDiagnostic : IElementDiagnostic
                 || (element is Viewport viewport
                     && viewport.SheetId == targetElement.Id
                     && viewport.ViewId != targetElement.Id));
-        return hasContent
+        return DiagnosticFeedbacks.Of(hasContent
             ? new(DiagnosticVerdict.Valid)
-            : new(DiagnosticVerdict.NotValid);
+            : new(DiagnosticVerdict.NotValid));
     }
 }

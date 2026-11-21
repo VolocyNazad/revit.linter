@@ -245,33 +245,39 @@ internal sealed class DiagnosticService(
             }
 
             statistics.CheckedCount++;
-            (DiagnosticFeedback feedback, double duration) = DiagnosticRunMetrics.Measure(
+            (IReadOnlyList<DiagnosticFeedback> feedbacks, double duration) = DiagnosticRunMetrics.Measure(
                 (registration, document, view, element),
                 static state => state.registration.Diagnostic.Execute(state.document, state.view, state.element));
             statistics.CheckMilliseconds += duration;
-            if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
 
-            statistics.FindingCount++;
-            long publishStarted = Stopwatch.GetTimestamp();
-            ElementDiagnosticId identity = registration.Identity;
-            DiagnosticReport report = new(
-                identity.Code,
-                registration.State.Severity,
-                document,
-                new DiagnosticReportMessage(feedback.MessageFormat ?? identity.MessageFormat, CreateMessageArguments(
-                    feedback,
-                    ("duration", duration),
-                    ("elementId", element.Id),
-                    ("elementName", element.Name))),
-                element,
-                feedback.AdditionalTargetDependencies ?? [],
-                identity.IsObsolete,
-                identity.ObsoleteDescription);
-            if (batch is null)
-                diagnosticReportSender.Send(report);
-            else
-                batch.Add(report);
-            statistics.PublishTicks += Stopwatch.GetTimestamp() - publishStarted;
+            // One element can produce several findings: each invalid result becomes its own report
+            // row, while a check that reports the element as clean contributes none.
+            foreach (DiagnosticFeedback feedback in feedbacks)
+            {
+                if (feedback.Verdict == DiagnosticVerdict.Valid) continue;
+
+                statistics.FindingCount++;
+                long publishStarted = Stopwatch.GetTimestamp();
+                ElementDiagnosticId identity = registration.Identity;
+                DiagnosticReport report = new(
+                    identity.Code,
+                    registration.State.Severity,
+                    document,
+                    new DiagnosticReportMessage(feedback.MessageFormat ?? identity.MessageFormat, CreateMessageArguments(
+                        feedback,
+                        ("duration", duration),
+                        ("elementId", element.Id),
+                        ("elementName", element.Name))),
+                    element,
+                    feedback.AdditionalTargetDependencies ?? [],
+                    identity.IsObsolete,
+                    identity.ObsoleteDescription);
+                if (batch is null)
+                    diagnosticReportSender.Send(report);
+                else
+                    batch.Add(report);
+                statistics.PublishTicks += Stopwatch.GetTimestamp() - publishStarted;
+            }
         }
     }
 

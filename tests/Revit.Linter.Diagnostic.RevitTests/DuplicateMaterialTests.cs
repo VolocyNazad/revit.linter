@@ -35,8 +35,8 @@ public sealed class DuplicateMaterialTests : RevitApiTest
         // change so the signatures are built over the final state.
         var diagnostic = new DuplicateMaterialDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback canonicalFeedback = diagnostic.Execute(document, null, canonical);
-        DiagnosticFeedback duplicateFeedback = diagnostic.Execute(document, null, duplicate);
+        DiagnosticFeedback canonicalFeedback = diagnostic.Execute(document, null, canonical).Single();
+        DiagnosticFeedback duplicateFeedback = diagnostic.Execute(document, null, duplicate).Single();
 
         await Assert.That(canonicalFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(duplicateFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -53,8 +53,8 @@ public sealed class DuplicateMaterialTests : RevitApiTest
         SetTransparency(document, second, 50);
         var diagnostic = new DuplicateMaterialDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -71,8 +71,8 @@ public sealed class DuplicateMaterialTests : RevitApiTest
         SetColor(document, second, new Color(10, 20, 30));
         var diagnostic = new DuplicateMaterialDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);

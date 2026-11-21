@@ -62,11 +62,11 @@ internal sealed class ElementDiagnostic(
     /// </remarks>
     internal Func<Solid, Solid, double?>? IntersectionVolume { get; init; }
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         IReadOnlyCollection<Solid> targetSolids = getElementGeometry.Execute(targetElement, view);
 
-        if (targetSolids.Count == 0) return DiagnosticFeedback.Valid;
+        if (targetSolids.Count == 0) return DiagnosticFeedbacks.Valid;
 
         BoundingBoxXYZ targetBoundingBox = getElementBoundingBox.Execute(targetElement, view);
         ElementGroups groups = Groups.Get(document, view);
@@ -89,12 +89,12 @@ internal sealed class ElementDiagnostic(
         // A verified collision wins: the finding is a real overlap even when other pairs of the same
         // target could not be compared, and those pairs stay visible in the log only.
         if (collisions.Hits.Count > 0 || links.Hits.Count > 0)
-            return CreateCollisionFeedback(collisions.Hits, links.Hits);
+            return DiagnosticFeedbacks.Of(CreateCollisionFeedback(collisions.Hits, links.Hits));
 
         if (collisions.Unverified.Count == 0 && links.Unverified.Count == 0)
-            return DiagnosticFeedback.Valid;
+            return DiagnosticFeedbacks.Valid;
 
-        return CreateUnverifiedFeedback(collisions.Unverified, links.Unverified);
+        return DiagnosticFeedbacks.Of(CreateUnverifiedFeedback(collisions.Unverified, links.Unverified));
     }
 
     private CollisionElementPool ElementPool => field ??= new(

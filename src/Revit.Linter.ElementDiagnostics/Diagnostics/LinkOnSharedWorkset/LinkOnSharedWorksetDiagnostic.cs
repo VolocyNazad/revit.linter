@@ -7,19 +7,19 @@ internal sealed class LinkOnSharedWorksetDiagnostic(IDocumentQueryService docume
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LinkOnSharedWorkset;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        if (!LinkElement.IsLink(targetElement)) return DiagnosticFeedback.Valid;
-        if (!document.IsWorkshared) return DiagnosticFeedback.Valid;
+        if (!LinkElement.IsLink(targetElement)) return DiagnosticFeedbacks.Valid;
+        if (!document.IsWorkshared) return DiagnosticFeedbacks.Valid;
 
         // An unreadable workset leaves the rule with nothing to compare, so the link counts as
         // clean instead of failing the whole run.
-        if (TryGetWorkset(targetElement, document) is not { } workset) return DiagnosticFeedback.Valid;
+        if (TryGetWorkset(targetElement, document) is not { } workset) return DiagnosticFeedbacks.Valid;
 
         IReadOnlyList<Element> occupants = LinkWorksetOccupants.Get(documentQueries, document, workset.Id);
-        if (occupants.Count == 0) return DiagnosticFeedback.Valid;
+        if (occupants.Count == 0) return DiagnosticFeedbacks.Valid;
 
-        return new DiagnosticFeedback(
+        return DiagnosticFeedbacks.Of(new DiagnosticFeedback(
             DiagnosticVerdict.NotValid,
             new Dictionary<string, object>
             {
@@ -28,7 +28,7 @@ internal sealed class LinkOnSharedWorksetDiagnostic(IDocumentQueryService docume
                 ["other.elementNames"] = occupants.Select(element => element.Name).ToArray(),
                 ["other.elementIds"] = occupants.Select(element => element.Id).ToArray(),
             },
-            [.. occupants]);
+            [.. occupants]));
     }
 
     private static Workset? TryGetWorkset(Element element, Document document)

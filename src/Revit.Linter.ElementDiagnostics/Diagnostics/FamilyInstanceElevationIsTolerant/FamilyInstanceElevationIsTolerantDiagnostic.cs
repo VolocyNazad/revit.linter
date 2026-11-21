@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceElevationIsTolerant;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceElevationIsTolerant;
 
 internal sealed class FamilyInstanceElevationIsTolerantDiagnostic : IElementDiagnostic
 {
@@ -8,7 +8,7 @@ internal sealed class FamilyInstanceElevationIsTolerantDiagnostic : IElementDiag
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceElevationIsTolerant;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var familyInstance = (FamilyInstance)targetElement;
 
@@ -16,10 +16,10 @@ internal sealed class FamilyInstanceElevationIsTolerantDiagnostic : IElementDiag
         ForgeTypeId unitTypeId = formatOptions.GetUnitTypeId();
 
         Parameter parameter = familyInstance.get_Parameter(BuiltInParameter.INSTANCE_ELEVATION_PARAM);
-        if (parameter is null) return new(DiagnosticVerdict.Valid);
+        if (parameter is null) return DiagnosticFeedbacks.Valid;
         double parameterValue = parameter.AsDouble();
 
-        return Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
-            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
+            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

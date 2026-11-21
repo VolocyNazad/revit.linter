@@ -36,7 +36,7 @@ public sealed class ExistsDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new ModelCurveExistsDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, curve);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, curve).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -56,7 +56,7 @@ public sealed class ExistsDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new DetailCurveExistsDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, curve);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, curve).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -88,7 +88,7 @@ public sealed class ExistsDiagnosticsTests : RevitApiTest
             }
             var diagnostic = new TextNoteExistsDiagnostic();
 
-            DiagnosticFeedback feedback = diagnostic.Execute(familyDocument, null, note);
+            DiagnosticFeedback feedback = diagnostic.Execute(familyDocument, null, note).Single();
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         }

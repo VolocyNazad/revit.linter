@@ -69,10 +69,10 @@ public sealed class SharedDocumentQueriesTests : RevitApiTest
         var planeDiagnostic = new ReferencePlaneUnusedDiagnostic(queries);
         var lineDiagnostic = new ReferenceLineUnusedDiagnostic(queries);
 
-        DiagnosticFeedback firstPlaneFeedback = planeDiagnostic.Execute(document, null, firstPlane);
-        DiagnosticFeedback firstLineFeedback = lineDiagnostic.Execute(document, null, firstLine);
-        DiagnosticFeedback secondPlaneFeedback = planeDiagnostic.Execute(document, null, secondPlane);
-        DiagnosticFeedback secondLineFeedback = lineDiagnostic.Execute(document, null, secondLine);
+        DiagnosticFeedback firstPlaneFeedback = planeDiagnostic.Execute(document, null, firstPlane).Single();
+        DiagnosticFeedback firstLineFeedback = lineDiagnostic.Execute(document, null, firstLine).Single();
+        DiagnosticFeedback secondPlaneFeedback = planeDiagnostic.Execute(document, null, secondPlane).Single();
+        DiagnosticFeedback secondLineFeedback = lineDiagnostic.Execute(document, null, secondLine).Single();
         DocumentQueryStatistics mapStatistics = queries.TakeStatistics()
             .Single(item => item.Query == "element-diagnostics:dimensions-by-referenced-element");
 

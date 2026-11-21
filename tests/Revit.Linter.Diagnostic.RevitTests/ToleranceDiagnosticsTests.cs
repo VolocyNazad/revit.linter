@@ -32,7 +32,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateWall(_document!, 0, 3000);
         var diagnostic = new WallTopOffsetUnconnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -52,7 +52,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new WallTopOffsetUnconnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -63,7 +63,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateWall(_document!, 0, 3000.3);
         var diagnostic = new WallHeightIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -74,7 +74,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateWall(_document!, 0, 3000);
         var diagnostic = new WallHeightIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -85,7 +85,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Level level = CreateLevel(_document!, 0.3);
         var diagnostic = new LevelHeightIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, level);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, level).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -96,7 +96,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Level level = CreateLevel(_document!, 3000);
         var diagnostic = new LevelHeightIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, level);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, level).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -107,7 +107,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateOffsetWall(_document!, 0, 10.3);
         var diagnostic = new LocationLineElementWithTolerantLengthDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -118,7 +118,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateOffsetWall(_document!, 0, 10);
         var diagnostic = new LocationLineElementWithTolerantLengthDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -129,7 +129,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateOffsetWall(_document!, 0.3, 10);
         var diagnostic = new LocationLineElementWithTolerantCoordinatesDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -140,7 +140,7 @@ public sealed class ToleranceDiagnosticsTests : RevitApiTest
         Wall wall = CreateOffsetWall(_document!, 0, 10);
         var diagnostic = new LocationLineElementWithTolerantCoordinatesDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

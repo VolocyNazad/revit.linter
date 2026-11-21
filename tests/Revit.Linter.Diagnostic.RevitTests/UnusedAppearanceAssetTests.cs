@@ -30,7 +30,7 @@ public sealed class UnusedAppearanceAssetTests : RevitApiTest
         // change so the used-appearance-asset set is built over the final state.
         var diagnostic = new UnusedAppearanceAssetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, appearanceAsset);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, appearanceAsset).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -44,7 +44,7 @@ public sealed class UnusedAppearanceAssetTests : RevitApiTest
         AssignAppearanceAsset(document, material, appearanceAsset.Id);
         var diagnostic = new UnusedAppearanceAssetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, appearanceAsset);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, appearanceAsset).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

@@ -170,10 +170,10 @@ public abstract class DiagnosticTestFixture : RevitApiTest
     {
         public ElementDiagnosticId Identity { get; } = identity;
         public int ExecutionCount { get; private set; }
-        public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+        public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
         {
             ExecutionCount++;
-            return feedback;
+            return DiagnosticFeedbacks.Of(feedback);
         }
     }
 

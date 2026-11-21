@@ -7,8 +7,8 @@ internal sealed class SheetWithoutTitleBlockDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.SheetWithoutTitleBlock;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
-        => targetElement.GetDependentElements(_titleBlockFilter).Count == 0
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
+        => DiagnosticFeedbacks.Of(targetElement.GetDependentElements(_titleBlockFilter).Count == 0
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
 }

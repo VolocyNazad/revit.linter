@@ -8,7 +8,7 @@ internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElement
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LocationLineElementWithTolerantLength;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         Line line = (Line)((LocationCurve)targetElement.Location).Curve;
 
@@ -26,7 +26,7 @@ internal sealed class LocationLineElementWithTolerantLengthDiagnostic : IElement
             .Select(Math.Abs)
             .Select(i => Math.Round(i, RoundingDigits)).ToList();
 
-        return convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
-            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
+            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 }

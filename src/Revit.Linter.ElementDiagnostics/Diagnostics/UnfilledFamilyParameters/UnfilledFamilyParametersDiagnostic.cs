@@ -7,7 +7,7 @@ internal sealed class UnfilledFamilyParametersDiagnostic : IElementDiagnostic
     // Explicit loops avoid per-type Cast/Where/Select iterator and ToArray allocations in the family hot path.
     [System.Diagnostics.CodeAnalysis.SuppressMessage("SonarAnalyzer", "S3267",
         Justification = "Explicit loops avoid per-type LINQ iterator and array allocations.")]
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // Family types are not elements in a family document: the finding attaches to the
         // family itself and lists every type with unfilled text cells. Only text cells have
@@ -36,10 +36,10 @@ internal sealed class UnfilledFamilyParametersDiagnostic : IElementDiagnostic
             if (names.Count > 0)
                 unfilled.Add($"{type.Name}: {string.Join(", ", names)}");
         }
-        return unfilled.Count == 0
+        return DiagnosticFeedbacks.Of(unfilled.Count == 0
             ? new(DiagnosticVerdict.Valid)
             : new(DiagnosticVerdict.NotValid,
-                new Dictionary<string, object> { ["details"] = string.Join("; ", unfilled) });
+                new Dictionary<string, object> { ["details"] = string.Join("; ", unfilled) }));
     }
 
     private static bool IsUnfilledText(FamilyType type, FamilyParameter parameter)

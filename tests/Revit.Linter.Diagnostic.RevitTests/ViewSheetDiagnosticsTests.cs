@@ -30,7 +30,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         ViewSheet sheet = CreateSheet(document);
         var diagnostic = new SheetEmptyDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -51,7 +51,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new SheetEmptyDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -63,7 +63,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         ViewSheet sheet = CreateSheet(document);
         var diagnostic = new SheetWithoutTitleBlockDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -76,7 +76,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         FamilyTestDocuments.PlaceTitleBlocks(document, sheet, 2);
         var diagnostic = new SheetWithMultipleTitleBlocksDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -89,7 +89,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         FamilyTestDocuments.PlaceTitleBlocks(document, sheet, 1);
         var diagnostic = new SheetWithMultipleTitleBlocksDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, sheet).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -189,7 +189,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new ViewUnplacedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, schedule);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, schedule).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -207,7 +207,7 @@ public sealed class ViewSheetDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new ViewOnSheetWithoutTemplateDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, schedule);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, schedule).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

@@ -7,19 +7,19 @@ internal sealed class ViewHasHiddenElementsDiagnostic(IDocumentQueryService docu
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ViewHasHiddenElements;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        if (targetElement is not View targetView) return DiagnosticFeedback.Valid;
+        if (targetElement is not View targetView) return DiagnosticFeedbacks.Valid;
 
         // Every element of the document is a candidate: an individually hidden element is absent
         // from the view-scoped collector, so the shared document list is the only place to find it.
         List<Element> hidden = HiddenInViewElements.Collect(documentQueries.GetElements(document), targetView);
-        if (hidden.Count == 0) return DiagnosticFeedback.Valid;
+        if (hidden.Count == 0) return DiagnosticFeedbacks.Valid;
 
         // Ordered by identifier so the message, the dependency list and the fix context are the same
         // on every run; the report renders every identifier as a clickable element link.
         hidden.Sort((first, second) => first.Id.IdValue().CompareTo(second.Id.IdValue()));
-        return new DiagnosticFeedback(
+        return DiagnosticFeedbacks.Of(new DiagnosticFeedback(
             DiagnosticVerdict.NotValid,
             new Dictionary<string, object>
             {
@@ -27,6 +27,6 @@ internal sealed class ViewHasHiddenElementsDiagnostic(IDocumentQueryService docu
                 ["hidden.elementNames"] = hidden.Select(element => element.Name).ToArray(),
                 ["hidden.elementIds"] = hidden.Select(element => element.Id).ToArray(),
             },
-            [.. hidden]);
+            [.. hidden]));
     }
 }

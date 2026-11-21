@@ -8,7 +8,7 @@ internal sealed class LocationLineElementWithTolerantCoordinatesDiagnostic : IEl
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LocationLineElementWithTolerantCoordinates;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         XYZ basePoint = BasePoint.GetProjectBasePoint(document).Position;
 
@@ -29,7 +29,7 @@ internal sealed class LocationLineElementWithTolerantCoordinatesDiagnostic : IEl
             .Select(Math.Abs)
             .Select(i => Math.Round(i, RoundingDigits)).ToList();
 
-        return convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
-            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(convertedLengthCollection.Any(i => i % Tolerance > Epsilon)
+            ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 }

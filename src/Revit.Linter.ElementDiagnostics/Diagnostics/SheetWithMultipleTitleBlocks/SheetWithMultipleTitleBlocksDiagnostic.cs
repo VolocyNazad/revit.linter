@@ -7,8 +7,8 @@ internal sealed class SheetWithMultipleTitleBlocksDiagnostic : IElementDiagnosti
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.SheetWithMultipleTitleBlocks;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
-        => targetElement.GetDependentElements(_titleBlockFilter).Count > 1
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
+        => DiagnosticFeedbacks.Of(targetElement.GetDependentElements(_titleBlockFilter).Count > 1
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
 }
