@@ -27,7 +27,7 @@ public sealed class ParameterElementUnusedTests : RevitApiTest
         GlobalParameter parameter = CreateGlobalParameter(document);
         var diagnostic = new ParameterElementUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, parameter);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, parameter).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

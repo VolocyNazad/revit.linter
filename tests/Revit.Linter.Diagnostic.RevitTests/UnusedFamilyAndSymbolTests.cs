@@ -27,7 +27,7 @@ public sealed class UnusedFamilyAndSymbolTests : RevitApiTest
         Family family = FamilyTestDocuments.LoadFamilyWithType(Application, document, "LinterT1");
         var diagnostic = new FamilyUnusedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -47,7 +47,7 @@ public sealed class UnusedFamilyAndSymbolTests : RevitApiTest
         }
         var diagnostic = new FamilyUnusedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -60,7 +60,7 @@ public sealed class UnusedFamilyAndSymbolTests : RevitApiTest
         FamilySymbol symbol = FindSymbol(document, "LinterT1");
         var diagnostic = new FamilySymbolUnusedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -80,7 +80,7 @@ public sealed class UnusedFamilyAndSymbolTests : RevitApiTest
         }
         var diagnostic = new FamilySymbolUnusedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

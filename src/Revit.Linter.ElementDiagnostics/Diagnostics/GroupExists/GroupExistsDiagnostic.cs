@@ -4,8 +4,8 @@ internal sealed class GroupExistsDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.GroupExists;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        return new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(new(DiagnosticVerdict.NotValid));
     }
 }

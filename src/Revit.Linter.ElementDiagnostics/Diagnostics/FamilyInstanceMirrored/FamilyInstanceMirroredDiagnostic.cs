@@ -1,12 +1,12 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceMirrored;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceMirrored;
 
 internal sealed class FamilyInstanceMirroredDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceMirrored;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var familyInstance = (FamilyInstance)targetElement;
-        return familyInstance.Mirrored ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(familyInstance.Mirrored ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 }

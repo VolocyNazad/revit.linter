@@ -27,7 +27,7 @@ public sealed class ProfileFamilySymbolTests : RevitApiTest
         FamilySymbol symbol = LoadProfileSymbol(Application, document);
         var diagnostic = new ProfileFamilySymbolUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

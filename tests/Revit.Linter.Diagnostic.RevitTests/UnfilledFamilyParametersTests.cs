@@ -33,7 +33,7 @@ public sealed class UnfilledFamilyParametersTests : RevitApiTest
         }
         var diagnostic = new UnfilledFamilyParametersDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That((string)feedback.AdditionalMessageArguments!["details"]).Contains("T1");
@@ -59,7 +59,7 @@ public sealed class UnfilledFamilyParametersTests : RevitApiTest
         }
         var diagnostic = new UnfilledFamilyParametersDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

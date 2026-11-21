@@ -90,7 +90,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
         FamilyInstance instance = PlaceConnectorInstance(Application, _document!, CreatePipeConnector);
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -104,7 +104,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
                 familyDocument, DuctSystemType.SupplyAir, ConnectorProfileType.Rectangular, face));
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -118,7 +118,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
                 ConnectorElement.CreateCableTrayConnector(familyDocument, face));
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -131,7 +131,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
             (familyDocument, face) => ConnectorElement.CreateConduitConnector(familyDocument, face));
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -145,7 +145,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
                 familyDocument, ElectricalSystemType.PowerCircuit, face));
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -167,7 +167,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -294,7 +294,7 @@ public sealed class ConnectorDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new AnyConnectorsNotConnectedDiagnostic();
 
-        return diagnostic.Execute(document, null, first);
+        return diagnostic.Execute(document, null, first)[0];
     }
 
     private static ConnectorElement CreatePipeConnector(Document familyDocument, Reference face) =>

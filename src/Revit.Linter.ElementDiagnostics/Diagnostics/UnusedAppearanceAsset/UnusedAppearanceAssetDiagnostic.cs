@@ -10,21 +10,21 @@ internal sealed class UnusedAppearanceAssetDiagnostic(IDocumentQueryService docu
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.UnusedAppearanceAsset;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var appearanceAsset = (AppearanceAssetElement)targetElement;
         try
         {
             IReadOnlyCollection<ElementId> usedAppearanceAssetIds = GetUsedAppearanceAssetIds(document);
-            return usedAppearanceAssetIds.Contains(appearanceAsset.Id)
+            return DiagnosticFeedbacks.Of(usedAppearanceAssetIds.Contains(appearanceAsset.Id)
                 ? new(DiagnosticVerdict.Valid)
-                : new(DiagnosticVerdict.NotValid);
+                : new(DiagnosticVerdict.NotValid));
         }
         catch (Autodesk.Revit.Exceptions.ApplicationException)
         {
             // A material whose appearance cannot be read leaves the used set unknowable, so the asset
             // counts as clean rather than failing the whole run.
-            return new(DiagnosticVerdict.Valid);
+            return DiagnosticFeedbacks.Valid;
         }
     }
 

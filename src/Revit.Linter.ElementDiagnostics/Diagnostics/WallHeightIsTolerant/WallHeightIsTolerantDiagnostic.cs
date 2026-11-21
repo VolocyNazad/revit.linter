@@ -8,7 +8,7 @@ internal sealed class WallHeightIsTolerantDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.WallHeightIsTolerant;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var wall = (Wall)targetElement;
 
@@ -16,10 +16,10 @@ internal sealed class WallHeightIsTolerantDiagnostic : IElementDiagnostic
         ForgeTypeId unitTypeId = formatOptions.GetUnitTypeId();
 
         Parameter parameter = wall.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
-        if (parameter is null) return new(DiagnosticVerdict.Valid);
+        if (parameter is null) return DiagnosticFeedbacks.Valid;
         double parameterValue = parameter.AsDouble();
 
-        return Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
-            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
+            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

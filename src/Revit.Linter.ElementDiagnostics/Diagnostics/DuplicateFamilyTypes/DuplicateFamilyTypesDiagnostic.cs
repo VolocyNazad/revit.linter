@@ -7,7 +7,7 @@ internal sealed class DuplicateFamilyTypesDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.DuplicateFamilyTypes;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // Family types are not elements in a family document: the finding attaches to the
         // family itself and lists every duplicate pair. Twins report once, not per side.
@@ -24,10 +24,10 @@ internal sealed class DuplicateFamilyTypesDiagnostic : IElementDiagnostic
             for (int second = first + 1; second < signed.Count; second++)
                 if (signed[first].Signature == signed[second].Signature)
                     pairs.Add($"{signed[first].Type.Name} = {signed[second].Type.Name}");
-        return pairs.Count == 0
+        return DiagnosticFeedbacks.Of(pairs.Count == 0
             ? new(DiagnosticVerdict.Valid)
             : new(DiagnosticVerdict.NotValid,
-                new Dictionary<string, object> { ["duplicateNames"] = string.Join("; ", pairs) });
+                new Dictionary<string, object> { ["duplicateNames"] = string.Join("; ", pairs) }));
     }
 
     // The default type usually has no name and is not shown in the UI: it takes part in no check.

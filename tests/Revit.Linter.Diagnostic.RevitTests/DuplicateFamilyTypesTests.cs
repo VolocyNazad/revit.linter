@@ -34,7 +34,7 @@ public sealed class DuplicateFamilyTypesTests : RevitApiTest
         }
         var diagnostic = new DuplicateFamilyTypesDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That((string)feedback.AdditionalMessageArguments!["duplicateNames"]).Contains("A = B");
@@ -56,7 +56,7 @@ public sealed class DuplicateFamilyTypesTests : RevitApiTest
         }
         var diagnostic = new DuplicateFamilyTypesDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, document.OwnerFamily).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

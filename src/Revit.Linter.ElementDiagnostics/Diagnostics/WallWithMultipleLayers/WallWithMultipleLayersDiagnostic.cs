@@ -4,21 +4,21 @@ internal sealed class WallWithMultipleLayersDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.WallWithMultipleLayers;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        if (targetElement is not Wall wall) return new(DiagnosticVerdict.Valid);
+        if (targetElement is not Wall wall) return DiagnosticFeedbacks.Valid;
         try
         {
             CompoundStructure? compoundStructure = wall.WallType.GetCompoundStructure();
-            return compoundStructure is { LayerCount: > 1 }
+            return DiagnosticFeedbacks.Of(compoundStructure is { LayerCount: > 1 }
                 ? new(DiagnosticVerdict.NotValid)
-                : new(DiagnosticVerdict.Valid);
+                : new(DiagnosticVerdict.Valid));
         }
         catch (Autodesk.Revit.Exceptions.InvalidOperationException)
         {
             // Unreadable wall type state is clean, not a run failure. The Revit exception
             // hierarchy is its own type, so it is caught explicitly instead of System.InvalidOperationException.
-            return new(DiagnosticVerdict.Valid);
+            return DiagnosticFeedbacks.Valid;
         }
     }
 }

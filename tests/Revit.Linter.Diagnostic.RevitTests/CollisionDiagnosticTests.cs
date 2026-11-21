@@ -86,7 +86,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _center!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _center!).Single();
         ElementId[] dependencyIds =
             [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id)];
         ElementId[] messageIds = (ElementId[])feedback.AdditionalMessageArguments!["intersection.elementIds"];
@@ -104,7 +104,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _first!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _first!).Single();
         ElementId[] dependencyIds =
             [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id)];
         ElementId[] expectedIds = [_center!.Id];
@@ -118,8 +118,8 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic();
 
-        DiagnosticFeedback distantFeedback = diagnostic.Execute(_document!, null, _distant!);
-        DiagnosticFeedback longFeedback = diagnostic.Execute(_document!, null, _long!);
+        DiagnosticFeedback distantFeedback = diagnostic.Execute(_document!, null, _distant!).Single();
+        DiagnosticFeedback longFeedback = diagnostic.Execute(_document!, null, _long!).Single();
 
         await Assert.That(distantFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(longFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -131,7 +131,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         // _distant collides with nothing in the host document, so the only hit is the linked box.
         CollisionElementDiagnostic diagnostic = CreateDiagnostic(includeLinks: true);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -146,7 +146,7 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _distant!).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -214,8 +214,8 @@ public sealed class CollisionDiagnosticTests : RevitApiTest
         CollisionElementDiagnostic enabled = CreateDiagnostic(ignoreNestedFamilies: true);
         CollisionElementDiagnostic disabled = CreateDiagnostic();
 
-        DiagnosticFeedback enabledFeedback = enabled.Execute(_document!, null, parent);
-        DiagnosticFeedback disabledFeedback = disabled.Execute(_document!, null, parent);
+        DiagnosticFeedback enabledFeedback = enabled.Execute(_document!, null, parent).Single();
+        DiagnosticFeedback disabledFeedback = disabled.Execute(_document!, null, parent).Single();
 
         // A nested component that is not shared stays inside the parent family definition: it is
         // not a project element, so it never becomes a collision candidate and the flag cannot

@@ -28,7 +28,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         LinearArray array = CreateProjectLinearArray(document, 2);
 
-        DiagnosticFeedback feedback = new AssociatedArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new AssociatedArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -45,7 +45,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         {
             BaseArray array = CreateFamilyLinearArray(familyDocument, 2);
 
-            DiagnosticFeedback feedback = new AssociatedArrayDiagnostic().Execute(familyDocument, null, array);
+            DiagnosticFeedback feedback = new AssociatedArrayDiagnostic().Execute(familyDocument, null, array)[0];
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         }
@@ -114,7 +114,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         LinearArray array = CreateProjectLinearArray(document, 99);
 
-        DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -125,7 +125,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         LinearArray array = CreateProjectLinearArray(document, 100);
 
-        DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -142,7 +142,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
             // the family threshold, and the boundary itself is covered by projects.
             BaseArray array = CreateFamilyLinearArray(familyDocument, 2);
 
-            DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(familyDocument, null, array);
+            DiagnosticFeedback feedback = new LargeArrayDiagnostic().Execute(familyDocument, null, array)[0];
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         }
@@ -200,7 +200,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         {
             BaseArray array = CreateFamilyLinearArray(familyDocument, 2);
 
-            DiagnosticFeedback feedback = new ArrayWithFormulaDiagnostic().Execute(familyDocument, null, array);
+            DiagnosticFeedback feedback = new ArrayWithFormulaDiagnostic().Execute(familyDocument, null, array)[0];
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         }
@@ -231,7 +231,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
             BaseArray array = (BaseArray)familyDocument.GetElement(arrayId)
                 ?? throw new InvalidOperationException("The test array was not found.");
 
-            DiagnosticFeedback feedback = new ArrayWithFormulaDiagnostic().Execute(familyDocument, null, array);
+            DiagnosticFeedback feedback = new ArrayWithFormulaDiagnostic().Execute(familyDocument, null, array)[0];
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         }
@@ -354,7 +354,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         RadialArray array = CreateProjectRadialArray(document, 3);
 
-        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -365,7 +365,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         RadialArray array = CreateProjectRadialArray(document, 49);
 
-        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -376,7 +376,7 @@ public sealed class ArrayDiagnosticsTests : RevitApiTest
         Document document = _document!;
         RadialArray array = CreateProjectRadialArray(document, 50);
 
-        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array);
+        DiagnosticFeedback feedback = new LargeRadialArrayDiagnostic().Execute(document, null, array)[0];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }

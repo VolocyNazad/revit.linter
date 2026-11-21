@@ -34,7 +34,7 @@ public sealed class ReferenceLineLocksTests : RevitApiTest
         }
         var diagnostic = new ReferenceLineUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, line);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, line).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -63,8 +63,8 @@ public sealed class ReferenceLineLocksTests : RevitApiTest
         }
         var diagnostic = new ReferenceLineUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -97,9 +97,9 @@ public sealed class ReferenceLineLocksTests : RevitApiTest
         }
         var diagnostic = new ReferenceLineUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback middleFeedback = diagnostic.Execute(document, null, middle);
-        DiagnosticFeedback lastFeedback = diagnostic.Execute(document, null, last);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback middleFeedback = diagnostic.Execute(document, null, middle).Single();
+        DiagnosticFeedback lastFeedback = diagnostic.Execute(document, null, last).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(middleFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);

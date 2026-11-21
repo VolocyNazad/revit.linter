@@ -33,7 +33,7 @@ public sealed class WallWithMultipleLayersDiagnosticsTests : RevitApiTest
         Wall wall = CreateWallWithLayers(_document!, 2);
         var diagnostic = new WallWithMultipleLayersDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -44,7 +44,7 @@ public sealed class WallWithMultipleLayersDiagnosticsTests : RevitApiTest
         Wall wall = CreateWallWithLayers(_document!, 1);
         var diagnostic = new WallWithMultipleLayersDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, wall).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

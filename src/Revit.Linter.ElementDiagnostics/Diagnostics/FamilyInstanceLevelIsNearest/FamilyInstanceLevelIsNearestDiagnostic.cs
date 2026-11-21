@@ -1,4 +1,4 @@
-﻿using Revit.Linter.DocumentQueries.Abstractions.Models;
+using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FamilyInstanceLevelIsNearest;
@@ -10,16 +10,16 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyInstanceLevelIsNearest;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var familyInstance = (FamilyInstance)targetElement;
         ElementId levelId = familyInstance.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM).AsElementId();
-        if (levelId == ElementId.InvalidElementId) return new(DiagnosticVerdict.Valid);
+        if (levelId == ElementId.InvalidElementId) return DiagnosticFeedbacks.Valid;
         var elevation = document.GetElement(levelId).get_Parameter(BuiltInParameter.LEVEL_ELEV).AsDouble();
         var elevationOffset = familyInstance.get_Parameter(BuiltInParameter.INSTANCE_ELEVATION_PARAM).AsDouble();
 
         (ElementId id, double elevation)[] levels = GetLevelElevations(document);
-        if (levels.Length == 0) return new(DiagnosticVerdict.Valid);
+        if (levels.Length == 0) return DiagnosticFeedbacks.Valid;
 
         // Single linear pass instead of OrderBy(...).First(): sorting is O(L log L) with
         // delegate and comparer allocations per instance, while the minimum is O(L).
@@ -35,9 +35,9 @@ internal sealed class FamilyInstanceLevelIsNearestDiagnostic(
             nearestLevelId = level.id;
         }
 
-        return nearestLevelId != levelId
+        return DiagnosticFeedbacks.Of(nearestLevelId != levelId
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
     }
 
     private (ElementId id, double elevation)[] GetLevelElevations(Document document)

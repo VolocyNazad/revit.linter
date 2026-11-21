@@ -8,7 +8,7 @@ internal sealed class FamilyUnusedDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilyUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var family = (Family)targetElement;
         var hasInstances = family.GetDependentElements(_filter)
@@ -20,6 +20,6 @@ internal sealed class FamilyUnusedDiagnostic : IElementDiagnostic
                 var type = document.GetElement(typeId);
                 return (type as FamilySymbol)?.Family.Id == family.Id;
             });
-        return hasInstances ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(hasInstances ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

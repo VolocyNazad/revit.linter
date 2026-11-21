@@ -11,12 +11,12 @@ internal sealed class ProfileFamilySymbolUnusedDiagnostic(
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ProfileFamilySymbolUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         IReadOnlyCollection<ElementId> usedProfileSymbolIds = GetUsedProfileSymbolIds(document);
-        return usedProfileSymbolIds.Contains(targetElement.Id)
+        return DiagnosticFeedbacks.Of(usedProfileSymbolIds.Contains(targetElement.Id)
             ? new(DiagnosticVerdict.Valid)
-            : new(DiagnosticVerdict.NotValid);
+            : new(DiagnosticVerdict.NotValid));
     }
 
     private IReadOnlyCollection<ElementId> GetUsedProfileSymbolIds(Document document)

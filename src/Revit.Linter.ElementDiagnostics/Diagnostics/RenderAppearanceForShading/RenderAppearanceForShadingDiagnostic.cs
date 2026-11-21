@@ -19,15 +19,15 @@ internal sealed class RenderAppearanceForShadingDiagnostic(IDocumentQueryService
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RenderAppearanceForShading;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var material = (Material)targetElement;
-        if (!material.UseRenderAppearanceForShading) return new(DiagnosticVerdict.Valid);
+        if (!material.UseRenderAppearanceForShading) return DiagnosticFeedbacks.Valid;
         ElementId appearanceAssetId = material.AppearanceAssetId;
-        if (appearanceAssetId == ElementId.InvalidElementId) return new(DiagnosticVerdict.Valid);
-        return GetTextureClassification(document).TryGetValue(appearanceAssetId, out bool hasTexture) && hasTexture
+        if (appearanceAssetId == ElementId.InvalidElementId) return DiagnosticFeedbacks.Valid;
+        return DiagnosticFeedbacks.Of(GetTextureClassification(document).TryGetValue(appearanceAssetId, out bool hasTexture) && hasTexture
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
     }
 
     private Dictionary<ElementId, bool> GetTextureClassification(Document document)

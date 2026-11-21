@@ -37,7 +37,7 @@ public sealed class RoomDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new RoomUnplacedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -51,7 +51,7 @@ public sealed class RoomDiagnosticsTests : RevitApiTest
         Room room = PlaceRoom(document, level, new UV(5, 5));
         var diagnostic = new RoomUnplacedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -73,7 +73,7 @@ public sealed class RoomDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new RoomNotEnclosedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -87,7 +87,7 @@ public sealed class RoomDiagnosticsTests : RevitApiTest
         Room room = PlaceRoom(document, level, new UV(5, 5));
         var diagnostic = new RoomNotEnclosedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, room).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

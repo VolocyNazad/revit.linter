@@ -28,7 +28,7 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
         Level level = CreateLevel(document);
         var diagnostic = new LevelNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, level);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, level).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -41,7 +41,7 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
         Pin(document, level);
         var diagnostic = new LevelNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, level);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, level).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -53,7 +53,7 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
         Grid grid = CreateGrid(document);
         var diagnostic = new GridNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, grid);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, grid).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -66,7 +66,7 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
         Pin(document, grid);
         var diagnostic = new GridNotPinnedDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, grid);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, grid).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -83,13 +83,13 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
             ?? throw new InvalidOperationException("The test multi-segment grid was not found.");
         var diagnostic = new GridNotPinnedDiagnostic();
 
-        DiagnosticFeedback chainFeedback = diagnostic.Execute(document, null, chain);
+        DiagnosticFeedback chainFeedback = diagnostic.Execute(document, null, chain).Single();
         List<DiagnosticVerdict> segmentVerdicts = [];
         foreach (ElementId gridId in gridIds)
         {
             Element segment = document.GetElement(gridId)
                 ?? throw new InvalidOperationException($"The multi-segment grid segment '{gridId}' was not found.");
-            segmentVerdicts.Add(diagnostic.Execute(document, null, segment).Verdict);
+            segmentVerdicts.Add(diagnostic.Execute(document, null, segment)[0].Verdict);
         }
 
         await Assert.That(chainFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -105,13 +105,13 @@ public sealed class PinnedDiagnosticsTests : RevitApiTest
         await Assert.That(gridIds.Length).IsGreaterThan(0);
         var diagnostic = new GridNotPinnedDiagnostic();
 
-        DiagnosticFeedback chainFeedback = diagnostic.Execute(document, null, chain);
+        DiagnosticFeedback chainFeedback = diagnostic.Execute(document, null, chain).Single();
         List<DiagnosticVerdict> segmentVerdicts = [];
         foreach (ElementId gridId in gridIds)
         {
             Element segment = document.GetElement(gridId)
                 ?? throw new InvalidOperationException($"The multi-segment grid segment '{gridId}' was not found.");
-            segmentVerdicts.Add(diagnostic.Execute(document, null, segment).Verdict);
+            segmentVerdicts.Add(diagnostic.Execute(document, null, segment)[0].Verdict);
         }
 
         await Assert.That(chainFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);

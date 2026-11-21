@@ -1,11 +1,11 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.ImportInstanceExists;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.ImportInstanceExists;
 
 internal sealed class ImportInstanceExistsDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ImportInstanceExists;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {   
-        return new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(new(DiagnosticVerdict.NotValid));
     }
 }

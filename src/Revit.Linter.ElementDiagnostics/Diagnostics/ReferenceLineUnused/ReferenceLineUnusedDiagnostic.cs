@@ -10,12 +10,12 @@ internal sealed class ReferenceLineUnusedDiagnostic(IDocumentQueryService docume
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ReferenceLineUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         // Multi-segment dimensions never show up in GetDependentElements, so referencing
         // dimensions are resolved through their references instead (cached once per run).
         bool constrained = GetReferencingDimensions(document, targetElement.Id).Any(IsConstrained);
-        return constrained ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(constrained ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 
     private IReadOnlyCollection<Dimension> GetReferencingDimensions(Document document, ElementId lineId)

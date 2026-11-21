@@ -35,7 +35,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         Hide(document, view, wallIds);
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view).Single();
 
         Dictionary<string, object> arguments = feedback.AdditionalMessageArguments!;
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -64,7 +64,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         long[] expectedIds = wallIds.Select(id => id.IdValue()).OrderBy(value => value).ToArray();
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view).Single();
 
         Dictionary<string, object> arguments = feedback.AdditionalMessageArguments!;
         long[] messageIds = ((ElementId[])arguments["hidden.elementIds"])
@@ -89,7 +89,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         CreateWall(document, level, 0);
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -105,8 +105,8 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         Hide(document, hiddenView, GetWallIds(document, 1));
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback hiddenFeedback = diagnostic.Execute(document, null, hiddenView);
-        DiagnosticFeedback visibleFeedback = diagnostic.Execute(document, null, visibleView);
+        DiagnosticFeedback hiddenFeedback = diagnostic.Execute(document, null, hiddenView).Single();
+        DiagnosticFeedback visibleFeedback = diagnostic.Execute(document, null, visibleView).Single();
 
         await Assert.That(hiddenFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(visibleFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -130,7 +130,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         }
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, view).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -199,7 +199,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         ElementId[] wallIds = GetWallIds(document, 2);
         Hide(document, view, wallIds);
         var diagnostic = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
-        await Assert.That(diagnostic.Execute(document, null, view).Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(diagnostic.Execute(document, null, view)[0].Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         var fix = new ShowAllHiddenViewElements(TestDocumentQueries.Create());
 
         bool applied;
@@ -218,7 +218,7 @@ public sealed class ViewHiddenElementsTests : RevitApiTest
         }
 
         var afterFix = new ViewHasHiddenElementsDiagnostic(TestDocumentQueries.Create());
-        await Assert.That(afterFix.Execute(document, null, view).Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+        await Assert.That(afterFix.Execute(document, null, view)[0].Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
 
     [Test]

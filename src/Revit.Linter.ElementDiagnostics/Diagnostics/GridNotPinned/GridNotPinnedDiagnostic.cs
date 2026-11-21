@@ -4,10 +4,10 @@ internal sealed class GridNotPinnedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.GridNotPinned;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        return IsPinned(targetElement)
-            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(IsPinned(targetElement)
+            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 
     private static bool IsPinned(Element element)

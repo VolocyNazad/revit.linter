@@ -7,19 +7,19 @@ internal sealed class LargeArrayDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LargeArray;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        if (targetElement is not BaseArray array) return new(DiagnosticVerdict.Valid);
+        if (targetElement is not BaseArray array) return DiagnosticFeedbacks.Valid;
         try
         {
             int threshold = document.IsFamilyDocument ? FamilyThreshold : ProjectThreshold;
-            return array.NumMembers >= threshold ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+            return DiagnosticFeedbacks.Of(array.NumMembers >= threshold ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
         }
         catch (Autodesk.Revit.Exceptions.InvalidOperationException)
         {
             // Unreadable array state is clean, not a run failure. This is the Revit
             // exception hierarchy, not System: a BCL catch would miss it (verified live).
-            return new(DiagnosticVerdict.Valid);
+            return DiagnosticFeedbacks.Valid;
         }
     }
 }

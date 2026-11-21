@@ -4,11 +4,11 @@ internal sealed class ArrayWithFormulaDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.ArrayWithFormula;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
-        if (targetElement is not BaseArray array) return new(DiagnosticVerdict.Valid);
+        if (targetElement is not BaseArray array) return DiagnosticFeedbacks.Valid;
         // A label means the member count is driven by a family parameter (formula).
-        return TryGetLabel(array) is not null ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Of(TryGetLabel(array) is not null ? new(DiagnosticVerdict.NotValid) : new(DiagnosticVerdict.Valid));
     }
 
     private static FamilyParameter? TryGetLabel(BaseArray array)

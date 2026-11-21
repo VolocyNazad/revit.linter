@@ -8,7 +8,7 @@ internal sealed class LevelHeightIsTolerantDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.LevelHeightIsTolerant;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var level = (Level)targetElement;
 
@@ -16,10 +16,10 @@ internal sealed class LevelHeightIsTolerantDiagnostic : IElementDiagnostic
         ForgeTypeId unitTypeId = formatOptions.GetUnitTypeId();
 
         Parameter parameter = level.get_Parameter(BuiltInParameter.LEVEL_ELEV);
-        if (parameter is null) return new(DiagnosticVerdict.Valid);
+        if (parameter is null) return DiagnosticFeedbacks.Valid;
         double parameterValue = parameter.AsDouble();
 
-        return Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
-            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(Math.Round(Math.Abs(UnitUtils.ConvertFromInternalUnits(parameterValue, unitTypeId)), RoundingDigits) % Tolerance < Epsilon
+            ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

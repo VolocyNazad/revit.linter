@@ -1,10 +1,10 @@
-﻿namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
+namespace Revit.Linter.ElementDiagnostics.Diagnostics.AllConnectorsConnected;
 
 internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.AnyConnectorsNotConnected;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         ConnectorManager? connectorManager = targetElement switch
         {
@@ -13,14 +13,14 @@ internal sealed class AnyConnectorsNotConnectedDiagnostic : IElementDiagnostic
             _ => null,
         };
 
-        if (connectorManager is null) return new(DiagnosticVerdict.Valid);
+        if (connectorManager is null) return DiagnosticFeedbacks.Valid;
         foreach (Connector connector in connectorManager.Connectors)
         {
             if (!IsCheckableConnector(connector.ConnectorType)) continue;
-            if (!connector.IsConnected) return new(DiagnosticVerdict.NotValid);
+            if (!connector.IsConnected) return DiagnosticFeedbacks.Of(new(DiagnosticVerdict.NotValid));
         }
 
-        return new(DiagnosticVerdict.Valid);
+        return DiagnosticFeedbacks.Valid;
     }
 
     /// <summary>Whether the diagnostic reads connection status for this connector type.</summary>

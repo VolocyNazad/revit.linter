@@ -8,11 +8,11 @@ internal sealed class FamilySymbolUnusedDiagnostic : IElementDiagnostic
 
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.FamilySymbolUnused;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var familySymbol = (FamilySymbol)targetElement;
         var hasInstances = familySymbol.GetDependentElements(_filter)
             .Any(id => document.GetElement(id).GetTypeId() == familySymbol.Id);
-        return hasInstances ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid);
+        return DiagnosticFeedbacks.Of(hasInstances ? new(DiagnosticVerdict.Valid) : new(DiagnosticVerdict.NotValid));
     }
 }

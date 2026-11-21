@@ -66,7 +66,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Floor hostFloor2 = FindHostFloor(100, 100, 110, 108);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostFloor2);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostFloor2).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -79,7 +79,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Wall hostWall4 = FindHostWall(50, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall4);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall4).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -92,7 +92,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Wall hostWall5 = FindHostWall(60, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall5);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall5).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -105,7 +105,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Wall hostWall1 = FindHostWall(0, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall1);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall1).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -122,7 +122,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Wall hostWall3 = FindHostWall(30, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall3);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall3).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -141,7 +141,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Wall hostWall6 = FindHostWall(80, 0, 0, 1);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall6);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostWall6).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -158,7 +158,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Floor hostFloor1 = FindHostFloor(0, 0, 10, 8);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostFloor1);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostFloor1).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -212,7 +212,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Duct hostDuct1 = FindHostRun<Duct>(0, 2, 9, 1, 0, 0);
         Pipe hostPipe1 = FindHostRun<Pipe>(5, -2, 9, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct1);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct1).Single();
         long[] dependencyIds = [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id.IdValue())];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -228,7 +228,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Duct hostDuct3 = FindHostRun<Duct>(100, 102, 9, 1, 0, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct3);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct3).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -242,7 +242,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Duct hostDuct1 = FindHostRun<Duct>(0, 2, 9, 1, 0, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct1);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct1).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -260,7 +260,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         Duct hostDuct2 = FindHostRun<Duct>(30, 2, 9, 1, 0, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct2);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostDuct2).Single();
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
         int count = (int)feedback.AdditionalMessageArguments["intersection.count"];
 
@@ -280,7 +280,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
         Duct hostDuct1 = FindHostRun<Duct>(0, 2, 9, 1, 0, 0);
         Pipe hostPipe1 = FindHostRun<Pipe>(5, -2, 9, 0, 1, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostTray1);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostTray1).Single();
         long[] dependencyIds = [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id.IdValue())];
         string elementNames = string.Join(", ", (string[])feedback.AdditionalMessageArguments!["intersection.elementNames"]);
 
@@ -299,7 +299,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
 
         CableTray hostTray3 = FindHostRun<CableTray>(100, 104, 9, 1, 0, 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostTray3);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, hostTray3).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -337,7 +337,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
             includeLinks: false,
             ignoreConnectedElements: true);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, second);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, second).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -353,7 +353,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
             includeLinks: false,
             ignoreConnectedElements: false);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, first);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, first).Single();
         long[] dependencyIds = [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id.IdValue())];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -369,7 +369,7 @@ public sealed class CollisionTestModelTests : RevitApiTest
             includeLinks: false,
             ignoreConnectedElements: true);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, crossing);
+        DiagnosticFeedback feedback = diagnostic.Execute(_host!, null, crossing).Single();
         long[] dependencyIds = [.. feedback.AdditionalTargetDependencies.OfType<Element>().Select(element => element.Id.IdValue())];
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);

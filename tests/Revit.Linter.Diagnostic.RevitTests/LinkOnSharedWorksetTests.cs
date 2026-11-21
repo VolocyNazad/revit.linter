@@ -92,7 +92,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         Document document = _document!;
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!).Single();
 
         Dictionary<string, object> arguments = feedback.AdditionalMessageArguments!;
         ElementId[] elementIds = (ElementId[])arguments["other.elementIds"];
@@ -111,7 +111,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         Document document = _document!;
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -123,8 +123,8 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         RevitLinkInstance secondLink = CreateLink(document, _linkWorksetId!);
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, secondLink);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, secondLink).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -137,7 +137,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         Wall secondWall = CreateWall(document, GetWorksetId(document, SharedWorksetName), 5.0);
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!).Single();
 
         ElementId[] elementIds = (ElementId[])feedback.AdditionalMessageArguments!["other.elementIds"];
         long[] actualIds = elementIds.Select(id => id.IdValue()).ToArray();
@@ -155,7 +155,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         ViewPlan view = CreatePlan(document, _linkWorksetId!, "Link workset view");
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnLinkWorkset!).Single();
 
         // A view belongs to its own view workset, so creating it while the link workset is active
         // leaves the link alone on that workset and keeps the link clean.
@@ -174,7 +174,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         await Assert.That(filter.IsRelevantFor(document, _linkOnSharedWorkset!)).IsTrue();
         await Assert.That(filter.IsRelevantFor(document, _wallOnSharedWorkset!)).IsFalse();
         await Assert.That(filter.IsRelevantFor(document, level)).IsFalse();
-        await Assert.That(diagnostic.Execute(document, null, _wallOnSharedWorkset!).Verdict)
+        await Assert.That(diagnostic.Execute(document, null, _wallOnSharedWorkset!)[0].Verdict)
             .IsEqualTo(DiagnosticVerdict.Valid);
     }
 
@@ -189,7 +189,7 @@ public sealed class LinkOnSharedWorksetTests : RevitApiTest
         linkType.Unload(null);
         var diagnostic = new LinkOnSharedWorksetDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, _linkOnSharedWorkset!).Single();
 
         await Assert.That(_linkOnSharedWorkset!.GetLinkDocument()).IsNull();
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);

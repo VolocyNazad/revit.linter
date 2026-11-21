@@ -54,7 +54,7 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic((_, _) => null);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(feedback.MessageFormat)
@@ -71,7 +71,7 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic((_, _) => OverlapVolume);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(feedback.MessageFormat).IsNull();
@@ -84,7 +84,7 @@ public sealed class UnverifiedCollisionTests : RevitApiTest
     {
         CollisionElementDiagnostic diagnostic = CreateDiagnostic((_, _) => 0);
 
-        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!);
+        DiagnosticFeedback feedback = diagnostic.Execute(_document!, null, _target!).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

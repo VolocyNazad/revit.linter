@@ -41,7 +41,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
         // document change so the asset classification is built over the final state.
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -57,7 +57,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
         Material material = CreateMaterial(document, "LinterShadedProceduralMaterial", appearanceAsset.Id, true);
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -70,7 +70,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
         Material material = CreateMaterial(document, "LinterTextureNotShadedMaterial", appearanceAsset.Id, false);
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -83,7 +83,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
             document, "LinterShadingWithoutAssetMaterial", ElementId.InvalidElementId, true);
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -97,7 +97,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
         Material material = CreateMaterial(document, "LinterUntexturedShadingMaterial", appearanceAsset.Id, true);
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -121,7 +121,7 @@ public sealed class RenderAppearanceForShadingTests : RevitApiTest
         var diagnostic = new RenderAppearanceForShadingDiagnostic(TestDocumentQueries.Create());
         await Assert.That(result).IsTrue();
         await Assert.That(material.UseRenderAppearanceForShading).IsFalse();
-        await Assert.That(diagnostic.Execute(document, null, material).Verdict)
+        await Assert.That(diagnostic.Execute(document, null, material)[0].Verdict)
             .IsEqualTo(DiagnosticVerdict.Valid);
     }
 

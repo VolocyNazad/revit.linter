@@ -1,4 +1,4 @@
-﻿using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.Architecture;
 
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.RoomNotEnclosed;
 
@@ -6,7 +6,7 @@ internal sealed class RoomNotEnclosedDiagnostic : IElementDiagnostic
 {
     public ElementDiagnosticId Identity => ElementDiagnosticIdCollector.RoomNotEnclosed;
 
-    public DiagnosticFeedback Execute(Document document, View? view, Element targetElement)
+    public IReadOnlyList<DiagnosticFeedback> Execute(Document document, View? view, Element targetElement)
     {
         var room = (Room)targetElement;
         SpatialElementBoundaryOptions options = new()
@@ -14,8 +14,8 @@ internal sealed class RoomNotEnclosedDiagnostic : IElementDiagnostic
             SpatialElementBoundaryLocation = SpatialElementBoundaryLocation.Finish
         };
         var segments = room.GetBoundarySegments(options);
-        return room.Area <= 0 && (segments == null || segments.Count == 0)
+        return DiagnosticFeedbacks.Of(room.Area <= 0 && (segments == null || segments.Count == 0)
             ? new(DiagnosticVerdict.NotValid)
-            : new(DiagnosticVerdict.Valid);
+            : new(DiagnosticVerdict.Valid));
     }
 }

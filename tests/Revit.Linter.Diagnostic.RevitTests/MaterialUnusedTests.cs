@@ -32,7 +32,7 @@ public sealed class MaterialUnusedTests : RevitApiTest
         // document change so the used-material set is built over the final state.
         var diagnostic = new MaterialUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -46,7 +46,7 @@ public sealed class MaterialUnusedTests : RevitApiTest
         AssignSingleLayerMaterial(document, wall, material.Id);
         var diagnostic = new MaterialUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -62,7 +62,7 @@ public sealed class MaterialUnusedTests : RevitApiTest
         PaintFirstSolidFace(document, wall, material.Id);
         var diagnostic = new MaterialUnusedDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, material).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }

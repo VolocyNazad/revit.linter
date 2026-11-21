@@ -30,8 +30,8 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
         FamilySymbol second = FindSymbol(document, "B");
         var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
@@ -56,8 +56,8 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
         FamilySymbol first = FindSymbol(document, "A");
         var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first);
-        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second);
+        DiagnosticFeedback firstFeedback = diagnostic.Execute(document, null, first).Single();
+        DiagnosticFeedback secondFeedback = diagnostic.Execute(document, null, second).Single();
 
         await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -75,7 +75,7 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
         var diagnostic = new DuplicateFamilySymbolsDiagnostic(
             TestDocumentQueries.Create(NullRevitTransactionMemoryCache.Instance));
 
-        DiagnosticFeedback before = diagnostic.Execute(document, null, FindSymbol(document, "A"));
+        DiagnosticFeedback before = diagnostic.Execute(document, null, FindSymbol(document, "A")).Single();
 
         FamilySymbol second = FindSymbol(document, "B");
         using (Transaction transaction = new(document, "Diverge test family symbols"))
@@ -84,8 +84,8 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
             second.LookupParameter("Note").Set("other");
             transaction.Commit();
         }
-        DiagnosticFeedback firstAfter = diagnostic.Execute(document, null, FindSymbol(document, "A"));
-        DiagnosticFeedback secondAfter = diagnostic.Execute(document, null, FindSymbol(document, "B"));
+        DiagnosticFeedback firstAfter = diagnostic.Execute(document, null, FindSymbol(document, "A")).Single();
+        DiagnosticFeedback secondAfter = diagnostic.Execute(document, null, FindSymbol(document, "B")).Single();
 
         await Assert.That(before.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(firstAfter.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -110,7 +110,7 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
         await Assert.That(symbols.Count).IsGreaterThan(0);
         foreach (FamilySymbol symbol in symbols)
         {
-            DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol);
+            DiagnosticFeedback feedback = diagnostic.Execute(document, null, symbol).Single();
 
             await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
         }
@@ -145,8 +145,8 @@ public sealed class DuplicateFamilySymbolsTests : RevitApiTest
             FamilySymbol second = FindSymbol(host, "LinterNestedB");
             var diagnostic = new DuplicateFamilySymbolsDiagnostic(TestDocumentQueries.Create());
 
-            DiagnosticFeedback firstFeedback = diagnostic.Execute(host, null, first);
-            DiagnosticFeedback secondFeedback = diagnostic.Execute(host, null, second);
+            DiagnosticFeedback firstFeedback = diagnostic.Execute(host, null, first).Single();
+            DiagnosticFeedback secondFeedback = diagnostic.Execute(host, null, second).Single();
 
             await Assert.That(firstFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
             await Assert.That(secondFeedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);

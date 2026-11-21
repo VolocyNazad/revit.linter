@@ -33,7 +33,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         FamilyInstance instance = PlaceInstance(Application, document, level);
         var diagnostic = new FamilyInstanceElevationIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -52,7 +52,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new FamilyInstanceElevationIsTolerantDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -68,7 +68,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         FamilyInstance instance = PlaceInstance(Application, document, lower);
         var diagnostic = new FamilyInstanceLevelIsNearestDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -89,7 +89,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         }
         var diagnostic = new FamilyInstanceLevelIsNearestDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
@@ -117,7 +117,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         var diagnostic = new FamilyInstanceLevelIsNearestDiagnostic(
             TestDocumentQueries.Create(NullRevitTransactionMemoryCache.Instance));
 
-        DiagnosticFeedback before = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback before = diagnostic.Execute(document, null, instance).Single();
 
         using (Transaction transaction = new(document, "Move test level elevation"))
         {
@@ -125,7 +125,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
             lower.Elevation = 70000 * MmInFeet;
             transaction.Commit();
         }
-        DiagnosticFeedback after = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback after = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(before.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That(after.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
@@ -139,7 +139,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
         FamilyInstance instance = PlaceInstance(Application, document, level);
         var diagnostic = new FamilyInstanceMirroredDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -166,7 +166,7 @@ public sealed class FamilyInstanceDiagnosticsTests : RevitApiTest
             .First(candidate => candidate.Mirrored);
         var diagnostic = new FamilyInstanceMirroredDiagnostic();
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, mirrored);
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, mirrored).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
     }
