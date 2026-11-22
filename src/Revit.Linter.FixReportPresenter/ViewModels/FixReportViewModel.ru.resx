@@ -3,6 +3,8 @@
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="document_text" xml:space="preserve"><value>Документ</value></data><data name="search_text" xml:space="preserve"><value>Поиск</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Учитывать регистр</value></data><data name="matchCase_description" xml:space="preserve"><value>Ищет только текст с тем же регистром букв. Действует на код и сообщение.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Слово целиком</value></data><data name="matchWholeWord_description" xml:space="preserve"><value>Находит только слово целиком, поэтому по запросу wall не найдётся wallboard. Действует на код и сообщение.</value></data>
   <data name="fixes_text" xml:space="preserve"><value>Исправления:</value></data><data name="code_header" xml:space="preserve"><value>Код</value></data>
   <data name="message_header" xml:space="preserve"><value>Сообщение</value></data><data name="document_header" xml:space="preserve"><value>Документ</value></data>
   <data name="created_header" xml:space="preserve"><value>Дата и время</value></data>
@@ -12,7 +14,7 @@
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице.</value></data>
   <data name="document_description" xml:space="preserve"><value>Показывает результаты исправлений только выбранного открытого документа.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра, подходит и часть слова. Кнопка Aa включает учёт регистра, кнопка ab| ищет слово целиком. Список обновляется, когда вы покидаете поле.</value></data>
   <data name="columns_title" xml:space="preserve"><value>Столбцы</value></data>
   <data name="columns_description" xml:space="preserve"><value>Выберите, какие столбцы показывает таблица. Кнопки действий остаются видимыми всегда.</value></data>
   <data name="resetColumns_text" xml:space="preserve"><value>Вернуть все столбцы</value></data>

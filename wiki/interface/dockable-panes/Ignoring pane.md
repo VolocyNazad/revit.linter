@@ -29,7 +29,7 @@ The **Code** column sorts by the text of the code and by its numbers, so `CSTM2`
 - **Refresh** (toolbar) reloads the list.
 - **Columns** (toolbar) chooses which data columns the table shows; the row action buttons stay visible, and the choice is remembered for every Revit version.
 - The tool bar also carries the shared diagnostic controls (run, pause, on active view) and shows the title of the active document.
-- The search box filters the list by code and target, ignoring case. The list is updated when you leave the field.
+- The search box filters the list by code and target. The **Aa** button next to the box matches case, and the **ab|** button matches whole words; both are off by default, so the search ignores case and finds the text inside a longer word. The list is updated when you leave the field.
 
 Entries whose elements no longer exist are dropped the next time the pane loads or reloads the list, and whenever the list is written. An entry of the whole document stays until it is removed explicitly.
 

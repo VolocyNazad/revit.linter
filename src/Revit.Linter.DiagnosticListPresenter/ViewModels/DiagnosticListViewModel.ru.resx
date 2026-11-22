@@ -6,6 +6,10 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="diagnostics_text" xml:space="preserve"><value>Диагностики:</value></data>
   <data name="search_text" xml:space="preserve"><value>Поиск</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Учитывать регистр</value></data>
+  <data name="matchCase_description" xml:space="preserve"><value>Ищет только текст с тем же регистром букв. Действует на код и описание, тегов не касается.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Слово целиком</value></data>
+  <data name="matchWholeWord_description" xml:space="preserve"><value>Находит только слово целиком, поэтому по запросу wall не найдётся wallboard. Действует на код и описание, тегов не касается.</value></data>
   <data name="checkAll_text" xml:space="preserve"><value>Выбрать все</value></data>
   <data name="uncheckAll_text" xml:space="preserve"><value>Снять выбор со всех</value></data>
   <data name="checkVisible_text" xml:space="preserve"><value>Выбрать видимые</value></data>
@@ -32,7 +36,7 @@
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице. Число рядом с фильтром — сколько строк ему соответствует.</value></data>
   <data name="isActive_description" xml:space="preserve"><value>Включает или отключает проверку для вас. Ваш выбор переопределяет значение из правила и сохраняется в настройках, поэтому действует для всех документов.</value></data>
   <data name="severity_description" xml:space="preserve"><value>Задаёт, насколько серьёзными вы считаете замечания проверки. Ваш выбор переопределяет уровень из правила и сохраняется в настройках.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду и описанию без учёта регистра. Введите # перед именем тега, чтобы искать по тегам; несколько тегов сужают список. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и описанию без учёта регистра, подходит и часть слова. Кнопка Aa включает учёт регистра, кнопка ab| ищет слово целиком. Введите # перед именем тега, чтобы искать по тегам; несколько тегов сужают список. Список обновляется, когда вы покидаете поле.</value></data>
   <data name="tags_description" xml:space="preserve"><value>Теги проверки. Нажмите на тег, чтобы найти по нему.</value></data>
   <data name="checkAll_description" xml:space="preserve"><value>Включает все проверки, в том числе скрытые поиском и фильтрами.</value></data>
   <data name="uncheckAll_description" xml:space="preserve"><value>Отключает все проверки, в том числе скрытые поиском и фильтрами.</value></data>

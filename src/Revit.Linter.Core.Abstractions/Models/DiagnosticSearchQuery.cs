@@ -11,17 +11,19 @@ namespace Revit.Linter.Core.Abstractions.Models;
 /// written in double quotes, for example <c>#"fire alarm"</c>; a backslash escapes the next character
 /// inside the quotes. Every tag name must match a row tag exactly, ignoring case, and several tag
 /// names narrow the list together. Text outside the tag names is matched as a substring of the code
-/// or the message, ignoring case. A <c>#</c> inside a word is plain text.
+/// or the message; <see cref="Options"/> decides whether the case and the word boundaries matter. A
+/// <c>#</c> inside a word is plain text.
 /// </remarks>
 public sealed class DiagnosticSearchQuery
 {
     /// <summary>Gets the empty query, which matches every row.</summary>
-    public static DiagnosticSearchQuery Empty { get; } = new(string.Empty, Array.Empty<string>());
+    public static DiagnosticSearchQuery Empty { get; } = new(string.Empty, Array.Empty<string>(), SearchMatchOptions.Default);
 
-    private DiagnosticSearchQuery(string text, IReadOnlyList<string> tags)
+    private DiagnosticSearchQuery(string text, IReadOnlyList<string> tags, SearchMatchOptions options)
     {
         Text = text;
         Tags = tags;
+        Options = options;
     }
 
     /// <summary>Gets the plain text searched in the code and the message.</summary>
@@ -30,6 +32,10 @@ public sealed class DiagnosticSearchQuery
     /// <summary>Gets the exact tag names typed with <c>#</c>.</summary>
     public IReadOnlyList<string> Tags { get; }
 
+    /// <summary>Gets how the plain text is compared with the code and the message.</summary>
+    /// <remarks>Tag names always match a row tag exactly and ignore case, whatever these options say.</remarks>
+    public SearchMatchOptions Options { get; }
+
     /// <summary>Gets whether the query has neither plain text nor tag names.</summary>
     public bool IsEmpty => Text.Length == 0 && Tags.Count == 0;
 
@@ -37,8 +43,9 @@ public sealed class DiagnosticSearchQuery
     /// Parses the text of a search box.
     /// </summary>
     /// <param name="searchText">The text typed in the search box, or <see langword="null"/>.</param>
+    /// <param name="options">How the plain text is compared with the row text.</param>
     /// <returns>The parsed query; <see cref="Empty"/> when the text is empty or holds no terms.</returns>
-    public static DiagnosticSearchQuery Parse(string? searchText)
+    public static DiagnosticSearchQuery Parse(string? searchText, SearchMatchOptions options = default)
     {
         if (searchText is null || string.IsNullOrWhiteSpace(searchText)) return Empty;
 
@@ -74,7 +81,7 @@ public sealed class DiagnosticSearchQuery
         IReadOnlyList<string> tagList = tags.Count == 0 ? Array.Empty<string>() : tags.AsReadOnly();
         return plainText.Length == 0 && tags.Count == 0
             ? Empty
-            : new DiagnosticSearchQuery(plainText, tagList);
+            : new DiagnosticSearchQuery(plainText, tagList, options);
     }
 
     /// <summary>
@@ -125,8 +132,8 @@ public sealed class DiagnosticSearchQuery
     {
         if (Text.Length == 0) return true;
 
-        return code?.IndexOf(Text, StringComparison.CurrentCultureIgnoreCase) >= 0
-            || message?.IndexOf(Text, StringComparison.CurrentCultureIgnoreCase) >= 0;
+        return SearchTextMatcher.Contains(code, Text, Options)
+            || SearchTextMatcher.Contains(message, Text, Options);
     }
 
     private static string ReadTag(string source, ref int position)

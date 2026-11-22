@@ -3,6 +3,8 @@
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="document_text" xml:space="preserve"><value>Document</value></data><data name="search_text" xml:space="preserve"><value>Search</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Match case</value></data><data name="matchCase_description" xml:space="preserve"><value>Searches only the text with the same letter case. Applies to the code and the message.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Whole word</value></data><data name="matchWholeWord_description" xml:space="preserve"><value>Matches only a whole word, so wall does not find wallboard. Applies to the code and the message.</value></data>
   <data name="fixes_text" xml:space="preserve"><value>Fixes:</value></data><data name="code_header" xml:space="preserve"><value>Code</value></data>
   <data name="message_header" xml:space="preserve"><value>Message</value></data><data name="document_header" xml:space="preserve"><value>Document</value></data>
   <data name="created_header" xml:space="preserve"><value>Created</value></data>
@@ -12,7 +14,7 @@
   <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows.</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows only the fix results of the selected open document.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case and matching part of a word. The Aa button matches case, the ab| button matches whole words. The list is updated when you leave the field.</value></data>
   <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
   <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
   <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>

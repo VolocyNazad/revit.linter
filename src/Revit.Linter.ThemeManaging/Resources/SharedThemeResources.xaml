@@ -206,6 +206,21 @@
     </Style>
 
     <!--
+        Option of a search box: a short glyph such as "Aa" or "ab|" that names the matching rule it turns
+        on, so it stays readable next to the icon-only buttons of the tool bar.
+    -->
+    <Style
+        x:Key="LinterToolBarSearchOptionToggleButton"
+        BasedOn="{StaticResource LinterToolBarOptionToggleButton}"
+        TargetType="{x:Type ToggleButton}">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MinWidth" Value="24" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="Width" Value="Auto" />
+    </Style>
+
+    <!--
         Tool bar button that opens a popup: bind the IsOpen of the popup to its IsChecked. While the popup is
         open the button ignores the pointer, so the click that closes the popup does not open it again.
     -->

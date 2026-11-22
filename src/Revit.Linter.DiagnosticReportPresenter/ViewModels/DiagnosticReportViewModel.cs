@@ -155,6 +155,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private DiagnosticSearchQuery? _searchQuery;
+    private SearchOptionsViewModel? _searchOptions;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
     private readonly Dictionary<string, IReadOnlyList<string>> _tagsByCode = new(StringComparer.Ordinal);
@@ -251,6 +252,15 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Rows.Refresh();
     }
 
+    /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
+    public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
+
+    private void OnSearchOptionsChanged()
+    {
+        _searchQuery = null;
+        Rows.Refresh();
+    }
+
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> SeverityFilters { get; set; } = [];
     partial void OnSeverityFiltersChanged(
@@ -290,7 +300,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             [new SortDescription(nameof(DiagnosticReportItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
             IsRowVisible);
 
-    private DiagnosticSearchQuery SearchQuery => _searchQuery ??= DiagnosticSearchQuery.Parse(SearchField);
+    private DiagnosticSearchQuery SearchQuery => _searchQuery ??=
+        DiagnosticSearchQuery.Parse(SearchField, SearchOptions.ToMatchOptions());
 
     private bool IsRowVisible(DiagnosticReportItemViewModel viewModel)
         => (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))

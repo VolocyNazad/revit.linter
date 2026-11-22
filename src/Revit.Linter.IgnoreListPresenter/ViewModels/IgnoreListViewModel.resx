@@ -11,7 +11,11 @@
   <data name="scopeDocument_text" xml:space="preserve"><value>Document</value></data>
   <data name="deletedTarget_text" xml:space="preserve"><value>Deleted element</value></data>
   <data name="search_text" xml:space="preserve"><value>Search</value></data>
-  <data name="search_description" xml:space="preserve"><value>Searches the code and the target, ignoring case. The list is updated when you leave the field.</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Match case</value></data>
+  <data name="matchCase_description" xml:space="preserve"><value>Searches only the text with the same letter case. Applies to the code and the target.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Whole word</value></data>
+  <data name="matchWholeWord_description" xml:space="preserve"><value>Matches only a whole word, so wall does not find wallboard. Applies to the code and the target.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the target, ignoring case and matching part of a word. The Aa button matches case, the ab| button matches whole words. The list is updated when you leave the field.</value></data>
   <data name="document_text" xml:space="preserve"><value>Document</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows the ignore list of the active document. Switch documents to see another list.</value></data>
   <data name="showSelected_text" xml:space="preserve"><value>Show</value></data>

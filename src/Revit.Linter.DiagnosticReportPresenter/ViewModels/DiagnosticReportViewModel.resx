@@ -4,6 +4,8 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="document_text" xml:space="preserve"><value>Document</value></data><data name="exportReport_text" xml:space="preserve"><value>Export report</value></data>
   <data name="search_text" xml:space="preserve"><value>Search</value></data><data name="reports_text" xml:space="preserve"><value>Reports:</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Match case</value></data><data name="matchCase_description" xml:space="preserve"><value>Searches only the text with the same letter case. Applies to the code and the message, not to tags.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Whole word</value></data><data name="matchWholeWord_description" xml:space="preserve"><value>Matches only a whole word, so wall does not find wallboard. Applies to the code and the message, not to tags.</value></data>
   <data name="severity_header" xml:space="preserve"><value>Severity</value></data><data name="code_header" xml:space="preserve"><value>Code</value></data><data name="tags_header" xml:space="preserve"><value>Tags</value></data>
   <data name="message_header" xml:space="preserve"><value>Message</value></data><data name="document_header" xml:space="preserve"><value>Document</value></data>
   <data name="created_header" xml:space="preserve"><value>Created</value></data>
@@ -39,7 +41,7 @@
   <data name="moreFilters_title" xml:space="preserve"><value>Filters</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows. The number next to a filter is the number of rows it matches.</value></data>
   <data name="document_description" xml:space="preserve"><value>Shows only the findings of the selected open document.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case. Type # before a tag name to search by tags; several tags narrow the list. The list is updated when you leave the field. The search also limits what is exported.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the message, ignoring case and matching part of a word. The Aa button matches case, the ab| button matches whole words. Type # before a tag name to search by tags; several tags narrow the list. The list is updated when you leave the field. The search also limits what is exported.</value></data>
   <data name="tags_description" xml:space="preserve"><value>Tags of the diagnostic that reported the finding. Click a tag to search for it.</value></data>
   <data name="showPrevious_text" xml:space="preserve"><value>Previous finding</value></data>
   <data name="showPrevious_description" xml:space="preserve"><value>Selects the previous row of the table and shows it in the active view, the same way it was shown last time. Rows that cannot be shown are skipped. In the table, Up and Down select a row and Enter shows it.</value></data>

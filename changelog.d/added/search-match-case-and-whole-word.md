@@ -1,0 +1,1 @@
+Every pane with a search box gained two switches: Match case and Whole word. They change how the search compares its text with the code and the message of a row; the tag search still matches a tag exactly.

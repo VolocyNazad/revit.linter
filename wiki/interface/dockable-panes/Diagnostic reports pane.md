@@ -9,6 +9,8 @@ problem elements, run available fixes, and export the currently displayed result
 self-contained HTML report. The HTML report includes a severity summary, counts by diagnostic code, and the
 detailed findings table.
 
+Type in the search box to show only the findings whose code or message holds the text. The **Aa** button next to the box matches case, and the **ab|** button matches whole words; both are off by default. The list is updated when you leave the field.
+
 ## Automatic updates
 
 While you edit the document, the list keeps itself current. A changed element is checked again and its rows are replaced, a new element is checked as soon as it appears, and undo and redo count as changes, so a finding comes back when its change is undone. Undo and redo also cover an ignore: undoing the ignore brings its findings back, and redoing it hides them again. Removing an entry in the Ignoring pane brings its findings back too. Updates wait for a short pause in editing, so a run of changes is checked once; findings of document checks refresh a little later than element findings. The pause button at the left of the tool bar stops all of it and stays pressed while the pause is on. The rows stay as they are, so you can work through the list while the model changes under it. Press the button again to resume updates from that moment: changes made during the pause are not applied when it ends.
@@ -23,7 +25,7 @@ The button belongs to the shared diagnostic controls, so every pane shows it, bu
 - Click the question-mark button to open the documentation of the finding's diagnostic in the default browser: the page of built-in element or document diagnostics, or the page of the module whose configuration file defines the rule.
 - Click an element link inside the message to locate that element in the active Revit document.
 - A list of element names or identifiers is folded in the message: only its first items are shown, followed by a `+N` counter. Every name in the folded list is quoted, so a name that itself contains a comma stays readable. Click the counter to open the complete list in a popup, which shows one element per line. Only a list value is folded: a long scalar text such as a Revit warning description is never shortened. The search, the sort and the exported report use the complete message.
-- Click a tag in the **Tags** column to put `#tag` in the search box and narrow the list to the diagnostics that carry it. A word with `#` matches a tag exactly, ignoring case; several tags narrow the list. Without `#`, the search looks only at the code and the message. The exported report includes the tags of every finding.
+- Click a tag in the **Tags** column to put `#tag` in the search box and narrow the list to the diagnostics that carry it. A word with `#` matches a tag exactly, ignoring case; several tags narrow the list. The **Aa** and **ab|** buttons do not change the tag search. Without `#`, the search looks only at the code and the message. The exported report includes the tags of every finding.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 
 ## Findings heat map

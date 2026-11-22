@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.DesignData;
+using Revit.Linter.Presentation.ViewModels;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -97,6 +98,9 @@ internal sealed class DiagnosticListDesignData
     /// <summary>Gets or sets the text of the search box.</summary>
     public string SearchField { get; set; } = "fire";
 
+    /// <summary>Gets the search switches shown next to the search box.</summary>
+    public SearchOptionsViewModel SearchOptions { get; } = new();
+
     /// <summary>Gets the target-type filters shown in the filter popup.</summary>
     public IEnumerable<DiagnosticFilterDesignData> Filters { get; } =
     [
@@ -115,6 +119,18 @@ internal sealed class DiagnosticListDesignData
 
     /// <summary>Gets the localized search tooltip description.</summary>
     public string SearchDescription => LocalizationResourceReader.GetString(ResourceBaseName, "search_description");
+
+    /// <summary>Gets the localized title of the match case button.</summary>
+    public string MatchCaseText => LocalizationResourceReader.GetString(ResourceBaseName, "matchCase_text");
+
+    /// <summary>Gets the localized tooltip description of the match case button.</summary>
+    public string MatchCaseDescription => LocalizationResourceReader.GetString(ResourceBaseName, "matchCase_description");
+
+    /// <summary>Gets the localized title of the whole word button.</summary>
+    public string MatchWholeWordText => LocalizationResourceReader.GetString(ResourceBaseName, "matchWholeWord_text");
+
+    /// <summary>Gets the localized tooltip description of the whole word button.</summary>
+    public string MatchWholeWordDescription => LocalizationResourceReader.GetString(ResourceBaseName, "matchWholeWord_description");
 
     /// <summary>Gets the localized documentation tooltip title.</summary>
     public string OpenHelpText => LocalizationResourceReader.GetString(ResourceBaseName, "openHelp_text");

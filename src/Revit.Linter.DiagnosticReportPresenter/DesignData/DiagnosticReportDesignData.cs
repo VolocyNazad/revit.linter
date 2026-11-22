@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Linter.OpenedDocuments.Abstractions.Models;
 using Revit.Linter.Presentation.DesignData;
+using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.ReportMessaging;
 using Revit.Linter.ThemeManaging.Controls;
 using System.Windows.Data;
@@ -183,6 +184,9 @@ internal sealed class DiagnosticReportDesignData
     /// <summary>Gets or sets the text of the search box.</summary>
     public string SearchField { get; set; } = "mark";
 
+    /// <summary>Gets the search switches shown next to the search box.</summary>
+    public SearchOptionsViewModel SearchOptions { get; } = new();
+
     /// <summary>Gets or sets the title of the document whose findings are shown.</summary>
     public string TargetDocumentTitle { get; set; } = "Sample Project.rvt";
 
@@ -227,6 +231,18 @@ internal sealed class DiagnosticReportDesignData
 
     /// <summary>Gets the localized search tooltip description.</summary>
     public string SearchDescription => LocalizationResourceReader.GetString(ResourceBaseName, "search_description");
+
+    /// <summary>Gets the localized title of the match case button.</summary>
+    public string MatchCaseText => LocalizationResourceReader.GetString(ResourceBaseName, "matchCase_text");
+
+    /// <summary>Gets the localized tooltip description of the match case button.</summary>
+    public string MatchCaseDescription => LocalizationResourceReader.GetString(ResourceBaseName, "matchCase_description");
+
+    /// <summary>Gets the localized title of the whole word button.</summary>
+    public string MatchWholeWordText => LocalizationResourceReader.GetString(ResourceBaseName, "matchWholeWord_text");
+
+    /// <summary>Gets the localized tooltip description of the whole word button.</summary>
+    public string MatchWholeWordDescription => LocalizationResourceReader.GetString(ResourceBaseName, "matchWholeWord_description");
 
     /// <summary>Gets the localized text of the reports counter.</summary>
     public string ReportsText => LocalizationResourceReader.GetString(ResourceBaseName, "reports_text");

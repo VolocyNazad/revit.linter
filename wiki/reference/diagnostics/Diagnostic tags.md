@@ -10,7 +10,7 @@ A tag is a plain string attached to a diagnostic. Tags name a diagnostic and let
 
 ## Searching by tag
 
-Type `#` before a tag name in the search box. The name must match a tag exactly, ignoring case, and several tags narrow the list together, for example `#Project #Family`. Text without `#` searches only the code and the message. Clicking a tag in the **Tags** column puts `#tag` in the search box. A tag whose name contains spaces is written in quotes, for example `#"fire alarm"`.
+Type `#` before a tag name in the search box. The name must match a tag exactly, ignoring case, and several tags narrow the list together, for example `#Project #Family`. The **Aa** and **ab|** buttons next to the search box do not change the tag search. Text without `#` searches only the code and the message. Clicking a tag in the **Tags** column puts `#tag` in the search box. A tag whose name contains spaces is written in quotes, for example `#"fire alarm"`.
 
 Two kinds of tags exist.
 
