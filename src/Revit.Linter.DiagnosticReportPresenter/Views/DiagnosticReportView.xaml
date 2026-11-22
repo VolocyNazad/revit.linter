@@ -138,6 +138,20 @@
                         </StackPanel>
                     </Border>
                 </Popup>
+                <ToggleButton
+                    behaviors:HelpToolTip.Description="{Binding MatchWholeWordDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding MatchWholeWordText, Mode=OneWay}"
+                    Content="ab|"
+                    DockPanel.Dock="Right"
+                    IsChecked="{Binding SearchOptions.MatchWholeWord, Mode=TwoWay}"
+                    Style="{StaticResource LinterToolBarSearchOptionToggleButton}" />
+                <ToggleButton
+                    behaviors:HelpToolTip.Description="{Binding MatchCaseDescription, Mode=OneWay}"
+                    behaviors:HelpToolTip.Title="{Binding MatchCaseText, Mode=OneWay}"
+                    Content="Aa"
+                    DockPanel.Dock="Right"
+                    IsChecked="{Binding SearchOptions.MatchCase, Mode=TwoWay}"
+                    Style="{StaticResource LinterToolBarSearchOptionToggleButton}" />
                 <TextBox
                     behaviors:HelpToolTip.Description="{Binding SearchDescription, Mode=OneWay}"
                     behaviors:HelpToolTip.Title="{Binding SearchText, Mode=OneWay}"

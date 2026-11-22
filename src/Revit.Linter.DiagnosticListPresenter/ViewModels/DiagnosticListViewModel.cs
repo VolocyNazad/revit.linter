@@ -39,6 +39,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private TableColumnsViewModel? _columns;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     private DiagnosticSearchQuery? _searchQuery;
+    private SearchOptionsViewModel? _searchOptions;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
     private Dispatcher? _dispatcher;
@@ -79,6 +80,15 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         _activityStream.Publish(new DiagnosticSearchChangedActivity(value));
     }
 
+    /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
+    public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
+
+    private void OnSearchOptionsChanged()
+    {
+        _searchQuery = null;
+        Rows.Refresh();
+    }
+
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticFilter<DiagnosticItemViewModel>> Filters { get; private set; } = [];
     partial void OnFiltersChanged(
@@ -94,6 +104,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     public void ResetSearchAndFilters()
     {
         SearchField = string.Empty;
+        SearchOptions.MatchCase = false;
+        SearchOptions.MatchWholeWord = false;
         _isResettingFilters = true;
         try
         {
@@ -312,7 +324,8 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             IsRowVisible,
             OnFilterToggled);
 
-    private DiagnosticSearchQuery SearchQuery => _searchQuery ??= DiagnosticSearchQuery.Parse(SearchField);
+    private DiagnosticSearchQuery SearchQuery => _searchQuery ??=
+        DiagnosticSearchQuery.Parse(SearchField, SearchOptions.ToMatchOptions());
 
     private bool IsRowVisible(DiagnosticItemViewModel viewModel)
         => Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))

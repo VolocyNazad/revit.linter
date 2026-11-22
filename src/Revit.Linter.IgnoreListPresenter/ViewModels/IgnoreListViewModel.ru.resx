@@ -11,7 +11,11 @@
   <data name="scopeDocument_text" xml:space="preserve"><value>Документ</value></data>
   <data name="deletedTarget_text" xml:space="preserve"><value>Удаленный элемент</value></data>
   <data name="search_text" xml:space="preserve"><value>Поиск</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду и объекту без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Учитывать регистр</value></data>
+  <data name="matchCase_description" xml:space="preserve"><value>Ищет только текст с тем же регистром букв. Действует на код и объект.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Слово целиком</value></data>
+  <data name="matchWholeWord_description" xml:space="preserve"><value>Находит только слово целиком, поэтому по запросу wall не найдётся wallboard. Действует на код и объект.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и объекту без учёта регистра, подходит и часть слова. Кнопка Aa включает учёт регистра, кнопка ab| ищет слово целиком. Список обновляется, когда вы покидаете поле.</value></data>
   <data name="document_text" xml:space="preserve"><value>Документ</value></data>
   <data name="document_description" xml:space="preserve"><value>Показывает список активного документа. Переключите документы, чтобы увидеть другой список.</value></data>
   <data name="showSelected_text" xml:space="preserve"><value>Показать</value></data>

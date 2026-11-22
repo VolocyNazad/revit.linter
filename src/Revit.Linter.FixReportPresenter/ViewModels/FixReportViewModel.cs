@@ -30,6 +30,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private FilteredRowCollection<FixReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private ReportRowAgeTicker? _rowAgeTicker;
+    private SearchOptionsViewModel? _searchOptions;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
@@ -94,6 +95,11 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value) => Rows.Refresh();
 
+    /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
+    public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
+
+    private void OnSearchOptionsChanged() => Rows.Refresh();
+
     [ObservableProperty]
     public partial string? TargetDocumentTitle { get; set; }
     partial void OnTargetDocumentTitleChanged(string? value) => Rows.Refresh();
@@ -140,9 +146,12 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             IsRowVisible);
 
     private bool IsRowVisible(FixReportItemViewModel viewModel)
-        => (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
-        && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase));
+    {
+        Core.Abstractions.Models.SearchMatchOptions options = SearchOptions.ToMatchOptions();
+        return (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
+            && (Core.Abstractions.Models.SearchTextMatcher.Contains(viewModel.MessageText, SearchField, options)
+            || Core.Abstractions.Models.SearchTextMatcher.Contains(viewModel.Code, SearchField, options));
+    }
 
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {

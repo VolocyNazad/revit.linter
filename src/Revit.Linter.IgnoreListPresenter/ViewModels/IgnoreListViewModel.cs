@@ -35,6 +35,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<IgnoreListItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
+    private SearchOptionsViewModel? _searchOptions;
     private Dispatcher? _dispatcher;
 
     private static readonly DocumentationPage PanePage = new("Ignoring pane", "Панель игнорирования");
@@ -91,6 +92,11 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value) => Rows.Refresh();
+
+    /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
+    public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
+
+    private void OnSearchOptionsChanged() => Rows.Refresh();
 
     [ObservableProperty]
     public partial string? ActiveDocumentTitle { get; set; }
@@ -220,8 +226,11 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
             IsRowVisible);
 
     private bool IsRowVisible(IgnoreListItemViewModel viewModel)
-        => viewModel.TargetText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase);
+    {
+        SearchMatchOptions options = SearchOptions.ToMatchOptions();
+        return SearchTextMatcher.Contains(viewModel.TargetText, SearchField, options)
+            || SearchTextMatcher.Contains(viewModel.Code, SearchField, options);
+    }
 
     private async Task ReloadAsync(bool purgeMissing = false)
     {

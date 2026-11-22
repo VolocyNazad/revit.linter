@@ -138,4 +138,76 @@ public sealed class DiagnosticSearchQueryTests
         Assert.Equal(expected, formatted);
         Assert.Equal([tag], DiagnosticSearchQuery.Parse(formatted).Tags);
     }
+
+    [Fact]
+    public void Parse_keeps_the_match_options()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("wall", new SearchMatchOptions(true, true));
+
+        Assert.Equal(new SearchMatchOptions(true, true), query.Options);
+    }
+
+    [Fact]
+    public void Plain_text_ignores_case_and_matches_part_of_a_word_by_default()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("wall");
+
+        Assert.True(query.MatchesText("SHRD001", "The Wallboard is not connected"));
+        Assert.True(query.MatchesText("SHRD001", "The wall is not connected"));
+    }
+
+    [Fact]
+    public void Match_case_requires_the_same_letters()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("Wall", new SearchMatchOptions(true, false));
+
+        Assert.True(query.MatchesText("SHRD001", "The Wall is not connected"));
+        Assert.False(query.MatchesText("SHRD001", "The wall is not connected"));
+    }
+
+    [Fact]
+    public void Match_case_applies_to_the_code_too()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("shrd001", new SearchMatchOptions(true, false));
+
+        Assert.False(query.MatchesText("SHRD001", "The wall is not connected"));
+    }
+
+    [Fact]
+    public void Whole_word_skips_a_part_of_a_longer_word()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("wall", new SearchMatchOptions(false, true));
+
+        Assert.False(query.MatchesText("SHRD001", "The wallboard is not connected"));
+        Assert.True(query.MatchesText("SHRD001", "The wall is not connected"));
+    }
+
+    [Fact]
+    public void Whole_word_accepts_punctuation_and_the_text_end_as_a_boundary()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("wall", new SearchMatchOptions(false, true));
+
+        Assert.True(query.MatchesText("SHRD001", "(wall) is not connected"));
+        Assert.True(query.MatchesText("SHRD001", "The wall"));
+        Assert.False(query.MatchesText("SHRD001", "The firewall"));
+    }
+
+    [Fact]
+    public void Whole_word_and_match_case_work_together()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("Wall", new SearchMatchOptions(true, true));
+
+        Assert.True(query.MatchesText("SHRD001", "The Wall is not connected"));
+        Assert.False(query.MatchesText("SHRD001", "The wall is not connected"));
+        Assert.False(query.MatchesText("SHRD001", "The Wallboard is not connected"));
+    }
+
+    [Fact]
+    public void Match_options_do_not_affect_tags()
+    {
+        DiagnosticSearchQuery query = DiagnosticSearchQuery.Parse("#project", new SearchMatchOptions(true, true));
+
+        Assert.True(query.Matches(["Project"]));
+        Assert.True(query.Matches(["Project", "Family"]));
+    }
 }

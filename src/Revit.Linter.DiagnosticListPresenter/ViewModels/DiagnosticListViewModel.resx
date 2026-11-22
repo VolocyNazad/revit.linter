@@ -6,6 +6,10 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="diagnostics_text" xml:space="preserve"><value>Diagnostics:</value></data>
   <data name="search_text" xml:space="preserve"><value>Search</value></data>
+  <data name="matchCase_text" xml:space="preserve"><value>Match case</value></data>
+  <data name="matchCase_description" xml:space="preserve"><value>Searches only the text with the same letter case. Applies to the code and the description, not to tags.</value></data>
+  <data name="matchWholeWord_text" xml:space="preserve"><value>Whole word</value></data>
+  <data name="matchWholeWord_description" xml:space="preserve"><value>Matches only a whole word, so wall does not find wallboard. Applies to the code and the description, not to tags.</value></data>
   <data name="checkAll_text" xml:space="preserve"><value>Check all</value></data>
   <data name="uncheckAll_text" xml:space="preserve"><value>Uncheck all</value></data>
   <data name="checkVisible_text" xml:space="preserve"><value>Check visible</value></data>
@@ -32,7 +36,7 @@
   <data name="moreFilters_description" xml:space="preserve"><value>Choose which rows the table shows. The number next to a filter is the number of rows it matches.</value></data>
   <data name="isActive_description" xml:space="preserve"><value>Turns the diagnostic on or off for you. Your choice overrides the value set by the rule and is saved in your settings, so it applies to every document.</value></data>
   <data name="severity_description" xml:space="preserve"><value>Sets how serious you consider the findings of the diagnostic. Your choice overrides the level set by the rule and is saved in your settings.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Searches the code and the description, ignoring case. Type # before a tag name to search by tags; several tags narrow the list. The list is updated when you leave the field.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Searches the code and the description, ignoring case and matching part of a word. The Aa button matches case, the ab| button matches whole words. Type # before a tag name to search by tags; several tags narrow the list. The list is updated when you leave the field.</value></data>
   <data name="tags_description" xml:space="preserve"><value>Tags of the diagnostic. Click a tag to search for it.</value></data>
   <data name="checkAll_description" xml:space="preserve"><value>Turns on every diagnostic, including the ones hidden by the search and the filters.</value></data>
   <data name="uncheckAll_description" xml:space="preserve"><value>Turns off every diagnostic, including the ones hidden by the search and the filters.</value></data>

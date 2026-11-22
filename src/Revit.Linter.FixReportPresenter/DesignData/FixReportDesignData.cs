@@ -5,6 +5,7 @@ using Revit.Linter.Behaviors;
 using Revit.Linter.Localization;
 using Revit.Linter.OpenedDocuments.Abstractions.Models;
 using Revit.Linter.Presentation.DesignData;
+using Revit.Linter.Presentation.ViewModels;
 using Revit.Linter.ReportMessaging;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -81,11 +82,26 @@ internal sealed class FixReportDesignData
     /// <summary>Gets or sets the search query of the pane; empty shows the search hint.</summary>
     public string SearchField { get; set; } = string.Empty;
 
+    /// <summary>Gets the search switches shown next to the search box.</summary>
+    public SearchOptionsViewModel SearchOptions { get; } = new();
+
     /// <summary>Gets the localized search hint and tooltip title.</summary>
     public string SearchText => Localized("search_text");
 
     /// <summary>Gets the localized search tooltip description.</summary>
     public string SearchDescription => Localized("search_description");
+
+    /// <summary>Gets the localized title of the match case button.</summary>
+    public string MatchCaseText => Localized("matchCase_text");
+
+    /// <summary>Gets the localized tooltip description of the match case button.</summary>
+    public string MatchCaseDescription => Localized("matchCase_description");
+
+    /// <summary>Gets the localized title of the whole word button.</summary>
+    public string MatchWholeWordText => Localized("matchWholeWord_text");
+
+    /// <summary>Gets the localized tooltip description of the whole word button.</summary>
+    public string MatchWholeWordDescription => Localized("matchWholeWord_description");
 
     /// <summary>Gets the localized fix-count label of the toolbar.</summary>
     public string FixesText => Localized("fixes_text");
