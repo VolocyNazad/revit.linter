@@ -5,6 +5,7 @@ using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
+using Revit.Linter.Presentation.Models;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
@@ -21,6 +22,10 @@ internal sealed partial class DiagnosticItemViewModel(
     private DiagnosticRuleType? _ruleType;
 
     public string Code { get; private set; } = string.Empty;
+
+    /// <summary>Gets the key that orders the row by its diagnostic code.</summary>
+    public DiagnosticCodeSortKey CodeSortKey => new(Code);
+
     public string Description { get; private set; } = string.Empty;
     public bool IsObsolete { get; private set; }
     public bool IsTour { get; private set; }

@@ -48,7 +48,7 @@ button is pressed again.
 
 ## Columns
 
-The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column.
+The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
 
 > **Note:** An ignored finding disappears from the report immediately and is not reported again. Ignored findings are listed in the [[Ignoring pane|Ignore list]] pane, where an entry can be removed to report the finding again.
 

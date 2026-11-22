@@ -1,15 +1,29 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.ViewModels;
 
 namespace Revit.Linter.Presentation.Tests;
 
 /// <summary>
 /// Covers the view state a guided session resets: the default sort order a column click replaces must be
-/// restorable, so a session can bring its own row back to the top.
+/// restorable, so a session can bring its own row back to the top. Also covers the code order itself,
+/// which reads the number of a code as a number.
 /// </summary>
 public sealed class FilteredRowCollectionTests
 {
+    [Fact]
+    public void A_column_sorted_by_the_code_key_orders_numbers_as_numbers()
+    {
+        ObservableCollection<Row> source = new() { new("CSTM10"), new("CSTM2"), new("CSTM1") };
+        FilteredRowCollection<Row> rows = new(
+            [new SortDescription(nameof(Row.CodeSortKey), ListSortDirection.Ascending)],
+            _ => true);
+        rows.Attach(source);
+
+        Assert.Equal(new[] { "CSTM1", "CSTM2", "CSTM10" }, Codes(rows));
+    }
+
     [Fact]
     public void ResetSort_restores_the_default_order_after_a_column_was_sorted()
     {
@@ -82,5 +96,6 @@ public sealed class FilteredRowCollectionTests
 
         public string Group { get; } = group;
         public string Code { get; } = code;
+        public DiagnosticCodeSortKey CodeSortKey => new(Code);
     }
 }

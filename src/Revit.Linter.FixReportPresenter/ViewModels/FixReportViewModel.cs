@@ -136,7 +136,7 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     private FilteredRowCollection<FixReportItemViewModel> Rows => _rows ??=
         new(
-            [new SortDescription(nameof(FixReportItemViewModel.Code), ListSortDirection.Ascending)],
+            [new SortDescription(nameof(FixReportItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
             IsRowVisible);
 
     private bool IsRowVisible(FixReportItemViewModel viewModel)

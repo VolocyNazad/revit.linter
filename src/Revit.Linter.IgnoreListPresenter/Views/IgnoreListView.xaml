@@ -117,7 +117,7 @@
                         MinWidth="{StaticResource LinterGridCodeColumnMinWidth}"
                         composition:TableColumns.Key="{x:Static models:TableColumnKeys.Code}"
                         Header="{Binding DataContext.CodeHeader, Source={StaticResource proxy}}"
-                        SortMemberPath="Code">
+                        SortMemberPath="CodeSortKey">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding Code}" />

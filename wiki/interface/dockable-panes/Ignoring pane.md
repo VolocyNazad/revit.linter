@@ -19,6 +19,8 @@ The pane follows the active document: switching documents shows the ignore list 
 | **Id** | The Revit element id, empty for an entry of the whole document. |
 | **Target** | The element name, the document title, or **Deleted element** when the stored element no longer exists. |
 
+The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
+
 ## Actions
 
 - **Show** (eye in the row) selects the target of the entry in the model. It is unavailable for an entry of the whole document, for a deleted element, and in families.

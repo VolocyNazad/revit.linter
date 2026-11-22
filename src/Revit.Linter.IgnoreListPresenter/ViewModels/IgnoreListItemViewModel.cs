@@ -1,4 +1,5 @@
 using Revit.Linter.Behaviors;
+using Revit.Linter.Presentation.Models;
 
 namespace Revit.Linter.IgnoreListPresenter.ViewModels;
 
@@ -9,6 +10,9 @@ internal sealed class IgnoreListItemViewModel : IHasDiagnosticCode
 {
     /// <summary>Gets the diagnostic code the entry is ignored for.</summary>
     public required string Code { get; init; }
+
+    /// <summary>Gets the key that orders the row by its diagnostic code.</summary>
+    public DiagnosticCodeSortKey CodeSortKey => new(Code);
 
     /// <summary>Gets the localized scope of the entry: an element or the whole document.</summary>
     public required string ScopeText { get; init; }

@@ -262,7 +262,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private FilteredRowCollection<DiagnosticReportItemViewModel> Rows => _rows ??=
         new(
-            [new SortDescription(nameof(DiagnosticReportItemViewModel.Code), ListSortDirection.Ascending)],
+            [new SortDescription(nameof(DiagnosticReportItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
             IsRowVisible);
 
     private bool IsRowVisible(DiagnosticReportItemViewModel viewModel)

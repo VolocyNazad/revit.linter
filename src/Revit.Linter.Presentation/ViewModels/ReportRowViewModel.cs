@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Revit.Linter.Presentation.Models;
 using Revit.Linter.ReportMessaging;
 using System.Globalization;
 
@@ -21,6 +22,9 @@ public abstract partial class ReportRowViewModel : ObservableObject
 
     /// <summary>Gets the diagnostic code that produced the row.</summary>
     public required string Code { get; init; }
+
+    /// <summary>Gets the key that orders the row by its diagnostic code.</summary>
+    public DiagnosticCodeSortKey CodeSortKey => new(Code);
 
     /// <summary>Gets the title of the document that produced the row.</summary>
     public required string DocumentTitle { get; init; }

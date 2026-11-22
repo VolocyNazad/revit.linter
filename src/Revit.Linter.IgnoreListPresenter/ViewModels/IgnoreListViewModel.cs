@@ -216,7 +216,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
 
     private FilteredRowCollection<IgnoreListItemViewModel> Rows => _rows ??=
         new(
-            [new SortDescription(nameof(IgnoreListItemViewModel.Code), ListSortDirection.Ascending)],
+            [new SortDescription(nameof(IgnoreListItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
             IsRowVisible);
 
     private bool IsRowVisible(IgnoreListItemViewModel viewModel)
