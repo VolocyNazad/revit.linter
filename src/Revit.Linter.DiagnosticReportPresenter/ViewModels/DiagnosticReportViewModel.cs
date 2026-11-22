@@ -110,6 +110,17 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
             Collection.Count, stopwatch.ElapsedMilliseconds);
         return Collection.Count(item => string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal));
     }
+
+    /// <inheritdoc />
+    public void SetDocumentChangesRefresh(bool isEnabled)
+    {
+        if (_documentChangesRefreshEnabled == isEnabled) return;
+
+        _documentChangesRefreshEnabled = isEnabled;
+        _logger.LogDebug(
+            "Diagnostic report updates on document changes are {State}",
+            isEnabled ? "enabled" : "paused");
+    }
 }
 
 [GenerateLocalizedProperties]
@@ -149,6 +160,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private Task? _scheduledRestore;
 
     private bool _elementChangesEnabled;
+    private bool _documentChangesRefreshEnabled = true;
     private bool _elementRefreshScheduled;
     private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
 
@@ -451,6 +463,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     private void ElementChangesReceiver_ElementChangesSent(object? sender, ElementChangesSentEventArgs e)
     {
+        // A paused report keeps the rows it shows, so a model change neither removes them nor schedules
+        // a check of the changed elements. The change itself is not remembered: the pause only affects
+        // updates that happen after it ends.
+        if (!_documentChangesRefreshEnabled) return;
+
         var changes = e.Changes;
 
         Document? targetDocument = changes.Document;

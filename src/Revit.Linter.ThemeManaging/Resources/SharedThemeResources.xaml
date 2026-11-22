@@ -184,14 +184,6 @@
         <Setter Property="Width" Value="24" />
     </Style>
 
-    <!--  Toggle whose icon alone tells its state, such as pause and resume: being pressed changes nothing else.  -->
-    <Style
-        x:Key="LinterToolBarToggleButton"
-        BasedOn="{StaticResource LinterToolBarIconToggleButton}"
-        TargetType="{x:Type ToggleButton}">
-        <Setter Property="Margin" Value="6,0,2,0" />
-    </Style>
-
     <!--
         Option of the tool bar that is on while the button is pressed: a neutral dimmed icon when off, an
         accent icon on the selection color with an outline when on, like a pressed ribbon button.

@@ -1,0 +1,1 @@
+The pause button of the diagnostic panes stops the report list from checking changed elements while the document changes, keeps its state between Revit sessions and resumes updates when pressed again.

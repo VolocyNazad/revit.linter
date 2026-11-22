@@ -12,11 +12,14 @@ internal sealed class RunDiagnosticDesignData
 {
     private const string ResourceBaseName = "Revit.Linter.Localization.RunDiagnosticPresenter.ViewModels.RunDiagnosticViewModel";
 
-    /// <summary>Gets the localized pause button text.</summary>
-    public string PauseTitle => Localized("pause_title");
+    /// <summary>Gets the localized pause button text for the current state.</summary>
+    public string PauseToggleTitle => Localized("pause_title");
 
-    /// <summary>Gets the localized pause tooltip description.</summary>
-    public string PauseDescription => Localized("pause_description");
+    /// <summary>Gets the localized pause button tooltip description for the current state.</summary>
+    public string PauseToggleDescription => Localized("pause_description");
+
+    /// <summary>Gets or sets whether the report list keeps its rows while the document changes.</summary>
+    public bool IsPaused { get; set; }
 
     /// <summary>Gets the localized run button text.</summary>
     public string RunTitle => Localized("run_title");
