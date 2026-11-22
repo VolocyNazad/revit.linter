@@ -9,7 +9,9 @@
   <data name="diagnosticDuration_text" xml:space="preserve"><value>{0:0.##} sec.</value></data>
   <data name="run_title" xml:space="preserve"><value>Run diagnostics</value></data>
   <data name="run_description" xml:space="preserve"><value>Runs the enabled diagnostics on the current document, or only on the active view when that option is on.</value></data>
-  <data name="pause_title" xml:space="preserve"><value>Pause</value></data>
-  <data name="pause_description" xml:space="preserve"><value>Reserved for pausing diagnostics. Not available yet.</value></data>
+  <data name="pause_title" xml:space="preserve"><value>Pause updates</value></data>
+  <data name="pause_description" xml:space="preserve"><value>Stops updating the list of findings while you edit the document. The rows the list shows stay as they are.</value></data>
+  <data name="resume_title" xml:space="preserve"><value>Resume updates</value></data>
+  <data name="resume_description" xml:space="preserve"><value>Updates the list of findings again. Changes made during the pause are not applied when it ends.</value></data>
   <data name="onActiveView_description" xml:space="preserve"><value>Checks only the elements of the active view instead of the whole document.</value></data>
 </root>

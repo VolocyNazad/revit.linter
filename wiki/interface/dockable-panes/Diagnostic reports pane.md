@@ -9,6 +9,12 @@ problem elements, run available fixes, and export the currently displayed result
 self-contained HTML report. The HTML report includes a severity summary, counts by diagnostic code, and the
 detailed findings table.
 
+## Automatic updates
+
+While you edit the document, the list stays current: the rows of a changed element are checked again and replaced. The pause button at the left of the tool bar stops that and stays pressed while the pause is on. The rows stay as they are, so you can work through the list while the model changes under it. Press the button again to resume updates from that moment: the findings of elements changed during the pause are checked again at their next change, not when the pause ends.
+
+The button belongs to the shared diagnostic controls, so every pane shows it, but it controls only the list of findings. Running the diagnostics again replaces the list as usual. The paused state is kept with the other run options and restored when Revit starts again.
+
 ## Row actions
 
 - Click the light-bulb button to open the menu of the finding: its fixes and its ignore actions.

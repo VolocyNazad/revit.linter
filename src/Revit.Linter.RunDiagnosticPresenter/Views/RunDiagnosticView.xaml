@@ -26,26 +26,13 @@
     </i:Interaction.Triggers>
     <DockPanel>
         <ToggleButton
-            behaviors:HelpToolTip.Description="{Binding PauseDescription, Mode=OneWay}"
-            behaviors:HelpToolTip.Title="{Binding PauseTitle, Mode=OneWay}"
+            AutomationProperties.Name="{Binding PauseToggleTitle, Mode=OneWay}"
+            behaviors:HelpToolTip.Description="{Binding PauseToggleDescription, Mode=OneWay}"
+            behaviors:HelpToolTip.Title="{Binding PauseToggleTitle, Mode=OneWay}"
+            Content="{controls:Icon Kind=Pause}"
             DockPanel.Dock="Left"
-            IsChecked="True"
-            IsEnabled="false"
-            Style="{StaticResource LinterToolBarToggleButton}">
-            <!--  Shows what a click does next: pause while running, resume while paused.  -->
-            <controls:PathIcon>
-                <controls:PathIcon.Style>
-                    <Style BasedOn="{StaticResource {x:Type controls:PathIcon}}" TargetType="{x:Type controls:PathIcon}">
-                        <Setter Property="Kind" Value="Play" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
-                                <Setter Property="Kind" Value="Pause" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </controls:PathIcon.Style>
-            </controls:PathIcon>
-        </ToggleButton>
+            IsChecked="{Binding IsPaused, Mode=TwoWay}"
+            Style="{StaticResource LinterToolBarOptionToggleButton}" />
         <Button
             behaviors:HelpToolTip.Description="{Binding RunDescription, Mode=OneWay}"
             behaviors:HelpToolTip.Note="{Binding DiagnosticTime}"

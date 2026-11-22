@@ -16,7 +16,7 @@ using System.Diagnostics;
 namespace Revit.Linter.RunDiagnosticPresenter.ViewModels;
 
 /// <summary>
-/// Coordinates diagnostic execution, persisted scope settings, and report presentation for the current document.
+/// Coordinates diagnostic execution, persisted run options, and report presentation for the current document.
 /// </summary>
 [XamlConstructor]
 [GenerateLocalizedProperties]
@@ -69,6 +69,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, 
         _dialog = dialog;
 
         OnActiveViewMode = _store.CurrentValue.OnActiveViewMode;
+        IsPaused = _store.CurrentValue.IsPaused;
 
         _changeSubscription = _store.OnChange(OnStoreValueChanged);
     }
@@ -77,6 +78,7 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, 
     {
         _applyingExternalChanges = true;
         OnActiveViewMode = settings.OnActiveViewMode;
+        IsPaused = settings.IsPaused;
         _applyingExternalChanges = false;
     }
 
@@ -96,6 +98,32 @@ public sealed partial class RunDiagnosticViewModel : RevitInteractionViewModel, 
         if (_applyingExternalChanges) return;
         _store.Update(s => s.OnActiveViewMode = value);
     }
+
+    /// <summary>
+    /// Gets or sets whether the report list keeps the rows it shows while the document changes.
+    /// </summary>
+    /// <remarks>
+    /// The choice is stored with the other run options and restored on the next start. While the list is
+    /// paused, a model change does not remove or check its rows; when the pause ends, the list follows
+    /// only the changes made after it.
+    /// </remarks>
+    [ObservableProperty]
+    public partial bool IsPaused { get; set; }
+    partial void OnIsPausedChanged(bool value)
+    {
+        _diagnosticReportPresenter.SetDocumentChangesRefresh(!value);
+        OnPropertyChanged(nameof(PauseToggleTitle));
+        OnPropertyChanged(nameof(PauseToggleDescription));
+
+        if (_applyingExternalChanges) return;
+        _store.Update(s => s.IsPaused = value);
+    }
+
+    /// <summary>Gets the title of the pause button for the current state.</summary>
+    public string PauseToggleTitle => IsPaused ? ResumeTitle : PauseTitle;
+
+    /// <summary>Gets the description of the pause button for the current state.</summary>
+    public string PauseToggleDescription => IsPaused ? ResumeDescription : PauseDescription;
 
     #region [RunDiagnostic] Command - Run diagnostics
 

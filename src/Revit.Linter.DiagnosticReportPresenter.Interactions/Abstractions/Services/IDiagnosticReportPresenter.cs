@@ -27,6 +27,17 @@ public interface IDiagnosticReportPresenter
     /// <returns>The number of matching findings currently presented.</returns>
     int Refresh(string documentTitle);
 
+    /// <summary>Starts or stops updating the displayed reports when the document changes.</summary>
+    /// <param name="isEnabled">
+    /// <see langword="true"/> to check changed elements again and replace their rows;
+    /// <see langword="false"/> to keep the displayed rows as they are.
+    /// </param>
+    /// <remarks>
+    /// A stopped refresh leaves the rows visible while the document changes. The changes made meanwhile
+    /// are not remembered: when the refresh starts again, only later changes reach the report.
+    /// </remarks>
+    void SetDocumentChangesRefresh(bool isEnabled);
+
     /// <summary>Removes the displayed findings of one diagnostic from every document.</summary>
     /// <param name="diagnosticCode">The diagnostic code, compared ordinally.</param>
     /// <remarks>
