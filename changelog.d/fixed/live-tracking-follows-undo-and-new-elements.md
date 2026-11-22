@@ -1,0 +1,1 @@
+The diagnostic report list now checks the changed and created elements themselves: undo and redo bring findings back, new elements appear without a full run, document-level findings refresh instead of duplicating, and a burst of changes is checked once after a short pause in editing.
