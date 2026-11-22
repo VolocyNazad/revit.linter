@@ -1,3 +1,4 @@
+using Autodesk.Revit.DB.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -180,6 +181,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private bool _diagnosticRefreshScheduled;
     private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
     private readonly HashSet<Document> _pendingDocumentRefreshes = [];
+    // Elements whose rows the pane removed because of an ignore. A non-committed change can revert the
+    // ignore, and the storage change never names these elements, so the pane has to remember them.
+    private readonly Dictionary<Document, HashSet<ElementId>> _ignoredElementIds = [];
     private long _firstPendingChangeTimestamp;
     private long _lastPendingChangeTimestamp;
     private long _lastDocumentDiagnosticsTimestamp;
@@ -530,6 +534,22 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 if (target.Target is Element { IsValidObject: true } element)
                     toRefresh.Add(element.Id);
             }
+        }
+
+        // A non-committed operation can revert an ignore. The ignore transaction changes only the ignore
+        // storage, not the target elements, so the changed identifiers never name the rows it removed.
+        // They are remembered and dropped before the check, because a redo makes the ignore active again.
+        if (changes.Operation != UndoOperation.TransactionCommitted
+            && _ignoredElementIds.TryGetValue(targetDocument, out HashSet<ElementId>? ignoredElementIds)
+            && ignoredElementIds.Count > 0)
+        {
+            foreach (ElementId ignoredElementId in ignoredElementIds)
+            {
+                foreach (DiagnosticReportItemViewModel row in GetTargetItemsBy(ignoredElementId))
+                    Collection.Remove(row);
+            }
+
+            toRefresh.UnionWith(ignoredElementIds);
         }
 
         // Any change can move a document-level finding, even a deletion that leaves no element to check.

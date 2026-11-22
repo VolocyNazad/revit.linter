@@ -38,6 +38,6 @@ internal sealed class ElementChangesMonitor(
         ICollection<ElementId> deleted = args.GetDeletedElementIds();
         if (created.Count == 0 && modified.Count == 0 && deleted.Count == 0) return;
 
-        elementChangesSender.Send(new(args.GetDocument(), created, modified, deleted));
+        elementChangesSender.Send(new(args.GetDocument(), created, modified, deleted, args.Operation));
     }
 }
