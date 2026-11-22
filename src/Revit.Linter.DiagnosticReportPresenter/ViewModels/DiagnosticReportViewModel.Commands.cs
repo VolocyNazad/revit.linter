@@ -36,7 +36,7 @@ internal sealed partial class DiagnosticReportViewModel
     private void FilterByTag(string? tag)
     {
         if (tag is null || string.IsNullOrWhiteSpace(tag)) return;
-        SearchField = tag;
+        SearchField = DiagnosticSearchQuery.FormatTag(tag);
     }
 
     #endregion

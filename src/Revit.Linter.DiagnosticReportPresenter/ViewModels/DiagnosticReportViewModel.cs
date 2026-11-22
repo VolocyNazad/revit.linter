@@ -136,6 +136,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly ITableColumnsService _tableColumnsService;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
+    private DiagnosticSearchQuery? _searchQuery;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
     // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
     private readonly Dictionary<string, IReadOnlyList<string>> _tagsByCode = new(StringComparer.Ordinal);
@@ -224,7 +225,11 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => Rows.Refresh();
+    partial void OnSearchFieldChanged(string value)
+    {
+        _searchQuery = null;
+        Rows.Refresh();
+    }
 
     [ObservableProperty]
     public partial IEnumerable<IDiagnosticFilter<DiagnosticReportItemViewModel>> SeverityFilters { get; set; } = [];
@@ -265,13 +270,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             [new SortDescription(nameof(DiagnosticReportItemViewModel.Code), ListSortDirection.Ascending)],
             IsRowVisible);
 
+    private DiagnosticSearchQuery SearchQuery => _searchQuery ??= DiagnosticSearchQuery.Parse(SearchField);
+
     private bool IsRowVisible(DiagnosticReportItemViewModel viewModel)
         => (string.IsNullOrEmpty(TargetDocumentTitle) || string.Equals(TargetDocumentTitle, viewModel.DocumentTitle))
         && SeverityFilters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
-        && (viewModel.MessageText.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || DiagnosticTags.Matches(viewModel.Tags, SearchField));
+        && SearchQuery.Matches(viewModel.Code, viewModel.MessageText, viewModel.Tags);
 
     private void ClearFilters()
     {

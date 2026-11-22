@@ -32,7 +32,7 @@
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице. Число рядом с фильтром — сколько строк ему соответствует.</value></data>
   <data name="isActive_description" xml:space="preserve"><value>Включает или отключает проверку для вас. Ваш выбор переопределяет значение из правила и сохраняется в настройках, поэтому действует для всех документов.</value></data>
   <data name="severity_description" xml:space="preserve"><value>Задаёт, насколько серьёзными вы считаете замечания проверки. Ваш выбор переопределяет уровень из правила и сохраняется в настройках.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду, описанию и тегам без учёта регистра. Список обновляется, когда вы покидаете поле.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и описанию без учёта регистра. Введите # перед именем тега, чтобы искать по тегам; несколько тегов сужают список. Список обновляется, когда вы покидаете поле.</value></data>
   <data name="tags_description" xml:space="preserve"><value>Теги проверки. Нажмите на тег, чтобы найти по нему.</value></data>
   <data name="checkAll_description" xml:space="preserve"><value>Включает все проверки, в том числе скрытые поиском и фильтрами.</value></data>
   <data name="uncheckAll_description" xml:space="preserve"><value>Отключает все проверки, в том числе скрытые поиском и фильтрами.</value></data>

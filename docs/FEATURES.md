@@ -5,7 +5,7 @@ The concise contract for the product's current scope. Detailed user instructions
 ## Included
 
 - Run built-in and YAML-configured diagnostics against Revit projects and families.
-- Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; clicking a tag searches for it.
+- Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; type `#` before a tag name to search by tags, and clicking a tag does the same.
 - Apply configured fixes through Revit-safe transactions and report their results: a fix pipeline can delete its elements or write a parameter value computed by the formula language.
 - Ignore a finding for its element or for the whole document, review and remove entries in the built-in **Ignore list** pane, and keep the list inside the model.
 - Choose which data columns each of the four tables shows from a tool bar button, with the choice remembered per user across Revit versions; the row action buttons always stay visible, at least one data column stays visible, the current sort survives hiding its column, and a guided step shows a hidden column only for the duration of that step.
