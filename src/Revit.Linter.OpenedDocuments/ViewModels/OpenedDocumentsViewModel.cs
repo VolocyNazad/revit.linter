@@ -47,7 +47,13 @@ public sealed partial class OpenedDocumentsViewModel : RevitInteractionViewModel
 
     private void Refresh()
     {
-        IEnumerable<OpenedDocument> documents = _revitContext.Application!.Documents
+        if (_revitContext.Application is null)
+        {
+            Documents = [new OpenedDocument { Title = string.Empty, DisplayName = AllDocumentsText }];
+            return;
+        }
+
+        IEnumerable<OpenedDocument> documents = _revitContext.Application.Documents
             .Cast<Document>().Where(document => !document.IsLinked)
             .Select(document => new OpenedDocument { Title = document.Title, DisplayName = document.Title })
             .Prepend(new OpenedDocument { Title = string.Empty, DisplayName = AllDocumentsText });
