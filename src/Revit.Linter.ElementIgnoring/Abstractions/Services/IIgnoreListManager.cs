@@ -17,8 +17,10 @@ public interface IIgnoreListManager
     /// Raised after entries are removed from the stored ignore list of a document.
     /// </summary>
     /// <remarks>
-    /// The event fires inside the transaction that writes the list. A consumer that shows findings has
-    /// to check the affected elements again, because the stored list changed rather than the elements.
+    /// The event fires inside the transaction that writes the list, before the caller commits it. A
+    /// consumer that shows findings must not read the stored state synchronously: it has to defer its work
+    /// to a later Revit API context, such as the next Idling event, where the transaction has finished or
+    /// been rolled back.
     /// </remarks>
     event EventHandler<IgnoreListEntriesRemovedEventArgs>? EntriesRemoved;
 
