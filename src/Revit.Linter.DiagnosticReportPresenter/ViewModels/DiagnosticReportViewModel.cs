@@ -7,6 +7,7 @@ using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
+using Revit.Linter.DiagnosticReportPresenter.Services;
 using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 using Revit.Linter.Presentation.Abstractions.Services;
@@ -119,12 +120,7 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
         if (_documentChangesRefreshEnabled == isEnabled) return;
 
         _documentChangesRefreshEnabled = isEnabled;
-        if (!isEnabled)
-        {
-            _pendingElementRefreshes.Clear();
-            _pendingDocumentRefreshes.Clear();
-            StopDiagnosticRefreshTimer();
-        }
+        _refreshScheduler.SetPaused(!isEnabled);
 
         _logger.LogDebug(
             "Diagnostic report updates on document changes are {State}",
@@ -155,6 +151,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IClipboardService _clipboardService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly IDiagnosticRefreshScheduler _refreshScheduler;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private DiagnosticSearchQuery? _searchQuery;
@@ -170,26 +167,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly object _restoreScheduleSync = new();
     private Task? _scheduledRestore;
 
-    // A run waits for a quiet period, so a burst of changes such as an undo chain is checked once.
-    private static readonly TimeSpan DiagnosticRefreshQuietPeriod = TimeSpan.FromMilliseconds(250);
-    // Continuous editing must not starve the list, so a run happens at least this often.
-    private static readonly TimeSpan DiagnosticRefreshMaximumDelay = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan DiagnosticRefreshPollInterval = TimeSpan.FromMilliseconds(100);
-    // Document diagnostics scan the whole document, so they run less often than the element checks.
-    private static readonly TimeSpan DocumentDiagnosticsRefreshPeriod = TimeSpan.FromSeconds(2);
-
-    private bool _elementChangesEnabled;
     private bool _documentChangesRefreshEnabled = true;
-    private bool _diagnosticRefreshScheduled;
-    private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
-    private readonly HashSet<Document> _pendingDocumentRefreshes = [];
-    // Elements whose rows the pane removed because of an ignore. A non-committed change can revert the
-    // ignore, and the storage change never names these elements, so the pane has to remember them.
-    private readonly Dictionary<Document, HashSet<ElementId>> _ignoredElementIds = [];
-    private long _firstPendingChangeTimestamp;
-    private long _lastPendingChangeTimestamp;
-    private long _lastDocumentDiagnosticsTimestamp;
-    private DispatcherTimer? _diagnosticRefreshTimer;
 
     public DiagnosticReportViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler, IRevitEventSource revitEventSource,
@@ -207,6 +185,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ITableColumnsService tableColumnsService,
+            IDiagnosticRefreshScheduler refreshScheduler,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
         _accentElementsServices = accentElementsServices;
@@ -229,6 +208,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _exportService = exportService;
         _clipboardService = clipboardService;
         _tableColumnsService = tableColumnsService;
+        _refreshScheduler = refreshScheduler;
         OpenedDocuments = openedDocuments;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
@@ -390,9 +370,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         _diagnosticReportReceiver.ReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
         _diagnosticReportReceiver.ReportsSent += DiagnosticReportReceiver_DiagnosticReportsSent;
-        _elementChangesEnabled = true;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
         _ignoreListManager.EntriesRemoved += IgnoreListManager_EntriesRemoved;
+        _refreshScheduler.RefreshRequested += DiagnosticRefreshScheduler_RefreshRequested;
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
     }
@@ -407,12 +387,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
         _diagnosticReportReceiver.ReportsSent -= DiagnosticReportReceiver_DiagnosticReportsSent;
-        _elementChangesEnabled = false;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
         _ignoreListManager.EntriesRemoved -= IgnoreListManager_EntriesRemoved;
-        _pendingElementRefreshes.Clear();
-        _pendingDocumentRefreshes.Clear();
-        StopDiagnosticRefreshTimer();
+        _refreshScheduler.RefreshRequested -= DiagnosticRefreshScheduler_RefreshRequested;
+        _refreshScheduler.ClearPending();
         _catalogLease?.Dispose();
         _catalogLease = null;
         _dispatcher = null;
@@ -545,9 +523,8 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         // A non-committed operation can revert an ignore. The ignore transaction changes only the ignore
         // storage, not the target elements, so the changed identifiers never name the rows it removed.
         // They are remembered and dropped before the check, because a redo makes the ignore active again.
-        if (changes.Operation != UndoOperation.TransactionCommitted
-            && _ignoredElementIds.TryGetValue(targetDocument, out HashSet<ElementId>? ignoredElementIds)
-            && ignoredElementIds.Count > 0)
+        IReadOnlyCollection<ElementId> ignoredElementIds = _refreshScheduler.GetIgnoredElements(targetDocument);
+        if (changes.Operation != UndoOperation.TransactionCommitted && ignoredElementIds.Count > 0)
         {
             foreach (ElementId ignoredElementId in ignoredElementIds)
             {
@@ -558,7 +535,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             toRefresh.UnionWith(ignoredElementIds);
         }
 
-        QueueRefresh(targetDocument, toRefresh);
+        _refreshScheduler.QueueRefresh(targetDocument, toRefresh);
     }
 
     // Entries removed in the Ignoring pane are a committed change of the stored list, not of the model,
@@ -571,39 +548,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Document? targetDocument = e.Document;
         if (targetDocument is not { IsValidObject: true }) return;
 
-        HashSet<ElementId> toRefresh = [.. e.ElementIds];
-        if (_ignoredElementIds.TryGetValue(targetDocument, out HashSet<ElementId>? ignoredElementIds))
-            toRefresh.UnionWith(ignoredElementIds);
-
+        HashSet<ElementId> toRefresh = [.. e.ElementIds, .. _refreshScheduler.GetIgnoredElements(targetDocument)];
         foreach (ElementId elementId in toRefresh)
         {
             foreach (DiagnosticReportItemViewModel row in GetTargetRows(targetDocument, elementId))
                 Collection.Remove(row);
         }
 
-        QueueRefresh(targetDocument, toRefresh);
-    }
-
-    private void QueueRefresh(Document document, HashSet<ElementId> elementIds)
-    {
-        // Any change can move a document-level finding, even a deletion that leaves no element to check.
-        _pendingDocumentRefreshes.Add(document);
-
-        if (elementIds.Count > 0)
-        {
-            if (_pendingElementRefreshes.Count == 0)
-                _firstPendingChangeTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-            _lastPendingChangeTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-
-            if (!_pendingElementRefreshes.TryGetValue(document, out HashSet<ElementId>? pending))
-            {
-                pending = [];
-                _pendingElementRefreshes[document] = pending;
-            }
-            pending.UnionWith(elementIds);
-        }
-
-        StartDiagnosticRefreshTimer();
+        _refreshScheduler.QueueRefresh(targetDocument, toRefresh);
     }
 
     private List<DiagnosticReportItemViewModel> GetTargetRows(Document document, ElementId id)
@@ -612,121 +564,29 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
                 && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
             .ToList();
 
-    private void StartDiagnosticRefreshTimer()
+    // The scheduler decides when and what to check; the rows and the diagnostic runs stay here.
+    private void DiagnosticRefreshScheduler_RefreshRequested(
+        object? sender, DiagnosticRefreshRequestedEventArgs e)
     {
-        if (_diagnosticRefreshTimer is not null)
+        foreach (DiagnosticRefreshBatch batch in e.Batches)
         {
-            if (!_diagnosticRefreshTimer.IsEnabled) _diagnosticRefreshTimer.Start();
-            return;
-        }
+            Document document = batch.Document;
+            if (document is not { IsValidObject: true }) continue;
 
-        Dispatcher? dispatcher = _dispatcher;
-        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
-
-        _diagnosticRefreshTimer = new DispatcherTimer(
-            DiagnosticRefreshPollInterval,
-            DispatcherPriority.Background,
-            DiagnosticRefreshTimer_Tick,
-            dispatcher);
-        _diagnosticRefreshTimer.Start();
-    }
-
-    private void StopDiagnosticRefreshTimer() => _diagnosticRefreshTimer?.Stop();
-
-    private void DiagnosticRefreshTimer_Tick(object? sender, EventArgs e)
-    {
-        if (!_elementChangesEnabled || !_documentChangesRefreshEnabled)
-        {
-            StopDiagnosticRefreshTimer();
-            return;
-        }
-
-        if (_diagnosticRefreshScheduled) return;
-
-        long now = System.Diagnostics.Stopwatch.GetTimestamp();
-        bool elementRefreshDue = _pendingElementRefreshes.Count > 0 && IsElementRefreshDue(now);
-        bool documentRefreshDue = _pendingDocumentRefreshes.Count > 0 && IsDocumentDiagnosticsRefreshDue(now);
-
-        if (!elementRefreshDue && !documentRefreshDue)
-        {
-            if (_pendingElementRefreshes.Count == 0 && _pendingDocumentRefreshes.Count == 0)
-                StopDiagnosticRefreshTimer();
-            return;
-        }
-
-        _diagnosticRefreshScheduled = true;
-        StopDiagnosticRefreshTimer();
-        _ = _idlingScheduler.RunAsync(_ => FlushPendingDiagnosticRefreshes());
-    }
-
-    private bool IsElementRefreshDue(long now)
-        => GetElapsed(_lastPendingChangeTimestamp, now) >= DiagnosticRefreshQuietPeriod
-        || GetElapsed(_firstPendingChangeTimestamp, now) >= DiagnosticRefreshMaximumDelay;
-
-    private bool IsDocumentDiagnosticsRefreshDue(long now)
-        => _lastDocumentDiagnosticsTimestamp == 0
-        || GetElapsed(_lastDocumentDiagnosticsTimestamp, now) >= DocumentDiagnosticsRefreshPeriod;
-
-    private static TimeSpan GetElapsed(long from, long to)
-        => TimeSpan.FromSeconds((to - from) / (double)System.Diagnostics.Stopwatch.Frequency);
-
-    private void FlushPendingDiagnosticRefreshes()
-    {
-        try
-        {
-            if (!_elementChangesEnabled) return;
-            if (!_documentChangesRefreshEnabled)
+            if (batch.ElementIds.Count == 0)
             {
-                _pendingElementRefreshes.Clear();
-                _pendingDocumentRefreshes.Clear();
-                return;
-            }
-
-            long now = System.Diagnostics.Stopwatch.GetTimestamp();
-            bool includeElementRefresh =
-                _pendingElementRefreshes.Count > 0 && IsElementRefreshDue(now);
-            bool includeDocumentDiagnostics =
-                _pendingDocumentRefreshes.Count > 0 && IsDocumentDiagnosticsRefreshDue(now);
-
-            if (includeElementRefresh)
-            {
-                List<KeyValuePair<Document, HashSet<ElementId>>> elementRefreshes = [.. _pendingElementRefreshes];
-                _pendingElementRefreshes.Clear();
-
-                foreach (KeyValuePair<Document, HashSet<ElementId>> entry in elementRefreshes)
-                {
-                    Document document = entry.Key;
-                    if (document is not { IsValidObject: true } || entry.Value.Count == 0) continue;
-
-                    // The document rows the previous run produced are replaced by this one. Without
-                    // the removal every incremental run of a failing document diagnostic added a row.
-                    if (includeDocumentDiagnostics) RemoveDocumentRows(document);
-                    _diagnosticService.Execute(
-                        document, entry.Value, includeDocumentDiagnostics: includeDocumentDiagnostics);
-                    if (includeDocumentDiagnostics) _pendingDocumentRefreshes.Remove(document);
-                }
-            }
-
-            if (!includeDocumentDiagnostics) return;
-
-            _lastDocumentDiagnosticsTimestamp = now;
-            List<Document> documentRefreshes = [.. _pendingDocumentRefreshes];
-            _pendingDocumentRefreshes.Clear();
-            foreach (Document document in documentRefreshes)
-            {
-                if (document is not { IsValidObject: true }) continue;
+                if (!batch.IncludeDocumentDiagnostics) continue;
 
                 RemoveDocumentRows(document);
                 _diagnosticService.ExecuteDocumentDiagnostics(document);
+                continue;
             }
-        }
-        finally
-        {
-            _diagnosticRefreshScheduled = false;
-            if (_pendingElementRefreshes.Count > 0 || _pendingDocumentRefreshes.Count > 0)
-                StartDiagnosticRefreshTimer();
-            else
-                StopDiagnosticRefreshTimer();
+
+            // The document rows the previous run produced are replaced by this one. Without the
+            // removal every incremental run of a failing document diagnostic added a row.
+            if (batch.IncludeDocumentDiagnostics) RemoveDocumentRows(document);
+            _diagnosticService.Execute(
+                document, batch.ElementIds, includeDocumentDiagnostics: batch.IncludeDocumentDiagnostics);
         }
     }
 

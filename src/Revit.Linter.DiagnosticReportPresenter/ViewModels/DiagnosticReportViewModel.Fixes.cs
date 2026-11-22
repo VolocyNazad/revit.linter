@@ -389,7 +389,7 @@ internal sealed partial class DiagnosticReportViewModel
         HashSet<ElementId> ids = [.. ignoredIds];
         // The identifiers are remembered for an undo: the storage change that reverts an ignore never
         // names the affected elements, so the rows could otherwise not be restored.
-        GetIgnoredElementIds(document).UnionWith(ids);
+        _refreshScheduler.RememberIgnoredElements(document, ids);
 
         List<DiagnosticReportItemViewModel> stale = Collection
             .Where(item => string.Equals(item.Code, code, StringComparison.Ordinal)
@@ -418,26 +418,18 @@ internal sealed partial class DiagnosticReportViewModel
                 && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal))
             .ToList();
 
-        HashSet<ElementId> remembered = GetIgnoredElementIds(document);
+        HashSet<ElementId> removedIds = [];
         foreach (DiagnosticReportItemViewModel row in stale)
         {
-            if (row.TargetElementId is { } targetId) remembered.Add(targetId);
+            if (row.TargetElementId is { } targetId) removedIds.Add(targetId);
             Collection.Remove(row);
         }
 
+        _refreshScheduler.RememberIgnoredElements(document, removedIds);
         if (stale.Count > 0)
             _logger.LogDebug(
                 "Removed {RowCount} ignored rows of diagnostic {DiagnosticCode}",
                 stale.Count, code);
-    }
-
-    private HashSet<ElementId> GetIgnoredElementIds(Document document)
-    {
-        if (_ignoredElementIds.TryGetValue(document, out HashSet<ElementId>? ids)) return ids;
-
-        ids = [];
-        _ignoredElementIds[document] = ids;
-        return ids;
     }
 
     private static ElementFixContext CreateFixContext(
