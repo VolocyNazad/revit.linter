@@ -305,7 +305,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             [
                 new SortDescription(nameof(DiagnosticItemViewModel.IsTour), ListSortDirection.Descending),
                 new SortDescription(nameof(DiagnosticItemViewModel.IsDebug), ListSortDirection.Descending),
-                new SortDescription(nameof(DiagnosticItemViewModel.Code), ListSortDirection.Ascending),
+                new SortDescription(nameof(DiagnosticItemViewModel.CodeSortKey), ListSortDirection.Ascending),
             ],
             IsRowVisible,
             OnFilterToggled);

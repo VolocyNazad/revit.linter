@@ -8,6 +8,6 @@ Panel with the results of the fixes applied in the current session. Ignoring a f
 
 A long list of element names or identifiers is folded the same way as in the diagnostic report: every name is quoted in the folded line, and the `+N` counter opens the complete list in a popup, one element per line.
 
-The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible.
+The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
 
 Hover over a toolbar button to see what it does; the question-mark button of the tool bar opens this page. While the tooltip is shown, press **F1** to open this page in the default browser.

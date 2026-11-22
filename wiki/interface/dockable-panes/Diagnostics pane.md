@@ -18,7 +18,7 @@ Actions:
 - A diagnostic with `isHidden: true` is not shown in the list, does not run and does not appear in reports; remove the field or use reset to show it again
 ---
 Features:
-- Search, sort, and filter the diagnostics list; the **Filters** button chooses which rows the table shows
+- Search, sort, and filter the diagnostics list; the **Filters** button chooses which rows the table shows. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`
 - Choose which data columns the table shows with the **Columns** button of the tool bar; the row action buttons always stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order. At least one data column always stays visible
 - Find diagnostics by tag: the **Tags** column shows the tags of each diagnostic, and clicking a tag searches for it. A rule states the document kinds it applies to with the ordinary tags `Project` and `Family`. Alongside the tags written in a rule, the product adds reserved system tags and the discipline tag of a built-in check (`Shared`, `Systems` or `Architecture`); see [[Diagnostic tags]] for the full list and how the tag list is built
 - Copy text
