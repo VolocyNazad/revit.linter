@@ -1,4 +1,5 @@
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Nice3point.TUnit.Revit;
 using Revit.Linter.ElementChangesProvider.Abstractions.Models;
@@ -90,5 +91,6 @@ public sealed class ElementChangesProviderTests : RevitApiTest
     }
 
     private static ElementChanges CreateChanges() => new(
-        null!, Array.Empty<ElementId>(), Array.Empty<ElementId>(), Array.Empty<ElementId>());
+        null!, Array.Empty<ElementId>(), Array.Empty<ElementId>(), Array.Empty<ElementId>(),
+        UndoOperation.TransactionCommitted);
 }

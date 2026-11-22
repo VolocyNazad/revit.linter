@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 
 namespace Revit.Linter.ElementChangesProvider.Abstractions.Models;
 
@@ -9,4 +10,10 @@ namespace Revit.Linter.ElementChangesProvider.Abstractions.Models;
 /// <param name="Creared">The identifiers of elements that were created.</param>
 /// <param name="Modified">The identifiers of elements that were modified.</param>
 /// <param name="Deleted">The identifiers of elements that were deleted.</param>
-public sealed record ElementChanges(Document Document, IEnumerable<ElementId> Creared, IEnumerable<ElementId> Modified, IEnumerable<ElementId> Deleted) { }
+/// <param name="Operation">The operation that reported the change: a commit, an undo, a redo or a rollback.</param>
+public sealed record ElementChanges(
+    Document Document,
+    IEnumerable<ElementId> Creared,
+    IEnumerable<ElementId> Modified,
+    IEnumerable<ElementId> Deleted,
+    UndoOperation Operation) { }

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MVVM.DependencyInjection;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
+using Revit.Linter.DiagnosticReportPresenter.Services;
 using Revit.Linter.DiagnosticReportPresenter.ViewModels;
 using Revit.Linter.DiagnosticReportPresenter.Views;
 
@@ -19,6 +20,8 @@ public static class ServiceCollectionExtensions
         /// <returns>The service collection for registration chaining.</returns>
         public IServiceCollection AddDiagnosticReportPresenterModule()
             => services.AddView<DiagnosticReportView>(ServiceLifetime.Singleton)
+                .AddSingleton<DiagnosticRefreshScheduler>()
+                .AddSingleton<IDiagnosticRefreshScheduler>(provider => provider.GetRequiredService<DiagnosticRefreshScheduler>())
                 .AddSingleton<IDiagnosticReportPresenter>(provider => provider.GetRequiredService<DiagnosticReportViewModel>())
         ;
     }

@@ -1,3 +1,4 @@
+using Autodesk.Revit.DB.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Infrastructure;
+using Revit.Linter.DiagnosticReportPresenter.Services;
 using Revit.Linter.OpenedDocuments.Abstractions.Services;
 using Revit.Linter.DiagnosticReportExporting.Abstractions.Services;
 using Revit.Linter.Presentation.Abstractions.Services;
@@ -16,6 +18,7 @@ using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementChangesProvider.Abstractions.Models;
 using Revit.Linter.ElementChangesProvider.Abstractions.Services;
+using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.Linter.Localization;
@@ -117,6 +120,8 @@ internal sealed partial class DiagnosticReportViewModel : IDiagnosticReportPrese
         if (_documentChangesRefreshEnabled == isEnabled) return;
 
         _documentChangesRefreshEnabled = isEnabled;
+        _refreshScheduler.SetPaused(!isEnabled);
+
         _logger.LogDebug(
             "Diagnostic report updates on document changes are {State}",
             isEnabled ? "enabled" : "paused");
@@ -134,6 +139,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
+    private readonly IIgnoreListManager _ignoreListManager;
     private readonly IDialog _dialog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
@@ -145,6 +151,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IClipboardService _clipboardService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly IDiagnosticRefreshScheduler _refreshScheduler;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private DiagnosticSearchQuery? _searchQuery;
@@ -160,10 +167,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly object _restoreScheduleSync = new();
     private Task? _scheduledRestore;
 
-    private bool _elementChangesEnabled;
     private bool _documentChangesRefreshEnabled = true;
-    private bool _elementRefreshScheduled;
-    private readonly Dictionary<Document, HashSet<ElementId>> _pendingElementRefreshes = [];
 
     public DiagnosticReportViewModel(
             IRevitContext revitContext, IRevitIdlingScheduler idlingScheduler, IRevitEventSource revitEventSource,
@@ -172,6 +176,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
+            IIgnoreListManager ignoreListManager,
             IDialog dialog, IConfirmationDialog confirmationDialog,
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
@@ -180,6 +185,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ITableColumnsService tableColumnsService,
+            IDiagnosticRefreshScheduler refreshScheduler,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
         _accentElementsServices = accentElementsServices;
@@ -191,6 +197,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog = diagnosticCatalog;
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
+        _ignoreListManager = ignoreListManager;
         _dialog = dialog;
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
@@ -201,6 +208,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _exportService = exportService;
         _clipboardService = clipboardService;
         _tableColumnsService = tableColumnsService;
+        _refreshScheduler = refreshScheduler;
         OpenedDocuments = openedDocuments;
 
         Collection = new BatchObservableCollection<DiagnosticReportItemViewModel>();
@@ -362,8 +370,9 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         _diagnosticReportReceiver.ReportSent += DiagnosticReportReceiver_DiagnosticReportSent;
         _diagnosticReportReceiver.ReportsSent += DiagnosticReportReceiver_DiagnosticReportsSent;
-        _elementChangesEnabled = true;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
+        _ignoreListManager.EntriesRemoved += IgnoreListManager_EntriesRemoved;
+        _refreshScheduler.RefreshRequested += DiagnosticRefreshScheduler_RefreshRequested;
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
     }
@@ -378,9 +387,10 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
         _diagnosticReportReceiver.ReportSent -= DiagnosticReportReceiver_DiagnosticReportSent;
         _diagnosticReportReceiver.ReportsSent -= DiagnosticReportReceiver_DiagnosticReportsSent;
-        _elementChangesEnabled = false;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
-        _pendingElementRefreshes.Clear();
+        _ignoreListManager.EntriesRemoved -= IgnoreListManager_EntriesRemoved;
+        _refreshScheduler.RefreshRequested -= DiagnosticRefreshScheduler_RefreshRequested;
+        _refreshScheduler.ClearPending();
         _catalogLease?.Dispose();
         _catalogLease = null;
         _dispatcher = null;
@@ -478,11 +488,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         Document? targetDocument = changes.Document;
         if (targetDocument is not { IsValidObject: true }) return;
 
-        HashSet<ElementId> toRefresh = [];
+        // The changed elements are checked themselves, not only the rows that mention them. A row
+        // removed because its finding disappeared is not found by a later undo, and a created element
+        // has no row that could name it, so both used to stay unchecked until a full run.
+        HashSet<ElementId> toRefresh = [.. changes.Modified, .. changes.Creared];
 
         foreach (var id in changes.Modified)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets)
             {
                 bool success = Collection.Remove(target);
@@ -493,13 +506,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         foreach (var id in changes.Deleted)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets) Collection.Remove(target);
         }
 
         foreach (var id in changes.Creared)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets)
             {
                 if (target.Target is Element { IsValidObject: true } element)
@@ -507,52 +520,93 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             }
         }
 
-        if (toRefresh.Count > 0)
+        // A non-committed operation can revert an ignore. The ignore transaction changes only the ignore
+        // storage, not the target elements, so the changed identifiers never name the rows it removed.
+        // They are remembered and dropped before the check, because a redo makes the ignore active again.
+        IReadOnlyCollection<ElementId> ignoredElementIds = _refreshScheduler.GetIgnoredElements(targetDocument);
+        if (changes.Operation != UndoOperation.TransactionCommitted && ignoredElementIds.Count > 0)
         {
-            if (!_pendingElementRefreshes.TryGetValue(targetDocument, out HashSet<ElementId>? pending))
+            foreach (ElementId ignoredElementId in ignoredElementIds)
             {
-                pending = [];
-                _pendingElementRefreshes[targetDocument] = pending;
+                foreach (DiagnosticReportItemViewModel row in GetTargetRows(targetDocument, ignoredElementId))
+                    Collection.Remove(row);
             }
-            pending.UnionWith(toRefresh);
 
-            ScheduleElementDiagnosticsRefresh();
+            toRefresh.UnionWith(ignoredElementIds);
         }
 
-        List<DiagnosticReportItemViewModel> GetTargetItemsBy(ElementId id) {
-            return Collection
-                .Where(i => i.DocumentTitle == targetDocument.Title
-                && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
-                .ToList();
-        }
+        _refreshScheduler.QueueRefresh(targetDocument, toRefresh);
     }
 
-    private void ScheduleElementDiagnosticsRefresh()
+    // Entries removed in the Ignoring pane are a committed change of the stored list, not of the model,
+    // so the element change event never names their targets. The removed entries are checked again here;
+    // the identifiers of earlier ignores cover the rows a document-level entry suppressed.
+    private void IgnoreListManager_EntriesRemoved(object? sender, IgnoreListEntriesRemovedEventArgs e)
     {
-        if (_elementRefreshScheduled) return;
-        _elementRefreshScheduled = true;
+        if (!_documentChangesRefreshEnabled) return;
 
-        _ = _idlingScheduler.RunAsync(_ => FlushPendingElementDiagnosticsRefreshes());
-    }
+        Document? targetDocument = e.Document;
+        if (targetDocument is not { IsValidObject: true }) return;
 
-    private void FlushPendingElementDiagnosticsRefreshes()
-    {
-        _elementRefreshScheduled = false;
-
-        if (!_elementChangesEnabled || _pendingElementRefreshes.Count == 0) return;
-
-        List<KeyValuePair<Document, HashSet<ElementId>>> pending = [.. _pendingElementRefreshes];
-        _pendingElementRefreshes.Clear();
-
-        foreach (KeyValuePair<Document, HashSet<ElementId>> entry in pending)
+        HashSet<ElementId> toRefresh = [.. e.ElementIds, .. _refreshScheduler.GetIgnoredElements(targetDocument)];
+        foreach (ElementId elementId in toRefresh)
         {
-            Document document = entry.Key;
-            HashSet<ElementId> elementIds = entry.Value;
-
-            if (document is not { IsValidObject: true } || elementIds.Count == 0) continue;
-
-            _diagnosticService.Execute(document, elementIds);
+            foreach (DiagnosticReportItemViewModel row in GetTargetRows(targetDocument, elementId))
+                Collection.Remove(row);
         }
+
+        _refreshScheduler.QueueRefresh(targetDocument, toRefresh);
+    }
+
+    private List<DiagnosticReportItemViewModel> GetTargetRows(Document document, ElementId id)
+        => Collection
+            .Where(i => i.DocumentTitle == document.Title
+                && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
+            .ToList();
+
+    // The scheduler decides when and what to check; the rows and the diagnostic runs stay here.
+    private void DiagnosticRefreshScheduler_RefreshRequested(
+        object? sender, DiagnosticRefreshRequestedEventArgs e)
+    {
+        foreach (DiagnosticRefreshBatch batch in e.Batches)
+        {
+            Document document = batch.Document;
+            if (document is not { IsValidObject: true }) continue;
+
+            if (batch.ElementIds.Count == 0)
+            {
+                if (!batch.IncludeDocumentDiagnostics) continue;
+
+                RemoveDocumentRows(document);
+                _diagnosticService.ExecuteDocumentDiagnostics(document);
+                continue;
+            }
+
+            // The document rows the previous run produced are replaced by this one. Without the
+            // removal every incremental run of a failing document diagnostic added a row.
+            if (batch.IncludeDocumentDiagnostics) RemoveDocumentRows(document);
+            _diagnosticService.Execute(
+                document, batch.ElementIds, includeDocumentDiagnostics: batch.IncludeDocumentDiagnostics);
+        }
+    }
+
+    // Document diagnostics report against the document itself, so their rows are recognized by the
+    // document target rather than an element identifier.
+    private void RemoveDocumentRows(Document document)
+    {
+        string documentTitle = document.Title;
+        List<DiagnosticReportItemViewModel> rows = Collection
+            .Where(item => item.Target is Document
+                && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal))
+            .ToList();
+        if (rows.Count == 0) return;
+
+        foreach (DiagnosticReportItemViewModel row in rows)
+            Collection.Remove(row);
+
+        _logger.LogDebug(
+            "Removed {RowCount} document report rows of {DocumentTitle} before the refresh",
+            rows.Count, documentTitle);
     }
 
     private void DiagnosticReportReceiver_DiagnosticReportSent(object? sender, DiagnosticMessageSentEventArgs e)

@@ -16,7 +16,8 @@ internal sealed class DiagnosticService(
         ILogger<DiagnosticService> logger)
     : IDiagnosticService
 {
-    public DiagnosticServiceResult Execute(Document document, IEnumerable<ElementId> elementIds, View? view = null)
+    public DiagnosticServiceResult Execute(
+        Document document, IEnumerable<ElementId> elementIds, View? view = null, bool includeDocumentDiagnostics = true)
         => ExecuteSafely(document, () =>
         {
             using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
@@ -27,8 +28,8 @@ internal sealed class DiagnosticService(
                 .Select(elementId => document.GetElement(elementId))
                 .OfType<Element>()
                 .ToArray();
-            bool documentDiagnosticsCompleted = RunDocumentDiagnostics(
-                snapshot, document, DiagnosticRunOptions.Incremental);
+            bool documentDiagnosticsCompleted = !includeDocumentDiagnostics
+                || RunDocumentDiagnostics(snapshot, document, DiagnosticRunOptions.Incremental);
             bool elementDiagnosticsCompleted = RunElementDiagnostics(
                 snapshot, document, elements, view, DiagnosticRunOptions.Incremental);
             return documentDiagnosticsCompleted && elementDiagnosticsCompleted;
@@ -61,6 +62,13 @@ internal sealed class DiagnosticService(
         metrics.LogCompleted(logger, document, view is not null, result);
         return result;
     }
+
+    public DiagnosticServiceResult ExecuteDocumentDiagnostics(Document document)
+        => ExecuteSafely(document, () =>
+        {
+            using IDiagnosticCatalogSnapshotLease lease = diagnosticCatalog.AcquireSnapshot();
+            return RunDocumentDiagnostics(lease.Snapshot, document, DiagnosticRunOptions.Incremental);
+        });
 
     private DiagnosticServiceResult ExecuteSafely(Document document, Func<bool> execute)
     {

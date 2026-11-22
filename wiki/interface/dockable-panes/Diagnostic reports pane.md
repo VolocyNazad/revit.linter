@@ -11,7 +11,7 @@ detailed findings table.
 
 ## Automatic updates
 
-While you edit the document, the list stays current: the rows of a changed element are checked again and replaced. The pause button at the left of the tool bar stops that and stays pressed while the pause is on. The rows stay as they are, so you can work through the list while the model changes under it. Press the button again to resume updates from that moment: the findings of elements changed during the pause are checked again at their next change, not when the pause ends.
+While you edit the document, the list keeps itself current. A changed element is checked again and its rows are replaced, a new element is checked as soon as it appears, and undo and redo count as changes, so a finding comes back when its change is undone. Undo and redo also cover an ignore: undoing the ignore brings its findings back, and redoing it hides them again. Removing an entry in the Ignoring pane brings its findings back too. Updates wait for a short pause in editing, so a run of changes is checked once; findings of document checks refresh a little later than element findings. The pause button at the left of the tool bar stops all of it and stays pressed while the pause is on. The rows stay as they are, so you can work through the list while the model changes under it. Press the button again to resume updates from that moment: changes made during the pause are not applied when it ends.
 
 The button belongs to the shared diagnostic controls, so every pane shows it, but it controls only the list of findings. Running the diagnostics again replaces the list as usual. The paused state is kept with the other run options and restored when Revit starts again.
 

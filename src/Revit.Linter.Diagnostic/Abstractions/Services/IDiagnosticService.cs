@@ -1,4 +1,4 @@
-﻿namespace Revit.Linter.Diagnostic.Abstractions.Services;
+namespace Revit.Linter.Diagnostic.Abstractions.Services;
 
 /// <summary>
 /// Executes registered diagnostics and publishes reports for invalid results.
@@ -17,8 +17,13 @@ public interface IDiagnosticService
     /// <param name="document">The document to diagnose.</param>
     /// <param name="elementIds">The identifiers of elements to diagnose.</param>
     /// <param name="view">The optional view context supplied to element diagnostics.</param>
+    /// <param name="includeDocumentDiagnostics">
+    /// Whether the document diagnostics run too. A caller that refreshes the result of a model change can
+    /// keep them for a separate, less frequent run.
+    /// </param>
     /// <returns>The outcome of the diagnostic operation.</returns>
-    DiagnosticServiceResult Execute(Document document, IEnumerable<ElementId> elementIds, View? view = null);
+    DiagnosticServiceResult Execute(
+        Document document, IEnumerable<ElementId> elementIds, View? view = null, bool includeDocumentDiagnostics = true);
 
     /// <summary>
     /// Executes document diagnostics and element diagnostics for elements collected from the document or view.
@@ -27,4 +32,11 @@ public interface IDiagnosticService
     /// <param name="view">The optional view that limits element collection and supplies diagnostic context.</param>
     /// <returns>The outcome of the diagnostic operation.</returns>
     DiagnosticServiceResult Execute(Document document, View? view = null);
+
+    /// <summary>
+    /// Executes only the document diagnostics of the document.
+    /// </summary>
+    /// <param name="document">The document to diagnose.</param>
+    /// <returns>The outcome of the diagnostic operation.</returns>
+    DiagnosticServiceResult ExecuteDocumentDiagnostics(Document document);
 }

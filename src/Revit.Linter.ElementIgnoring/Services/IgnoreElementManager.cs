@@ -25,6 +25,8 @@ internal sealed class IgnoreElementManager(
 
     private readonly ILogger<IgnoreElementManager> _logger = logger ?? NullLogger<IgnoreElementManager>.Instance;
 
+    public event EventHandler<IgnoreListEntriesRemovedEventArgs>? EntriesRemoved;
+
     public IgnoreElementFeedback Ignore(string code, Element element)
     {
         if (element is null || string.IsNullOrWhiteSpace(code))
@@ -138,6 +140,7 @@ internal sealed class IgnoreElementManager(
             _logger.LogInformation(
                 "Removed the ignore entry of element {ElementId} for diagnostic {DiagnosticCode} in {DocumentTitle}",
                 idValue, code, document.Title);
+            EntriesRemoved?.Invoke(this, new(document, new[] { element.Id }));
             return true;
         }
         catch (Exception exception)
@@ -168,6 +171,7 @@ internal sealed class IgnoreElementManager(
             _logger.LogInformation(
                 "Removed the document-level ignore entry for diagnostic {DiagnosticCode} in {DocumentTitle}",
                 code, document.Title);
+            EntriesRemoved?.Invoke(this, new(document, Array.Empty<ElementId>()));
             return true;
         }
         catch (Exception exception)
@@ -212,16 +216,30 @@ internal sealed class IgnoreElementManager(
             List<StoredIgnore> stored = ReadEntries(document);
             int before = stored.Count;
             stored.RemoveAll(i => i.Scope == IgnoreScope.Element && FindElement(document, i.Id) is null);
+            List<ElementId> removedElementIds = [];
             if (code is null)
+            {
+                removedElementIds.AddRange(stored
+                    .Where(i => i.Scope == IgnoreScope.Element)
+                    .Select(i => ToElementId(i.Id)));
                 stored.Clear();
+            }
             else
+            {
+                removedElementIds.AddRange(stored
+                    .Where(i => i.Scope == IgnoreScope.Element
+                        && string.Equals(i.Code, code, StringComparison.Ordinal))
+                    .Select(i => ToElementId(i.Id)));
                 stored.RemoveAll(i => string.Equals(i.Code, code, StringComparison.Ordinal));
+            }
+
             int removed = before - stored.Count;
             if (removed == 0) return 0;
             WriteEntries(document, stored);
             GetState(document).Invalidate();
             _logger.LogInformation(
                 "Cleared {EntryCount} ignore entries in {DocumentTitle}", removed, document.Title);
+            EntriesRemoved?.Invoke(this, new(document, removedElementIds));
             return removed;
         }
         catch (Exception exception)

@@ -62,7 +62,7 @@ internal sealed partial class DiagnosticReportViewModel
                         ReportIgnoreApplied(report.Code);
                         // The ignore guarantees the next run will not report this finding, and the
                         // ignored element itself is untouched, so no change event removes the stale row.
-                        RemoveIgnoredRows(report.Code, doc.Title, [elementId]);
+                        RemoveIgnoredRows(doc, report.Code, [elementId]);
                     }
 
                     if (!success)
@@ -129,7 +129,7 @@ internal sealed partial class DiagnosticReportViewModel
                 {
                     ReportIgnoreApplied(report.Code);
                     RemoveIgnoredRows(
-                        report.Code, doc.Title, targets.Select(target => target.Id));
+                        doc, report.Code, targets.Select(target => target.Id));
                 }
 
                 if (hasErrors)
@@ -359,7 +359,7 @@ internal sealed partial class DiagnosticReportViewModel
                     ReportIgnoreApplied(report.Code);
                     // A document-level ignore suppresses every finding of the code in this document,
                     // so all of its rows are stale, and no change event removes them.
-                    RemoveIgnoredDocumentRows(report.Code, documentTitle);
+                    RemoveIgnoredDocumentRows(document, report.Code);
                 }
 
                 if (!success)
@@ -380,12 +380,17 @@ internal sealed partial class DiagnosticReportViewModel
     /// <summary>
     /// Removes the report rows the ignore just made stale: their findings will no longer be produced.
     /// </summary>
+    /// <param name="document">The document the ignore was written to.</param>
     /// <param name="code">The ignored diagnostic code.</param>
-    /// <param name="documentTitle">The title of the document the ignore was written to.</param>
     /// <param name="ignoredIds">The ignored element identifiers.</param>
-    private void RemoveIgnoredRows(string code, string documentTitle, IEnumerable<ElementId> ignoredIds)
+    private void RemoveIgnoredRows(Document document, string code, IEnumerable<ElementId> ignoredIds)
     {
+        string documentTitle = document.Title;
         HashSet<ElementId> ids = [.. ignoredIds];
+        // The identifiers are remembered for an undo: the storage change that reverts an ignore never
+        // names the affected elements, so the rows could otherwise not be restored.
+        _refreshScheduler.RememberIgnoredElements(document, ids);
+
         List<DiagnosticReportItemViewModel> stale = Collection
             .Where(item => string.Equals(item.Code, code, StringComparison.Ordinal)
                 && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal)
@@ -403,16 +408,24 @@ internal sealed partial class DiagnosticReportViewModel
     /// <summary>
     /// Removes every report row of a document-level ignore: the whole code is suppressed in the document.
     /// </summary>
+    /// <param name="document">The ignored document.</param>
     /// <param name="code">The ignored diagnostic code.</param>
-    /// <param name="documentTitle">The title of the ignored document.</param>
-    private void RemoveIgnoredDocumentRows(string code, string documentTitle)
+    private void RemoveIgnoredDocumentRows(Document document, string code)
     {
+        string documentTitle = document.Title;
         List<DiagnosticReportItemViewModel> stale = Collection
             .Where(item => string.Equals(item.Code, code, StringComparison.Ordinal)
                 && string.Equals(item.DocumentTitle, documentTitle, StringComparison.Ordinal))
             .ToList();
+
+        HashSet<ElementId> removedIds = [];
         foreach (DiagnosticReportItemViewModel row in stale)
+        {
+            if (row.TargetElementId is { } targetId) removedIds.Add(targetId);
             Collection.Remove(row);
+        }
+
+        _refreshScheduler.RememberIgnoredElements(document, removedIds);
         if (stale.Count > 0)
             _logger.LogDebug(
                 "Removed {RowCount} ignored rows of diagnostic {DiagnosticCode}",
