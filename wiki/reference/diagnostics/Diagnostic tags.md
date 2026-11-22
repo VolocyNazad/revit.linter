@@ -6,7 +6,11 @@ lang: en
 
 # Diagnostic tags
 
-A tag is a plain string attached to a diagnostic. Tags name a diagnostic and let you find it; they do not change how it runs. They appear in the **Tags** column of the [[Diagnostics pane]] and the [[Diagnostic reports pane]], take part in the search on both panes, can be clicked to search for the tag, and are written to every exported report.
+A tag is a plain string attached to a diagnostic. Tags name a diagnostic and let you find it; they do not change how it runs. They appear in the **Tags** column of the [[Diagnostics pane]] and the [[Diagnostic reports pane]], are searched by typing `#` before a tag name on either pane, can be clicked to search for the tag, and are written to every exported report.
+
+## Searching by tag
+
+Type `#` before a tag name in the search box. The name must match a tag exactly, ignoring case, and several tags narrow the list together, for example `#Project #Family`. Text without `#` searches only the code and the message. Clicking a tag in the **Tags** column puts `#tag` in the search box. A tag whose name contains spaces is written in quotes, for example `#"fire alarm"`.
 
 Two kinds of tags exist.
 

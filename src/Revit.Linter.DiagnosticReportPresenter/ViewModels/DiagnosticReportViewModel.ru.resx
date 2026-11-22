@@ -39,7 +39,7 @@
   <data name="moreFilters_title" xml:space="preserve"><value>Фильтры</value></data>
   <data name="moreFilters_description" xml:space="preserve"><value>Выберите, какие строки показывать в таблице. Число рядом с фильтром — сколько строк ему соответствует.</value></data>
   <data name="document_description" xml:space="preserve"><value>Показывает замечания только выбранного открытого документа.</value></data>
-  <data name="search_description" xml:space="preserve"><value>Ищет по коду, сообщению и тегам без учёта регистра. Список обновляется, когда вы покидаете поле. Поиск ограничивает и экспорт.</value></data>
+  <data name="search_description" xml:space="preserve"><value>Ищет по коду и сообщению без учёта регистра. Введите # перед именем тега, чтобы искать по тегам; несколько тегов сужают список. Список обновляется, когда вы покидаете поле. Поиск ограничивает и экспорт.</value></data>
   <data name="tags_description" xml:space="preserve"><value>Теги проверки, которая обнаружила замечание. Нажмите на тег, чтобы найти по нему.</value></data>
   <data name="showPrevious_text" xml:space="preserve"><value>Предыдущее замечание</value></data>
   <data name="showPrevious_description" xml:space="preserve"><value>Выбирает предыдущую строку таблицы и показывает её на активном виде тем же способом, что и в прошлый раз. Строки, которые нельзя показать, пропускаются. В таблице стрелки вверх и вниз выбирают строку, Enter показывает её.</value></data>

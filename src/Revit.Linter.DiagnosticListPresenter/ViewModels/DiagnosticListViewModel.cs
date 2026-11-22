@@ -38,6 +38,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    private DiagnosticSearchQuery? _searchQuery;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
     private Dispatcher? _dispatcher;
@@ -71,6 +72,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     public partial string SearchField { get; set; } = string.Empty;
     partial void OnSearchFieldChanged(string value)
     {
+        _searchQuery = null;
         // Search typing refreshes the list immediately; the tour observes the typed text
         // separately, so typing alone never completes a step that also asks for filter actions.
         Rows.Refresh();
@@ -116,7 +118,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private void FilterByTag(string? tag)
     {
         if (tag is null || string.IsNullOrWhiteSpace(tag)) return;
-        SearchField = tag;
+        SearchField = DiagnosticSearchQuery.FormatTag(tag);
     }
 
     #endregion
@@ -310,11 +312,11 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             IsRowVisible,
             OnFilterToggled);
 
+    private DiagnosticSearchQuery SearchQuery => _searchQuery ??= DiagnosticSearchQuery.Parse(SearchField);
+
     private bool IsRowVisible(DiagnosticItemViewModel viewModel)
         => Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
-        && (viewModel.Description.ToString().Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || viewModel.Code.Contains(SearchField, StringComparison.CurrentCultureIgnoreCase)
-        || DiagnosticTags.Matches(viewModel.Tags, SearchField));
+        && SearchQuery.Matches(viewModel.Code, viewModel.Description.ToString(), viewModel.Tags);
 
     private void OnFilterToggled()
     {
