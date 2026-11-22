@@ -17,6 +17,7 @@ using Revit.Linter.DiagnosticReportProvider.Abstractions.Services;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 using Revit.Linter.ElementChangesProvider.Abstractions.Models;
 using Revit.Linter.ElementChangesProvider.Abstractions.Services;
+using Revit.Linter.ElementIgnoring.Abstractions.Models;
 using Revit.Linter.ElementIgnoring.Abstractions.Services;
 using Revit.Linter.FixReportProvider.Abstractions.Services;
 using Revit.Linter.Localization;
@@ -142,6 +143,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDiagnosticService _diagnosticService;
     private readonly IIgnoreElementProvider _ignoreElementProvider;
+    private readonly IIgnoreListManager _ignoreListManager;
     private readonly IDialog _dialog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
@@ -196,6 +198,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportReceiver diagnosticReportReceiver, IElementChangesReceiver elementChangesReceiver,
             IDiagnosticCatalog diagnosticCatalog,
             IDiagnosticService diagnosticService, IIgnoreElementProvider ignoreElementProvider,
+            IIgnoreListManager ignoreListManager,
             IDialog dialog, IConfirmationDialog confirmationDialog,
             IDocumentationLauncher documentationLauncher,
             IUserInterfaceActivityStream activityStream,
@@ -215,6 +218,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticCatalog = diagnosticCatalog;
         _diagnosticService = diagnosticService;
         _ignoreElementProvider = ignoreElementProvider;
+        _ignoreListManager = ignoreListManager;
         _dialog = dialog;
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
@@ -388,6 +392,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticReportReceiver.ReportsSent += DiagnosticReportReceiver_DiagnosticReportsSent;
         _elementChangesEnabled = true;
         _elementChangesReceiver.Sent += ElementChangesReceiver_ElementChangesSent;
+        _ignoreListManager.EntriesRemoved += IgnoreListManager_EntriesRemoved;
 
         TargetDocumentTitle = _revitContext.ActiveDocument?.Title;
     }
@@ -404,6 +409,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _diagnosticReportReceiver.ReportsSent -= DiagnosticReportReceiver_DiagnosticReportsSent;
         _elementChangesEnabled = false;
         _elementChangesReceiver.Sent -= ElementChangesReceiver_ElementChangesSent;
+        _ignoreListManager.EntriesRemoved -= IgnoreListManager_EntriesRemoved;
         _pendingElementRefreshes.Clear();
         _pendingDocumentRefreshes.Clear();
         StopDiagnosticRefreshTimer();
@@ -511,7 +517,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         foreach (var id in changes.Modified)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets)
             {
                 bool success = Collection.Remove(target);
@@ -522,13 +528,13 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
 
         foreach (var id in changes.Deleted)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets) Collection.Remove(target);
         }
 
         foreach (var id in changes.Creared)
         {
-            var targets = GetTargetItemsBy(id);
+            var targets = GetTargetRows(targetDocument, id);
             foreach (var target in targets)
             {
                 if (target.Target is Element { IsValidObject: true } element)
@@ -545,39 +551,66 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         {
             foreach (ElementId ignoredElementId in ignoredElementIds)
             {
-                foreach (DiagnosticReportItemViewModel row in GetTargetItemsBy(ignoredElementId))
+                foreach (DiagnosticReportItemViewModel row in GetTargetRows(targetDocument, ignoredElementId))
                     Collection.Remove(row);
             }
 
             toRefresh.UnionWith(ignoredElementIds);
         }
 
-        // Any change can move a document-level finding, even a deletion that leaves no element to check.
-        _pendingDocumentRefreshes.Add(targetDocument);
+        QueueRefresh(targetDocument, toRefresh);
+    }
 
-        if (toRefresh.Count > 0)
+    // Entries removed in the Ignoring pane are a committed change of the stored list, not of the model,
+    // so the element change event never names their targets. The removed entries are checked again here;
+    // the identifiers of earlier ignores cover the rows a document-level entry suppressed.
+    private void IgnoreListManager_EntriesRemoved(object? sender, IgnoreListEntriesRemovedEventArgs e)
+    {
+        if (!_documentChangesRefreshEnabled) return;
+
+        Document? targetDocument = e.Document;
+        if (targetDocument is not { IsValidObject: true }) return;
+
+        HashSet<ElementId> toRefresh = [.. e.ElementIds];
+        if (_ignoredElementIds.TryGetValue(targetDocument, out HashSet<ElementId>? ignoredElementIds))
+            toRefresh.UnionWith(ignoredElementIds);
+
+        foreach (ElementId elementId in toRefresh)
+        {
+            foreach (DiagnosticReportItemViewModel row in GetTargetRows(targetDocument, elementId))
+                Collection.Remove(row);
+        }
+
+        QueueRefresh(targetDocument, toRefresh);
+    }
+
+    private void QueueRefresh(Document document, HashSet<ElementId> elementIds)
+    {
+        // Any change can move a document-level finding, even a deletion that leaves no element to check.
+        _pendingDocumentRefreshes.Add(document);
+
+        if (elementIds.Count > 0)
         {
             if (_pendingElementRefreshes.Count == 0)
                 _firstPendingChangeTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             _lastPendingChangeTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
 
-            if (!_pendingElementRefreshes.TryGetValue(targetDocument, out HashSet<ElementId>? pending))
+            if (!_pendingElementRefreshes.TryGetValue(document, out HashSet<ElementId>? pending))
             {
                 pending = [];
-                _pendingElementRefreshes[targetDocument] = pending;
+                _pendingElementRefreshes[document] = pending;
             }
-            pending.UnionWith(toRefresh);
+            pending.UnionWith(elementIds);
         }
 
         StartDiagnosticRefreshTimer();
-
-        List<DiagnosticReportItemViewModel> GetTargetItemsBy(ElementId id) {
-            return Collection
-                .Where(i => i.DocumentTitle == targetDocument.Title
-                && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
-                .ToList();
-        }
     }
+
+    private List<DiagnosticReportItemViewModel> GetTargetRows(Document document, ElementId id)
+        => Collection
+            .Where(i => i.DocumentTitle == document.Title
+                && (Equals(i.TargetElementId, id) || i.TargetDependencyElementIds.Contains(id)))
+            .ToList();
 
     private void StartDiagnosticRefreshTimer()
     {

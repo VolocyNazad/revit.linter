@@ -24,8 +24,8 @@ The **Code** column sorts by the text of the code and by its numbers, so `CSTM2`
 ## Actions
 
 - **Show** (eye in the row) selects the target of the entry in the model. It is unavailable for an entry of the whole document, for a deleted element, and in families.
-- **Remove** (trash can in the row) stops ignoring that entry. Its diagnostic reports the finding again on the next run.
-- **Clear all** (toolbar) removes every entry of the active document after a confirmation.
+- **Remove** (trash can in the row) stops ignoring that entry. The results pane brings its finding back without a manual run.
+- **Clear all** (toolbar) removes every entry of the active document after a confirmation. The results pane brings their findings back too.
 - **Refresh** (toolbar) reloads the list.
 - **Columns** (toolbar) chooses which data columns the table shows; the row action buttons stay visible, and the choice is remembered for every Revit version.
 - The tool bar also carries the shared diagnostic controls (run, pause, on active view) and shows the title of the active document.

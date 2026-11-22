@@ -14,6 +14,15 @@ namespace Revit.Linter.ElementIgnoring.Abstractions.Services;
 public interface IIgnoreListManager
 {
     /// <summary>
+    /// Raised after entries are removed from the stored ignore list of a document.
+    /// </summary>
+    /// <remarks>
+    /// The event fires inside the transaction that writes the list. A consumer that shows findings has
+    /// to check the affected elements again, because the stored list changed rather than the elements.
+    /// </remarks>
+    event EventHandler<IgnoreListEntriesRemovedEventArgs>? EntriesRemoved;
+
+    /// <summary>
     /// Gets every ignore entry stored in the document, including entries whose elements no longer exist.
     /// </summary>
     /// <param name="document">The document whose ignore list is read.</param>
