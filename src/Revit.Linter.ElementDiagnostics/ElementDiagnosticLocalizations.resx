@@ -125,6 +125,8 @@
   <data name="SHRD0041_message" xml:space="preserve"><value>View '{elementName}' ({elementId}) has {hidden.count} hidden element(s): '{hidden.elementNames}' ({hidden.elementIds}). Duration: {duration} ms.</value></data>
   <data name="SHRD0042_description" xml:space="preserve"><value>Checks whether a link shares its workset with model elements. See Autodesk Revit Help: Worksets and Performance.</value></data>
   <data name="SHRD0042_message" xml:space="preserve"><value>Link '{elementName}' ({elementId}) is on workset '{workset.name}', which also holds {other.count} other element(s): '{other.elementNames}' ({other.elementIds}). Duration: {duration} ms.</value></data>
+  <data name="SHRD0044_description" xml:space="preserve"><value>Checks family instances for two parameters with the same name, one defined in the family and one bound in the project. They stay separate fields, and the family value does not reach the project one.</value></data>
+  <data name="SHRD0044_message" xml:space="preserve"><value>Element '{elementName}' ({elementId}) has {parameter.count} parameters named '{parameter.name}': {parameter.boundCount} bound in the project and the rest defined in the family. The Properties palette and schedules show separate fields with one name, and the family value does not reach the project one. Duration: {duration} ms.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>
