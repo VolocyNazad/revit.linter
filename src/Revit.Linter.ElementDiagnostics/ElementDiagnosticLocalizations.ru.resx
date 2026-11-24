@@ -125,6 +125,8 @@
   <data name="SHRD0041_message" xml:space="preserve"><value>В виде «{elementName}» ({elementId}) скрыто элементов: {hidden.count} — «{hidden.elementNames}» ({hidden.elementIds}). Время выполнения: {duration} мс.</value></data>
   <data name="SHRD0042_description" xml:space="preserve"><value>Проверяет, не размещена ли связь в рабочем наборе вместе с элементами модели. См. справку Autodesk Revit: «Рабочие наборы и производительность».</value></data>
   <data name="SHRD0042_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) размещена в рабочем наборе «{workset.name}», где также размещено других элементов: {other.count} — «{other.elementNames}» ({other.elementIds}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0044_description" xml:space="preserve"><value>Проверяет экземпляры семейств на два параметра с одинаковым именем: один задан в семействе, второй привязан в проекте. Это разные поля, и значение из семейства в проектное не попадает.</value></data>
+  <data name="SHRD0044_message" xml:space="preserve"><value>У элемента «{elementName}» ({elementId}) параметров с именем «{parameter.name}»: {parameter.count}, из них привязано в проекте: {parameter.boundCount}, остальные заданы в семействе. В свойствах и спецификациях это разные поля с одним именем, и значение из семейства в проектное не попадает. Время выполнения: {duration} мс.</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>
