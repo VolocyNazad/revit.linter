@@ -55,6 +55,7 @@ lang: en
 | **SHRD0041** | Checks whether a graphical view has elements hidden in the view with Hide in View (projects only). | ⚠️ Warning | `View 'Разрез А-А' (ID:55443) has 2 hidden element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
 | **SHRD0042** | Checks whether a link shares its workset with model elements (workshared projects only). | ⚠️ Warning | `Link 'АР' (ID:12345) is on workset 'Модель', which also holds 2 other element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
 | **SHRD0044** | Checks whether a family instance has two parameters with one name: one defined in the family and one bound in the project (projects only). | ⚠️ Warning | `Element 'Дверь_01' (ID:11223) has 2 parameters named 'Марка': 1 bound in the project and the rest defined in the family. (9 ms)` |
+| **SHRD0045** | Checks whether a family document has family parameters that are not shared (family documents only). | 💬 Message | `Family 'Дверь_01' (ID:11223) has 2 parameters that are not shared: “Марка заказчика”, “Примечание”. (5 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 

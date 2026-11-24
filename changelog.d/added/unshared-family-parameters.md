@@ -1,0 +1,1 @@
+New built-in check `SHRD0045` reports family parameters that are not shared in a family document: a project schedule and a tag cannot show them, so the message names every such parameter before the family is loaded.
