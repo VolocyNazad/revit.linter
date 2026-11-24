@@ -61,6 +61,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId ViewHasHiddenElements = Create("SHRD0041", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId LinkOnSharedWorkset = Create("SHRD0042", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId DuplicateParameterNames = Create("SHRD0044", DiagnosticSeverity.Warning, DiagnosticTags.Project);
+    public static readonly ElementDiagnosticId UnsharedFamilyParameters = Create("SHRD0045", DiagnosticSeverity.Message, DiagnosticTags.Family);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)
