@@ -332,7 +332,8 @@
                                             Padding="8"
                                             Background="{DynamicResource LinterSurfaceBrush}"
                                             BorderBrush="{DynamicResource LinterStrongBorderBrush}"
-                                            BorderThickness="1">
+                                            BorderThickness="1"
+                                            TextElement.Foreground="{DynamicResource LinterForegroundBrush}">
                                             <messaging:ReportMessageView
                                                 MaxHeight="240"
                                                 HorizontalScrollBarVisibility="Disabled"
