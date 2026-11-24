@@ -1,0 +1,1 @@
+Fix the folded message list popup in the report and fix panes: the popup did not set the theme text colour, so on the light theme its text could come out light on the light surface. The popup now takes the theme foreground explicitly, like the other popups, and keeps the theme background.
