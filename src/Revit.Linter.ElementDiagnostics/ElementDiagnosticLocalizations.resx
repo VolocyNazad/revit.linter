@@ -145,6 +145,12 @@
   <data name="addMissingTypesToCatalog_fix" xml:space="preserve"><value>Add the missing types to the catalog and remove them from the family</value></data>
   <data name="addMissingTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Types that the catalog does not list will be added to it and removed from the family. The last type stays. Continue?</value></data>
   <data name="addMissingTypesToCatalog_confirmationButton" xml:space="preserve"><value>Add to the catalog</value></data>
+  <data name="moveCatalogTypesToFamily_fix" xml:space="preserve"><value>Move the catalog types into the family</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationMessage" xml:space="preserve"><value>Catalog types that the family does not have will be created in the family, and the catalog file will be deleted. Continue?</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationButton" xml:space="preserve"><value>Move to the family</value></data>
+  <data name="moveFamilyTypesToCatalog_fix" xml:space="preserve"><value>Move the family types into the catalog</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Family types that the catalog does not list will be added to it, and all family types except the active one will be removed from the family. Continue?</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationButton" xml:space="preserve"><value>Move to the catalog</value></data>
   <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Add the missing parameters to the catalog</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>

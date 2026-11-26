@@ -74,12 +74,22 @@ internal static class FamilyTypeCatalogWriter
         IReadOnlyList<FamilyTypeCatalogColumn> columns,
         IReadOnlyList<FamilyType> types)
     {
-        Dictionary<string, FamilyParameter> parameters = ReadParameters(document);
         List<string> lines = [];
         List<string> header = [string.Empty];
         header.AddRange(columns.Select(column => FamilyTypeCatalogCsv.FormatField(column.Header)));
         lines.Add(FamilyTypeCatalogCsv.Join(header));
+        lines.AddRange(BuildRows(document, columns, types));
+        return lines;
+    }
 
+    /// <summary>Builds one catalog row per type, without the header.</summary>
+    public static List<string> BuildRows(
+        Document document,
+        IReadOnlyList<FamilyTypeCatalogColumn> columns,
+        IReadOnlyList<FamilyType> types)
+    {
+        Dictionary<string, FamilyParameter> parameters = ReadParameters(document);
+        List<string> rows = [];
         foreach (FamilyType type in types)
         {
             List<string> fields = [FamilyTypeCatalogCsv.FormatField(type.Name)];
@@ -88,9 +98,9 @@ internal static class FamilyTypeCatalogWriter
                 parameters.TryGetValue(column.ParameterName, out FamilyParameter? parameter);
                 fields.Add(FamilyTypeCatalogCsv.FormatField(FormatValue(document, type, parameter, column)));
             }
-            lines.Add(FamilyTypeCatalogCsv.Join(fields));
+            rows.Add(FamilyTypeCatalogCsv.Join(fields));
         }
-        return lines;
+        return rows;
     }
 
     /// <summary>Formats one catalog cell for a type.</summary>

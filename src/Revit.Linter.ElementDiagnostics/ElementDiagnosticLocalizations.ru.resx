@@ -145,6 +145,12 @@
   <data name="addMissingTypesToCatalog_fix" xml:space="preserve"><value>Добавить недостающие типоразмеры в каталог и убрать их из семейства</value></data>
   <data name="addMissingTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Типы, которых нет в каталоге, будут добавлены в него и удалены из семейства. Последний типоразмер останется. Продолжить?</value></data>
   <data name="addMissingTypesToCatalog_confirmationButton" xml:space="preserve"><value>Добавить в каталог</value></data>
+  <data name="moveCatalogTypesToFamily_fix" xml:space="preserve"><value>Перенести типоразмеры из каталога в семейство</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationMessage" xml:space="preserve"><value>Типоразмеры из каталога, которых нет в семействе, будут созданы в семействе, а файл каталога удалён. Продолжить?</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationButton" xml:space="preserve"><value>Перенести в семейство</value></data>
+  <data name="moveFamilyTypesToCatalog_fix" xml:space="preserve"><value>Перенести типоразмеры семейства в каталог</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Типоразмеры семейства, которых нет в каталоге, будут добавлены в него, а все типоразмеры семейства, кроме активного, удалены. Продолжить?</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationButton" xml:space="preserve"><value>Перенести в каталог</value></data>
   <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Добавить недостающие параметры в каталог</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
