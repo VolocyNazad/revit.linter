@@ -40,6 +40,7 @@ internal static class HostServiceCollectionExtensions
             .AddSingleton<RevitEventSource>()
             .AddSingleton<IRevitEventSource>(provider => provider.GetRequiredService<RevitEventSource>())
             .AddSingleton<IDiagnosticReportPaneActivator, DiagnosticReportPaneActivator>()
+            .AddSingleton<DiagnosticPanesVisibility>()
             .AddSingleton<IVisualizationViewProvider, VisualizationViewProvider>()
             .AddSingleton<DiagnosticCatalogNotifier>()
             .AddSingleton<ConfigurationMigrationWarning>()
