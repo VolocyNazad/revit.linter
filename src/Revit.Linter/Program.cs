@@ -140,7 +140,7 @@ internal sealed class Program
                 .AddPracticalTourPresenterModule()
                 .AddOpenedDocumentsModule()
                 .AddThemeManagingModule()
-                .AddTableColumnsModule()
+                .AddTableColumnsModule().AddTableStateModule()
                 .AddValueStore<YamlValueStoreSerializer>(options =>
                 {
                     options.DirectoryPath = Path.Combine(

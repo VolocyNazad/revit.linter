@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Data;
+using Revit.Linter.Presentation.Abstractions.Services;
+using Revit.Linter.Presentation.Models;
 
 namespace Revit.Linter.Presentation.ViewModels;
 
@@ -11,29 +14,47 @@ namespace Revit.Linter.Presentation.ViewModels;
 /// <remarks>
 /// The view model keeps its bindable properties and supplies only the row predicate and sort order.
 /// This type subscribes to every filter group, refreshes the view when a filter changes and stores the
-/// subscription state, so each pane does not repeat that plumbing.
+/// subscription state, so each pane does not repeat that plumbing. When a table identifier and a table
+/// state service are given, the sort order the user applies is saved and restored.
 /// </remarks>
 public sealed class FilteredRowCollection<TItem> : IDisposable
     where TItem : class
 {
     private readonly Func<TItem, bool> _isVisible;
     private readonly IReadOnlyList<SortDescription> _sortDescriptions;
-    private readonly Action? _filterChanged;
+    private readonly Action<string, IDiagnosticFilter<TItem>>? _filterChanged;
     private readonly Dictionary<string, IReadOnlyList<IDiagnosticFilter<TItem>>> _filterGroups = new(StringComparer.Ordinal);
+    private readonly string? _tableId;
+    private readonly ITableStateService? _tableState;
+    private readonly IReadOnlyList<TableSortColumn> _sortColumns;
+    private readonly Dictionary<string, string> _columnByMember;
     private CollectionViewSource? _viewSource;
+    private ICollectionView? _view;
+    private bool _isApplyingSort;
 
     /// <summary>Initializes the collection view owner.</summary>
     /// <param name="sortDescriptions">The sort order applied to the view.</param>
     /// <param name="isVisible">Checks whether a row passes the current search and filters.</param>
-    /// <param name="filterChanged">Notifies the view model that the user toggled a filter.</param>
+    /// <param name="filterChanged">Notifies the view model that the user toggled a filter of a group.</param>
+    /// <param name="tableId">The table identifier whose sort order is remembered, or <see langword="null"/> to remember nothing.</param>
+    /// <param name="sortColumns">Maps the column keys of the table to the properties the view sorts by.</param>
+    /// <param name="tableState">Remembers and restores the sort order of the table.</param>
     public FilteredRowCollection(
         IEnumerable<SortDescription> sortDescriptions,
         Func<TItem, bool> isVisible,
-        Action? filterChanged = null)
+        Action<string, IDiagnosticFilter<TItem>>? filterChanged = null,
+        string? tableId = null,
+        IReadOnlyList<TableSortColumn>? sortColumns = null,
+        ITableStateService? tableState = null)
     {
         _sortDescriptions = sortDescriptions.ToArray();
         _isVisible = isVisible ?? throw new ArgumentNullException(nameof(isVisible));
         _filterChanged = filterChanged;
+        _tableId = tableId;
+        _tableState = tableState;
+        _sortColumns = sortColumns ?? [];
+        _columnByMember = _sortColumns.ToDictionary(
+            column => column.MemberPath, column => column.ColumnKey, StringComparer.Ordinal);
     }
 
     /// <summary>Gets the view source the pane binds to.</summary>
@@ -45,14 +66,14 @@ public sealed class FilteredRowCollection<TItem> : IDisposable
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
 
-        if (_viewSource is not null)
-            _viewSource.Filter -= ViewSource_Filter;
+        DetachView();
 
         _viewSource = new CollectionViewSource { Source = source };
         _viewSource.Filter += ViewSource_Filter;
-        _viewSource.SortDescriptions.Clear();
-        foreach (SortDescription sortDescription in _sortDescriptions)
-            _viewSource.SortDescriptions.Add(sortDescription);
+        _view = _viewSource.View;
+        ((INotifyCollectionChanged)_view.SortDescriptions).CollectionChanged += SortDescriptions_CollectionChanged;
+        ApplySort(_sortDescriptions);
+        RestoreSort();
     }
 
     /// <summary>Refreshes the view after the search text or a row changed.</summary>
@@ -61,15 +82,14 @@ public sealed class FilteredRowCollection<TItem> : IDisposable
     /// <summary>Restores the pane's default sort order, discarding a sort the user applied.</summary>
     /// <remarks>
     /// A column header click replaces the view's sort descriptions, so a guided session that needs a
-    /// specific row on top resets the order to the one this collection was created with.
+    /// specific row on top resets the order to the one this collection was created with. The reset is not
+    /// stored: it lasts for the session, while the user's saved order stays for the next start.
     /// </remarks>
     public void ResetSort()
     {
         if (_viewSource is null) return;
 
-        _viewSource.SortDescriptions.Clear();
-        foreach (SortDescription sortDescription in _sortDescriptions)
-            _viewSource.SortDescriptions.Add(sortDescription);
+        ApplySort(_sortDescriptions);
     }
 
     /// <summary>Replaces one named filter group and refreshes the view.</summary>
@@ -115,11 +135,66 @@ public sealed class FilteredRowCollection<TItem> : IDisposable
     public void Dispose()
     {
         ClearFilters();
-        if (_viewSource is not null)
+        DetachView();
+    }
+
+    private void DetachView()
+    {
+        if (_viewSource is null) return;
+
+        if (_view is not null)
+            ((INotifyCollectionChanged)_view.SortDescriptions).CollectionChanged -= SortDescriptions_CollectionChanged;
+        _viewSource.Filter -= ViewSource_Filter;
+        _viewSource = null;
+        _view = null;
+    }
+
+    private void ApplySort(IEnumerable<SortDescription> sortDescriptions)
+    {
+        if (_view is null) return;
+
+        _isApplyingSort = true;
+        try
         {
-            _viewSource.Filter -= ViewSource_Filter;
-            _viewSource = null;
+            SortDescriptionCollection target = _view.SortDescriptions;
+            target.Clear();
+            foreach (SortDescription sortDescription in sortDescriptions)
+                target.Add(sortDescription);
         }
+        finally
+        {
+            _isApplyingSort = false;
+        }
+    }
+
+    private void RestoreSort()
+    {
+        if (_tableState is null || _tableId is null) return;
+
+        TableSortPreference? saved = _tableState.GetSort(_tableId);
+        if (saved is null) return;
+
+        TableSortColumn? column = _sortColumns.FirstOrDefault(
+            candidate => string.Equals(candidate.ColumnKey, saved.Column, StringComparison.Ordinal));
+        if (column is null) return;
+
+        ApplySort([new SortDescription(
+            column.MemberPath,
+            saved.Descending ? ListSortDirection.Descending : ListSortDirection.Ascending)]);
+    }
+
+    private void SortDescriptions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (_isApplyingSort || _tableState is null || _tableId is null || _view is null) return;
+
+        // A header click clears the collection and adds the new description, so an empty collection is
+        // an intermediate state rather than a choice to forget the saved order.
+        if (_view.SortDescriptions.Count == 0) return;
+        SortDescription sort = _view.SortDescriptions[0];
+        if (string.IsNullOrEmpty(sort.PropertyName)) return;
+        if (!_columnByMember.TryGetValue(sort.PropertyName, out string? columnKey)) return;
+
+        _tableState.SetSort(_tableId, columnKey, sort.Direction);
     }
 
     private void ViewSource_Filter(object sender, FilterEventArgs args)
@@ -128,6 +203,12 @@ public sealed class FilteredRowCollection<TItem> : IDisposable
     private void Filter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         Refresh();
-        _filterChanged?.Invoke();
+        if (sender is not IDiagnosticFilter<TItem> filter) return;
+
+        string? group = _filterGroups
+            .FirstOrDefault(pair => pair.Value.Contains(filter))
+            .Key;
+        if (group is not null)
+            _filterChanged?.Invoke(group, filter);
     }
 }

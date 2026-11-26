@@ -12,4 +12,6 @@ A long list of element names or identifiers is folded the same way as in the dia
 
 The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
 
+The search text, the search switches and the sort order are also remembered for every Revit version and restored when Revit starts.
+
 Hover over a toolbar button to see what it does; the question-mark button of the tool bar opens this page. While the tooltip is shown, press **F1** to open this page in the default browser.

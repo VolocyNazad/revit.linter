@@ -18,16 +18,18 @@ public partial class FilterViewModel<TItem, TValue> : ObservableObject, IDiagnos
     /// <param name="count">The number of rows matching the filter.</param>
     /// <param name="isValid">Checks whether a row passes the filter.</param>
     /// <param name="displayName">Resolves the display text of the filter.</param>
+    /// <param name="key">The stable key of the filter inside its group, written to the table settings.</param>
     /// <remarks>
     /// The display text is resolved on every <see cref="ToString"/> call rather than once
     /// in the constructor, so it follows the current user interface culture.
     /// </remarks>
     public FilterViewModel(
-        bool isActive, TValue value, int count, Func<TItem, bool> isValid, Func<string> displayName)
+        bool isActive, TValue value, int count, Func<TItem, bool> isValid, Func<string> displayName, string key)
     {
         IsActive = isActive;
         Value = value;
         Count = count;
+        Key = key ?? throw new ArgumentNullException(nameof(key));
         _isValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
         _displayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
     }
@@ -38,6 +40,9 @@ public partial class FilterViewModel<TItem, TValue> : ObservableObject, IDiagnos
 
     /// <summary>Gets the value identifying the filter within its group.</summary>
     public TValue Value { get; }
+
+    /// <summary>Gets the stable key of the filter inside its group.</summary>
+    public string Key { get; }
 
     /// <summary>Gets the number of rows matching the filter.</summary>
     public int Count { get; }

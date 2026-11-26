@@ -92,9 +92,14 @@ of a guided step, `ViewModels` holds the popup of one table, `Models` holds the 
 and the stored settings, and the `TableColumns` attached properties at the project root apply the
 choice to a `DataGrid`. Only data columns carry a key, so the action icon columns always stay visible.
 
+`ITableStateService` in the same `Abstractions` and `Services` folders stores the search text, the
+search switches, the disabled filters and the sort order of each table in `tables.yml`. The panes
+restore that view when they initialize, and `FilteredRowCollection` saves a column sort applied by the
+user and restores it when it attaches the rows.
+
 It references `Revit.Linter.Core` and the Revit API for the row type's element identifiers,
 `Revit.Linter.ReportMessaging` for the shared message parser, and `VolocyNazad.ValueStore` for the
-per-user column choice.
+per-user table view.
 
 The project also holds the samples that several presenters show at design time: `DesignData/` keeps
 `TableColumnsDesignData` and `TableColumnDesignData`, the designer counterpart of the shared column

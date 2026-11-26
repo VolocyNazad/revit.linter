@@ -10,4 +10,5 @@ internal sealed partial class DiagnosticSeverityFilterViewModel(
         value,
         count,
         item => item.Severity == value,
-        () => DiagnosticSeverityLocalizations.GetString(value.ToString()));
+        () => DiagnosticSeverityLocalizations.GetString(value.ToString()),
+        key: value.ToString());
