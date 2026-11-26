@@ -5,6 +5,8 @@ The concise contract for the product's current scope. Detailed user instructions
 ## Included
 
 - Run built-in and YAML-configured diagnostics against Revit projects and families.
+- Check a saved family against its type catalog: report 6 or more types beyond the default type, with or without a catalog, and cite the Autodesk advice to use a catalog for such families, warn when the family keeps types that the catalog does not list, report a family that stores its own types inside the family and in a catalog at the same time, and report a type parameter that the catalog does not list.
+- Fix a family catalog finding in one action: create the catalog and remove the types from the family (asking for confirmation first, because only the active type stays), add the missing types and remove them (asking for confirmation first), or add the missing parameters. The catalog and the values follow the Autodesk type catalog format, and the family change is undone with the transaction while the catalog file is not.
 - Present findings by severity, diagnostic code, target type and tags, with typed element links and localized messages; type `#` before a tag name to search by tags, and clicking a tag does the same.
 - Apply configured fixes through Revit-safe transactions and report their results: a fix pipeline can delete its elements or write a parameter value computed by the formula language.
 - Ignore a finding for its element or for the whole document, review and remove entries in the built-in **Ignore list** pane, and keep the list inside the model.

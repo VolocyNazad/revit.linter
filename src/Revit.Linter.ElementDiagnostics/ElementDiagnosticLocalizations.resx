@@ -130,6 +130,22 @@
   <data name="SHRD0045_description" xml:space="preserve"><value>Checks whether a family document has family parameters that are not shared. Such parameters stay inside the family, so a project schedule and a tag cannot show them.</value></data>
   <data name="SHRD0045_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has {parameter.count} parameters that are not shared: {parameter.names}. A project schedule and a tag cannot show them: only a shared parameter reaches the project. Duration: {duration} ms.</value></data>
   <data name="SHRD0045_listSeparator" xml:space="preserve"><value>, </value></data>
+  <data name="SHRD0046_description" xml:space="preserve"><value>Checks whether a family has 6 or more types beyond the default type. [Autodesk Help: Create a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
+  <data name="SHRD0046_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has {typeCount} types beyond the default type and no type catalog. Autodesk recommends a type catalog for families with 6 or more types. Duration: {duration} ms.</value></data>
+  <data name="SHRD0046_message_with_catalog" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has {typeCount} types beyond the default type and a type catalog '{catalogName}'. Autodesk recommends a type catalog for families with 6 or more types. Duration: {duration} ms.</value></data>
+  <data name="SHRD0047_description" xml:space="preserve"><value>Checks whether a family keeps types that its type catalog does not list. [Autodesk Help: Load a Family with a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
+  <data name="SHRD0047_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has types that its type catalog '{catalogName}' does not list: {typeNames}. Duration: {duration} ms.</value></data>
+  <data name="SHRD0048_description" xml:space="preserve"><value>Checks whether a family stores its own types inside the family and in a type catalog at the same time. [Autodesk Help: Load a Family with a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
+  <data name="SHRD0048_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) uses its own types and the type catalog '{catalogName}' at the same time (types of its own: {ownTypeCount}, catalog types: {catalogTypeCount}). Duration: {duration} ms.</value></data>
+  <data name="SHRD0049_description" xml:space="preserve"><value>Checks whether the type catalog lists every family type parameter. [Autodesk Help: Create a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
+  <data name="SHRD0049_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}): type catalog '{catalogName}' does not list parameters: {parameterNames}. A type loaded from the catalog keeps the default values for them. Duration: {duration} ms.</value></data>
+  <data name="createCatalogAndRemoveTypes_fix" xml:space="preserve"><value>Create a catalog and remove the types from the family</value></data>
+  <data name="createCatalogAndRemoveTypes_confirmationMessage" xml:space="preserve"><value>All family types except the active one will be deleted from the family. The catalog keeps them all. Continue?</value></data>
+  <data name="createCatalogAndRemoveTypes_confirmationButton" xml:space="preserve"><value>Create a catalog</value></data>
+  <data name="addMissingTypesToCatalog_fix" xml:space="preserve"><value>Add the missing types to the catalog and remove them from the family</value></data>
+  <data name="addMissingTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Types that the catalog does not list will be added to it and removed from the family. The last type stays. Continue?</value></data>
+  <data name="addMissingTypesToCatalog_confirmationButton" xml:space="preserve"><value>Add to the catalog</value></data>
+  <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Add the missing parameters to the catalog</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Pin level</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Pin grid</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Pin Revit link</value></data>

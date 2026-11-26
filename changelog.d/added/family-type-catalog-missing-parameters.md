@@ -1,0 +1,1 @@
+`SHRD0049` warns when a type catalog does not list a family type parameter: a type loaded from the catalog keeps the default values for that parameter. Instance, formula, report, read-only and built-in parameters are not required in a catalog.

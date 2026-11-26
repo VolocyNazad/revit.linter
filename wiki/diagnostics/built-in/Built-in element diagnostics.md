@@ -56,10 +56,16 @@ lang: en
 | **SHRD0042** | Checks whether a link shares its workset with model elements (workshared projects only). | ⚠️ Warning | `Link 'АР' (ID:12345) is on workset 'Модель', which also holds 2 other element(s): 'Стена_01, Стена_02' (334455, 334456). (9 ms)` |
 | **SHRD0044** | Checks whether a family instance has two parameters with one name: one defined in the family and one bound in the project (projects only). | ⚠️ Warning | `Element 'Дверь_01' (ID:11223) has 2 parameters named 'Марка': 1 bound in the project and the rest defined in the family. (9 ms)` |
 | **SHRD0045** | Checks whether a family document has family parameters that are not shared (family documents only). | 💬 Message | `Family 'Дверь_01' (ID:11223) has 2 parameters that are not shared: “Марка заказчика”, “Примечание”. (5 ms)` |
+| **SHRD0046** | Checks whether a family has 6 or more types beyond the default type (family documents only). | 💬 Message | `Family 'Шкаф' (ID:99002) has 24 types beyond the default type and no type catalog. Autodesk recommends a type catalog for families with 6 or more types. (6 ms)` |
+| **SHRD0047** | Checks whether a family keeps types that its type catalog does not list (family documents only). | ⚠️ Warning | `Family 'Шкаф' (ID:99002) has types that its type catalog 'Шкаф.txt' does not list: T1. (6 ms)` |
+| **SHRD0048** | Checks whether a family stores its own types inside the family and in a type catalog at the same time (family documents only). | 💬 Message | `Family 'Шкаф' (ID:99002) uses its own types and the type catalog 'Шкаф.txt' at the same time (types of its own: 3, catalog types: 5). (6 ms)` |
+| **SHRD0049** | Checks whether the type catalog lists every family type parameter (family documents only). | ⚠️ Warning | `Family 'Шкаф' (ID:99002): type catalog 'Шкаф.txt' does not list parameters: Height, Depth. A type loaded from the catalog keeps the default values for them. (6 ms)` |
 
 > \* `SHRD009` is only available in Revit versions **AFTER2023**.
 
 > **Note:** For a built-in check that reports a view or a sheet (**SHRD004**, **SHRD0017**, **SHRD0018**, **SHRD0019**, **SHRD0020**, **SHRD0041**), the eye button opens that view or sheet instead of the `Revit Linter — Visualization` 3D view.
+
+> **Note:** **SHRD0046**, **SHRD0047**, **SHRD0048** and **SHRD0049** check only a saved family file. **SHRD0047**, **SHRD0048** and **SHRD0049** read the type catalog, which sits next to the `.rfa` and has the same name with the `.txt` extension; **SHRD0046** counts the family's own types and names the catalog when there is one. **SHRD0046** never counts the type that carries the family name or has a blank name. **SHRD0047** compares every named type with the catalog, including the type named after the family; only a type with a blank name is skipped. **SHRD0048** reports only a type beyond the one Revit always keeps, because the last type of a family cannot be deleted. **SHRD0049** compares the catalog with the family's type parameters that the catalog can set: instance, formula, report, read-only and built-in parameters are not required there. An unsaved family and a family opened for editing from a project are not checked.
 
 ---
 

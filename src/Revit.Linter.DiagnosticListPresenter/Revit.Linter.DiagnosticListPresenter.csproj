@@ -26,6 +26,7 @@
 	  <ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Presentation\Revit.Linter.Presentation.csproj" />
+		<ProjectReference Include="..\Revit.Linter.ReportMessaging\Revit.Linter.ReportMessaging.csproj" />
 		<ProjectReference Include="..\Revit.Linter.RunDiagnosticPresenter\Revit.Linter.RunDiagnosticPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.ThemeManaging\Revit.Linter.ThemeManaging.csproj" />
 	</ItemGroup>
