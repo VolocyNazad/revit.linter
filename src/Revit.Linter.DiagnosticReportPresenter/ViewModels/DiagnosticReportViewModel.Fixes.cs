@@ -168,6 +168,16 @@ internal sealed partial class DiagnosticReportViewModel
 
                             if (!element.IsValidObject) return;
 
+                            if (i is IElementFixConfirmation confirmation
+                                && !await _confirmationDialog.Show(
+                                    new ConfirmationDialogRequest(
+                                        confirmation.ConfirmationMessage,
+                                        confirmation.ConfirmationButtonText),
+                                    cancellationToken))
+                            {
+                                return;
+                            }
+
                             string transactionName = i.Value;
                             (bool success, string? error) = await ExecuteTransactionWithError(
                                 doc, transactionName, () => ExecuteFix(
@@ -198,6 +208,16 @@ internal sealed partial class DiagnosticReportViewModel
                     async Task RunFixAll(CancellationToken cancellationToken)
                     {
                         if (doc is null or { IsValidObject: false }) return;
+
+                        if (i is IElementFixConfirmation confirmation
+                            && !await _confirmationDialog.Show(
+                                new ConfirmationDialogRequest(
+                                    confirmation.ConfirmationMessage,
+                                    confirmation.ConfirmationButtonText),
+                                cancellationToken))
+                        {
+                            return;
+                        }
 
                         StringBuilder errors = new();
                         bool hasErrors = false;
