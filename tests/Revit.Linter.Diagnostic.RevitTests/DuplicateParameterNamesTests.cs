@@ -23,44 +23,138 @@ public sealed class DuplicateParameterNamesTests : RevitApiTest
     public void CloseDocument() => _document?.Close(false);
 
     [Test]
-    public async Task Family_and_project_parameter_with_one_name_are_reported()
+    public async Task Family_type_parameter_with_project_parameter_is_reported()
     {
         Document document = _document!;
-        Family family = LoadFamilyWithTextParameter(document, DuplicateName);
-        // The project parameter is added after the family is loaded, which is the order that leaves
-        // the family parameter and the project parameter side by side on the element.
-        using (Transaction transaction = new(document, "Add duplicate test project parameter"))
-        {
-            transaction.Start();
-            SharedParameterTestFile.Add(document, DuplicateName, Guid.NewGuid(), family.FamilyCategory);
-            transaction.Commit();
-        }
-        FamilyInstance instance = PlaceInstance(document, family);
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, Guid.NewGuid(), isInstance: true);
+        PlaceInstance(family, CreateLevel());
         var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
         await Assert.That((string)feedback.AdditionalMessageArguments!["parameter.name"]).IsEqualTo(DuplicateName);
+        await Assert.That(feedback.AdditionalMessageArguments["parameter.count"]).IsEqualTo(2);
         await Assert.That(feedback.AdditionalMessageArguments["parameter.boundCount"]).IsEqualTo(1);
     }
 
     [Test]
-    public async Task Family_instance_with_distinct_parameter_names_is_valid()
+    public async Task Family_instance_parameter_with_project_parameter_is_reported()
     {
         Document document = _document!;
-        Family family = LoadFamilyWithTextParameter(document, "LinterFamilyParameter");
-        using (Transaction transaction = new(document, "Add distinct test project parameter"))
-        {
-            transaction.Start();
-            SharedParameterTestFile.Add(
-                document, "LinterProjectParameter", Guid.NewGuid(), family.FamilyCategory);
-            transaction.Commit();
-        }
-        FamilyInstance instance = PlaceInstance(document, family);
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: true);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, Guid.NewGuid(), isInstance: true);
+        PlaceInstance(family, CreateLevel());
         var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
 
-        DiagnosticFeedback feedback = diagnostic.Execute(document, null, instance).Single();
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(feedback.AdditionalMessageArguments!["parameter.count"]).IsEqualTo(2);
+        await Assert.That(feedback.AdditionalMessageArguments["parameter.boundCount"]).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task Family_type_parameter_with_type_project_parameter_is_reported()
+    {
+        Document document = _document!;
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, Guid.NewGuid(), isInstance: false);
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That(feedback.AdditionalMessageArguments!["parameter.count"]).IsEqualTo(2);
+    }
+
+    [Test]
+    public async Task Family_type_parameter_is_reported_without_a_placed_instance()
+    {
+        Document document = _document!;
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, Guid.NewGuid(), isInstance: true);
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+    }
+
+    [Test]
+    public async Task Several_types_and_instances_produce_one_finding()
+    {
+        Document document = _document!;
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false, typeNames: ["LinterTypeA", "LinterTypeB"]);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, Guid.NewGuid(), isInstance: true);
+        Level level = CreateLevel();
+        foreach (FamilySymbol symbol in SymbolsOf(family)) PlaceInstance(symbol, level);
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        IReadOnlyList<DiagnosticFeedback> feedbacks = diagnostic.Execute(document, null, family);
+
+        await Assert.That(feedbacks.Count).IsEqualTo(1);
+        await Assert.That(feedbacks[0].Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+    }
+
+    [Test]
+    public async Task Same_shared_parameter_in_family_and_project_is_valid()
+    {
+        Document document = _document!;
+        Guid guid = Guid.NewGuid();
+        Family family = LoadSharedFamily(guid, DuplicateName, isFamilyInstance: false);
+        AddProjectParameter(family.FamilyCategory, DuplicateName, guid, isInstance: true);
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Two_project_parameters_with_one_name_are_left_to_the_document_check()
+    {
+        Document document = _document!;
+        Family family = LoadFamily("LinterFamilyNote", isFamilyInstance: false);
+        using (Transaction transaction = new(document, "Add duplicate project parameters"))
+        {
+            transaction.Start();
+            SharedParameterTestFile.Add(document, DuplicateName, Guid.NewGuid(), family.FamilyCategory, true);
+            SharedParameterTestFile.Add(document, DuplicateName, Guid.NewGuid(), family.FamilyCategory, true);
+            transaction.Commit();
+        }
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Project_parameter_bound_to_another_category_is_valid()
+    {
+        Document document = _document!;
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false);
+        Category walls = Category.GetCategory(document, BuiltInCategory.OST_Walls);
+        AddProjectParameter(walls, DuplicateName, Guid.NewGuid(), isInstance: true);
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
+
+        await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Family_with_distinct_parameter_names_is_valid()
+    {
+        Document document = _document!;
+        Family family = LoadFamily("LinterFamilyParameter", isFamilyInstance: false);
+        AddProjectParameter(family.FamilyCategory, "LinterProjectParameter", Guid.NewGuid(), isInstance: true);
+        PlaceInstance(family, CreateLevel());
+        var diagnostic = new DuplicateParameterNamesDiagnostic(TestDocumentQueries.Create());
+
+        DiagnosticFeedback feedback = diagnostic.Execute(document, null, family).Single();
 
         await Assert.That(feedback.Verdict).IsEqualTo(DiagnosticVerdict.Valid);
     }
@@ -84,36 +178,33 @@ public sealed class DuplicateParameterNamesTests : RevitApiTest
     }
 
     [Test]
-    public async Task Only_family_instances_are_checked()
+    public async Task Only_families_are_checked()
     {
         Document document = _document!;
-        Level level = CreateLevel(document);
+        Family family = LoadFamily(DuplicateName, isFamilyInstance: false);
+        Level level = CreateLevel();
+        FamilyInstance instance = PlaceInstance(family, level);
         var filter = new DuplicateParameterNamesDiagnosticFilter();
 
+        await Assert.That(filter.IsRelevantFor(document, family)).IsTrue();
         await Assert.That(filter.IsRelevantFor(document, level)).IsFalse();
+        await Assert.That(filter.IsRelevantFor(document, instance)).IsFalse();
     }
 
-    private static Level CreateLevel(Document document)
+    private Family LoadFamily(string parameterName, bool isFamilyInstance, string[]? typeNames = null)
     {
-        using Transaction transaction = new(document, "Create test level");
-        transaction.Start();
-        Level level = Level.Create(document, 0);
-        transaction.Commit();
-        return level;
-    }
-
-    private static Family LoadFamilyWithTextParameter(Document projectDocument, string parameterName)
-    {
-        Document familyDocument = FamilyTestDocuments.OpenModelFamilyTemplate(projectDocument.Application);
+        Document familyDocument = FamilyTestDocuments.OpenModelFamilyTemplate(Application);
         try
         {
             using (Transaction transaction = new(familyDocument, "Add test family parameter"))
             {
                 transaction.Start();
-                FamilyTestDocuments.AddTextTypeParameter(familyDocument, parameterName);
+                AddFamilyParameter(familyDocument, parameterName, isFamilyInstance);
+                foreach (string typeName in typeNames ?? [])
+                    familyDocument.FamilyManager.NewType(typeName);
                 transaction.Commit();
             }
-            return familyDocument.LoadFamily(projectDocument);
+            return familyDocument.LoadFamily(_document!);
         }
         finally
         {
@@ -121,13 +212,66 @@ public sealed class DuplicateParameterNamesTests : RevitApiTest
         }
     }
 
-    private static FamilyInstance PlaceInstance(Document document, Family family)
+    private Family LoadSharedFamily(Guid guid, string parameterName, bool isFamilyInstance)
     {
-        Level level = CreateLevel(document);
-        FamilySymbol symbol = new FilteredElementCollector(document)
+        Document familyDocument = FamilyTestDocuments.OpenModelFamilyTemplate(Application);
+        try
+        {
+            using (Transaction transaction = new(familyDocument, "Add shared family parameter"))
+            {
+                transaction.Start();
+                SharedParameterTestFile.AddToFamily(familyDocument, parameterName, guid, isFamilyInstance);
+                transaction.Commit();
+            }
+            return familyDocument.LoadFamily(_document!);
+        }
+        finally
+        {
+            familyDocument.Close(false);
+        }
+    }
+
+    private static void AddFamilyParameter(Document familyDocument, string parameterName, bool isFamilyInstance)
+    {
+        FamilyManager manager = familyDocument.FamilyManager;
+#if IS2021
+        manager.AddParameter(parameterName, BuiltInParameterGroup.PG_DATA, ParameterType.Text, isFamilyInstance);
+#else
+        manager.AddParameter(parameterName, GroupTypeId.Data, SpecTypeId.String.Text, isFamilyInstance);
+#endif
+    }
+
+    private void AddProjectParameter(Category category, string name, Guid guid, bool isInstance)
+    {
+        Document document = _document!;
+        using Transaction transaction = new(document, "Add test project parameter");
+        transaction.Start();
+        SharedParameterTestFile.Add(document, name, guid, category, isInstance);
+        transaction.Commit();
+    }
+
+    private Level CreateLevel()
+    {
+        Document document = _document!;
+        using Transaction transaction = new(document, "Create test level");
+        transaction.Start();
+        Level level = Level.Create(document, 0);
+        transaction.Commit();
+        return level;
+    }
+
+    private static IEnumerable<FamilySymbol> SymbolsOf(Family family) =>
+        new FilteredElementCollector(family.Document)
             .OfClass(typeof(FamilySymbol))
             .Cast<FamilySymbol>()
-            .First(candidate => candidate.Family.Id == family.Id);
+            .Where(symbol => symbol.Family.Id == family.Id);
+
+    private FamilyInstance PlaceInstance(Family family, Level level) =>
+        PlaceInstance(SymbolsOf(family).First(), level);
+
+    private FamilyInstance PlaceInstance(FamilySymbol symbol, Level level)
+    {
+        Document document = _document!;
         using Transaction transaction = new(document, "Place test family instance");
         transaction.Start();
         FamilyInstance instance = FamilyTestDocuments.PlaceInstance(document, symbol, level, XYZ.Zero);

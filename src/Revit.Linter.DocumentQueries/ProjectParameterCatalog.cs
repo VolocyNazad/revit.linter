@@ -10,14 +10,17 @@ namespace Revit.Linter.DocumentQueries;
 /// <param name="SharedGuid">The shared parameter GUID, or <see langword="null"/> for a project parameter that is not shared.</param>
 /// <param name="IsInstance">Whether the definition is bound to instances rather than to types.</param>
 /// <param name="CategoryIds">The categories the definition is bound to.</param>
+/// <param name="DefinitionId">The id of the element that stores the definition, or <c>ElementId.InvalidElementId</c> when it has none.</param>
 public sealed record ProjectParameterDefinition(
     string Name,
     Guid? SharedGuid,
     bool IsInstance,
-    IReadOnlyList<ElementId> CategoryIds);
+    IReadOnlyList<ElementId> CategoryIds,
+    ElementId DefinitionId);
 
 /// <summary>
-/// Reads the project parameter definitions of a document and answers how many of them share a name.
+/// Reads the project parameter definitions of a document and answers how many of them share a name
+/// and whether one of them is bound to a category.
 /// </summary>
 /// <remarks>
 /// A project document keeps every project parameter in <see cref="Document.ParameterBindings"/>, both
@@ -30,11 +33,13 @@ public sealed class ProjectParameterCatalog
     private const string QueryName = "document:project-parameter-catalog";
 
     private readonly Dictionary<string, Dictionary<ElementId, int>> _categoryCountsByName;
+    private readonly HashSet<(ElementId DefinitionId, ElementId CategoryId)> _boundDefinitions;
 
     private ProjectParameterCatalog(IReadOnlyList<ProjectParameterDefinition> definitions)
     {
         Definitions = definitions;
         _categoryCountsByName = BuildCategoryCounts(definitions);
+        _boundDefinitions = BuildBoundDefinitions(definitions);
     }
 
     /// <summary>
@@ -53,6 +58,20 @@ public sealed class ProjectParameterCatalog
         && categories.TryGetValue(categoryId, out int count)
             ? count
             : 0;
+
+    /// <summary>
+    /// Answers whether <paramref name="definitionId"/> is a project definition bound to <paramref name="categoryId"/>.
+    /// </summary>
+    /// <param name="definitionId">The id of the definition stored in the document.</param>
+    /// <param name="categoryId">The category the element belongs to.</param>
+    /// <returns><see langword="true"/> when the definition is a project parameter of that category.</returns>
+    /// <remarks>
+    /// A family parameter that repeats a project parameter keeps its own definition, while a shared
+    /// parameter bound in the project is the project definition itself. The pair of ids separates
+    /// the two without opening the family.
+    /// </remarks>
+    public bool IsDefinitionBoundTo(ElementId definitionId, ElementId categoryId) =>
+        _boundDefinitions.Contains((definitionId, categoryId));
 
     /// <summary>
     /// Gets the catalog of <paramref name="document"/>, cached until the document changes.
@@ -97,7 +116,8 @@ public sealed class ProjectParameterCatalog
                 name,
                 ReadSharedGuid(document, definition),
                 binding is InstanceBinding,
-                ReadCategoryIds(binding));
+                ReadCategoryIds(binding),
+                ReadDefinitionId(definition));
             return true;
         }
         catch (Exception)
@@ -105,6 +125,11 @@ public sealed class ProjectParameterCatalog
             return false;
         }
     }
+
+    private static ElementId ReadDefinitionId(Definition definition) =>
+        definition is InternalDefinition internalDefinition
+            ? internalDefinition.Id
+            : ElementId.InvalidElementId;
 
     // The definition of a user-defined parameter is backed by a ParameterElement with the same id,
     // and a shared parameter is the SharedParameterElement subclass: its GUID is the identity a
@@ -152,5 +177,19 @@ public sealed class ProjectParameterCatalog
         }
 
         return counts;
+    }
+
+    private static HashSet<(ElementId DefinitionId, ElementId CategoryId)> BuildBoundDefinitions(
+        IReadOnlyList<ProjectParameterDefinition> definitions)
+    {
+        HashSet<(ElementId DefinitionId, ElementId CategoryId)> bound = [];
+        foreach (ProjectParameterDefinition definition in definitions)
+        {
+            if (definition.DefinitionId == ElementId.InvalidElementId) continue;
+            foreach (ElementId categoryId in definition.CategoryIds)
+                bound.Add((definition.DefinitionId, categoryId));
+        }
+
+        return bound;
     }
 }
