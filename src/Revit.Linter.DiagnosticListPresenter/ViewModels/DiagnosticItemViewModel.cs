@@ -6,6 +6,8 @@ using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.Models;
+using Revit.Linter.Presentation.Services;
+using Revit.Linter.ReportMessaging;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
@@ -27,6 +29,10 @@ internal sealed partial class DiagnosticItemViewModel(
     public DiagnosticCodeSortKey CodeSortKey => new(Code);
 
     public string Description { get; private set; } = string.Empty;
+
+    /// <summary>Gets the description parts, where a <c>[text](url)</c> link is a hyperlink.</summary>
+    public IReadOnlyList<ReportTextPart> DescriptionParts { get; private set; } = [];
+
     public bool IsObsolete { get; private set; }
     public bool IsTour { get; private set; }
     public bool IsDebug { get; private set; }
@@ -123,6 +129,15 @@ internal sealed partial class DiagnosticItemViewModel(
     [RelayCommand]
     private void OpenDocumentation() => OpenDocumentationDelegate?.Invoke();
 
+    /// <summary>Opens the help page a diagnostic description links to.</summary>
+    /// <param name="url">The address written in the description.</param>
+    [RelayCommand]
+    private void OpenDescriptionLink(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url) || !DiagnosticDescriptionParser.IsWebAddress(url)) return;
+        shellLauncher.OpenUrl(url);
+    }
+
     private void LaunchConfiguration(
         Func<IShellLauncher, string, bool> launch,
         bool publishOpenedActivity)
@@ -145,7 +160,8 @@ internal sealed partial class DiagnosticItemViewModel(
         _state = state;
         _ruleType = ruleType;
         Code = identity.Code;
-        Description = identity.Description;
+        DescriptionParts = DiagnosticDescriptionParser.Parse(identity.Description);
+        Description = ReportMessageParser.BuildPlainText(DescriptionParts);
         IsObsolete = identity.IsObsolete;
         IsTour = identity.SystemTags.Contains(DiagnosticTags.Tour);
         IsDebug = identity.SystemTags.Contains(DiagnosticTags.Debug);

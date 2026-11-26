@@ -3,7 +3,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.DesignData;
+using Revit.Linter.Presentation.Models;
+using Revit.Linter.Presentation.Services;
 using Revit.Linter.Presentation.ViewModels;
+using Revit.Linter.ReportMessaging;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -32,7 +35,9 @@ internal sealed class DiagnosticListDesignData
         new DiagnosticRowDesignData
         {
             Code = "TOUR001",
-            Description = "Wall has no fire rating assigned",
+            Description = "Wall has no fire rating assigned. Autodesk Help: Create a Type Catalog",
+            DescriptionParts = DiagnosticDescriptionParser.Parse(
+                "Wall has no fire rating assigned. [Autodesk Help: Create a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)"),
             Severity = DiagnosticSeverity.Warning,
             IsActive = true,
             HasConfiguration = true,
@@ -263,6 +268,9 @@ internal sealed class DiagnosticRowDesignData
     /// <summary>Gets the description of the diagnostic.</summary>
     public required string Description { get; init; }
 
+    /// <summary>Gets the description parts shown in the row, where a link is a hyperlink.</summary>
+    public IReadOnlyList<ReportTextPart> DescriptionParts { get; init; } = [];
+
     /// <summary>Gets or sets the severity of the diagnostic.</summary>
     public required DiagnosticSeverity Severity { get; set; }
 
@@ -283,6 +291,9 @@ internal sealed class DiagnosticRowDesignData
 
     /// <summary>Gets the explanation shown when the diagnostic is obsolete.</summary>
     public string ObsoleteDescription { get; init; } = string.Empty;
+
+    /// <summary>Gets the command that opens the help link the description carries.</summary>
+    public ICommand OpenDescriptionLinkCommand { get; } = new RelayCommand<string>(_ => { });
 
     /// <summary>Gets the command that opens the configuration of the diagnostic.</summary>
     public ICommand OpenConfigurationCommand { get; } = new RelayCommand(() => { });

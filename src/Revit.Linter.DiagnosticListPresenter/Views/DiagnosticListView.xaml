@@ -10,6 +10,7 @@
     xmlns:designData="clr-namespace:Revit.Linter.DiagnosticListPresenter.DesignData"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:infrastructure="clr-namespace:Revit.Linter.DiagnosticListPresenter.Infrastructure"
+    xmlns:messaging="clr-namespace:Revit.Linter.ReportMessaging;assembly=Revit.Linter.ReportMessaging"
     xmlns:controls="clr-namespace:Revit.Linter.ThemeManaging.Controls;assembly=Revit.Linter.ThemeManaging"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Revit.Linter.ThemeManaging.Resources;assembly=Revit.Linter.ThemeManaging"
@@ -302,10 +303,30 @@
                         SortMemberPath="Description">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox
-                                    Style="{StaticResource LinterObsoleteAwareCellTextBox}"
-                                    Text="{Binding Description, Mode=OneWay}"
-                                    TextWrapping="Wrap" />
+                                <DataTemplate.Resources>
+                                    <Style BasedOn="{StaticResource LinterReportHyperlink}" TargetType="Hyperlink" />
+                                </DataTemplate.Resources>
+                                <messaging:ReportMessageView
+                                    VerticalAlignment="Center"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    IsObsolete="{Binding IsObsolete}"
+                                    IsSelectionEnabled="True"
+                                    LinkCommand="{Binding OpenDescriptionLinkCommand}"
+                                    Parts="{Binding DescriptionParts}"
+                                    VerticalScrollBarVisibility="Disabled">
+                                    <messaging:ReportMessageView.Style>
+                                        <Style TargetType="{x:Type messaging:ReportMessageView}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
+                                                    <Setter Property="ToolTip" Value="{Binding ObsoleteDescription}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </messaging:ReportMessageView.Style>
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:PassMouseWheelToParentBehavior />
+                                    </i:Interaction.Behaviors>
+                                </messaging:ReportMessageView>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
