@@ -1,0 +1,1 @@
+`SHRD0048` gains two fixes: move the catalog types into the family and delete the catalog, or move the family types into the catalog and remove them from the family. Both ask for confirmation first. A type that exists in both places keeps the family values when moving into the family, and the catalog row when moving into the catalog.

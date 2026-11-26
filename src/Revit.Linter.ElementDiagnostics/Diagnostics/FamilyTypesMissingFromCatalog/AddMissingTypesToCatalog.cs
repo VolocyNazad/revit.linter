@@ -42,32 +42,15 @@ internal sealed class AddMissingTypesToCatalog : IElementFix, IElementFixConfirm
             .ToList();
         if (missing.Count == 0) return false;
 
-        List<string> rows = BuildRows(document, columns, missing);
+        List<FamilyType> missingTypes = missing
+            .Select(name => FindType(document, name))
+            .OfType<FamilyType>()
+            .ToList();
+        List<string> rows = FamilyTypeCatalogWriter.BuildRows(document, columns, missingTypes);
         if (rows.Count == 0) return false;
 
         DeleteMissingTypes(document, missing);
         return FamilyTypeCatalogWriter.TryWrite(path, [.. lines, .. rows]);
-    }
-
-    private static List<string> BuildRows(
-        Document document,
-        IReadOnlyList<FamilyTypeCatalogColumn> columns,
-        IReadOnlyList<string> missing)
-    {
-        List<string> rows = [];
-        foreach (string name in missing)
-        {
-            if (FindType(document, name) is not { } type) continue;
-            List<string> fields = [FamilyTypeCatalogCsv.FormatField(type.Name)];
-            foreach (FamilyTypeCatalogColumn column in columns)
-            {
-                FamilyParameter? parameter = FamilyTypeCatalogWriter.FindParameter(document, column.ParameterName);
-                fields.Add(FamilyTypeCatalogCsv.FormatField(
-                    FamilyTypeCatalogWriter.FormatValue(document, type, parameter, column)));
-            }
-            rows.Add(FamilyTypeCatalogCsv.Join(fields));
-        }
-        return rows;
     }
 
     // The one type Revit always keeps stays in the family even when its row is added to the catalog.

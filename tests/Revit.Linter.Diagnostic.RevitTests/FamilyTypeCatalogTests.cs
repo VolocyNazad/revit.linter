@@ -459,6 +459,143 @@ public sealed class FamilyTypeCatalogTests : RevitApiTest
     }
 
     [Test]
+    public async Task Fix_moves_catalog_types_into_the_family()
+    {
+        Document document = _familyDocument!;
+        FamilyParameter height = AddLengthParameter(document, "Height");
+        FamilyParameter finish = AddTextParameter(document, "Finish");
+        FamilyParameter count = AddIntegerParameter(document, "Count");
+        FamilyParameter isOpen = AddYesNoParameter(document, "IsOpen");
+        FamilyParameter material = AddMaterialParameter(document, "FinishMaterial");
+        FamilyParameter rotation = AddAngleParameter(document, "Rotation");
+        FamilyParameter price = AddCurrencyParameter(document, "Price");
+        ElementId materialId = CreateMaterial(document, "LinterMaterial");
+        AddTypes(document, "LinterOwn");
+        WriteCatalogLines(
+            CatalogHeader(height, finish, count, isOpen, material, rotation, price),
+            CatalogRow("LinterFromCatalog", "1000", "Red, matte", "3", "1", "LinterMaterial", "45", "12.5"));
+
+        var fix = new MoveCatalogTypesToFamily();
+        await Assert.That(fix is IElementFixConfirmation).IsTrue();
+        bool applied = ExecuteFix(fix, document);
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(File.Exists(CatalogPath)).IsFalse();
+        FamilyType moved = FindFamilyType(document, "LinterFromCatalog");
+        await Assert.That(Math.Abs(moved.AsDouble(height)!.Value
+            - UnitUtils.ConvertToInternalUnits(1000, UnitTypeId.Millimeters))).IsLessThan(0.01);
+        await Assert.That(moved.AsString(finish)).IsEqualTo("Red, matte");
+        await Assert.That(moved.AsInteger(count)).IsEqualTo(3);
+        await Assert.That(moved.AsInteger(isOpen)).IsEqualTo(1);
+        await Assert.That(moved.AsElementId(material)).IsEqualTo(materialId);
+        await Assert.That(Math.Abs(moved.AsDouble(rotation)!.Value
+            - UnitUtils.ConvertToInternalUnits(45, UnitTypeId.Degrees))).IsLessThan(0.0001);
+        await Assert.That(moved.AsDouble(price)!.Value).IsEqualTo(12.5);
+        await Assert.That(new FamilyTypeCatalogInUseDiagnostic()
+            .Execute(document, null, document.OwnerFamily).Single().Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Fix_keeps_the_family_values_for_a_type_the_catalog_also_lists()
+    {
+        Document document = _familyDocument!;
+        FamilyParameter height = AddLengthParameter(document, "Height");
+        AddTypes(document, "LinterA");
+        SetValues(document, "LinterA",
+            (height, UnitUtils.ConvertToInternalUnits(500, UnitTypeId.Millimeters)));
+        WriteCatalogLines(
+            CatalogHeader(height),
+            CatalogRow("LinterA", "1000"),
+            CatalogRow("LinterB", "2000"));
+
+        bool applied = ExecuteFix(new MoveCatalogTypesToFamily(), document);
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(File.Exists(CatalogPath)).IsFalse();
+        FamilyType own = FindFamilyType(document, "LinterA");
+        await Assert.That(Math.Abs(own.AsDouble(height)!.Value
+            - UnitUtils.ConvertToInternalUnits(500, UnitTypeId.Millimeters))).IsLessThan(0.01);
+        FamilyType moved = FindFamilyType(document, "LinterB");
+        await Assert.That(Math.Abs(moved.AsDouble(height)!.Value
+            - UnitUtils.ConvertToInternalUnits(2000, UnitTypeId.Millimeters))).IsLessThan(0.01);
+    }
+
+    [Test]
+    public async Task Fix_does_not_change_the_family_when_the_catalog_cannot_be_deleted()
+    {
+        Document document = _familyDocument!;
+        FamilyParameter height = AddLengthParameter(document, "Height");
+        AddTypes(document, "LinterOwn");
+        WriteCatalogLines(
+            CatalogHeader(height),
+            CatalogRow("LinterFromCatalog", "1000"));
+
+        bool applied;
+        using (File.Open(CatalogPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            applied = ExecuteFix(new MoveCatalogTypesToFamily(), document);
+        }
+
+        await Assert.That(applied).IsFalse();
+        await Assert.That(document.FamilyManager.Types.Size).IsEqualTo(2);
+        await Assert.That(File.Exists(CatalogPath)).IsTrue();
+        await Assert.That(document.FamilyManager.Types.Cast<FamilyType>()
+            .Any(type => string.Equals(type.Name, "LinterFromCatalog", StringComparison.Ordinal))).IsFalse();
+    }
+
+    [Test]
+    public async Task Fix_moves_family_types_into_the_catalog()
+    {
+        Document document = _familyDocument!;
+        FamilyParameter height = AddLengthParameter(document, "Height");
+        AddTypes(document, "LinterA", "LinterB");
+        SetValues(document, "LinterA",
+            (height, UnitUtils.ConvertToInternalUnits(1000, UnitTypeId.Millimeters)));
+        SetValues(document, "LinterB",
+            (height, UnitUtils.ConvertToInternalUnits(2000, UnitTypeId.Millimeters)));
+        WriteCatalogLines(
+            CatalogHeader(height),
+            CatalogRow("LinterCatalogFamily", "500"),
+            CatalogRow("LinterA", "500"));
+
+        var fix = new MoveFamilyTypesToCatalog();
+        await Assert.That(fix is IElementFixConfirmation).IsTrue();
+        bool applied = ExecuteFix(fix, document);
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(document.FamilyManager.Types.Size).IsEqualTo(1);
+        IReadOnlyList<string> lines = ReadCatalogLines();
+        await Assert.That(ReadCatalogDouble(lines, "LinterA", "Height")).IsEqualTo(500);
+        await Assert.That(ReadCatalogDouble(lines, "LinterB", "Height")).IsEqualTo(2000);
+        await Assert.That(new FamilyTypeCatalogInUseDiagnostic()
+            .Execute(document, null, document.OwnerFamily).Single().Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+        await Assert.That(new FamilyTypesMissingFromCatalogDiagnostic()
+            .Execute(document, null, document.OwnerFamily).Single().Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
+    public async Task Fix_moves_family_types_into_the_catalog_when_every_row_exists()
+    {
+        Document document = _familyDocument!;
+        FamilyParameter height = AddLengthParameter(document, "Height");
+        AddTypes(document, "LinterA");
+        SetValues(document, "LinterA",
+            (height, UnitUtils.ConvertToInternalUnits(1000, UnitTypeId.Millimeters)));
+        WriteCatalogLines(
+            CatalogHeader(height),
+            CatalogRow("LinterCatalogFamily", "500"),
+            CatalogRow("LinterA", "1000"));
+
+        bool applied = ExecuteFix(new MoveFamilyTypesToCatalog(), document);
+
+        await Assert.That(applied).IsTrue();
+        await Assert.That(document.FamilyManager.Types.Size).IsEqualTo(1);
+        await Assert.That(ReadCatalogLines().Count).IsEqualTo(3);
+        await Assert.That(new FamilyTypeCatalogInUseDiagnostic()
+            .Execute(document, null, document.OwnerFamily).Single().Verdict).IsEqualTo(DiagnosticVerdict.Valid);
+    }
+
+    [Test]
     public async Task Created_catalog_loads_a_type_with_its_values()
     {
         Document document = _familyDocument!;
@@ -803,6 +940,25 @@ public sealed class FamilyTypeCatalogTests : RevitApiTest
 
     private void WriteCatalogLines(params string[] lines) =>
         File.WriteAllLines(CatalogPath, lines, new UnicodeEncoding(bigEndian: false, byteOrderMark: true));
+
+    private static string CatalogHeader(params FamilyParameter[] parameters)
+    {
+        List<string> fields = [string.Empty];
+        fields.AddRange(parameters.Select(parameter => FamilyTypeCatalogColumn.FromParameter(parameter).Header));
+        return FamilyTypeCatalogCsv.Join(fields);
+    }
+
+    private static string CatalogRow(string typeName, params string[] values)
+    {
+        List<string> fields = [FamilyTypeCatalogCsv.FormatField(typeName)];
+        fields.AddRange(values.Select(FamilyTypeCatalogCsv.FormatField));
+        return FamilyTypeCatalogCsv.Join(fields);
+    }
+
+    private static FamilyType FindFamilyType(Document document, string name) =>
+        document.FamilyManager.Types
+            .Cast<FamilyType>()
+            .First(type => string.Equals(type.Name, name, StringComparison.Ordinal));
 
     private static FamilyParameter AddLengthParameter(Document document, string name, bool isInstance = false)
     {
