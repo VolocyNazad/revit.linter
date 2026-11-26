@@ -17,7 +17,7 @@ public static class DiagnosticDescriptionParser
     /// <returns>The ordered text and link parts; empty for an empty description.</returns>
     public static IReadOnlyList<ReportTextPart> Parse(string? description)
     {
-        if (string.IsNullOrEmpty(description)) return [];
+        if (description is null || description.Length == 0) return [];
 
         List<ReportTextPart> parts = [];
         int pendingStart = 0;

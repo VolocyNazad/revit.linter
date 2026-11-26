@@ -134,7 +134,7 @@ internal sealed partial class DiagnosticItemViewModel(
     [RelayCommand]
     private void OpenDescriptionLink(string? url)
     {
-        if (string.IsNullOrWhiteSpace(url) || !DiagnosticDescriptionParser.IsWebAddress(url)) return;
+        if (url is null || !DiagnosticDescriptionParser.IsWebAddress(url)) return;
         shellLauncher.OpenUrl(url);
     }
 
