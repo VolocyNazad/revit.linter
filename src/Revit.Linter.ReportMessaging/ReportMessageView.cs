@@ -81,6 +81,12 @@ public sealed partial class ReportMessageView : FlowDocumentScrollViewer
 
         document.Blocks.Add(paragraph);
         Document = document;
+
+        // The viewer justifies its document, so the spaces between words stretch as the view changes
+        // width. A message reads better left-aligned, with fixed spaces. Both values are set after the
+        // document is attached because attaching it is what applies the justification.
+        document.TextAlignment = TextAlignment.Left;
+        paragraph.TextAlignment = TextAlignment.Left;
     }
 
     private Inline CreateInline(ReportTextPart part)

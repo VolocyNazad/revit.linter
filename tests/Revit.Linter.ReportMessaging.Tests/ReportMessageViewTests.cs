@@ -57,6 +57,23 @@ public sealed class ReportMessageViewTests
     }
 
     [Fact]
+    public void Message_is_left_aligned()
+    {
+        RunInSta(() =>
+        {
+            ReportMessageView view = new()
+            {
+                Parts = [new(ReportInlineType.Text, "Message")]
+            };
+
+            Paragraph paragraph = Assert.IsType<Paragraph>(view.Document.Blocks.FirstBlock);
+
+            Assert.Equal(TextAlignment.Left, view.Document.TextAlignment);
+            Assert.Equal(TextAlignment.Left, paragraph.TextAlignment);
+        });
+    }
+
+    [Fact]
     public void Obsolete_message_is_struck_through()
     {
         RunInSta(() =>
