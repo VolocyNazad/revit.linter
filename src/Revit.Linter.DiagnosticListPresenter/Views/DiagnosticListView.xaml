@@ -365,6 +365,24 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn
+                        Width="Auto"
+                        MinWidth="{StaticResource LinterGridLastRunColumnMinWidth}"
+                        composition:TableColumns.Key="{x:Static models:TableColumnKeys.LastRun}"
+                        Header="{Binding DataContext.LastRunHeader, Source={StaticResource proxy}}"
+                        SortMemberPath="LastRunDurationSortKey">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style BasedOn="{StaticResource LinterDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="behaviors:HelpToolTip.Title" Value="{Binding DataContext.LastRunHeader, Source={StaticResource proxy}, Mode=OneWay}" />
+                                <Setter Property="behaviors:HelpToolTip.Description" Value="{Binding DataContext.LastRunDescription, Source={StaticResource proxy}, Mode=OneWay}" />
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Style="{StaticResource LinterReadOnlyCellTextBox}" Text="{Binding LastRunDurationText, Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
                         MinWidth="{StaticResource LinterGridIconColumnWidth}"
                         MaxWidth="{StaticResource LinterGridIconColumnWidth}"
                         CanUserResize="False">

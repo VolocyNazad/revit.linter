@@ -8,6 +8,7 @@ using Revit.Linter.Localization;
 using Revit.Linter.Presentation.Models;
 using Revit.Linter.Presentation.Services;
 using Revit.Linter.ReportMessaging;
+using System.Globalization;
 
 namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 
@@ -53,6 +54,12 @@ internal sealed partial class DiagnosticItemViewModel(
     /// <summary>Gets the tags as one text, used to sort the column.</summary>
     public string TagsText => string.Join(", ", Tags);
     public bool HasTags => Tags.Count > 0;
+
+    /// <summary>Gets the duration of the last full run, or a dash while the diagnostic has not run yet.</summary>
+    public string LastRunDurationText { get; private set; } = string.Empty;
+
+    /// <summary>Gets the duration of the last full run in milliseconds, used to sort the column.</summary>
+    public double LastRunDurationSortKey { get; private set; } = -1;
 
     // The XAML row menu binds to instance members, so these labels stay instance properties.
 #pragma warning disable S2325 // Members can be made static
@@ -170,6 +177,31 @@ internal sealed partial class DiagnosticItemViewModel(
         ConfigurationPath = configurationPath;
         OpenDocumentationDelegate = openDocumentation;
         SelectionChangedDelegate = selectionChanged;
+        ApplyRunDuration(duration: null);
+    }
+
+    /// <summary>Applies the duration of the last full run, or clears it when the diagnostic has not run.</summary>
+    /// <param name="duration">The recorded duration, or <see langword="null"/> when there is none.</param>
+    public void ApplyRunDuration(TimeSpan? duration)
+    {
+        LastRunDurationText = duration is { } value
+            ? FormatRunDuration(value)
+            : LocalizationResourceReader.GetString(ResourceBaseName, "lastRunNever_text");
+        LastRunDurationSortKey = duration?.TotalMilliseconds ?? -1;
+        OnPropertyChanged(nameof(LastRunDurationText));
+        OnPropertyChanged(nameof(LastRunDurationSortKey));
+    }
+
+    private static string FormatRunDuration(TimeSpan duration)
+    {
+        double milliseconds = duration.TotalMilliseconds;
+        string format = LocalizationResourceReader.GetString(
+            ResourceBaseName,
+            milliseconds < 1000 ? "lastRunMilliseconds_text" : "lastRunSeconds_text");
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            format,
+            milliseconds < 1000 ? milliseconds : duration.TotalSeconds);
     }
 
     /// <summary>Creates the state change a bulk command persists for this row.</summary>

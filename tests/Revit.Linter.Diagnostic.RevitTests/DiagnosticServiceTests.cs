@@ -218,4 +218,48 @@ public sealed class DiagnosticServiceTests : DiagnosticTestBase
         await Assert.That(diagnostic.ExecutionCount).IsEqualTo(0);
         await Assert.That(sender.Reports).IsEmpty();
     }
+
+    [Test]
+    public async Task Full_run_records_the_duration_of_a_diagnostic_for_the_document()
+    {
+        DocumentDiagnosticId id = CreateDocumentId("DOC-RUN-TIME");
+        DocumentDiagnostic diagnostic = new(id, DiagnosticFeedback.Valid);
+        using ServiceProvider services = CreateServices(documentDiagnostics:
+            [CreateDocumentRegistration(id, diagnostic)]);
+
+        DiagnosticServiceResult result = services.GetRequiredService<IDiagnosticService>().Execute(_document!);
+
+        await Assert.That(result).IsEqualTo(DiagnosticServiceResult.Success);
+        IDiagnosticRunDurationStore durations = services.GetRequiredService<IDiagnosticRunDurationStore>();
+        await Assert.That(durations.TryGetDuration(_document!.Title, "DOC-RUN-TIME", out _)).IsTrue();
+    }
+
+    [Test]
+    public async Task Incremental_run_does_not_record_a_duration()
+    {
+        Element element = CreateLevel();
+        DocumentDiagnosticId id = CreateDocumentId("DOC-RUN-TIME-INCREMENTAL");
+        DocumentDiagnostic diagnostic = new(id, DiagnosticFeedback.Valid);
+        using ServiceProvider services = CreateServices(documentDiagnostics:
+            [CreateDocumentRegistration(id, diagnostic)]);
+
+        services.GetRequiredService<IDiagnosticService>().Execute(_document!, [element.Id]);
+
+        IDiagnosticRunDurationStore durations = services.GetRequiredService<IDiagnosticRunDurationStore>();
+        await Assert.That(durations.TryGetDuration(_document!.Title, "DOC-RUN-TIME-INCREMENTAL", out _)).IsFalse();
+    }
+
+    [Test]
+    public async Task Disabled_diagnostic_does_not_record_a_duration()
+    {
+        DocumentDiagnosticId id = CreateDocumentId("DOC-RUN-TIME-DISABLED");
+        DocumentDiagnostic diagnostic = new(id, DiagnosticFeedback.Valid);
+        using ServiceProvider services = CreateServices(documentDiagnostics:
+            [CreateDocumentRegistration(id, diagnostic, isActive: false)]);
+
+        services.GetRequiredService<IDiagnosticService>().Execute(_document!);
+
+        IDiagnosticRunDurationStore durations = services.GetRequiredService<IDiagnosticRunDurationStore>();
+        await Assert.That(durations.TryGetDuration(_document!.Title, "DOC-RUN-TIME-DISABLED", out _)).IsFalse();
+    }
 }

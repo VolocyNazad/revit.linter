@@ -85,7 +85,7 @@ internal sealed class DiagnosticReportDesignData
                 new ReportTextPart(ReportInlineType.Expander, "+134", FoldedHiddenNames),
                 new ReportTextPart(ReportInlineType.Text, "' (1234567, 1234568, 1234569"),
                 new ReportTextPart(ReportInlineType.Expander, "+134", FoldedHiddenIds),
-                new ReportTextPart(ReportInlineType.Text, "). Duration: 12 ms."),
+                new ReportTextPart(ReportInlineType.Text, ")."),
             ],
             ExpandedListParts = FoldedHiddenNames,
             ShowElementToolTipFormat = ShowElementToolTipTemplate,

@@ -19,6 +19,9 @@ public abstract partial class RevitInteractionViewModel : InitializableObservabl
     /// Initializes the view model with the source of the Revit application events it observes.
     /// </summary>
     /// <param name="revitEventSource">Publishes the Revit application events the view model reacts to.</param>
+    // A derived view model built through AutoConstructor passes the event source here; without the
+    // attribute the generator would call the obsolete designer constructor instead.
+    [AutoConstructorDefaultBase]
     protected RevitInteractionViewModel(IRevitEventSource revitEventSource)
     {
         _revitEventSource = revitEventSource;

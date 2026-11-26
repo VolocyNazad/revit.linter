@@ -51,4 +51,9 @@
   <data name="columns_title" xml:space="preserve"><value>Columns</value></data>
   <data name="columns_description" xml:space="preserve"><value>Choose which columns the table shows. The action buttons always stay visible.</value></data>
   <data name="resetColumns_text" xml:space="preserve"><value>Restore all columns</value></data>
+  <data name="lastRun_header" xml:space="preserve"><value>Last run</value></data>
+  <data name="lastRun_description" xml:space="preserve"><value>How long the diagnostic took during the last full run of the active document. A dash means it has not run in this document during this session; only a full run updates the value.</value></data>
+  <data name="lastRunMilliseconds_text" xml:space="preserve"><value>{0:0} ms</value></data>
+  <data name="lastRunSeconds_text" xml:space="preserve"><value>{0:0.0} s</value></data>
+  <data name="lastRunNever_text" xml:space="preserve"><value>—</value></data>
 </root>

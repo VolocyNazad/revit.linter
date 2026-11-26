@@ -15,7 +15,7 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - type: "custom"
   code: "CSTM001"
   description: "custom"
-  message: "For the element named '{elementName}' with identifier '{elementId}', the 'Марка' and/or 'Комментарии' parameters are incorrectly set. Execution time '{duration}' ms."
+  message: "For the element named '{elementName}' with identifier '{elementId}', the 'Марка' and/or 'Комментарии' parameters are incorrectly set."
   isObsolete: true
   takeDocument: "!property('IsFamilyDocument')"
   take: "instance and builtincategory('OST_Walls')"

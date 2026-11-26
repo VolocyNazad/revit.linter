@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
 		<PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
+		<PackageReference Include="VolocyNazad.Revit.Context" />
 		<PackageReference Include="VolocyNazad.MVVM.DependencyInjection" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="XamlConstructor">
@@ -23,6 +24,7 @@
 	  <ProjectReference Include="..\Revit.Linter.Behaviors\Revit.Linter.Behaviors.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.Core\Revit.Linter.Core.csproj" />
+	  <ProjectReference Include="..\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
 	  <ProjectReference Include="..\Revit.Linter.DialogPresenter\Revit.Linter.DialogPresenter.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Localization\Revit.Linter.Localization.csproj" />
 		<ProjectReference Include="..\Revit.Linter.Presentation\Revit.Linter.Presentation.csproj" />

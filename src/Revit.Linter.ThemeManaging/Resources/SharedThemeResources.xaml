@@ -40,6 +40,7 @@
     <system:Double x:Key="LinterGridCodeColumnMinWidth">76</system:Double>
     <system:Double x:Key="LinterGridSeverityColumnMinWidth">128</system:Double>
     <system:Double x:Key="LinterGridTagsColumnMinWidth">96</system:Double>
+    <system:Double x:Key="LinterGridLastRunColumnMinWidth">96</system:Double>
     <system:Double x:Key="LinterGridDocumentColumnMinWidth">160</system:Double>
     <system:Double x:Key="LinterGridCreatedColumnMinWidth">136</system:Double>
 
