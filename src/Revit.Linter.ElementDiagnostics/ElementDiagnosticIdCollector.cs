@@ -62,6 +62,10 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId LinkOnSharedWorkset = Create("SHRD0042", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId DuplicateParameterNames = Create("SHRD0044", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId UnsharedFamilyParameters = Create("SHRD0045", DiagnosticSeverity.Message, DiagnosticTags.Family);
+    public static readonly ElementDiagnosticId ManyFamilyTypes = Create("SHRD0046", DiagnosticSeverity.Message, DiagnosticTags.Family);
+    public static readonly ElementDiagnosticId FamilyTypesMissingFromCatalog = Create("SHRD0047", DiagnosticSeverity.Warning, DiagnosticTags.Family);
+    public static readonly ElementDiagnosticId FamilyTypeCatalogInUse = Create("SHRD0048", DiagnosticSeverity.Message, DiagnosticTags.Family);
+    public static readonly ElementDiagnosticId FamilyTypeCatalogMissingParameters = Create("SHRD0049", DiagnosticSeverity.Warning, DiagnosticTags.Family);
 
     private static readonly Lazy<IReadOnlyList<ElementDiagnosticId>> _allDiagnosticIds =
         new(typeof(ElementDiagnosticIdCollector)
