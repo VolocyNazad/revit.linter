@@ -4,7 +4,6 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<OutputType>Exe</OutputType>
-		<PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,7 +16,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Revit.Linter\Revit.Linter.csproj" />
+		<!-- The pane state is Revit-free; the file is compiled here so the test never loads the repacked add-in. -->
+		<Compile Include="..\..\src\Revit.Linter\Infrastructure\Services\DiagnosticPanesState.cs" Link="DiagnosticPanesState.cs" />
 	</ItemGroup>
 
 </Project>
