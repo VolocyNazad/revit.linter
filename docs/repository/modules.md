@@ -30,7 +30,8 @@ The host seams live in `Revit.Linter.Core.Abstractions`: `IRevitEventSource`, `I
 `IVisualizationViewProvider`, which returns `View3D`, stay with the Revit-facing contracts in
 `Revit.Linter.Core/Abstractions`. Their implementations live in
 `src/Revit.Linter/Infrastructure/Services` and the host registers them; modules depend only on the
-contracts.
+contracts. The host's Revit-free decisions are covered by `Revit.Linter.Tests`: the diagnostics pane
+visibility that survives the switch to the zero-document state.
 
 `Revit.Linter.DiagnosticReportPresenter.Interactions` holds the contracts other modules and the host
 use for that presenter (`IDiagnosticReportPresenter`), so no consumer

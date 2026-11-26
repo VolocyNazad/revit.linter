@@ -23,10 +23,19 @@ internal sealed partial class InitExternalApplication
     private static RevitEventSource RevitEvents => _revitEvents
         ?? throw new InvalidOperationException("The Revit event source is not initialized yet.");
 
+    private static void App_DocumentOpening(object? sender, DocumentOpeningEventArgs e)
+        => GetService<DiagnosticPanesVisibility>().Remember();
+
+    private static void App_DocumentCreating(object? sender, DocumentCreatingEventArgs e)
+        => GetService<DiagnosticPanesVisibility>().Remember();
+
     private static void App_DocumentOpened(object? sender, DocumentOpenedEventArgs e)
     {
         RevitEvents.Raise(RevitEventType.DocumentOpened);
         GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
+        // Revit hides the add-in panes when the last document closes and leaves them hidden in the
+        // next one: open the panes that were open before, then let the tour hide its own pane below.
+        GetService<DiagnosticPanesVisibility>().Restore();
         // Revit restores the previous pane layout when a document opens: hide the tour pane
         // here, after the tour observed the document, when no session fills it. An active
         // session (for example waiting for a document) keeps its pane.
@@ -35,6 +44,8 @@ internal sealed partial class InitExternalApplication
 
     private static void App_DocumentClosing(object? sender, DocumentClosingEventArgs e)
     {
+        GetService<DiagnosticPanesVisibility>().Remember();
+
         try
         {
             GetService<TutorialSampleOpenRequest>().TrackClosing(e.DocumentId, e.Document.PathName);
@@ -78,7 +89,8 @@ internal sealed partial class InitExternalApplication
     {
         RevitEvents.Raise(RevitEventType.DocumentCreated);
         GetService<IUserInterfaceActivityStream>().Publish(new DocumentOpenedActivity());
-        // Same restored-layout case as for an opened document: see App_DocumentOpened.
+        // Same document-switch cases as for an opened document: see App_DocumentOpened.
+        GetService<DiagnosticPanesVisibility>().Restore();
         GetService<IPracticalTour>().HidePaneIfInactive();
     }
 

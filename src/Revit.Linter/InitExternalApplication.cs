@@ -99,7 +99,9 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         GetService<IElementChangesMonitor>().Run();
 
         var app = Application.ControlledApplication;
+        app.DocumentCreating += App_DocumentCreating;
         app.DocumentCreated += App_DocumentCreated;
+        app.DocumentOpening += App_DocumentOpening;
         app.DocumentOpened += App_DocumentOpened;
         app.DocumentClosing += App_DocumentClosing;
         app.DocumentClosed += App_DocumentClosed;
@@ -145,7 +147,9 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             _valueStoreNotifier = null;
 
             var app = Application.ControlledApplication;
+            app.DocumentCreating -= App_DocumentCreating;
             app.DocumentCreated -= App_DocumentCreated;
+            app.DocumentOpening -= App_DocumentOpening;
             app.DocumentOpened -= App_DocumentOpened;
             app.DocumentClosing -= App_DocumentClosing;
             app.DocumentClosed -= App_DocumentClosed;
