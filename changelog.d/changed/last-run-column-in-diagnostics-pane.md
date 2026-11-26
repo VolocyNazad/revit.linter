@@ -1,0 +1,1 @@
+The diagnostics pane shows, for the active document, how long each check took during the last full run in a new **Last run** column, and finding messages no longer repeat the execution time of a single check.

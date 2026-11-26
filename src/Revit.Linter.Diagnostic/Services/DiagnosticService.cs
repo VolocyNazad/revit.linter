@@ -13,6 +13,7 @@ internal sealed class DiagnosticService(
         IDiagnosticCatalog diagnosticCatalog,
         IIgnoreElementDetector ignoreElementDetector,
         IDocumentQueryService documentQueries,
+        IDiagnosticRunDurationStore runDurationStore,
         ILogger<DiagnosticService> logger)
     : IDiagnosticService
 {
@@ -94,9 +95,10 @@ internal sealed class DiagnosticService(
         foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
+            bool ran = false;
             try
             {
-                RunDocumentDiagnostic(registration, document, ignoredElements);
+                ran = RunDocumentDiagnostic(registration, document, ignoredElements);
             }
             catch (Exception exception)
             {
@@ -107,16 +109,20 @@ internal sealed class DiagnosticService(
             if (options.LogDurations && registration.State.IsEnabled)
                 DiagnosticRunMetrics.LogDocumentDiagnostic(
                     logger, registration.Identity.Code, stopwatch.ElapsedMilliseconds);
+            if (options.RecordRunDurations && ran)
+                runDurationStore.Record(document.Title, registration.Identity.Code, stopwatch.Elapsed);
         }
 
         return completed;
     }
 
-    private void RunDocumentDiagnostic(
+    // The returned flag tells the caller whether the diagnostic actually ran: a disabled, filtered or
+    // ignored diagnostic must not report the near-zero time of its own guard check to the checks pane.
+    private bool RunDocumentDiagnostic(
         DocumentDiagnosticRegistration registration, Document document, IIgnoredElements ignoredElements)
     {
-        if (!registration.State.IsEnabled || !registration.Filter.IsRelevantFor(document)) return;
-        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
+        if (!registration.State.IsEnabled || !registration.Filter.IsRelevantFor(document)) return false;
+        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return false;
 
         (DiagnosticFeedback[] feedbacks, double duration) = DiagnosticRunMetrics.Measure(
             (registration, document),
@@ -138,6 +144,8 @@ internal sealed class DiagnosticService(
                 identity.IsObsolete,
                 identity.ObsoleteDescription));
         }
+
+        return true;
     }
 
     // Shares the element list with the diagnostics that scan the whole document during the same run.
@@ -171,9 +179,10 @@ internal sealed class DiagnosticService(
             // An incremental run produces a handful of findings and keeps sending them immediately.
             List<DiagnosticReport>? batch = options.BatchReports ? [] : null;
             Exception? failure = null;
+            bool ran = false;
             try
             {
-                RunElementDiagnostic(
+                ran = RunElementDiagnostic(
                     registration, document, elements, view, ignoredElements, statistics, batch);
             }
             catch (Exception exception)
@@ -211,14 +220,17 @@ internal sealed class DiagnosticService(
                     registration.Identity.Code,
                     stopwatch.ElapsedMilliseconds,
                     statistics);
+            if (options.RecordRunDurations && ran)
+                runDurationStore.Record(document.Title, registration.Identity.Code, stopwatch.Elapsed);
         }
 
         return completed;
     }
 
     // The first failure stops the remaining elements of the same diagnostic: a faulty rule would otherwise
-    // repeat the same error for every element.
-    private void RunElementDiagnostic(
+    // repeat the same error for every element. The returned flag tells the caller whether the diagnostic
+    // actually ran, so the checks pane ignores a disabled, filtered or ignored diagnostic.
+    private bool RunElementDiagnostic(
         ElementDiagnosticRegistration registration,
         Document document,
         IEnumerable<Element> elements,
@@ -227,11 +239,11 @@ internal sealed class DiagnosticService(
         ElementDiagnosticRunStatistics statistics,
         List<DiagnosticReport>? batch)
     {
-        if (!registration.State.IsEnabled || !registration.DocumentFilter.IsRelevantFor(document)) return;
+        if (!registration.State.IsEnabled || !registration.DocumentFilter.IsRelevantFor(document)) return false;
 
         // A document-level ignore suppresses the whole diagnostic in this document, so its elements
         // are not even visited.
-        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return;
+        if (ignoredElements.IsDocumentIgnored(registration.Identity.Code)) return false;
 
         foreach (Element element in elements)
         {
@@ -287,6 +299,8 @@ internal sealed class DiagnosticService(
                 statistics.PublishTicks += Stopwatch.GetTimestamp() - publishStarted;
             }
         }
+
+        return true;
     }
 
     private void ReportFailure(Document document, string diagnosticCode, Exception exception)

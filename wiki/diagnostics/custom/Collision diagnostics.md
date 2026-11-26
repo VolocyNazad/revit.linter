@@ -15,7 +15,7 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - type: "collision"
   code: "CLSN001"
   description: "custom"
-  message: "Element named '{elementName}' with identifier '{elementId}' intersects {intersection.count} element(s) '{intersection.elementNames}' with identifiers '{intersection.elementIds}'. Execution time '{duration}' ms."
+  message: "Element named '{elementName}' with identifier '{elementId}' intersects {intersection.count} element(s) '{intersection.elementNames}' with identifiers '{intersection.elementIds}'."
   severity: "Warning"
   isActive: true
   tags: ["MEP", "Coordination"]

@@ -30,115 +30,115 @@
   <data name="show_and_select_visualization" xml:space="preserve"><value>Показать и выбрать</value></data>
   <data name="cut_show_and_select_visualization" xml:space="preserve"><value>Обрезать, показать и выбрать</value></data>
   <data name="SYST001_description" xml:space="preserve"><value>Проверяет экземпляры труб, воздуховодов, коробов, лотков и семейств на наличие неприсоединённых коннекторов.</value></data>
-  <data name="SYST001_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) имеет неприсоединённые коннекторы. Время выполнения: {duration} мс.</value></data>
+  <data name="SYST001_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) имеет неприсоединённые коннекторы.</value></data>
   <data name="SHRD001_description" xml:space="preserve"><value>Проверяет использование семейств в документе.</value></data>
-  <data name="SHRD001_message" xml:space="preserve"><value>Семейство «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD001_message" xml:space="preserve"><value>Семейство «{elementName}» ({elementId}) не используется.</value></data>
   <data name="SHRD002_description" xml:space="preserve"><value>Проверяет использование типоразмеров семейств в документе.</value></data>
-  <data name="SHRD002_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD002_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) не используется.</value></data>
   <data name="SHRD003_description" xml:space="preserve"><value>Проверяет наличие отзеркаленных экземпляров семейств.</value></data>
-  <data name="SHRD003_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) отзеркален. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD003_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) отзеркален.</value></data>
   <data name="SHRD004_description" xml:space="preserve"><value>Проверяет размещение видов на листах.</value></data>
-  <data name="SHRD004_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) не размещён на листе. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD004_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) не размещён на листе.</value></data>
   <data name="SHRD005_description" xml:space="preserve"><value>Проверяет наличие привязки верха стен.</value></data>
-  <data name="SHRD005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) не имеет привязки сверху. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) не имеет привязки сверху.</value></data>
   <data name="SHRD006_description" xml:space="preserve"><value>Проверяет координаты размещения элементов на основе линии.</value></data>
-  <data name="SHRD006_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD006_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки.</value></data>
   <data name="SHRD007_description" xml:space="preserve"><value>Проверяет длину элементов на основе линии.</value></data>
-  <data name="SHRD007_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимую длину. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD007_message" xml:space="preserve"><value>Элемент на основе линии «{elementName}» ({elementId}) имеет недопустимую длину.</value></data>
   <data name="SHRD008_description" xml:space="preserve"><value>Проверяет высотные отметки уровней.</value></data>
-  <data name="SHRD008_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) имеет недопустимую высотную отметку. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD008_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) имеет недопустимую высотную отметку.</value></data>
   <data name="SHRD009_description" xml:space="preserve"><value>Проверяет координаты эскизов перекрытий.</value></data>
-  <data name="SHRD009_message" xml:space="preserve"><value>Перекрытие «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD009_message" xml:space="preserve"><value>Перекрытие «{elementName}» ({elementId}) имеет недопустимые координаты относительно базовой точки.</value></data>
   <data name="SHRD0010_description" xml:space="preserve"><value>Проверяет высоту размещения экземпляров семейств.</value></data>
-  <data name="SHRD0010_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) имеет недопустимую высоту размещения. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0010_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) имеет недопустимую высоту размещения.</value></data>
   <data name="SHRD0011_description" xml:space="preserve"><value>Проверяет использование элементов-параметров.</value></data>
-  <data name="SHRD0011_message" xml:space="preserve"><value>Элемент-параметр «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0011_message" xml:space="preserve"><value>Элемент-параметр «{elementName}» ({elementId}) не используется.</value></data>
   <data name="SHRD0012_description" xml:space="preserve"><value>Проверяет привязку экземпляров семейств к ближайшему уровню.</value></data>
-  <data name="SHRD0012_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) привязан не к ближайшему уровню. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0012_message" xml:space="preserve"><value>Экземпляр семейства «{elementName}» ({elementId}) привязан не к ближайшему уровню.</value></data>
   <data name="SHRD0013_description" xml:space="preserve"><value>Проверяет наличие линий модели.</value></data>
-  <data name="SHRD0013_message" xml:space="preserve"><value>В модели существует линия модели «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0013_message" xml:space="preserve"><value>В модели существует линия модели «{elementName}» ({elementId}).</value></data>
   <data name="SHRD0014_description" xml:space="preserve"><value>Проверяет наличие линий детализации.</value></data>
-  <data name="SHRD0014_message" xml:space="preserve"><value>В модели существует линия детализации «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0014_message" xml:space="preserve"><value>В модели существует линия детализации «{elementName}» ({elementId}).</value></data>
   <data name="SHRD0015_description" xml:space="preserve"><value>Проверяет наличие текстовых примечаний.</value></data>
-  <data name="SHRD0015_message" xml:space="preserve"><value>В модели существует текстовое примечание «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0015_message" xml:space="preserve"><value>В модели существует текстовое примечание «{elementName}» ({elementId}).</value></data>
   <data name="SHRD0016_description" xml:space="preserve"><value>Проверяет наличие импортированных объектов.</value></data>
-  <data name="SHRD0016_message" xml:space="preserve"><value>В модели существует импортированный объект «{elementName}» ({elementId}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0016_message" xml:space="preserve"><value>В модели существует импортированный объект «{elementName}» ({elementId}).</value></data>
   <data name="ARCH001_description" xml:space="preserve"><value>Проверяет размещение помещений.</value></data>
-  <data name="ARCH001_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не размещено. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH001_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не размещено.</value></data>
   <data name="ARCH002_description" xml:space="preserve"><value>Проверяет окружение помещений.</value></data>
-  <data name="ARCH002_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не окружено. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH002_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) не окружено.</value></data>
   <data name="ARCH003_description" xml:space="preserve"><value>Проверяет наличие избыточных помещений.</value></data>
-  <data name="ARCH003_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) избыточно. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH003_message" xml:space="preserve"><value>Помещение «{elementName}» ({elementId}) избыточно.</value></data>
   <data name="ARCH004_description" xml:space="preserve"><value>Проверяет высоту стен.</value></data>
-  <data name="ARCH004_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет недопустимую высоту. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH004_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет недопустимую высоту.</value></data>
   <data name="ARCH005_description" xml:space="preserve"><value>Проверяет стены на многослойную составную конструкцию.</value></data>
-  <data name="ARCH005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет многослойную составную конструкцию. Время выполнения: {duration} мс.</value></data>
+  <data name="ARCH005_message" xml:space="preserve"><value>Стена «{elementName}» ({elementId}) имеет многослойную составную конструкцию.</value></data>
   <data name="SHRD0017_description" xml:space="preserve"><value>Проверяет наличие размещённых видов и спецификаций на листах.</value></data>
-  <data name="SHRD0017_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) пуст. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0017_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) пуст.</value></data>
   <data name="SHRD0018_description" xml:space="preserve"><value>Проверяет наличие шаблона у размещённых на листах видов.</value></data>
-  <data name="SHRD0018_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) размещён на листе без шаблона вида. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0018_message" xml:space="preserve"><value>Вид «{elementName}» ({elementId}) размещён на листе без шаблона вида.</value></data>
   <data name="SHRD0019_description" xml:space="preserve"><value>Проверяет наличие основной надписи на листах.</value></data>
-  <data name="SHRD0019_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) не содержит основную надпись. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0019_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) не содержит основную надпись.</value></data>
   <data name="SHRD0020_description" xml:space="preserve"><value>Проверяет, что на листе находится не более одной основной надписи.</value></data>
-  <data name="SHRD0020_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) содержит несколько основных надписей. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0020_message" xml:space="preserve"><value>Лист «{elementName}» ({elementId}) содержит несколько основных надписей.</value></data>
   <data name="SHRD0021_description" xml:space="preserve"><value>Проверяет отсутствие групп, вложенных в другие группы.</value></data>
-  <data name="SHRD0021_message" xml:space="preserve"><value>Группа «{elementName}» ({elementId}) вложена в другую группу. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0021_message" xml:space="preserve"><value>Группа «{elementName}» ({elementId}) вложена в другую группу.</value></data>
   <data name="SHRD0022_description" xml:space="preserve"><value>Проверяет использование материалов в документе.</value></data>
-  <data name="SHRD0022_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0022_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) не используется.</value></data>
   <data name="SHRD0023_description" xml:space="preserve"><value>Проверяет использование типоразмеров семейств профилей в документе.</value></data>
-  <data name="SHRD0023_message" xml:space="preserve"><value>Типоразмер профиля «{elementName}» ({elementId}) не используется. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0023_message" xml:space="preserve"><value>Типоразмер профиля «{elementName}» ({elementId}) не используется.</value></data>
   <data name="SHRD0024_description" xml:space="preserve"><value>Проверяет, зафиксированы ли опорные плоскости заблокированными размерами или связью равенства EQ в документах семейств.</value></data>
-  <data name="SHRD0024_message" xml:space="preserve"><value>Опорная плоскость «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0024_message" xml:space="preserve"><value>Опорная плоскость «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ.</value></data>
   <data name="SHRD0025_description" xml:space="preserve"><value>Проверяет заполненность текстовых параметров типоразмеров в документах семейств.</value></data>
-  <data name="SHRD0025_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) есть незаполненные параметры типоразмеров: {details}. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0025_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) есть незаполненные параметры типоразмеров: {details}.</value></data>
   <data name="SHRD0026_description" xml:space="preserve"><value>Проверяет типоразмеры на полное совпадение значений параметров в документах семейств.</value></data>
-  <data name="SHRD0026_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) есть типоразмеры-дубликаты: {duplicateNames}. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0026_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) есть типоразмеры-дубликаты: {duplicateNames}.</value></data>
   <data name="SHRD0027_description" xml:space="preserve"><value>Проверяет наличие групп в документе.</value></data>
-  <data name="SHRD0027_message" xml:space="preserve"><value>Группа «{elementName}» ({elementId}) существует в документе. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0027_message" xml:space="preserve"><value>Группа «{elementName}» ({elementId}) существует в документе.</value></data>
   <data name="SHRD0028_description" xml:space="preserve"><value>Проверяет типоразмеры семейств на полное совпадение значений в пределах одного семейства.</value></data>
-  <data name="SHRD0028_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) полностью совпадает с «{duplicateNames}». Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0028_message" xml:space="preserve"><value>Типоразмер семейства «{elementName}» ({elementId}) полностью совпадает с «{duplicateNames}».</value></data>
   <data name="SHRD0029_description" xml:space="preserve"><value>Проверяет, зафиксированы ли опорные линии заблокированными размерами или связью равенства EQ в документах семейств.</value></data>
-  <data name="SHRD0029_message" xml:space="preserve"><value>Опорная линия «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0029_message" xml:space="preserve"><value>Опорная линия «{elementName}» ({elementId}) не зафиксирована ни одним заблокированным размером или связью равенства EQ.</value></data>
   <data name="RVT003_description" xml:space="preserve"><value>Проверяет наличие неиспользуемых элементов, которые можно удалить командой «Удалить неиспользуемое».</value></data>
-  <data name="RVT003_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке. Время выполнения: {duration} мс.</value></data>
+  <data name="RVT003_message" xml:space="preserve"><value>Элемент «{elementName}» ({elementId}) не используется и может быть удалён при очистке.</value></data>
   <data name="SHRD0031_description" xml:space="preserve"><value>Проверяет наличие связанных массивов (Сгруппировать и связать). См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
-  <data name="SHRD0031_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) связан. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0031_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) связан.</value></data>
   <data name="SHRD0032_description" xml:space="preserve"><value>Проверяет массивы с большим числом членов. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
-  <data name="SHRD0032_message" xml:space="preserve"><value>В массиве «{elementName}» ({elementId}) слишком много членов. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0032_message" xml:space="preserve"><value>В массиве «{elementName}» ({elementId}) слишком много членов.</value></data>
   <data name="SHRD0033_description" xml:space="preserve"><value>Проверяет массивы, управляемые параметром семейства. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
-  <data name="SHRD0033_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) управляется параметром. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0033_message" xml:space="preserve"><value>Массив «{elementName}» ({elementId}) управляется параметром.</value></data>
   <data name="SHRD0034_description" xml:space="preserve"><value>Проверяет радиальные массивы с большим числом членов. См. справку Autodesk Revit: оптимизация производительности; эффективное моделирование; массивы элементов.</value></data>
-  <data name="SHRD0034_message" xml:space="preserve"><value>В радиальном массиве «{elementName}» ({elementId}) слишком много членов. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0034_message" xml:space="preserve"><value>В радиальном массиве «{elementName}» ({elementId}) слишком много членов.</value></data>
   <data name="SHRD0035_description" xml:space="preserve"><value>Проверяет, закреплены ли уровни.</value></data>
-  <data name="SHRD0035_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) не закреплён. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0035_message" xml:space="preserve"><value>Уровень «{elementName}» ({elementId}) не закреплён.</value></data>
   <data name="SHRD0036_description" xml:space="preserve"><value>Проверяет, закреплены ли оси.</value></data>
-  <data name="SHRD0036_message" xml:space="preserve"><value>Ось «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0036_message" xml:space="preserve"><value>Ось «{elementName}» ({elementId}) не закреплена.</value></data>
   <data name="SHRD0037_description" xml:space="preserve"><value>Проверяет, закреплены ли экземпляры связей.</value></data>
-  <data name="SHRD0037_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) не закреплена. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0037_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) не закреплена.</value></data>
   <data name="SHRD0038_description" xml:space="preserve"><value>Ищет дубликаты материалов — материалы с одинаковыми настройками и разными именами. См. статью Autodesk о массовом дублировании материалов и ассетов внешнего вида.</value></data>
-  <data name="SHRD0038_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) — дубликат материала «{duplicateName}». Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0038_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) — дубликат материала «{duplicateName}».</value></data>
   <data name="SHRD0039_description" xml:space="preserve"><value>Ищет ассеты внешнего вида, на которые не ссылается ни один материал.</value></data>
-  <data name="SHRD0039_message" xml:space="preserve"><value>Ассет внешнего вида «{elementName}» ({elementId}) не используется ни одним материалом. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0039_message" xml:space="preserve"><value>Ассет внешнего вида «{elementName}» ({elementId}) не используется ни одним материалом.</value></data>
   <data name="SHRD0040_description" xml:space="preserve"><value>Ищет материалы, у которых в режиме затенения используется внешний вид визуализации с текстурой. См. справку Autodesk Revit: «Практические рекомендации: производительность при визуализации и материалы».</value></data>
-  <data name="SHRD0040_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) показывает текстуру внешнего вида в режиме затенения. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0040_message" xml:space="preserve"><value>Материал «{elementName}» ({elementId}) показывает текстуру внешнего вида в режиме затенения.</value></data>
   <data name="SHRD0041_description" xml:space="preserve"><value>Проверяет, есть ли в графическом виде элементы, скрытые в этом виде командой «Скрыть в виде».</value></data>
-  <data name="SHRD0041_message" xml:space="preserve"><value>В виде «{elementName}» ({elementId}) скрыто элементов: {hidden.count} — «{hidden.elementNames}» ({hidden.elementIds}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0041_message" xml:space="preserve"><value>В виде «{elementName}» ({elementId}) скрыто элементов: {hidden.count} — «{hidden.elementNames}» ({hidden.elementIds}).</value></data>
   <data name="SHRD0042_description" xml:space="preserve"><value>Проверяет, не размещена ли связь в рабочем наборе вместе с элементами модели. См. справку Autodesk Revit: «Рабочие наборы и производительность».</value></data>
-  <data name="SHRD0042_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) размещена в рабочем наборе «{workset.name}», где также размещено других элементов: {other.count} — «{other.elementNames}» ({other.elementIds}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0042_message" xml:space="preserve"><value>Связь «{elementName}» ({elementId}) размещена в рабочем наборе «{workset.name}», где также размещено других элементов: {other.count} — «{other.elementNames}» ({other.elementIds}).</value></data>
   <data name="SHRD0044_description" xml:space="preserve"><value>Проверяет пользовательские семейства на наличие параметров, имена которых совпадают с именами параметров проекта, привязанных к категории семейства. Общий параметр, совпадающий с проектным по GUID, дублем не считается.</value></data>
-  <data name="SHRD0044_message" xml:space="preserve"><value>У семейства «{elementName}» ({elementId}) параметров с именем «{parameter.name}»: {parameter.count}, из них привязано в проекте: {parameter.boundCount}, остальные заданы в семействе. В свойствах и спецификациях это разные поля с одним именем, и значение из семейства в проектное не попадает. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0044_message" xml:space="preserve"><value>У семейства «{elementName}» ({elementId}) параметров с именем «{parameter.name}»: {parameter.count}, из них привязано в проекте: {parameter.boundCount}, остальные заданы в семействе. В свойствах и спецификациях это разные поля с одним именем, и значение из семейства в проектное не попадает.</value></data>
   <data name="SHRD0045_description" xml:space="preserve"><value>Проверяет, есть ли в документе семейства параметры, которые не являются общими. Такие параметры остаются внутри семейства, поэтому спецификация и марка в проекте их не покажут.</value></data>
-  <data name="SHRD0045_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) параметров, которые не являются общими: {parameter.count}, а именно {parameter.names}. В проекте их не покажет ни спецификация, ни марка: в проект попадает только общий параметр. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0045_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) параметров, которые не являются общими: {parameter.count}, а именно {parameter.names}. В проекте их не покажет ни спецификация, ни марка: в проект попадает только общий параметр.</value></data>
   <data name="SHRD0045_listSeparator" xml:space="preserve"><value>, </value></data>
   <data name="SHRD0046_description" xml:space="preserve"><value>Проверяет, есть ли у семейства 6 и более типоразмеров, кроме типоразмера по умолчанию. [Справка Autodesk: создание каталога типоразмеров](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
-  <data name="SHRD0046_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, каталога типов нет. Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами. Время выполнения: {duration} мс.</value></data>
-  <data name="SHRD0046_message_with_catalog" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, при этом есть каталог типов «{catalogName}». Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0046_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, каталога типов нет. Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами.</value></data>
+  <data name="SHRD0046_message_with_catalog" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, при этом есть каталог типов «{catalogName}». Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами.</value></data>
   <data name="SHRD0047_description" xml:space="preserve"><value>Проверяет, есть ли в семействе типоразмеры, которых нет в его каталоге типов. [Справка Autodesk: загрузка семейства с каталогом типов](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
-  <data name="SHRD0047_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) есть типоразмеры, которых нет в каталоге типов «{catalogName}»: {typeNames}. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0047_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) есть типоразмеры, которых нет в каталоге типов «{catalogName}»: {typeNames}.</value></data>
   <data name="SHRD0048_description" xml:space="preserve"><value>Проверяет, хранит ли семейство свои типоразмеры внутри самого семейства и в каталоге типов одновременно. [Справка Autodesk: загрузка семейства с каталогом типов](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
-  <data name="SHRD0048_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) одновременно используются свои типоразмеры и каталог типов «{catalogName}» (своих типоразмеров: {ownTypeCount}, в каталоге: {catalogTypeCount}). Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0048_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) одновременно используются свои типоразмеры и каталог типов «{catalogName}» (своих типоразмеров: {ownTypeCount}, в каталоге: {catalogTypeCount}).</value></data>
   <data name="SHRD0049_description" xml:space="preserve"><value>Проверяет, все ли параметры типоразмеров есть в каталоге типов. [Справка Autodesk: создание каталога типоразмеров](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
-  <data name="SHRD0049_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) в каталоге типов «{catalogName}» нет параметров: {parameterNames}. При загрузке из каталога они получат значения по умолчанию. Время выполнения: {duration} мс.</value></data>
+  <data name="SHRD0049_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) в каталоге типов «{catalogName}» нет параметров: {parameterNames}. При загрузке из каталога они получат значения по умолчанию.</value></data>
   <data name="createCatalogAndRemoveTypes_fix" xml:space="preserve"><value>Создать каталог и убрать типоразмеры из семейства</value></data>
   <data name="createCatalogAndRemoveTypes_confirmationMessage" xml:space="preserve"><value>Все типоразмеры семейства, кроме активного, будут удалены из семейства. В каталог попадут все типы. Продолжить?</value></data>
   <data name="createCatalogAndRemoveTypes_confirmationButton" xml:space="preserve"><value>Создать каталог</value></data>

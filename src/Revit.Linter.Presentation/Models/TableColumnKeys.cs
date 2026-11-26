@@ -41,4 +41,7 @@ public static class TableColumnKeys
 
     /// <summary>The ignored target itself.</summary>
     public const string Target = "target";
+
+    /// <summary>The duration of the last full run of a diagnostic.</summary>
+    public const string LastRun = "last-run";
 }

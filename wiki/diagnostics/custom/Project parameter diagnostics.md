@@ -15,7 +15,7 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 - type: "parameter"
   code: "PRMTR001"
   description: "custom"
-  message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details} \n\nExecution time '{duration}' ms."
+  message: "Document named '{documentTitle}' contains invalid project parameters. Details: \n\n{details}"
   severity: "Message"
   isActive: false
   tags: ["Parameters"]

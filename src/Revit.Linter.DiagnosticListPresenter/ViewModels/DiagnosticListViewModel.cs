@@ -2,10 +2,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Revit.Context.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DialogPresenter.Abstractions;
+using Revit.Linter.Diagnostic.Abstractions.Models;
+using Revit.Linter.Diagnostic.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.Localization;
 using Revit.Linter.Presentation.Abstractions.Services;
@@ -22,9 +25,10 @@ namespace Revit.Linter.DiagnosticListPresenter.ViewModels;
 [XamlConstructor]
 [AutoConstructor]
 [GenerateLocalizedProperties]
-internal sealed partial class DiagnosticListViewModel : InitializableObservableObject, IDiagnosticListFilterReset
+internal sealed partial class DiagnosticListViewModel : RevitInteractionViewModel, IDiagnosticListFilterReset
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly IRevitContext _revitContext;
     private readonly IDiagnosticCatalog _diagnosticCatalog;
     private readonly IDocumentationLauncher _documentationLauncher;
     private readonly IUserInterfaceActivityStream _activityStream;
@@ -35,6 +39,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
     private readonly IConfigurationPaths _configurationPaths;
     private readonly IShellLauncher _shellLauncher;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly IDiagnosticRunDurationStore _runDurationStore;
     private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
@@ -67,6 +72,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
             new(TableColumnKeys.Severity, () => SeverityHeader),
             new(TableColumnKeys.Description, () => DescriptionHeader),
             new(TableColumnKeys.Tags, () => TagsHeader),
+            new(TableColumnKeys.LastRun, () => LastRunHeader),
         ]);
 
     [ObservableProperty]
@@ -355,12 +361,14 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         ReplaceCatalogSnapshot();
         _catalogChangesEnabled = true;
         _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;
+        _runDurationStore.Changed += RunDurationStore_Changed;
     }
 
     protected override async Task OnDeinitializing(CancellationToken cancellationToken = default)
     {
         _catalogChangesEnabled = false;
         _diagnosticCatalog.Changed -= DiagnosticCatalog_Changed;
+        _runDurationStore.Changed -= RunDurationStore_Changed;
         _catalogLease?.Dispose();
         _catalogLease = null;
         _dispatcher = null;
@@ -384,6 +392,65 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
         ReplaceCatalogSnapshot();
     }
 
+    private void RunDurationStore_Changed(object? sender, DiagnosticRunDurationChangedEventArgs args)
+    {
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(() => ApplyRunDuration(args));
+            return;
+        }
+
+        ApplyRunDuration(args);
+    }
+
+    /// <summary>Shows the recorded values of the document that became active.</summary>
+    protected override void OnRevitChanged(RevitEventType revitEventType)
+    {
+        // Only another active document changes the values the pane shows; ordinary edits leave the
+        // recorded durations untouched.
+        if (revitEventType is not (RevitEventType.DocumentFocusChanged
+            or RevitEventType.DocumentOpened
+            or RevitEventType.DocumentCreated
+            or RevitEventType.DocumentClosed)) return;
+
+        Dispatcher? dispatcher = _dispatcher;
+        if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+        if (!dispatcher.CheckAccess())
+        {
+            _ = dispatcher.InvokeAsync(ApplyRunDurations);
+            return;
+        }
+
+        ApplyRunDurations();
+    }
+
+    private void ApplyRunDuration(DiagnosticRunDurationChangedEventArgs args)
+    {
+        if (!string.Equals(args.DocumentTitle, ActiveDocumentTitle(), StringComparison.Ordinal)) return;
+        DiagnosticItemViewModel? item = Collection.FirstOrDefault(row => row.Code == args.DiagnosticCode);
+        if (item is not null) ApplyRunDuration(item, args.DocumentTitle);
+    }
+
+    private void ApplyRunDuration(DiagnosticItemViewModel item) => ApplyRunDuration(item, ActiveDocumentTitle());
+
+    private void ApplyRunDuration(DiagnosticItemViewModel item, string? documentTitle) =>
+        item.ApplyRunDuration(
+            documentTitle is not null
+            && _runDurationStore.TryGetDuration(documentTitle, item.Code, out TimeSpan duration)
+                ? duration
+                : (TimeSpan?)null);
+
+    private void ApplyRunDurations()
+    {
+        string? documentTitle = ActiveDocumentTitle();
+        foreach (DiagnosticItemViewModel item in Collection)
+            ApplyRunDuration(item, documentTitle);
+    }
+
+    private string? ActiveDocumentTitle() => _revitContext.ActiveDocument?.Title;
+
     private void ReplaceCatalogSnapshot()
     {
         List<DiagnosticItemViewModel> items = [];
@@ -399,6 +466,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
                     registration,
                     () => OpenDocumentation(registration.Identity.Code),
                     PublishSelectionChanged);
+                ApplyRunDuration(viewModel);
                 items.Add(viewModel);
             }
             foreach (DocumentDiagnosticRegistration registration in snapshot.DocumentDiagnostics)
@@ -409,6 +477,7 @@ internal sealed partial class DiagnosticListViewModel : InitializableObservableO
                     registration,
                     () => OpenDocumentation(registration.Identity.Code),
                     PublishSelectionChanged);
+                ApplyRunDuration(viewModel);
                 items.Add(viewModel);
             }
 

@@ -3,17 +3,17 @@
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="DOC001_description" xml:space="preserve"><value>Проверяет наличие начального вида документа.</value></data>
-  <data name="DOC001_message" xml:space="preserve"><value>Документ «{documentTitle}» не имеет начального вида. Время выполнения: {duration} мс.</value></data>
+  <data name="DOC001_message" xml:space="preserve"><value>Документ «{documentTitle}» не имеет начального вида.</value></data>
   <data name="RVT001_description" xml:space="preserve"><value>Проверяет наличие предупреждений Revit.</value></data>
-  <data name="RVT001_message" xml:space="preserve"><value>В документе «{documentTitle}» обнаружены предупреждения.&#xA;Элементы: {elementIds}&#xA;Подробности: {details}&#xA;Время выполнения: {duration} мс.</value></data>
+  <data name="RVT001_message" xml:space="preserve"><value>В документе «{documentTitle}» обнаружены предупреждения.&#xA;Элементы: {elementIds}&#xA;Подробности: {details}</value></data>
   <data name="DOC002_description" xml:space="preserve"><value>Проверяет, используются ли таблицы поиска типоразмеров семейства.</value></data>
-  <data name="DOC002_message" xml:space="preserve"><value>Таблица поиска типоразмеров «{tableName}» в семействе «{documentTitle}» не используется ни одним типоразмером. Время выполнения: {duration} мс.</value></data>
+  <data name="DOC002_message" xml:space="preserve"><value>Таблица поиска типоразмеров «{tableName}» в семействе «{documentTitle}» не используется ни одним типоразмером.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Проверяет, задан ли вид предпросмотра документа.</value></data>
-  <data name="DOC003_message" xml:space="preserve"><value>В документе «{documentTitle}» не задан вид предпросмотра. Время выполнения: {duration} мс.</value></data>
+  <data name="DOC003_message" xml:space="preserve"><value>В документе «{documentTitle}» не задан вид предпросмотра.</value></data>
   <data name="DOC004_description" xml:space="preserve"><value>Проверяет, есть ли в документе несколько параметров проекта с одинаковым именем. Определения у них разные, поэтому в свойствах и спецификациях рядом стоят два поля с одним именем.</value></data>
-  <data name="DOC004_message" xml:space="preserve"><value>У {parameter.count} параметров проекта одно имя: «{parameter.name}». Определения у них разные, поэтому в свойствах и спецификациях это разные поля с одинаковым именем. Категории, привязанные к нескольким определениям: {parameter.categories}. Время выполнения: {duration} мс.</value></data>
-  <data name="DOC004_noOverlapMessage" xml:space="preserve"><value>У {parameter.count} параметров проекта одно имя: «{parameter.name}». Определения у них разные, поэтому в свойствах и спецификациях это разные поля с одинаковым именем. Ни одна категория не привязана к нескольким определениям. Время выполнения: {duration} мс.</value></data>
+  <data name="DOC004_message" xml:space="preserve"><value>У {parameter.count} параметров проекта одно имя: «{parameter.name}». Определения у них разные, поэтому в свойствах и спецификациях это разные поля с одинаковым именем. Категории, привязанные к нескольким определениям: {parameter.categories}.</value></data>
+  <data name="DOC004_noOverlapMessage" xml:space="preserve"><value>У {parameter.count} параметров проекта одно имя: «{parameter.name}». Определения у них разные, поэтому в свойствах и спецификациях это разные поля с одинаковым именем. Ни одна категория не привязана к нескольким определениям.</value></data>
   <data name="RVT002_description" xml:space="preserve"><value>Проверяет документ встроенными правилами Revit Performance Adviser.</value></data>
-  <data name="RVT002_message" xml:space="preserve"><value>Performance Adviser обнаружил проблему в документе «{documentTitle}».&#xA;Правило: {ruleName}&#xA;Элементы: {elementIds}&#xA;Подробности: {details}&#xA;Время выполнения: {duration} мс.</value></data>
+  <data name="RVT002_message" xml:space="preserve"><value>Performance Adviser обнаружил проблему в документе «{documentTitle}».&#xA;Правило: {ruleName}&#xA;Элементы: {elementIds}&#xA;Подробности: {details}</value></data>
   <data name="setActiveViewAsPreview_fix" xml:space="preserve"><value>Сделать активный вид видом предпросмотра</value></data>
 </root>

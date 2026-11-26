@@ -27,6 +27,7 @@ internal sealed class DiagnosticListDesignData
             new(SeverityHeader),
             new(DescriptionHeader),
             new(TagsHeader),
+            new(LastRunHeader),
         ]);
     }
 
@@ -43,6 +44,8 @@ internal sealed class DiagnosticListDesignData
             HasConfiguration = true,
             Tags = ["Tour", "Architecture"],
             ObsoleteDescription = string.Empty,
+            LastRunDurationText = "24 ms",
+            LastRunDurationSortKey = 24,
         },
         new DiagnosticRowDesignData
         {
@@ -53,6 +56,8 @@ internal sealed class DiagnosticListDesignData
             HasConfiguration = true,
             Tags = ["Doors", "Project"],
             ObsoleteDescription = string.Empty,
+            LastRunDurationText = "1.4 s",
+            LastRunDurationSortKey = 1400,
         },
         new DiagnosticRowDesignData
         {
@@ -64,6 +69,8 @@ internal sealed class DiagnosticListDesignData
             Tags = ["Sheets"],
             IsObsolete = true,
             ObsoleteDescription = "This diagnostic was replaced by STDR201.",
+            LastRunDurationText = "—",
+            LastRunDurationSortKey = -1,
         },
     ];
 
@@ -233,6 +240,12 @@ internal sealed class DiagnosticListDesignData
     /// <summary>Gets the localized tooltip description of the tags column.</summary>
     public string TagsDescription => LocalizationResourceReader.GetString(ResourceBaseName, "tags_description");
 
+    /// <summary>Gets the localized header of the last-run column.</summary>
+    public string LastRunHeader => LocalizationResourceReader.GetString(ResourceBaseName, "lastRun_header");
+
+    /// <summary>Gets the localized tooltip description of the last-run column.</summary>
+    public string LastRunDescription => LocalizationResourceReader.GetString(ResourceBaseName, "lastRun_description");
+
     /// <summary>Gets the localized tooltip title of the row documentation button.</summary>
     public string OpenDocumentationText => LocalizationResourceReader.GetString(ResourceBaseName, "openDocumentation_text");
 
@@ -285,6 +298,12 @@ internal sealed class DiagnosticRowDesignData
 
     /// <summary>Gets the tags as one text, used to sort the column.</summary>
     public string TagsText => string.Join(", ", Tags);
+
+    /// <summary>Gets the duration of the last full run shown in the row.</summary>
+    public string LastRunDurationText { get; init; } = string.Empty;
+
+    /// <summary>Gets the duration of the last full run in milliseconds, used to sort the column.</summary>
+    public double LastRunDurationSortKey { get; init; } = -1;
 
     /// <summary>Gets whether the diagnostic is obsolete.</summary>
     public bool IsObsolete { get; init; }

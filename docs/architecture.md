@@ -120,9 +120,10 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   report row with the element as the target, and a valid result reports nothing; a check that finds
   several independent problems returns several results. `DiagnosticFeedbacks` supplies the shared valid
   list, so a clean element allocates nothing.
-- A run is described by `DiagnosticRunOptions` (full or incremental: duration logging and report batching)
-  and measured by `DiagnosticRunMetrics`, which owns timings, garbage-collection counters and query-cache
-  statistics. The diagnostic service only decides what to run and how to report findings.
+- A run is described by `DiagnosticRunOptions` (full or incremental: duration logging, report batching
+  and recording the run durations the checks pane shows) and measured by `DiagnosticRunMetrics`, which owns
+  timings, garbage-collection counters and query-cache statistics. The diagnostic service only decides what
+  to run and how to report findings.
 - `Revit.Linter.DiagnosticReportExporting` owns the report export contract and file writing. The presenter
   supplies plain finding data with cultures and labels through `IDiagnosticReportExportService` and keeps
   activity publishing; the save-file dialog stays behind `ISaveFileDialogService`, and the module has no

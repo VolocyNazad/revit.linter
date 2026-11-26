@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IDiagnosticCatalogScope, DiagnosticCatalogScope>()
             .AddSingleton<IDiagnosticCatalogSnapshotFactory, DiagnosticCatalogSnapshotFactory>()
             .AddSingleton<IDiagnosticCatalog, DiagnosticCatalog>()
+            .AddSingleton<IDiagnosticRunDurationStore, DiagnosticRunDurationStore>()
             .AddSingleton<IDiagnosticService, DiagnosticService>()
         ;
     }
