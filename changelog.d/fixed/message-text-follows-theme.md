@@ -1,0 +1,1 @@
+Keep the descriptions of the rows revealed by scrolling the Diagnostics, Warnings and Fixes panes on the theme text colour: a message that was built before its view joined the table no longer keeps the default black text, because the document now carries the colour of the view itself.

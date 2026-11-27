@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -87,6 +88,47 @@ public sealed class ReportMessageViewTests
             Paragraph paragraph = Assert.IsType<Paragraph>(view.Document.Blocks.FirstBlock);
 
             Assert.NotEmpty(paragraph.TextDecorations);
+        });
+    }
+
+    [Fact]
+    public void Document_carries_the_view_foreground()
+    {
+        RunInSta(() =>
+        {
+            SolidColorBrush foreground = new(Colors.White);
+            ReportMessageView view = new()
+            {
+                Foreground = foreground,
+                Parts = [new(ReportInlineType.Text, "Message")]
+            };
+
+            Paragraph paragraph = Assert.IsType<Paragraph>(view.Document.Blocks.FirstBlock);
+            Run run = Assert.IsType<Run>(paragraph.Inlines.FirstInline);
+
+            Assert.Same(foreground, view.Document.Foreground);
+            Assert.Same(foreground, run.Foreground);
+            Assert.NotEqual(DependencyProperty.UnsetValue, view.Document.ReadLocalValue(TextElement.ForegroundProperty));
+        });
+    }
+
+    [Fact]
+    public void Document_takes_the_foreground_it_inherits_when_the_view_joins_the_tree()
+    {
+        RunInSta(() =>
+        {
+            ReportMessageView view = new()
+            {
+                Parts = [new(ReportInlineType.Text, "Message")]
+            };
+            Grid host = new();
+            host.SetValue(TextElement.ForegroundProperty, Brushes.White);
+
+            host.Children.Add(view);
+
+            Assert.Same(Brushes.White, view.Foreground);
+            Assert.Same(Brushes.White, view.Document.Foreground);
+            Assert.NotEqual(DependencyProperty.UnsetValue, view.Document.ReadLocalValue(TextElement.ForegroundProperty));
         });
     }
 

@@ -308,6 +308,7 @@
                                 </DataTemplate.Resources>
                                 <messaging:ReportMessageView
                                     VerticalAlignment="Center"
+                                    Foreground="{DynamicResource LinterForegroundBrush}"
                                     HorizontalScrollBarVisibility="Disabled"
                                     IsObsolete="{Binding IsObsolete}"
                                     IsSelectionEnabled="True"

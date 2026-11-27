@@ -1,0 +1,1 @@
+Keep the text of a selected table row readable when the table loses the focus: the check rows no longer turn black on the dark theme, and a cell keeps the theme text colour in every selection state on both themes.

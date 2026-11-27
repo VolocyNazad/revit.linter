@@ -51,10 +51,26 @@ public sealed partial class ReportMessageView : FlowDocumentScrollViewer
 
         if (e.Property == FontFamilyProperty || e.Property == FontSizeProperty || e.Property == FontWeightProperty)
             BuildDocument();
+        else if (e.Property == ForegroundProperty)
+            ApplyForeground();
     }
 
     private static void OnMessagePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         => ((ReportMessageView)sender).BuildDocument();
+
+    /// <summary>
+    /// Repeats the foreground of the view on its document, so text formatting never keeps the default color.
+    /// </summary>
+    /// <remarks>
+    /// A document takes the default text color when it is built outside the visual tree and keeps it while
+    /// the theme color arrives later. An own value on the document invalidates the formatted text and the
+    /// message is drawn with the color the view actually has.
+    /// </remarks>
+    private void ApplyForeground()
+    {
+        if (Document is not null)
+            Document.Foreground = Foreground;
+    }
 
     private void BuildDocument()
     {
@@ -81,6 +97,11 @@ public sealed partial class ReportMessageView : FlowDocumentScrollViewer
 
         document.Blocks.Add(paragraph);
         Document = document;
+
+        // Attaching a document applies the defaults of the viewer, so the colors are set afterwards, like
+        // the alignment below. The own value keeps the text on the view color while the theme changes and
+        // when the document is built before the view joins the tree.
+        ApplyForeground();
 
         // The viewer justifies its document, so the spaces between words stretch as the view changes
         // width. A message reads better left-aligned, with fixed spaces. Both values are set after the
