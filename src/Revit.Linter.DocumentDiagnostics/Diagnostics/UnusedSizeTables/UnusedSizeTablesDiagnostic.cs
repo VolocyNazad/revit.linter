@@ -1,52 +1,27 @@
-using Revit.Linter.DocumentQueries.Abstractions.Services;
+using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
 
 namespace Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
 
-internal sealed class UnusedSizeTablesDiagnostic(IDocumentQueryService documentQueries)
+internal sealed class UnusedSizeTablesDiagnostic(SizeTableReferenceCollector collector)
     : IDocumentDiagnostic
 {
     public DocumentDiagnosticId Identity => DocumentDiagnosticIdCollector.UnusedSizeTables;
 
     public IEnumerable<DiagnosticFeedback> Execute(Document targetDocument)
     {
-        // Size tables are stored inside the family document itself (see FamilySizeTableManager):
-        // no file-system scan is involved.
-        Family? family = targetDocument.OwnerFamily;
-        FamilySizeTableManager? manager = family is null
-            ? null
-            : FamilySizeTableManager.GetFamilySizeTableManager(targetDocument, family.Id);
-        if (manager is null || manager.NumberOfSizeTables == 0) yield break;
+        SizeTableReferenceCollection references = collector.Collect(targetDocument);
+        if (references.Manager is null || references.TableNames.Count == 0) yield break;
 
-        HashSet<string> referencedNames = CollectReferencedTableNames(targetDocument);
-        foreach (string tableName in manager.GetAllSizeTableNames().Where(tableName => !IsReferenced(tableName, referencedNames)))
+        // A formula whose table argument cannot be resolved statically may refer to any table.
+        // Reporting the other tables as unused would offer a deletion that can break the family.
+        if (references.HasUnresolvedTableReferences) yield break;
+
+        foreach (string tableName in references.TableNames)
+        {
+            if (references.IsReferenced(tableName)) continue;
             yield return new DiagnosticFeedback(
                 DiagnosticVerdict.NotValid,
                 new Dictionary<string, object> { ["tableName"] = tableName });
-    }
-
-    private HashSet<string> CollectReferencedTableNames(Document targetDocument)
-    {
-        HashSet<string> referencedNames = new(StringComparer.OrdinalIgnoreCase);
-        // Family symbols are shared with the element diagnostics of the same run through the
-        // class query instead of a dedicated collector.
-        IReadOnlyList<FamilySymbol> symbols = documentQueries.GetElementsOfClass<FamilySymbol>(targetDocument);
-        foreach (Element symbol in symbols)
-        {
-            string? rawName = symbol
-                .get_Parameter(BuiltInParameter.RBS_LOOKUP_TABLE_NAME)
-                ?.AsString();
-            // Explicit null check: string.IsNullOrWhiteSpace carries no NotNullWhen contract
-            // on net48, so it alone does not narrow the nullable on every target framework.
-            if (rawName is null || string.IsNullOrWhiteSpace(rawName)) continue;
-            string tableName = rawName.Trim();
-            referencedNames.Add(tableName);
-            referencedNames.Add(Path.GetFileName(tableName));
-            referencedNames.Add(Path.GetFileNameWithoutExtension(tableName));
         }
-        return referencedNames;
     }
-
-    private static bool IsReferenced(string tableName, HashSet<string> referencedNames) =>
-        referencedNames.Contains(tableName)
-        || referencedNames.Contains(Path.GetFileNameWithoutExtension(tableName));
 }

@@ -1,0 +1,1 @@
+Size lookup tables: `DOC002` now counts formula references and can delete unused tables after confirmation; `DOC005` reports formulas and family type lookup table names that reference a missing table, and `DOC006` reports formulas that reference a missing column.

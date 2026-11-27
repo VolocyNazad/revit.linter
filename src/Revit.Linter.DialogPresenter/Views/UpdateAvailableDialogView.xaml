@@ -59,7 +59,6 @@
                 <Button
                     d:Content="Close"
                     Content="{Binding CloseButtonText}"
-                    Command="{Binding CloseCommand}"
                     IsCancel="True"
                     Style="{StaticResource LinterDialogButton}" />
                 <Button

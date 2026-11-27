@@ -2,6 +2,7 @@ using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
+using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
 using Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
 using Revit.Linter.Testing;
 using TUnit.Core.Executors;
@@ -41,9 +42,8 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
     public async Task Family_without_tables_has_no_findings()
     {
         await Assert.That(_familyDocument).IsNotNull();
-        var diagnostic = new UnusedSizeTablesDiagnostic(TestDocumentQueries.Create());
 
-        IReadOnlyList<DiagnosticFeedback> feedback = diagnostic.Execute(_familyDocument!).ToArray();
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(_familyDocument!).ToArray();
 
         await Assert.That(feedback).IsEmpty();
     }
@@ -52,59 +52,73 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
     public async Task Imported_but_unreferenced_table_is_reported()
     {
         await Assert.That(_familyDocument).IsNotNull();
-        string tablePath = Path.Combine(Path.GetTempPath(), $"UnusedSizeTable{Guid.NewGuid():N}.csv");
-        try
-        {
-            WriteTableCsv(tablePath);
-            Family family = _familyDocument!.OwnerFamily;
-            var errorInfo = new FamilySizeTableErrorInfo();
-            bool imported;
-            string tableName = Path.GetFileNameWithoutExtension(tablePath);
-            using (Transaction transaction = new(_familyDocument, "Import test size table"))
-            {
-                transaction.Start();
-                AddLengthParameter(_familyDocument);
-                FamilySizeTableManager.CreateFamilySizeTableManager(_familyDocument, family.Id);
-                FamilySizeTableManager manager =
-                    FamilySizeTableManager.GetFamilySizeTableManager(_familyDocument, family.Id)!;
-                imported = manager.ImportSizeTable(_familyDocument, tablePath, errorInfo);
-                transaction.Commit();
-            }
+        string tableName = SizeTableTestDocuments.ImportTable(
+            _familyDocument!, SizeTableTestDocuments.ProbeTableCsv);
 
-            if (!imported)
-                throw new InvalidOperationException(
-                    $"Size table import failed: {errorInfo.FamilySizeTableErrorType} " +
-                    $"(file: '{errorInfo.FilePath}', column: {errorInfo.InvalidColumnIndex}, " +
-                    $"header: '{errorInfo.InvalidHeaderText}', row: {errorInfo.InvalidRowIndex}).");
-            var diagnostic = new UnusedSizeTablesDiagnostic(TestDocumentQueries.Create());
-            IReadOnlyList<DiagnosticFeedback> feedback = diagnostic.Execute(_familyDocument).ToArray();
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(_familyDocument!).ToArray();
 
-            await Assert.That(feedback.Count()).IsEqualTo(1);
-            await Assert.That(feedback[0].Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
-            await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
-        }
-        finally
-        {
-            if (File.Exists(tablePath)) File.Delete(tablePath);
-        }
+        await Assert.That(feedback.Count()).IsEqualTo(1);
+        await Assert.That(feedback[0].Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
     }
 
-    // Sync write: File.WriteAllTextAsync does not exist on net48, while the async S6966 suggestion
-    // applies to async callers only, so an isolated sync helper keeps every target framework clean.
-    // The header starts with an empty key column, like the tables shipped under Lookup Tables.
-    private static void WriteTableCsv(string tablePath) =>
-        File.WriteAllText(tablePath, ",Length##length##millimeters,Width##length##millimeters\nS,100,50\n");
-
-    // Size table columns must match real family parameters, otherwise the import is rejected.
-    private static void AddLengthParameter(Document familyDocument)
+    [Test]
+    public async Task Table_referenced_by_literal_formula_is_not_reported()
     {
-        FamilyManager manager = familyDocument.FamilyManager;
-#if IS2021
-        manager.AddParameter("Length", BuiltInParameterGroup.PG_DATA, ParameterType.Length, false);
-        manager.AddParameter("Width", BuiltInParameterGroup.PG_DATA, ParameterType.Length, false);
-#else
-        manager.AddParameter("Length", GroupTypeId.Data, SpecTypeId.Length, false);
-        manager.AddParameter("Width", GroupTypeId.Data, SpecTypeId.Length, false);
-#endif
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, $"size_lookup(\"{tableName}\", \"Length\", Width, Length)");
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback).IsEmpty();
     }
+
+    [Test]
+    public async Task Table_referenced_by_table_name_parameter_is_not_reported()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter tableNameParameter = SizeTableTestDocuments.AddTextParameter(familyDocument, "TableName");
+        SizeTableTestDocuments.SetText(familyDocument, tableNameParameter, tableName);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(TableName, \"Length\", Width, Length)");
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback).IsEmpty();
+    }
+
+    [Test]
+    public async Task Table_with_unresolved_formula_reference_is_not_reported()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string firstTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        string secondTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument,
+            result,
+            $"size_lookup(if(Length > 0 mm, \"{firstTable}\", \"{secondTable}\"), \"Length\", Width, Length)");
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback).IsEmpty();
+    }
+
+    private static UnusedSizeTablesDiagnostic CreateDiagnostic() =>
+        new(new SizeTableReferenceCollector(TestDocumentQueries.Create()));
 }
