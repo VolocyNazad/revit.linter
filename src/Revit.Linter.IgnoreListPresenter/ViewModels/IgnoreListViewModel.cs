@@ -33,9 +33,11 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     private readonly IUserInterfaceActivityStream _activityStream;
     private readonly ILogger<IgnoreListViewModel> _logger;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly ITableStateService _tableState;
     private FilteredRowCollection<IgnoreListItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private SearchOptionsViewModel? _searchOptions;
+    private bool _isRestoringView;
     private Dispatcher? _dispatcher;
 
     private static readonly DocumentationPage PanePage = new("Ignoring pane", "Панель игнорирования");
@@ -50,6 +52,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         IDocumentationLauncher documentationLauncher,
         IUserInterfaceActivityStream activityStream,
         ITableColumnsService tableColumnsService,
+        ITableStateService tableState,
         ILogger<IgnoreListViewModel> logger)
         : base(revitEventSource)
     {
@@ -61,6 +64,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
         _documentationLauncher = documentationLauncher;
         _activityStream = activityStream;
         _tableColumnsService = tableColumnsService;
+        _tableState = tableState;
         _logger = logger;
 
         Collection = [];
@@ -91,12 +95,20 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => Rows.Refresh();
+    partial void OnSearchFieldChanged(string value)
+    {
+        Rows.Refresh();
+        SaveSearch();
+    }
 
     /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
     public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
 
-    private void OnSearchOptionsChanged() => Rows.Refresh();
+    private void OnSearchOptionsChanged()
+    {
+        Rows.Refresh();
+        SaveSearch();
+    }
 
     [ObservableProperty]
     public partial string? ActiveDocumentTitle { get; set; }
@@ -203,6 +215,7 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        RestoreViewState();
         await ReloadAsync(purgeMissing: true);
     }
 
@@ -223,13 +236,48 @@ internal sealed partial class IgnoreListViewModel : RevitInteractionViewModel
     private FilteredRowCollection<IgnoreListItemViewModel> Rows => _rows ??=
         new(
             [new SortDescription(nameof(IgnoreListItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
-            IsRowVisible);
+            IsRowVisible,
+            tableId: TableColumnIds.IgnoreList,
+            sortColumns:
+            [
+                new(TableColumnKeys.Code, nameof(IgnoreListItemViewModel.CodeSortKey)),
+                new(TableColumnKeys.Scope, nameof(IgnoreListItemViewModel.ScopeText)),
+                new(TableColumnKeys.ElementId, nameof(IgnoreListItemViewModel.ElementIdValue)),
+                new(TableColumnKeys.Target, nameof(IgnoreListItemViewModel.TargetText)),
+            ],
+            tableState: _tableState);
 
     private bool IsRowVisible(IgnoreListItemViewModel viewModel)
     {
         SearchMatchOptions options = SearchOptions.ToMatchOptions();
         return SearchTextMatcher.Contains(viewModel.TargetText, SearchField, options)
             || SearchTextMatcher.Contains(viewModel.Code, SearchField, options);
+    }
+
+    private void SaveSearch()
+    {
+        if (_isRestoringView) return;
+
+        _tableState.SetSearch(
+            TableColumnIds.IgnoreList, SearchField, SearchOptions.MatchCase, SearchOptions.MatchWholeWord);
+    }
+
+    private void RestoreViewState()
+    {
+        TableSearchPreference? search = _tableState.GetSearch(TableColumnIds.IgnoreList);
+        if (search is null) return;
+
+        _isRestoringView = true;
+        try
+        {
+            SearchOptions.MatchCase = search.MatchCase;
+            SearchOptions.MatchWholeWord = search.MatchWholeWord;
+            SearchField = search.Text;
+        }
+        finally
+        {
+            _isRestoringView = false;
+        }
     }
 
     private async Task ReloadAsync(bool purgeMissing = false)

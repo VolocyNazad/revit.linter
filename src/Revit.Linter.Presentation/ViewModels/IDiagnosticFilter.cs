@@ -11,6 +11,9 @@ public interface IDiagnosticFilter<in TItem> : INotifyPropertyChanged
     /// <summary>Gets whether the filter currently lets its items through.</summary>
     bool IsActive { get; }
 
+    /// <summary>Gets the stable key of the filter inside its group.</summary>
+    string Key { get; }
+
     /// <summary>Checks whether the row passes the filter, ignoring whether it is active.</summary>
     /// <param name="item">The row to check.</param>
     /// <returns>True when the row matches the filter.</returns>

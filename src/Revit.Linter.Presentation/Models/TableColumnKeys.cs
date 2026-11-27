@@ -5,7 +5,8 @@ namespace Revit.Linter.Presentation.Models;
 /// </summary>
 /// <remarks>
 /// Only data columns carry a key: the action icon columns of a table have none and therefore always stay
-/// visible. A key is written to <c>columns.yml</c>, so renaming one shows the column again.
+/// visible. A key is written to <c>columns.yml</c> and <c>tables.yml</c>, so renaming one shows the column
+/// again and forgets its saved sort.
 /// </remarks>
 public static class TableColumnKeys
 {

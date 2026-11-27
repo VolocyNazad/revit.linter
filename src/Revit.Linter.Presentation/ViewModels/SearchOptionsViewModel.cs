@@ -9,7 +9,7 @@ namespace Revit.Linter.Presentation.ViewModels;
 /// <remarks>
 /// The switches belong to a pane view model: the pane shows them next to its search box and refreshes
 /// the list when <c>changed</c> runs. Both start off, so the default search ignores case and matches
-/// part of a word.
+/// part of a word; a pane that restores a saved search sets them after creation.
 /// </remarks>
 public sealed partial class SearchOptionsViewModel : ObservableObject
 {

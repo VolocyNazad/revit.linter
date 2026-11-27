@@ -151,12 +151,14 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private readonly IClipboardService _clipboardService;
     private readonly IRevitIdlingScheduler _idlingScheduler;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly ITableStateService _tableState;
     private readonly IDiagnosticRefreshScheduler _refreshScheduler;
     private FilteredRowCollection<DiagnosticReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private DiagnosticSearchQuery? _searchQuery;
     private SearchOptionsViewModel? _searchOptions;
     private IDiagnosticCatalogSnapshotLease? _catalogLease;
+    private bool _isRestoringView;
     // Tags are looked up per report row; a code-keyed index keeps row creation O(1) on large reports.
     private readonly Dictionary<string, IReadOnlyList<string>> _tagsByCode = new(StringComparer.Ordinal);
     private IElementVisualizationPipeline? _activeVisualizationPipeline;
@@ -186,6 +188,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
             IDiagnosticReportExportService exportService, IClipboardService clipboardService,
             IOpenedDocuments openedDocuments,
             ITableColumnsService tableColumnsService,
+            ITableStateService tableState,
             IDiagnosticRefreshScheduler refreshScheduler,
             ILogger<DiagnosticReportViewModel> logger) : base(revitEventSource)
     {
@@ -209,6 +212,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         _exportService = exportService;
         _clipboardService = clipboardService;
         _tableColumnsService = tableColumnsService;
+        _tableState = tableState;
         _refreshScheduler = refreshScheduler;
         OpenedDocuments = openedDocuments;
 
@@ -250,6 +254,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         _searchQuery = null;
         Rows.Refresh();
+        SaveSearch();
     }
 
     /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
@@ -259,6 +264,7 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     {
         _searchQuery = null;
         Rows.Refresh();
+        SaveSearch();
     }
 
     [ObservableProperty]
@@ -298,7 +304,17 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
     private FilteredRowCollection<DiagnosticReportItemViewModel> Rows => _rows ??=
         new(
             [new SortDescription(nameof(DiagnosticReportItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
-            IsRowVisible);
+            IsRowVisible,
+            OnFilterToggled,
+            TableColumnIds.DiagnosticReport,
+            [
+                new(TableColumnKeys.Code, nameof(DiagnosticReportItemViewModel.CodeSortKey)),
+                new(TableColumnKeys.Message, nameof(DiagnosticReportItemViewModel.MessageText)),
+                new(TableColumnKeys.Document, nameof(DiagnosticReportItemViewModel.DocumentTitle)),
+                new(TableColumnKeys.Created, nameof(DiagnosticReportItemViewModel.Created)),
+                new(TableColumnKeys.Tags, nameof(DiagnosticReportItemViewModel.TagsText)),
+            ],
+            _tableState);
 
     private DiagnosticSearchQuery SearchQuery => _searchQuery ??=
         DiagnosticSearchQuery.Parse(SearchField, SearchOptions.ToMatchOptions());
@@ -308,6 +324,35 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         && SeverityFilters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && SearchQuery.Matches(viewModel.Code, viewModel.MessageText, viewModel.Tags);
+
+    private void OnFilterToggled(string group, IDiagnosticFilter<DiagnosticReportItemViewModel> filter) =>
+        _tableState.SetFilterActive(TableColumnIds.DiagnosticReport, group, filter.Key, filter.IsActive);
+
+    private void SaveSearch()
+    {
+        if (_isRestoringView) return;
+
+        _tableState.SetSearch(
+            TableColumnIds.DiagnosticReport, SearchField, SearchOptions.MatchCase, SearchOptions.MatchWholeWord);
+    }
+
+    private void RestoreViewState()
+    {
+        TableSearchPreference? search = _tableState.GetSearch(TableColumnIds.DiagnosticReport);
+        if (search is null) return;
+
+        _isRestoringView = true;
+        try
+        {
+            SearchOptions.MatchCase = search.MatchCase;
+            SearchOptions.MatchWholeWord = search.MatchWholeWord;
+            SearchField = search.Text;
+        }
+        finally
+        {
+            _isRestoringView = false;
+        }
+    }
 
     private void ClearFilters()
     {
@@ -339,36 +384,54 @@ internal sealed partial class DiagnosticReportViewModel : RevitInteractionViewMo
         List<IDiagnosticFilter<DiagnosticReportItemViewModel>> severityFilters = [];
 
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Message, messageCount));
+            new DiagnosticSeverityFilterViewModel(
+                IsFilterActive(TableFilterGroups.Severity, DiagnosticSeverity.Message),
+                DiagnosticSeverity.Message,
+                messageCount));
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Warning, warningCount));
+            new DiagnosticSeverityFilterViewModel(
+                IsFilterActive(TableFilterGroups.Severity, DiagnosticSeverity.Warning),
+                DiagnosticSeverity.Warning,
+                warningCount));
         severityFilters.Add(
-            new DiagnosticSeverityFilterViewModel(true, DiagnosticSeverity.Error, errorCount));
+            new DiagnosticSeverityFilterViewModel(
+                IsFilterActive(TableFilterGroups.Severity, DiagnosticSeverity.Error),
+                DiagnosticSeverity.Error,
+                errorCount));
 
         SeverityFilters = severityFilters;
 
         List<IDiagnosticFilter<DiagnosticReportItemViewModel>> filters = [];
 
         filters.Add(new FilterViewModel<DiagnosticReportItemViewModel, bool>(
-            true,
+            IsFilterActive(TableFilterGroups.Flags, "obsolete"),
             true,
             obsoleteCount,
             item => item.IsObsolete,
-            () => DiagnosticReportFilterLocalizations.GetString("Obsolete")));
+            () => DiagnosticReportFilterLocalizations.GetString("Obsolete"),
+            key: "obsolete"));
         filters.Add(new FilterViewModel<DiagnosticReportItemViewModel, bool>(
-            true,
+            IsFilterActive(TableFilterGroups.Flags, "actual"),
             false,
             actualCount,
             item => !item.IsObsolete,
-            () => DiagnosticReportFilterLocalizations.GetString("Actual")));
+            () => DiagnosticReportFilterLocalizations.GetString("Actual"),
+            key: "actual"));
 
         Filters = filters;
     }
+
+    private bool IsFilterActive(string filterGroup, Enum filterKey) =>
+        _tableState.IsFilterActive(TableColumnIds.DiagnosticReport, filterGroup, filterKey.ToString());
+
+    private bool IsFilterActive(string filterGroup, string filterKey) =>
+        _tableState.IsFilterActive(TableColumnIds.DiagnosticReport, filterGroup, filterKey);
 
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        RestoreViewState();
         // The rows outlive the run that created them, so their relative creation time is refreshed
         // while the pane is open instead of freezing at the moment each cell first appeared.
         _rowAgeTicker = new ReportRowAgeTicker(RefreshRowAges, _dispatcher);

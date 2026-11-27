@@ -39,6 +39,7 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
     private readonly IConfigurationPaths _configurationPaths;
     private readonly IShellLauncher _shellLauncher;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly ITableStateService _tableState;
     private readonly IDiagnosticRunDurationStore _runDurationStore;
     private FilteredRowCollection<DiagnosticItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
@@ -47,6 +48,7 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
     private SearchOptionsViewModel? _searchOptions;
     private bool _catalogChangesEnabled;
     private bool _isResettingFilters;
+    private bool _isRestoringView;
     private Dispatcher? _dispatcher;
 
     [ObservableProperty]
@@ -83,7 +85,9 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
         // Search typing refreshes the list immediately; the tour observes the typed text
         // separately, so typing alone never completes a step that also asks for filter actions.
         Rows.Refresh();
-        _activityStream.Publish(new DiagnosticSearchChangedActivity(value));
+        if (!_isRestoringView)
+            _activityStream.Publish(new DiagnosticSearchChangedActivity(value));
+        SaveSearch();
     }
 
     /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
@@ -93,6 +97,7 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
     {
         _searchQuery = null;
         Rows.Refresh();
+        SaveSearch();
     }
 
     [ObservableProperty]
@@ -105,16 +110,17 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
     /// <summary>Restores the default view: empty search, every filter enabled and the default sort order.</summary>
     /// <remarks>
     /// A guided session that needs a specific row on top resets the view first, so a search, filter or
-    /// column sort left over from earlier work cannot hide that row.
+    /// column sort left over from earlier work cannot hide that row. The reset lasts for the session and
+    /// does not replace the view saved for the next start.
     /// </remarks>
     public void ResetSearchAndFilters()
     {
-        SearchField = string.Empty;
-        SearchOptions.MatchCase = false;
-        SearchOptions.MatchWholeWord = false;
         _isResettingFilters = true;
         try
         {
+            SearchField = string.Empty;
+            SearchOptions.MatchCase = false;
+            SearchOptions.MatchWholeWord = false;
             foreach (DiagnosticTargetTypeFilterViewModel filter in Filters.OfType<DiagnosticTargetTypeFilterViewModel>())
                 filter.IsActive = true;
         }
@@ -328,7 +334,17 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
                 new SortDescription(nameof(DiagnosticItemViewModel.CodeSortKey), ListSortDirection.Ascending),
             ],
             IsRowVisible,
-            OnFilterToggled);
+            OnFilterToggled,
+            TableColumnIds.Diagnostics,
+            [
+                new(TableColumnKeys.IsActive, nameof(DiagnosticItemViewModel.IsActive)),
+                new(TableColumnKeys.Code, nameof(DiagnosticItemViewModel.CodeSortKey)),
+                new(TableColumnKeys.Severity, nameof(DiagnosticItemViewModel.Severity)),
+                new(TableColumnKeys.Description, nameof(DiagnosticItemViewModel.Description)),
+                new(TableColumnKeys.Tags, nameof(DiagnosticItemViewModel.TagsText)),
+                new(TableColumnKeys.LastRun, nameof(DiagnosticItemViewModel.LastRunDurationSortKey)),
+            ],
+            _tableState);
 
     private DiagnosticSearchQuery SearchQuery => _searchQuery ??=
         DiagnosticSearchQuery.Parse(SearchField, SearchOptions.ToMatchOptions());
@@ -337,10 +353,38 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
         => Filters.Any(filter => filter.IsActive && filter.IsValid(viewModel))
         && SearchQuery.Matches(viewModel.Code, viewModel.Description.ToString(), viewModel.Tags);
 
-    private void OnFilterToggled()
+    private void OnFilterToggled(string group, IDiagnosticFilter<DiagnosticItemViewModel> filter)
     {
-        if (!_isResettingFilters)
-            _activityStream.Publish(new DiagnosticListFilteredActivity());
+        if (_isResettingFilters) return;
+
+        _activityStream.Publish(new DiagnosticListFilteredActivity());
+        _tableState.SetFilterActive(TableColumnIds.Diagnostics, group, filter.Key, filter.IsActive);
+    }
+
+    private void SaveSearch()
+    {
+        if (_isRestoringView || _isResettingFilters) return;
+
+        _tableState.SetSearch(
+            TableColumnIds.Diagnostics, SearchField, SearchOptions.MatchCase, SearchOptions.MatchWholeWord);
+    }
+
+    private void RestoreViewState()
+    {
+        TableSearchPreference? search = _tableState.GetSearch(TableColumnIds.Diagnostics);
+        if (search is null) return;
+
+        _isRestoringView = true;
+        try
+        {
+            SearchOptions.MatchCase = search.MatchCase;
+            SearchOptions.MatchWholeWord = search.MatchWholeWord;
+            SearchField = search.Text;
+        }
+        finally
+        {
+            _isRestoringView = false;
+        }
     }
 
     private void RefreshFilters()
@@ -348,6 +392,8 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
         Filters = Enum.GetValues(typeof(TargetType))
             .Cast<TargetType>()
             .Select(targetType => new DiagnosticTargetTypeFilterViewModel(
+                _tableState.IsFilterActive(
+                    TableColumnIds.Diagnostics, TableFilterGroups.TargetType, targetType.ToString()),
                 targetType,
                 Collection.Count(item => item.TargetType == targetType)))
             .Where(filter => filter is DiagnosticTargetTypeFilterViewModel { Count: > 0 })
@@ -358,6 +404,7 @@ internal sealed partial class DiagnosticListViewModel : RevitInteractionViewMode
     {
         _dispatcher = Dispatcher.CurrentDispatcher;
         await base.OnInitializing(cancellationToken);
+        RestoreViewState();
         ReplaceCatalogSnapshot();
         _catalogChangesEnabled = true;
         _diagnosticCatalog.Changed += DiagnosticCatalog_Changed;

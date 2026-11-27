@@ -17,5 +17,12 @@ public static class ServiceCollectionExtensions
         /// <returns>The same service collection so that additional registrations can be chained.</returns>
         public IServiceCollection AddTableColumnsModule()
             => services.AddSingleton<ITableColumnsService, TableColumnsService>();
+
+        /// <summary>
+        /// Adds the service that remembers the search, the filters and the sort order of the linter tables.
+        /// </summary>
+        /// <returns>The same service collection so that additional registrations can be chained.</returns>
+        public IServiceCollection AddTableStateModule()
+            => services.AddSingleton<ITableStateService, TableStateService>();
     }
 }

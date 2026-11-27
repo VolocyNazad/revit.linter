@@ -27,10 +27,12 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private readonly Core.Abstractions.Services.IDocumentationLauncher _documentationLauncher;
     private readonly Core.Abstractions.Services.IUserInterfaceActivityStream _activityStream;
     private readonly ITableColumnsService _tableColumnsService;
+    private readonly ITableStateService _tableState;
     private FilteredRowCollection<FixReportItemViewModel>? _rows;
     private TableColumnsViewModel? _columns;
     private ReportRowAgeTicker? _rowAgeTicker;
     private SearchOptionsViewModel? _searchOptions;
+    private bool _isRestoringView;
 
     private static readonly Core.Abstractions.Models.DocumentationPage PanePage = new("Fix reports pane", "Панель результатов исправлений");
 
@@ -40,15 +42,17 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
         Core.Abstractions.Services.IDocumentationLauncher documentationLauncher,
         Core.Abstractions.Services.IUserInterfaceActivityStream activityStream,
         IOpenedDocuments openedDocuments,
-        ITableColumnsService tableColumnsService)
+        ITableColumnsService tableColumnsService,
+        ITableStateService tableState)
     {
         _documentationLauncher = documentationLauncher;
         _fixReportReceiver = fixReportReceiver;
-        Collection = [];
         _revitContext = revitContext;
         _accentElementsServices = accentElementsServices;
         _activityStream = activityStream;
         _tableColumnsService = tableColumnsService;
+        _tableState = tableState;
+        Collection = [];
         OpenedDocuments = openedDocuments;
     }
 
@@ -93,12 +97,20 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
 
     [ObservableProperty]
     public partial string SearchField { get; set; } = string.Empty;
-    partial void OnSearchFieldChanged(string value) => Rows.Refresh();
+    partial void OnSearchFieldChanged(string value)
+    {
+        Rows.Refresh();
+        SaveSearch();
+    }
 
     /// <summary>Gets the switches that match the case and the whole words of the search text.</summary>
     public SearchOptionsViewModel SearchOptions => _searchOptions ??= new(OnSearchOptionsChanged);
 
-    private void OnSearchOptionsChanged() => Rows.Refresh();
+    private void OnSearchOptionsChanged()
+    {
+        Rows.Refresh();
+        SaveSearch();
+    }
 
     [ObservableProperty]
     public partial string? TargetDocumentTitle { get; set; }
@@ -143,7 +155,16 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
     private FilteredRowCollection<FixReportItemViewModel> Rows => _rows ??=
         new(
             [new SortDescription(nameof(FixReportItemViewModel.CodeSortKey), ListSortDirection.Ascending)],
-            IsRowVisible);
+            IsRowVisible,
+            tableId: TableColumnIds.FixReport,
+            sortColumns:
+            [
+                new(TableColumnKeys.Code, nameof(FixReportItemViewModel.CodeSortKey)),
+                new(TableColumnKeys.Message, nameof(FixReportItemViewModel.MessageText)),
+                new(TableColumnKeys.Document, nameof(FixReportItemViewModel.DocumentTitle)),
+                new(TableColumnKeys.Created, nameof(FixReportItemViewModel.Created)),
+            ],
+            tableState: _tableState);
 
     private bool IsRowVisible(FixReportItemViewModel viewModel)
     {
@@ -153,9 +174,36 @@ internal sealed partial class FixReportViewModel : InitializableObservableObject
             || Core.Abstractions.Models.SearchTextMatcher.Contains(viewModel.Code, SearchField, options));
     }
 
+    private void SaveSearch()
+    {
+        if (_isRestoringView) return;
+
+        _tableState.SetSearch(
+            TableColumnIds.FixReport, SearchField, SearchOptions.MatchCase, SearchOptions.MatchWholeWord);
+    }
+
+    private void RestoreViewState()
+    {
+        TableSearchPreference? search = _tableState.GetSearch(TableColumnIds.FixReport);
+        if (search is null) return;
+
+        _isRestoringView = true;
+        try
+        {
+            SearchOptions.MatchCase = search.MatchCase;
+            SearchOptions.MatchWholeWord = search.MatchWholeWord;
+            SearchField = search.Text;
+        }
+        finally
+        {
+            _isRestoringView = false;
+        }
+    }
+
     protected async override Task OnInitializing(CancellationToken cancellationToken = default)
     {
         await base.OnInitializing(cancellationToken);
+        RestoreViewState();
         // The rows outlive the fix that created them, so their relative creation time is refreshed
         // while the pane is open instead of freezing at the moment each cell first appeared.
         _rowAgeTicker = new ReportRowAgeTicker(RefreshRowAges, Dispatcher.CurrentDispatcher);

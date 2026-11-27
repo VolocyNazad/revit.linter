@@ -1,11 +1,11 @@
 namespace Revit.Linter.Presentation.Models;
 
 /// <summary>
-/// Names the tables whose column visibility the add-in remembers.
+/// Names the tables whose column visibility and view state the add-in remembers.
 /// </summary>
 /// <remarks>
-/// The identifier is written to <c>columns.yml</c>, so renaming one forgets the columns the user hid in that
-/// table. Column keys are listed in <see cref="TableColumnKeys"/>.
+/// The identifier is written to <c>columns.yml</c> and <c>tables.yml</c>, so renaming one forgets the
+/// columns and the view the user left in that table. Column keys are listed in <see cref="TableColumnKeys"/>.
 /// </remarks>
 public static class TableColumnIds
 {
