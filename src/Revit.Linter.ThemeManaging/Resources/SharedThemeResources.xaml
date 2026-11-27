@@ -1187,10 +1187,17 @@
 
     <Style BasedOn="{StaticResource LinterDataGridRow}" TargetType="{x:Type DataGridRow}" />
 
+    <!--
+        The theme style of a WPF cell repaints the text of a selected cell with the system selection colors:
+        the active selection text is white and the inactive one is black. The style sets the foreground itself,
+        so a selected row keeps the palette text color whether the table has the focus or not. The disabled
+        trigger replaces the system gray text with the dimmed theme color.
+    -->
     <Style x:Key="LinterDataGridCell" TargetType="{x:Type DataGridCell}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{DynamicResource LinterForegroundBrush}" />
         <Setter Property="Padding" Value="6,2" />
         <Setter Property="Template">
             <Setter.Value>
@@ -1205,6 +1212,11 @@
             </Setter.Value>
         </Setter>
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource LinterSecondaryForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style BasedOn="{StaticResource LinterDataGridCell}" TargetType="{x:Type DataGridCell}" />
