@@ -308,6 +308,7 @@
                                     <messaging:ReportMessageView
                                         x:Name="FoldedMessage"
                                         VerticalAlignment="Center"
+                                        Foreground="{DynamicResource LinterForegroundBrush}"
                                         ExpanderCommand="{Binding ExpandListCommand}"
                                         ExpanderToolTip="{Binding ExpandListToolTip}"
                                         HorizontalScrollBarVisibility="Disabled"

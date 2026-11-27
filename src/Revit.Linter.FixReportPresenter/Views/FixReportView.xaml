@@ -162,6 +162,7 @@
                                     <messaging:ReportMessageView
                                         x:Name="FoldedMessage"
                                         HorizontalScrollBarVisibility="Disabled"
+                                        Foreground="{DynamicResource LinterForegroundBrush}"
                                         IsSelectionEnabled="True"
                                         ExpanderCommand="{Binding ExpandListCommand}"
                                         ExpanderToolTip="{Binding ExpandListToolTip}"
