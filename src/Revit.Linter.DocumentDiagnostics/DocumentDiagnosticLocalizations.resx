@@ -6,22 +6,22 @@
   <data name="DOC001_message" xml:space="preserve"><value>Document '{documentTitle}' has no starting view.</value></data>
   <data name="RVT001_description" xml:space="preserve"><value>Checks for Revit warnings.</value></data>
   <data name="RVT001_message" xml:space="preserve"><value>Warnings were found in document '{documentTitle}'.&#xA;Elements: {elementIds}&#xA;Details: {details}</value></data>
-  <data name="DOC002_description" xml:space="preserve"><value>Checks whether family size lookup tables are referenced by formulas or by the lookup table name of a family type.</value></data>
-  <data name="DOC002_message" xml:space="preserve"><value>Size lookup table '{tableName}' in family '{documentTitle}' is not referenced by any formula and is not named by any family type.</value></data>
+  <data name="DOC002_description" xml:space="preserve"><value>Checks whether family lookup tables are referenced by formulas or by the lookup table name of a family type.</value></data>
+  <data name="DOC002_message" xml:space="preserve"><value>Lookup table '{tableName}' in family '{documentTitle}' is not referenced by any formula and is not named by any family type.</value></data>
   <data name="DOC003_description" xml:space="preserve"><value>Checks whether a preview view is set for the document.</value></data>
   <data name="DOC003_message" xml:space="preserve"><value>Document '{documentTitle}' has no preview view.</value></data>
   <data name="DOC004_description" xml:space="preserve"><value>Checks whether the document has several project parameters with the same name. Their definitions differ, so the Properties palette and schedules show two fields with one name.</value></data>
   <data name="DOC004_message" xml:space="preserve"><value>{parameter.count} project parameters share the name '{parameter.name}'. Their definitions differ, so the Properties palette and schedules show separate fields with one name. Categories bound to more than one definition: {parameter.categories}.</value></data>
   <data name="DOC004_noOverlapMessage" xml:space="preserve"><value>{parameter.count} project parameters share the name '{parameter.name}'. Their definitions differ, so the Properties palette and schedules show separate fields with one name. No category is bound to more than one definition.</value></data>
-  <data name="DOC005_description" xml:space="preserve"><value>Checks whether family formulas and the lookup table name of a family type reference a size lookup table that exists in the family.</value></data>
-  <data name="DOC005_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references size lookup table '{tableName}', which is not in the family.</value></data>
-  <data name="DOC005_missingTypeTableMessage" xml:space="preserve"><value>The lookup table name of family type '{typeName}' in family '{documentTitle}' references size lookup table '{tableName}', which is not in the family.</value></data>
-  <data name="DOC006_description" xml:space="preserve"><value>Checks whether family formulas reference columns that exist in the size lookup table.</value></data>
-  <data name="DOC006_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references column '{columnName}', which is not in size lookup table '{tableName}'.</value></data>
+  <data name="DOC005_description" xml:space="preserve"><value>Checks whether family formulas and the lookup table name of a family type reference a lookup table that exists in the family.</value></data>
+  <data name="DOC005_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references lookup table '{tableName}', which is not in the family.</value></data>
+  <data name="DOC005_missingTypeTableMessage" xml:space="preserve"><value>The lookup table name of family type '{typeName}' in family '{documentTitle}' references lookup table '{tableName}', which is not in the family.</value></data>
+  <data name="DOC006_description" xml:space="preserve"><value>Checks whether family formulas reference columns that exist in the lookup table.</value></data>
+  <data name="DOC006_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references column '{columnName}', which is not in lookup table '{tableName}'.</value></data>
   <data name="RVT002_description" xml:space="preserve"><value>Checks the document with the built-in Revit Performance Adviser rules.</value></data>
   <data name="RVT002_message" xml:space="preserve"><value>Performance Adviser reported a problem in document '{documentTitle}'.&#xA;Rule: {ruleName}&#xA;Elements: {elementIds}&#xA;Details: {details}</value></data>
   <data name="setActiveViewAsPreview_fix" xml:space="preserve"><value>Set active view as preview</value></data>
-  <data name="deleteUnusedSizeTables_fix" xml:space="preserve"><value>Delete all unused size lookup tables</value></data>
-  <data name="deleteUnusedSizeTables_confirmationMessage" xml:space="preserve"><value>Every unused size lookup table will be deleted from the family. Continue?</value></data>
+  <data name="deleteUnusedSizeTables_fix" xml:space="preserve"><value>Delete all unused lookup tables</value></data>
+  <data name="deleteUnusedSizeTables_confirmationMessage" xml:space="preserve"><value>Every unused lookup table will be deleted from the family. Continue?</value></data>
   <data name="deleteUnusedSizeTables_confirmationButton" xml:space="preserve"><value>Delete tables</value></data>
 </root>

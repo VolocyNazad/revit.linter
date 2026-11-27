@@ -31,6 +31,8 @@ Add this entry to the `rules:` list of `diagnostics.config.yaml`:
 
 `take` selects door instances. `check` returns `true` for a door with a mark, so a door with an empty mark appears in the report. The built-in parameter name keeps the rule independent of the Revit interface language.
 
+In `description` and `message`, use the terms a user sees in Revit: **Mark**, not `ALL_MODEL_MARK`. Internal names stay in formulas, where they keep the rule independent of the interface language.
+
 ## 3. Check the result
 
 Save the file, return to Revit, enable **CSTM201** in [[Diagnostics pane|Diagnostics]], and press **Run** in [[Diagnostic reports pane|Diagnostic results]]. Test the rule on a disposable model or copy first.

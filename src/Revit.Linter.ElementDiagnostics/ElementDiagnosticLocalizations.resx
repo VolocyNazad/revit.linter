@@ -51,8 +51,8 @@
   <data name="SHRD009_message" xml:space="preserve"><value>Floor '{elementName}' ({elementId}) has invalid coordinates relative to the base point.</value></data>
   <data name="SHRD0010_description" xml:space="preserve"><value>Checks family instances for elevation tolerance.</value></data>
   <data name="SHRD0010_message" xml:space="preserve"><value>Family instance '{elementName}' ({elementId}) has an invalid elevation.</value></data>
-  <data name="SHRD0011_description" xml:space="preserve"><value>Checks whether parameter elements are used.</value></data>
-  <data name="SHRD0011_message" xml:space="preserve"><value>Parameter element '{elementName}' ({elementId}) is not used.</value></data>
+  <data name="SHRD0011_description" xml:space="preserve"><value>Checks whether project parameters are used.</value></data>
+  <data name="SHRD0011_message" xml:space="preserve"><value>Project parameter '{elementName}' ({elementId}) is not used.</value></data>
   <data name="SHRD0012_description" xml:space="preserve"><value>Checks whether family instances are associated with the nearest level.</value></data>
   <data name="SHRD0012_message" xml:space="preserve"><value>Family instance '{elementName}' ({elementId}) is not associated with the nearest level.</value></data>
   <data name="SHRD0013_description" xml:space="preserve"><value>Checks for model lines.</value></data>
@@ -95,8 +95,8 @@
   <data name="SHRD0026_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has duplicate types: {duplicateNames}.</value></data>
   <data name="SHRD0027_description" xml:space="preserve"><value>Checks whether groups exist in the document.</value></data>
   <data name="SHRD0027_message" xml:space="preserve"><value>Group '{elementName}' ({elementId}) exists in the document.</value></data>
-  <data name="SHRD0028_description" xml:space="preserve"><value>Checks whether family symbols duplicate each other in the same family.</value></data>
-  <data name="SHRD0028_message" xml:space="preserve"><value>Family symbol '{elementName}' ({elementId}) has identical parameter values with '{duplicateNames}'.</value></data>
+  <data name="SHRD0028_description" xml:space="preserve"><value>Checks whether family types duplicate each other in the same family.</value></data>
+  <data name="SHRD0028_message" xml:space="preserve"><value>Family type '{elementName}' ({elementId}) has identical parameter values with '{duplicateNames}'.</value></data>
   <data name="SHRD0029_description" xml:space="preserve"><value>Checks whether reference lines are constrained by locked or equalized (EQ) dimensions in family documents.</value></data>
   <data name="SHRD0029_message" xml:space="preserve"><value>Reference line '{elementName}' ({elementId}) has no locked or EQ dimensions.</value></data>
   <data name="RVT003_description" xml:space="preserve"><value>Checks for unused elements that Purge Unused can delete.</value></data>
@@ -125,7 +125,7 @@
   <data name="SHRD0041_message" xml:space="preserve"><value>View '{elementName}' ({elementId}) has {hidden.count} hidden element(s): '{hidden.elementNames}' ({hidden.elementIds}).</value></data>
   <data name="SHRD0042_description" xml:space="preserve"><value>Checks whether a link shares its workset with model elements. See Autodesk Revit Help: Worksets and Performance.</value></data>
   <data name="SHRD0042_message" xml:space="preserve"><value>Link '{elementName}' ({elementId}) is on workset '{workset.name}', which also holds {other.count} other element(s): '{other.elementNames}' ({other.elementIds}).</value></data>
-  <data name="SHRD0044_description" xml:space="preserve"><value>Checks custom families for parameters whose names match project parameters bound to the family's category. A shared parameter that matches the project one by GUID is not a duplicate.</value></data>
+  <data name="SHRD0044_description" xml:space="preserve"><value>Checks loadable families for parameters whose names match project parameters bound to the family's category. A shared parameter that matches the project one by GUID is not a duplicate.</value></data>
   <data name="SHRD0044_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has {parameter.count} parameters named '{parameter.name}': {parameter.boundCount} bound in the project and the rest defined in the family. The Properties palette and schedules show separate fields with one name, and the family value does not reach the project one.</value></data>
   <data name="SHRD0045_description" xml:space="preserve"><value>Checks whether a family document has family parameters that are not shared. Such parameters stay inside the family, so a project schedule and a tag cannot show them.</value></data>
   <data name="SHRD0045_message" xml:space="preserve"><value>Family '{elementName}' ({elementId}) has {parameter.count} parameters that are not shared: {parameter.names}. A project schedule and a tag cannot show them: only a shared parameter reaches the project.</value></data>
