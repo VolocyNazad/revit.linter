@@ -8,6 +8,9 @@ lang: en
 
 A user element diagnostic can declare named fix pipelines. Each pipeline appears as an available fix in the diagnostic report. Its steps run from top to bottom inside the report presenter's Revit transaction.
 
+> [!note]
+> A built-in fix that deletes data asks for confirmation before it runs. The dialog states what will change; declining leaves the document untouched. A user-defined fix pipeline is named by its author, and that name is its contract.
+
 ```yaml
 fixes:
   - name: "Delete"

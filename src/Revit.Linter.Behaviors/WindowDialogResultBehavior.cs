@@ -12,8 +12,10 @@ namespace Revit.Linter.Behaviors;
 /// <remarks>
 /// Setting <see cref="DialogResult"/> to a value assigns <see cref="Window.DialogResult"/>, which also
 /// closes a window shown with <c>ShowDialog</c>; a null value does nothing. Attach only to modal
-/// dialogs: assigning the result of a modeless window throws. The view model resets the bound
-/// property before and after every show, so a stale result never closes the next show on attach.
+/// dialogs: assigning the result of a modeless window throws. A closed window is ignored, because a
+/// command on an <c>IsCancel</c> button can run after WPF has already closed it with a false result.
+/// The view model resets the bound property before and after every show, so a stale result never
+/// closes the next show on attach.
 /// </remarks>
 [GenerateDependencyProperty<bool?>(
     "DialogResult",
@@ -25,6 +27,7 @@ public sealed partial class WindowDialogResultBehavior : Behavior<Window>
         if (source is not WindowDialogResultBehavior behavior) return;
         if (behavior.AssociatedObject is null) return;
         if (args.NewValue is not bool result) return;
+        if (!behavior.AssociatedObject.IsLoaded) return;
 
         behavior.AssociatedObject.DialogResult = result;
     }

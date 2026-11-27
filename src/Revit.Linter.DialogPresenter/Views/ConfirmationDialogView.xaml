@@ -59,13 +59,8 @@
                 <Button
                     d:Content="Close"
                     Content="{Binding CloseButtonText}"
-                    Command="{Binding CloseWithResultCommand}"
                     IsCancel="True"
-                    Style="{StaticResource LinterDialogButton}">
-                    <Button.CommandParameter>
-                        <system:Boolean>False</system:Boolean>
-                    </Button.CommandParameter>
-                </Button>
+                    Style="{StaticResource LinterDialogButton}" />
                 <Button
                     x:Name="ConfirmButton"
                     Margin="8,0,0,0"

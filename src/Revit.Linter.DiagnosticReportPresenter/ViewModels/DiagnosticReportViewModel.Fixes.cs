@@ -305,6 +305,16 @@ internal sealed partial class DiagnosticReportViewModel
                         FixDelegate = async (cancellationToken) => {
                             if (document is null or { IsValidObject: false }) return;
 
+                            if (i is IDocumentFixConfirmation confirmation
+                                && !await _confirmationDialog.Show(
+                                    new ConfirmationDialogRequest(
+                                        confirmation.ConfirmationMessage,
+                                        confirmation.ConfirmationButtonText),
+                                    cancellationToken))
+                            {
+                                return;
+                            }
+
                             string transactionName = i.Value;
                             (bool success, string? error) = await ExecuteTransactionWithError(
                                 document, transactionName, () => i.Execute(document), cancellationToken);

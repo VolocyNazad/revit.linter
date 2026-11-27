@@ -31,6 +31,14 @@ the stable module boundaries and the decisions behind them belong to
   references, because WPF markup compilation recompiles such a type in a temporary project that carries
   no analyzers.
 
+## Fix confirmation
+
+- A built-in fix that deletes data, or changes more than its name promises, asks for confirmation
+  before it opens a transaction. The dialog states what will change; declining changes nothing.
+- A built-in element fix implements `IElementFixConfirmation`; a built-in document fix implements
+  `IDocumentFixConfirmation`. A user-defined fix pipeline is named by its author, and that name is
+  its contract.
+
 ## Composition and navigation
 
 - Use `ViewLocatorExtension` from `Revit.Linter.Presentation` only at the composition boundaries of UI
