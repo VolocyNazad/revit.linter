@@ -35,8 +35,6 @@ it. Today the set is `Release_2021.1.100`, `Release_2022.1.80`, `Release_2023.1.
 - A pull request that changes version-specific code runs those tests on the versions it touches; the
   full matrix is still required before the release.
 - Every `#if` branch is behaviour: a test that compiles only one branch does not cover the other.
-- A repository that does not compile against the Revit API is exempt from the version matrix, not
-  from testing.
 
 ## New Revit version
 

@@ -9,9 +9,6 @@ The repository follows [Git Flow](https://nvie.com/posts/a-successful-git-branch
 release, and every other branch is short-lived. Branch names, base branches and merge
 targets are a contract.
 
-Where a repository still names its main branch `master`, read `main` as that branch.
-The integration branch is always `dev`.
-
 ## Branches
 
 | Branch | Created from | Merged into | Lifetime | Purpose |
@@ -117,18 +114,5 @@ reaches `dev` when the release is finished.
 - only maintainers merge into `main`.
 
 Release and hotfix pull requests keep the same checks but may use a single reviewer.
-
-## Adopting the policy
-
-A repository that has only `main` gets its integration branch once:
-
-```powershell
-git switch main
-git pull --ff-only
-git switch -c dev
-git push -u origin dev
-```
-
-Then protect both branches as described above.
 
 The rest of the contributor workflow is defined by the [development policy](development.md).

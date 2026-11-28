@@ -149,12 +149,8 @@ Revit does not always compute the intersection of two solids: it rejects the ope
 - The log records `The solid intersection of elements ... could not be computed; the pair is reported as unverified.`, so a support case can tell a false collision from a missed one.
 
 **Notes:**
-- If the `message` field is not specified, it defaults to the localized generic template
-- If the `severity` field is not specified, it defaults to `Message`
-- If the `isActive` field is not specified, it defaults to `true`
-- If the `isObsolete` field is not specified, it defaults to `false`
 - If the `includeLinks` field is not specified, it defaults to `false`: linked models take part only when explicitly enabled, and their hits stay text-only in the report.
 - If the `ignoreConnectedElements` field is not specified, it defaults to `false`. Set it to `true` to skip joined elements: they touch by design while their family geometry overlaps at the joint, so they would otherwise be reported as collisions. A joined pair that genuinely collides elsewhere is skipped as well. The flag applies to host pairs only: connectors cannot join elements across Revit links.
 - If the `ignoreNestedFamilies` field is not specified, it defaults to `false`. Set it to `true` to skip pairs inside one placed family: a parent and its nested family, and nested families of one parent overlap by family design and would otherwise be reported as collisions. The flag applies to host pairs only and does not remove duplicate hits on one third-party element; see the section above.
 - `takeDocument`, `take`, `andTake` and `groupBy` are compiled when the file is loaded. A rule with a formula that cannot be compiled is skipped: the configuration notification names the rule code and the rejected formula, and the application log contains the compilation exception.
-- Tags are free text; a tag search uses `#` and matches the name exactly, ignoring case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags.
+- Defaults for `message`, `severity`, `isActive` and `isObsolete`, and the tag rules, are in [[Diagnostic parameters]] and [[Diagnostic tags]].

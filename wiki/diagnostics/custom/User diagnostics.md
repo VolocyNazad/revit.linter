@@ -61,12 +61,7 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
 
 ---
 
-**Notes:**
-- If the `message` field is not specified, it defaults to the localized generic template
-- If the `severity` field is not specified, it defaults to `Message`
-- If the `isActive` field is not specified, it defaults to `true`
-- If the `isObsolete` field is not specified, it defaults to `false`
-- Tags are free text; a tag search uses `#` and matches the name exactly, ignoring case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags
+Defaults for `message`, `severity`, `isActive` and `isObsolete`, and the tag rules, are in [[Diagnostic parameters]] and [[Diagnostic tags]].
 
 > **Note:** If `diagnostics.config.yaml` cannot be parsed, the whole file is treated as empty instead of keeping previously loaded rules. Revit Linter reports the configuration error in the UI and writes the exception and configuration path to the application log. A structurally invalid rule is skipped on its own and the other rules stay in use.
 

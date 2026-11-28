@@ -79,10 +79,9 @@ steps are not repeated here.
   unpackaged application before MSI creation from the explicit build-module result, not from
   configuration-specific paths under `bin`.
 - Verify the ILRepack output and the localization satellites before creating the MSI.
-- Produce one per-user MSI containing every supported Revit build and the shared updater. It installs
-  under `%LOCALAPPDATA%\Programs\VolocyNazad\Revit.Linter\`, creates version-specific manifests under
-  `%APPDATA%\Autodesk\Revit\Addins\<year>\`, and registers the updater under the current user's `Run`
-  key.
+- Produce one per-user MSI containing every supported Revit build and the shared updater. The
+  installation paths and manifest registration are in the
+  [module inventory](../repository/modules.md#updater-and-installer).
 - Keep one stable `UpgradeCode`; the product code changes deterministically with the stable product
   version. The first unified installation detects and removes older per-Revit-version products by
   their legacy upgrade codes.
