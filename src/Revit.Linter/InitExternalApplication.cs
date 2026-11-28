@@ -10,6 +10,7 @@ using Revit.Linter.ElementDependencyDefiners.Infrastructure;
 using Revit.Linter.Infrastructure.ExternalApplications;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
+using Revit.Linter.TypeCatalogDiagnostics.Abstractions.Services;
 using Revit.Linter.WelcomePresenter.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.TransactionMemoryCache.Abstractions.Services;
@@ -97,6 +98,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
         AddRibbonButtons(panel);
 
         GetService<IElementChangesMonitor>().Run();
+        GetService<ITypeCatalogChangesMonitor>().Run();
 
         var app = Application.ControlledApplication;
         app.DocumentCreating += App_DocumentCreating;
@@ -141,6 +143,7 @@ internal sealed partial class InitExternalApplication : ExternalApplication
             logger.LogInformation("Revit.Linter shutting down");
 
             GetService<IElementChangesMonitor>().Stop();
+            GetService<ITypeCatalogChangesMonitor>().Stop();
             _diagnosticCatalogNotifier?.Dispose();
             _diagnosticCatalogNotifier = null;
             _valueStoreNotifier?.Dispose();

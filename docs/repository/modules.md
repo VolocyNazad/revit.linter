@@ -155,10 +155,14 @@ the add-in host.
 ## Diagnostics and reports
 
 `Revit.Linter.TypeCatalogDiagnostics` owns the family type catalog checks (`SHRD0046`, `SHRD0047`,
-`SHRD0048`, `SHRD0049`), the catalog reader and writer, and the fixes that move types or parameters
-between the family and the catalog. It registers through `AddTypeCatalogDiagnostics`, depends on
-`Revit.Linter.Core`, `Revit.Linter.ElementVisualization` and `Revit.Linter.Localization`, and uses the
-Revit API. Its Revit tests live in `tests/Revit.Linter.TypeCatalogDiagnostics.RevitTests`.
+`SHRD0048`, `SHRD0049`), the catalog reader and writer, the fixes that move types or parameters
+between the family and the catalog, and the watch of the catalog file of every open saved family: a
+change of that file becomes an element change of the family element, published through
+`IElementChangesSender`, so the report checks the family again. It registers through
+`AddTypeCatalogDiagnostics`, depends on `Revit.Linter.Core`, `Revit.Linter.ElementChangesProvider`,
+`Revit.Linter.ElementVisualization` and `Revit.Linter.Localization`, and uses the Revit API. Its
+Revit tests live in `tests/Revit.Linter.TypeCatalogDiagnostics.RevitTests`; the headless tests of the
+path rule and the file watch live in `tests/Revit.Linter.TypeCatalogDiagnostics.Tests`.
 
 `Revit.Linter.SizeTableDiagnostics` owns the family size lookup table checks (`DOC002`, `DOC005`,
 `DOC006`, `DOC007`), their filters, the unused-table fix and the formula reader. It registers through
