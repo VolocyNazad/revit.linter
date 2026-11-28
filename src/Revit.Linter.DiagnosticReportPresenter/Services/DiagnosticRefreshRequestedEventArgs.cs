@@ -1,5 +1,3 @@
-using Autodesk.Revit.DB;
-
 namespace Revit.Linter.DiagnosticReportPresenter.Services;
 
 /// <summary>

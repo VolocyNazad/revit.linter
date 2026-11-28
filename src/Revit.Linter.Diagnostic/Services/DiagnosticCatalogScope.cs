@@ -1,5 +1,3 @@
-using Revit.Linter.Core.Abstractions.Services;
-
 namespace Revit.Linter.Diagnostic.Services;
 
 /// <summary>Narrows the published diagnostics to one check for a guided session.</summary>

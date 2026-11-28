@@ -1,5 +1,4 @@
 using Revit.Linter.DocumentQueries;
-using Revit.Linter.DocumentQueries.Abstractions.Models;
 using Revit.Linter.DocumentQueries.Abstractions.Services;
 using Revit.Sugar;
 

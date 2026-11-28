@@ -1,6 +1,5 @@
 using Revit.Linter.ConfigurationPath;
 using Revit.Linter.DiagnosticConfiguration.Models;
-using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Testing;
 using Revit.Linter.WelcomePresenter.Abstractions.Models;
 using Revit.Linter.WelcomePresenter.Infrastructure.Services;

@@ -1,5 +1,4 @@
 using Autodesk.Revit.DB;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.CollisionDiagnostics;
 using Revit.Linter.CollisionDiagnostics.Abstractions.Infrastructure.Services;
