@@ -1,4 +1,4 @@
-#if AFTER2023
+#if AFTER2022
 using Microsoft.Extensions.Logging;
 using Revit.Linter.ElementAccentor.Abstractions.Services;
 

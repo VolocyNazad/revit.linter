@@ -1,4 +1,4 @@
-#if AFTER2023
+#if AFTER2022
 namespace Revit.Linter.ElementDiagnostics.Diagnostics.FloorWithTolerantSketchCoordinates;
 
 internal sealed class FloorWithTolerantSketchCoordinatesDiagnosticFilter : IElementDiagnosticFilter
