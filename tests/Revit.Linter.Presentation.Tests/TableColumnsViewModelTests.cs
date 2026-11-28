@@ -7,7 +7,7 @@ namespace Revit.Linter.Presentation.Tests;
 
 /// <summary>
 /// Covers the popup of a table: it keeps one data column visible, follows a visibility change made
-/// elsewhere and shows every column again on request.
+/// elsewhere, shows every column again on request and stores the width of a column.
 /// </summary>
 public sealed class TableColumnsViewModelTests
 {
@@ -127,6 +127,23 @@ public sealed class TableColumnsViewModelTests
         title = "Код";
 
         Assert.Equal("Код", viewModel.Columns[0].Title);
+    }
+
+    [Fact]
+    public void A_width_set_through_the_popup_is_stored_for_its_table()
+    {
+        TestStore store = new();
+        using TableColumnsService service = new(store);
+        using TableColumnsViewModel viewModel = new(
+            TableColumnIds.Diagnostics,
+            service,
+            [new(TableColumnKeys.Code, () => "Code")]);
+
+        viewModel.SetWidth(TableColumnKeys.Code, 180);
+
+        Assert.Equal(180d, viewModel.GetWidth(TableColumnKeys.Code));
+        Assert.Equal(180d, service.GetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Code));
+        Assert.Null(service.GetWidth(TableColumnIds.FixReport, TableColumnKeys.Code));
     }
 
     private sealed class TestStore : IValueStore<TableColumnsSettings>

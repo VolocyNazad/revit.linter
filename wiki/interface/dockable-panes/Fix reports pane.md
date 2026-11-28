@@ -10,7 +10,7 @@ The search box shows only the fixes whose code or message holds the text. The **
 
 A long list of element names or identifiers is folded the same way as in the diagnostic report: every name is quoted in the folded line, and the `+N` counter opens the complete list in a popup, one element per line.
 
-The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
+The **Columns** button of the tool bar chooses which data columns the table shows; the choice is remembered for every Revit version and at least one data column always stays visible. The width you drag a column divider to is remembered the same way. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
 
 The search text, the search switches and the sort order are also remembered for every Revit version and restored when Revit starts.
 

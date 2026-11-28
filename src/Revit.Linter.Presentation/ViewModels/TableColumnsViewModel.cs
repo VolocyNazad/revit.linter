@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 namespace Revit.Linter.Presentation.ViewModels;
 
 /// <summary>
-/// Presents the visibility popup of one table and keeps it in step with the stored choice.
+/// Presents the visibility popup of one table and carries the saved widths of that table.
 /// </summary>
 /// <remarks>
 /// The table must keep at least one data column visible, so the last visible column cannot be hidden.
@@ -58,6 +58,19 @@ public sealed partial class TableColumnsViewModel : ObservableObject, IDisposabl
     /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
     /// <returns><see langword="true"/> when the table shows the column.</returns>
     public bool IsVisible(string columnKey) => _service.IsVisible(TableId, columnKey);
+
+    /// <summary>Gets the width the user dragged a column to.</summary>
+    /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
+    /// <returns>
+    /// The saved width in device-independent pixels, or <see langword="null"/> when the column keeps the
+    /// width its table declares.
+    /// </returns>
+    public double? GetWidth(string columnKey) => _service.GetWidth(TableId, columnKey);
+
+    /// <summary>Stores the width the user dragged a column to.</summary>
+    /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
+    /// <param name="pixels">The column width in device-independent pixels.</param>
+    public void SetWidth(string columnKey, double pixels) => _service.SetWidth(TableId, columnKey, pixels);
 
     /// <summary>Shows every column of the table.</summary>
     [RelayCommand]
