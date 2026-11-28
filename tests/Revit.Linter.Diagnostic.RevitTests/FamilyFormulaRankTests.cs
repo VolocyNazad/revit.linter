@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
+using Revit.Linter.Testing;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;

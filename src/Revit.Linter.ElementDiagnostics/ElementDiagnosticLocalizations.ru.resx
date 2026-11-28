@@ -130,28 +130,6 @@
   <data name="SHRD0045_description" xml:space="preserve"><value>Проверяет, есть ли в документе семейства параметры, которые не являются общими. Такие параметры остаются внутри семейства, поэтому спецификация и марка в проекте их не покажут.</value></data>
   <data name="SHRD0045_message" xml:space="preserve"><value>В семействе «{elementName}» ({elementId}) параметров, которые не являются общими: {parameter.count}, а именно {parameter.names}. В проекте их не покажет ни спецификация, ни марка: в проект попадает только общий параметр.</value></data>
   <data name="SHRD0045_listSeparator" xml:space="preserve"><value>, </value></data>
-  <data name="SHRD0046_description" xml:space="preserve"><value>Проверяет, есть ли у семейства 6 и более типоразмеров, кроме типоразмера по умолчанию. [Справка Autodesk: создание каталога типоразмеров](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
-  <data name="SHRD0046_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, каталога типов нет. Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами.</value></data>
-  <data name="SHRD0046_message_with_catalog" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) типоразмеров, кроме типоразмера по умолчанию: {typeCount}, при этом есть каталог типов «{catalogName}». Autodesk рекомендует каталог типов для семейств с 6 и более типоразмерами.</value></data>
-  <data name="SHRD0047_description" xml:space="preserve"><value>Проверяет, есть ли в семействе типоразмеры, которых нет в его каталоге типов. [Справка Autodesk: загрузка семейства с каталогом типов](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
-  <data name="SHRD0047_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) есть типоразмеры, которых нет в каталоге типов «{catalogName}»: {typeNames}.</value></data>
-  <data name="SHRD0048_description" xml:space="preserve"><value>Проверяет, хранит ли семейство свои типоразмеры внутри самого семейства и в каталоге типов одновременно. [Справка Autodesk: загрузка семейства с каталогом типов](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
-  <data name="SHRD0048_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) одновременно используются свои типоразмеры и каталог типов «{catalogName}» (своих типоразмеров: {ownTypeCount}, в каталоге: {catalogTypeCount}).</value></data>
-  <data name="SHRD0049_description" xml:space="preserve"><value>Проверяет, все ли параметры типоразмеров есть в каталоге типов. [Справка Autodesk: создание каталога типоразмеров](https://help.autodesk.com/view/RVT/2025/RUS/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
-  <data name="SHRD0049_message" xml:space="preserve"><value>В семействе «{familyName}» ({elementId}) в каталоге типов «{catalogName}» нет параметров: {parameterNames}. При загрузке из каталога они получат значения по умолчанию.</value></data>
-  <data name="createCatalogAndRemoveTypes_fix" xml:space="preserve"><value>Создать каталог и убрать типоразмеры из семейства</value></data>
-  <data name="createCatalogAndRemoveTypes_confirmationMessage" xml:space="preserve"><value>Все типоразмеры семейства, кроме активного, будут удалены из семейства. В каталог попадут все типы. Продолжить?</value></data>
-  <data name="createCatalogAndRemoveTypes_confirmationButton" xml:space="preserve"><value>Создать каталог</value></data>
-  <data name="addMissingTypesToCatalog_fix" xml:space="preserve"><value>Добавить недостающие типоразмеры в каталог и убрать их из семейства</value></data>
-  <data name="addMissingTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Типы, которых нет в каталоге, будут добавлены в него и удалены из семейства. Последний типоразмер останется. Продолжить?</value></data>
-  <data name="addMissingTypesToCatalog_confirmationButton" xml:space="preserve"><value>Добавить в каталог</value></data>
-  <data name="moveCatalogTypesToFamily_fix" xml:space="preserve"><value>Перенести типоразмеры из каталога в семейство</value></data>
-  <data name="moveCatalogTypesToFamily_confirmationMessage" xml:space="preserve"><value>Типоразмеры из каталога, которых нет в семействе, будут созданы в семействе, а файл каталога удалён. Продолжить?</value></data>
-  <data name="moveCatalogTypesToFamily_confirmationButton" xml:space="preserve"><value>Перенести в семейство</value></data>
-  <data name="moveFamilyTypesToCatalog_fix" xml:space="preserve"><value>Перенести типоразмеры семейства в каталог</value></data>
-  <data name="moveFamilyTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Типоразмеры семейства, которых нет в каталоге, будут добавлены в него, а все типоразмеры семейства, кроме активного, удалены. Продолжить?</value></data>
-  <data name="moveFamilyTypesToCatalog_confirmationButton" xml:space="preserve"><value>Перенести в каталог</value></data>
-  <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Добавить недостающие параметры в каталог</value></data>
   <data name="pinLevel_fix" xml:space="preserve"><value>Закрепить уровень</value></data>
   <data name="pinGrid_fix" xml:space="preserve"><value>Закрепить ось</value></data>
   <data name="pinRevitLink_fix" xml:space="preserve"><value>Закрепить связь</value></data>

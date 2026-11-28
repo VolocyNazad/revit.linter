@@ -154,10 +154,17 @@ the add-in host.
 
 ## Diagnostics and reports
 
+`Revit.Linter.TypeCatalogDiagnostics` owns the family type catalog checks (`SHRD0046`, `SHRD0047`,
+`SHRD0048`, `SHRD0049`), the catalog reader and writer, and the fixes that move types or parameters
+between the family and the catalog. It registers through `AddTypeCatalogDiagnostics`, depends on
+`Revit.Linter.Core`, `Revit.Linter.ElementVisualization` and `Revit.Linter.Localization`, and uses the
+Revit API. Its Revit tests live in `tests/Revit.Linter.TypeCatalogDiagnostics.RevitTests`.
+
 `Revit.Linter.SizeTableDiagnostics` owns the family size lookup table checks (`DOC002`, `DOC005`,
 `DOC006`, `DOC007`), their filters, the unused-table fix and the formula reader. It registers through
 `AddSizeTableDiagnostics`, depends on `Revit.Linter.Core`, `Revit.Linter.Localization` and the Revit API,
-and does not use `DocumentQueries`.
+and does not use `DocumentQueries`. Its Revit tests live in
+`tests/Revit.Linter.SizeTableDiagnostics.RevitTests`.
 
 `Revit.Linter.DiagnosticReportExporting` owns the diagnostic report export: the shared export document
 contract, the CSV/JSON/YAML/HTML exporters behind `IDiagnosticReportExporter`, and the

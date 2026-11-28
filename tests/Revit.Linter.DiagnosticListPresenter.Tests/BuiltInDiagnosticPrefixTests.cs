@@ -14,6 +14,7 @@ public sealed class BuiltInDiagnosticPrefixTests
         Path.Combine("src", "Revit.Linter.ElementDiagnostics", "ElementDiagnosticIdCollector.cs"),
         Path.Combine("src", "Revit.Linter.DocumentDiagnostics", "DocumentDiagnosticIdCollector.cs"),
         Path.Combine("src", "Revit.Linter.SizeTableDiagnostics", "SizeTableDiagnosticIdCollector.cs"),
+        Path.Combine("src", "Revit.Linter.TypeCatalogDiagnostics", "TypeCatalogDiagnosticIdCollector.cs"),
     ];
 
     [Fact]

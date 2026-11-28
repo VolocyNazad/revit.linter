@@ -3,6 +3,14 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Revit.Linter.Diagnostic.RevitTests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Revit.Linter.SizeTableDiagnostics.RevitTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Nice3point.Revit.Api.RevitAPI" />
     <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" />
     <PackageReference Include="VolocyNazad.Revit.TransactionMemoryCache" />
