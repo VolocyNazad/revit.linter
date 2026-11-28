@@ -27,6 +27,9 @@
     <Project Path="src/Revit.Linter.SizeTableDiagnostics/Revit.Linter.SizeTableDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.TypeCatalogDiagnostics/Revit.Linter.TypeCatalogDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ElementDiagnostics/Revit.Linter.ElementDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
@@ -214,6 +217,12 @@
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.Testing/Revit.Linter.Testing.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.SizeTableDiagnostics.RevitTests/Revit.Linter.SizeTableDiagnostics.RevitTests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/Revit.Linter.TypeCatalogDiagnostics.RevitTests/Revit.Linter.TypeCatalogDiagnostics.RevitTests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/Revit.Linter.UserDiagnostics.Tests/Revit.Linter.UserDiagnostics.Tests.csproj">

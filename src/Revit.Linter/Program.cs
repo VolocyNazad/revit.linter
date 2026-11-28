@@ -34,6 +34,7 @@ using Revit.Linter.Presentation.DI;
 using Revit.Linter.ProjectParameterManaging.DI;
 using Revit.Linter.RunDiagnosticPresenter.DI;
 using Revit.Linter.ThemeManaging.DI;
+using Revit.Linter.TypeCatalogDiagnostics.DI;
 using Revit.Linter.UserDiagnostics.DI;
 using Revit.Linter.PracticalTourPresenter.DI;
 using Revit.Linter.WelcomePresenter.DI;
@@ -130,7 +131,7 @@ internal sealed class Program
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddConfigurationPathModule()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
-                .AddElementDiagnostics().AddDocumentDiagnostics().AddSizeTableDiagnostics()
+                .AddElementDiagnostics().AddDocumentDiagnostics().AddSizeTableDiagnostics().AddTypeCatalogDiagnostics()
                 .AddUserDiagnostics()
                 .AddCollisionDiagnostics()
                 .AddParameterElementDiagnostics()

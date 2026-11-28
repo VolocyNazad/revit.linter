@@ -1,7 +1,7 @@
 ﻿<Project Sdk="VolocyNazad.Revit.Sdk/1.1.0">
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-			<_Parameter1>Revit.Linter.Diagnostic.RevitTests</_Parameter1>
+			<_Parameter1>Revit.Linter.SizeTableDiagnostics.RevitTests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup>

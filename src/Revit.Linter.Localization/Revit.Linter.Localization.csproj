@@ -49,6 +49,8 @@
 		<EmbeddedResource Include="..\Revit.Linter.OpenedDocuments\ViewModels\OpenedDocumentsViewModel.ru.resx" LogicalName="Revit.Linter.Localization.OpenedDocuments.ViewModels.OpenedDocumentsViewModel.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementDiagnostics\ElementDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementDiagnostics.ElementDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementDiagnostics\ElementDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ElementDiagnostics.ElementDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.TypeCatalogDiagnostics\TypeCatalogDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.TypeCatalogDiagnostics.TypeCatalogDiagnosticLocalizations.resources" />
+		<EmbeddedResource Include="..\Revit.Linter.TypeCatalogDiagnostics\TypeCatalogDiagnosticLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.TypeCatalogDiagnostics.TypeCatalogDiagnosticLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementIgnoring\ElementIgnoringLocalizations.resx" LogicalName="Revit.Linter.Localization.ElementIgnoring.ElementIgnoringLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ElementIgnoring\ElementIgnoringLocalizations.ru.resx" LogicalName="Revit.Linter.Localization.ElementIgnoring.ElementIgnoringLocalizations.resources" />
 		<EmbeddedResource Include="..\Revit.Linter.ParameterElementDiagnostics\ParameterElementDiagnosticLocalizations.resx" LogicalName="Revit.Linter.Localization.ParameterElementDiagnostics.ParameterElementDiagnosticLocalizations.resources" />

@@ -128,6 +128,10 @@ WPF rules are in the [presentation policy](policies/presentation.md); the module
   document diagnostics. It owns their identities, message resources, filters, the unused-table fix and the
   formula reader, and registers its own provider through `AddSizeTableDiagnostics`; the host composes it
   with the document diagnostics.
+- `Revit.Linter.TypeCatalogDiagnostics` keeps the family type catalog checks separate from the general
+  element diagnostics in the same way. It owns their identities, message resources, the catalog reader and
+  writer and the fixes that move types or parameters between the family and the catalog, and registers its
+  own provider through `AddTypeCatalogDiagnostics`; the host composes it with the element diagnostics.
 - `Revit.Linter.DiagnosticReportExporting` owns the report export contract and file writing. The presenter
   supplies plain finding data with cultures and labels through `IDiagnosticReportExportService` and keeps
   activity publishing; the save-file dialog stays behind `ISaveFileDialogService`, and the module has no

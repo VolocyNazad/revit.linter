@@ -1,6 +1,7 @@
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
+using Revit.Linter.Testing;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -12,76 +13,15 @@ internal static class FamilyTestDocuments
     // on the single Revit thread of that assembly, one test at a time.
     private static string[]? _templateFiles;
     private static string? _templateRoot;
-    private static string? _firstTemplatePath;
-    private static string? _modelFamilyTemplatePath;
     private static string? _titleBlockTemplatePath;
 
-    public static Document OpenTemplateFamily(Application application)
-    {
-        string? cachedPath = _firstTemplatePath;
-        if (cachedPath is not null && File.Exists(cachedPath))
-            return application.NewFamilyDocument(cachedPath);
-        // Family templates live in locale subfolders below FamilyTemplatePath on some installations.
-        string templatePath = GetTemplateFiles(application).FirstOrDefault()
-            ?? throw new InvalidOperationException(
-                $"No family template (*.rft) was found below '{application.FamilyTemplatePath}'.");
-        _firstTemplatePath = templatePath;
-        return application.NewFamilyDocument(templatePath);
-    }
+    public static Document OpenTemplateFamily(Application application) =>
+        TestFamilyDocuments.OpenTemplateFamily(application);
 
     // Type-table tests need a model (non-annotation) family: the first .rft on disk is often
     // an annotation template, where type creation does not behave like in model families.
-    public static Document OpenModelFamilyTemplate(Application application)
-    {
-        string? cachedPath = _modelFamilyTemplatePath;
-        if (cachedPath is not null && File.Exists(cachedPath))
-            return application.NewFamilyDocument(cachedPath);
-
-        string[] candidates = GetTemplateFiles(application);
-        if (candidates.Length == 0)
-            throw new InvalidOperationException(
-                $"No family template (*.rft) was found below '{application.FamilyTemplatePath}'.");
-        string? preferredPath = candidates.FirstOrDefault(path =>
-            IsLikelyGenericModel(Path.GetFileNameWithoutExtension(path)));
-        if (preferredPath is not null)
-        {
-            _modelFamilyTemplatePath = preferredPath;
-            return application.NewFamilyDocument(preferredPath);
-        }
-        List<string> tried = [];
-#pragma warning disable S3267 // The loop opens and closes candidate documents: not a pure filter.
-        foreach (string path in candidates.Take(40))
-        {
-            tried.Add(Path.GetFileName(path));
-            Document candidate = application.NewFamilyDocument(path);
-            try
-            {
-                if (candidate.OwnerFamily?.FamilyCategory?.CategoryType == CategoryType.Model)
-                {
-                    _modelFamilyTemplatePath = path;
-                    return candidate;
-                }
-            }
-            catch
-            {
-                // Not inspectable: close and try the next template.
-            }
-            candidate.Close(false);
-        }
-#pragma warning restore S3267
-        throw new InvalidOperationException(
-            $"No model family template was found below '{application.FamilyTemplatePath}'. " +
-            $"Tried: {string.Join(", ", tried)}.");
-    }
-
-    // Plain generic models across locales; hosted ("based") variants are useless for type tests.
-    private static bool IsLikelyGenericModel(string templateName) =>
-        (templateName.Contains("generic model", StringComparison.OrdinalIgnoreCase)
-            || templateName.Contains("常规模型", StringComparison.Ordinal)
-            || templateName.Contains("обычная модель", StringComparison.OrdinalIgnoreCase))
-        && !templateName.Contains("based", StringComparison.OrdinalIgnoreCase)
-        && !templateName.Contains("основан", StringComparison.OrdinalIgnoreCase)
-        && !templateName.Contains("基于", StringComparison.Ordinal);
+    public static Document OpenModelFamilyTemplate(Application application) =>
+        TestFamilyDocuments.OpenModelFamilyTemplate(application);
 
     public static void AddTextTypeParameter(Document familyDocument, string name)
     {

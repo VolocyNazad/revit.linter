@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="open_view_visualization" xml:space="preserve"><value>Open view</value></data>
+  <data name="show_and_select_visualization" xml:space="preserve"><value>Show and select</value></data>
+  <data name="SHRD0046_description" xml:space="preserve"><value>Checks whether a family has 6 or more types beyond the default type. [Autodesk Help: Create a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
+  <data name="SHRD0046_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has {typeCount} types beyond the default type and no type catalog. Autodesk recommends a type catalog for families with 6 or more types.</value></data>
+  <data name="SHRD0046_message_with_catalog" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has {typeCount} types beyond the default type and a type catalog '{catalogName}'. Autodesk recommends a type catalog for families with 6 or more types.</value></data>
+  <data name="SHRD0047_description" xml:space="preserve"><value>Checks whether a family keeps types that its type catalog does not list. [Autodesk Help: Load a Family with a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
+  <data name="SHRD0047_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) has types that its type catalog '{catalogName}' does not list: {typeNames}.</value></data>
+  <data name="SHRD0048_description" xml:space="preserve"><value>Checks whether a family stores its own types inside the family and in a type catalog at the same time. [Autodesk Help: Load a Family with a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-5DB0797C-B0CA-4C3F-B72A-84176738AEC5)</value></data>
+  <data name="SHRD0048_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}) uses its own types and the type catalog '{catalogName}' at the same time (types of its own: {ownTypeCount}, catalog types: {catalogTypeCount}).</value></data>
+  <data name="SHRD0049_description" xml:space="preserve"><value>Checks whether the type catalog lists every family type parameter. [Autodesk Help: Create a Type Catalog](https://help.autodesk.com/view/RVT/2025/ENU/?guid=GUID-FFA71D72-D4C5-416D-BF65-1757657C3CE9)</value></data>
+  <data name="SHRD0049_message" xml:space="preserve"><value>Family '{familyName}' ({elementId}): type catalog '{catalogName}' does not list parameters: {parameterNames}. A type loaded from the catalog keeps the default values for them.</value></data>
+  <data name="createCatalogAndRemoveTypes_fix" xml:space="preserve"><value>Create a catalog and remove the types from the family</value></data>
+  <data name="createCatalogAndRemoveTypes_confirmationMessage" xml:space="preserve"><value>All family types except the active one will be deleted from the family. The catalog keeps them all. Continue?</value></data>
+  <data name="createCatalogAndRemoveTypes_confirmationButton" xml:space="preserve"><value>Create a catalog</value></data>
+  <data name="addMissingTypesToCatalog_fix" xml:space="preserve"><value>Add the missing types to the catalog and remove them from the family</value></data>
+  <data name="addMissingTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Types that the catalog does not list will be added to it and removed from the family. The last type stays. Continue?</value></data>
+  <data name="addMissingTypesToCatalog_confirmationButton" xml:space="preserve"><value>Add to the catalog</value></data>
+  <data name="moveCatalogTypesToFamily_fix" xml:space="preserve"><value>Move the catalog types into the family</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationMessage" xml:space="preserve"><value>Catalog types that the family does not have will be created in the family, and the catalog file will be deleted. Continue?</value></data>
+  <data name="moveCatalogTypesToFamily_confirmationButton" xml:space="preserve"><value>Move to the family</value></data>
+  <data name="moveFamilyTypesToCatalog_fix" xml:space="preserve"><value>Move the family types into the catalog</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Family types that the catalog does not list will be added to it, and all family types except the active one will be removed from the family. Continue?</value></data>
+  <data name="moveFamilyTypesToCatalog_confirmationButton" xml:space="preserve"><value>Move to the catalog</value></data>
+  <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Add the missing parameters to the catalog</value></data>
+</root>

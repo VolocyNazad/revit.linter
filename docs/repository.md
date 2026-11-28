@@ -199,7 +199,8 @@ add stricter C# or analyzer-specific settings. See the
 ## Testing
 
 `tests/Revit.Linter.Testing` holds test doubles and helpers shared by several test projects (the
-in-memory transaction cache, the document query service built over it, repository-root lookup). It is
+in-memory transaction cache, the document query service built over it, repository-root lookup, the
+family template opening and the size table test documents). It is
 a library, not a test project: it has no test framework reference and its name does not end in
 `.Tests` or `.RevitTests`, so CI does not try to run it. Put a helper there only when a second test
 project needs it; fixtures used by one project stay in that project, such as `DiagnosticTestBase` in
