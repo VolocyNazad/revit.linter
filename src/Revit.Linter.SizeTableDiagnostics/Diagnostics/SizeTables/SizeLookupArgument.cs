@@ -1,4 +1,4 @@
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 /// <summary>One table or column argument of a <c>size_lookup</c> call.</summary>
 /// <param name="Literal">The quoted value, or <see langword="null"/> when the argument is not a literal.</param>

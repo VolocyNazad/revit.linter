@@ -24,6 +24,9 @@
     <Project Path="src/Revit.Linter.DocumentDiagnostics/Revit.Linter.DocumentDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Revit.Linter.SizeTableDiagnostics/Revit.Linter.SizeTableDiagnostics.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/Revit.Linter.ElementDiagnostics/Revit.Linter.ElementDiagnostics.csproj">
       <Platform Project="x64" />
     </Project>

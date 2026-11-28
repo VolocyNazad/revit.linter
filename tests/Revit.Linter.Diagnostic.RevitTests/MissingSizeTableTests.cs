@@ -2,9 +2,7 @@ using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.MissingSizeTable;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
-using Revit.Linter.Testing;
+using Revit.Linter.SizeTableDiagnostics.Diagnostics.MissingSizeTable;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -77,6 +75,113 @@ public sealed class MissingSizeTableTests : RevitApiTest
         await Assert.That(feedback[0].MessageFormat).IsNull();
     }
 
+    [Test]
+    public async Task Formula_using_text_parameter_with_removed_table_is_reported()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter table = SizeTableTestDocuments.AddTextParameter(familyDocument, "Table");
+        SizeTableTestDocuments.SetText(familyDocument, table, tableName);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(Table, \"Length\", Width, Length)");
+        SizeTableTestDocuments.RemoveTable(familyDocument, tableName);
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback.Count()).IsEqualTo(1);
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["parameterName"]).IsEqualTo("L");
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
+    }
+
+    [Test]
+    public async Task Formula_using_text_parameter_with_existing_table_has_no_findings()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter table = SizeTableTestDocuments.AddTextParameter(familyDocument, "Table");
+        SizeTableTestDocuments.SetText(familyDocument, table, tableName);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(Table, \"Length\", Width, Length)");
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback).IsEmpty();
+    }
+
+    [Test]
+    public async Task Formula_using_text_parameter_reports_the_missing_value_of_one_type()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string existingTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        string missingTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyType existingType = familyDocument.FamilyManager.CurrentType!;
+        FamilyParameter table = SizeTableTestDocuments.AddTextParameter(familyDocument, "Table");
+        SizeTableTestDocuments.SetText(familyDocument, existingType, table, existingTable);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(Table, \"Length\", Width, Length)");
+        FamilyType missingType = SizeTableTestDocuments.AddType(familyDocument, "Missing");
+        SizeTableTestDocuments.SetText(familyDocument, missingType, table, missingTable);
+        SizeTableTestDocuments.RemoveTable(familyDocument, missingTable);
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback.Count()).IsEqualTo(1);
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["parameterName"]).IsEqualTo("L");
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(missingTable);
+    }
+
+    [Test]
+    public async Task Text_parameter_without_a_formula_is_not_reported()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter table = SizeTableTestDocuments.AddTextParameter(familyDocument, "Table");
+        SizeTableTestDocuments.SetText(familyDocument, table, tableName);
+        SizeTableTestDocuments.RemoveTable(familyDocument, tableName);
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback).IsEmpty();
+    }
+
+    [Test]
+    public async Task Instance_table_parameter_default_is_checked()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter table = SizeTableTestDocuments.AddInstanceTextParameter(familyDocument, "TableInstance");
+        SizeTableTestDocuments.SetText(familyDocument, table, tableName);
+        FamilyParameter result = SizeTableTestDocuments.AddInstanceLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(TableInstance, \"Length\", Width, Length)");
+        SizeTableTestDocuments.RemoveTable(familyDocument, tableName);
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback.Count()).IsEqualTo(1);
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["parameterName"]).IsEqualTo("L");
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
+    }
+
     private static MissingSizeTableDiagnostic CreateDiagnostic() =>
-        new(new SizeTableReferenceCollector(TestDocumentQueries.Create()));
+        new();
 }

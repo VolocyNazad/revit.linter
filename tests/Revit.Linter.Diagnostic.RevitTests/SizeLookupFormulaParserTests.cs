@@ -1,4 +1,4 @@
-using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+using Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
 
@@ -69,6 +69,18 @@ public sealed class SizeLookupFormulaParserTests
         await Assert.That(calls.Count).IsEqualTo(1);
         await Assert.That(calls[0].Table.IsResolved).IsFalse();
         await Assert.That(calls[0].Column.Literal).IsEqualTo("Length");
+    }
+
+    [Test]
+    public async Task Keeps_a_call_with_two_expression_arguments()
+    {
+        IReadOnlyList<SizeLookupCall> calls = SizeLookupFormulaParser.Parse(
+            "size_lookup(if(Length > 0 mm, \"A\", \"B\"), if(Length > 0 mm, \"X\", \"Y\"), 0 mm, Length)",
+            "L");
+
+        await Assert.That(calls.Count).IsEqualTo(1);
+        await Assert.That(calls[0].Table.IsResolved).IsFalse();
+        await Assert.That(calls[0].Column.IsResolved).IsFalse();
     }
 
     [Test]

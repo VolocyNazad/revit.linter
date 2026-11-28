@@ -153,6 +153,11 @@ the add-in host.
 
 ## Diagnostics and reports
 
+`Revit.Linter.SizeTableDiagnostics` owns the family size lookup table checks (`DOC002`, `DOC005`,
+`DOC006`, `DOC007`), their filters, the unused-table fix and the formula reader. It registers through
+`AddSizeTableDiagnostics`, depends on `Revit.Linter.Core`, `Revit.Linter.Localization` and the Revit API,
+and does not use `DocumentQueries`.
+
 `Revit.Linter.DiagnosticReportExporting` owns the diagnostic report export: the shared export document
 contract, the CSV/JSON/YAML/HTML exporters behind `IDiagnosticReportExporter`, and the
 `IDiagnosticReportExportService` orchestration (suggested file name, export document, exporter choice).

@@ -11,11 +11,8 @@ internal static class DocumentDiagnosticIdCollector
 
     public static readonly DocumentDiagnosticId StartingViewNotSet = Create("DOC001", DiagnosticSeverity.Message, DiagnosticTags.Project);
     public static readonly DocumentDiagnosticId RevitWarnings = Create("RVT001", DiagnosticSeverity.Warning, DiagnosticTags.Project);
-    public static readonly DocumentDiagnosticId UnusedSizeTables = Create("DOC002", DiagnosticSeverity.Warning, DiagnosticTags.Family);
     public static readonly DocumentDiagnosticId PreviewNotSet = Create("DOC003", DiagnosticSeverity.Message, ProjectAndFamily);
     public static readonly DocumentDiagnosticId DuplicateProjectParameterNames = Create("DOC004", DiagnosticSeverity.Warning, DiagnosticTags.Project);
-    public static readonly DocumentDiagnosticId MissingSizeTable = Create("DOC005", DiagnosticSeverity.Warning, DiagnosticTags.Family);
-    public static readonly DocumentDiagnosticId MissingSizeTableColumn = Create("DOC006", DiagnosticSeverity.Warning, DiagnosticTags.Family);
     public static readonly DocumentDiagnosticId PerformanceAdviser = Create("RVT002", DiagnosticSeverity.Warning, ProjectAndFamily);
 
     private static readonly Lazy<IReadOnlyList<DocumentDiagnosticId>> _allDiagnosticIds =

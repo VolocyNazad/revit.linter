@@ -1,8 +1,8 @@
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.MissingSizeTable;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.MissingSizeTable;
 
 internal sealed class MissingSizeTableDiagnosticFilter : IDocumentDiagnosticFilter
 {
-    public DocumentDiagnosticId Identity => DocumentDiagnosticIdCollector.MissingSizeTable;
+    public DocumentDiagnosticId Identity => SizeTableDiagnosticIdCollector.MissingSizeTable;
 
     public bool IsRelevantFor(Document document) => document.IsFamilyDocument;
 }

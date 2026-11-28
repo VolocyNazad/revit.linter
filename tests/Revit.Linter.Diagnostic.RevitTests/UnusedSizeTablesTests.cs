@@ -2,9 +2,7 @@ using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
-using Revit.Linter.Testing;
+using Revit.Linter.SizeTableDiagnostics.Diagnostics.UnusedSizeTables;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -59,6 +57,23 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
 
         await Assert.That(feedback.Count()).IsEqualTo(1);
         await Assert.That(feedback[0].Verdict).IsEqualTo(DiagnosticVerdict.NotValid);
+        await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
+    }
+
+    [Test]
+    public async Task Table_named_by_an_unused_parameter_is_reported()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter tableNameParameter = SizeTableTestDocuments.AddTextParameter(familyDocument, "TableName");
+        SizeTableTestDocuments.SetText(familyDocument, tableNameParameter, tableName);
+
+        IReadOnlyList<DiagnosticFeedback> feedback = CreateDiagnostic().Execute(familyDocument).ToArray();
+
+        await Assert.That(feedback.Count()).IsEqualTo(1);
         await Assert.That((string)feedback[0].AdditionalMessageArguments!["tableName"]).IsEqualTo(tableName);
     }
 
@@ -120,5 +135,5 @@ public sealed class UnusedSizeTablesTests : RevitApiTest
     }
 
     private static UnusedSizeTablesDiagnostic CreateDiagnostic() =>
-        new(new SizeTableReferenceCollector(TestDocumentQueries.Create()));
+        new();
 }

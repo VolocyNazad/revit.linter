@@ -1,4 +1,4 @@
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 /// <summary>One <c>size_lookup</c> call found in a family formula.</summary>
 /// <param name="FormulaParameterName">The parameter that owns the formula.</param>
