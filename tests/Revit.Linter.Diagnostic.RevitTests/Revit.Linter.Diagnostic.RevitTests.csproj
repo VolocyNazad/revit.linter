@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\src\Revit.Linter.ConfigurationPath\Revit.Linter.ConfigurationPath.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.Diagnostic\Revit.Linter.Diagnostic.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.DocumentDiagnostics\Revit.Linter.DocumentDiagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Revit.Linter.SizeTableDiagnostics\Revit.Linter.SizeTableDiagnostics.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ElementAccentor\Revit.Linter.ElementAccentor.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ElementDiagnostics\Revit.Linter.ElementDiagnostics.csproj" />
     <ProjectReference Include="..\..\src\Revit.Linter.ElementFixing\Revit.Linter.ElementFixing.csproj" />

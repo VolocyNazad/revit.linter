@@ -1,4 +1,4 @@
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 /// <summary>Reads the stored size tables and their columns.</summary>
 internal static class SizeTableLookup

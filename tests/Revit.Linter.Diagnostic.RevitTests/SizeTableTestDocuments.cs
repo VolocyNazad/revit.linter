@@ -39,6 +39,15 @@ internal static class SizeTableTestDocuments
         return parameter;
     }
 
+    public static FamilyParameter AddInstanceLengthParameter(Document document, string name)
+    {
+        using Transaction transaction = new(document, "Add test parameter " + name);
+        transaction.Start();
+        FamilyParameter parameter = AddLengthParameter(document.FamilyManager, name, isInstance: true);
+        transaction.Commit();
+        return parameter;
+    }
+
     public static FamilyParameter AddTextParameter(Document document, string name)
     {
         using Transaction transaction = new(document, "Add test parameter " + name);
@@ -50,6 +59,22 @@ internal static class SizeTableTestDocuments
 #else
         FamilyParameter parameter = manager.AddParameter(
             name, GroupTypeId.Data, SpecTypeId.String.Text, false);
+#endif
+        transaction.Commit();
+        return parameter;
+    }
+
+    public static FamilyParameter AddInstanceTextParameter(Document document, string name)
+    {
+        using Transaction transaction = new(document, "Add test parameter " + name);
+        transaction.Start();
+        FamilyManager manager = document.FamilyManager;
+#if IS2021
+        FamilyParameter parameter = manager.AddParameter(
+            name, BuiltInParameterGroup.PG_DATA, ParameterType.Text, true);
+#else
+        FamilyParameter parameter = manager.AddParameter(
+            name, GroupTypeId.Data, SpecTypeId.String.Text, true);
 #endif
         transaction.Commit();
         return parameter;
@@ -69,6 +94,14 @@ internal static class SizeTableTestDocuments
         using Transaction transaction = new(document, "Set test type parameter");
         transaction.Start();
         document.FamilyManager.CurrentType = type;
+        document.FamilyManager.Set(parameter, value);
+        transaction.Commit();
+    }
+
+    public static void SetLength(Document document, FamilyParameter parameter, double value)
+    {
+        using Transaction transaction = new(document, "Set test parameter");
+        transaction.Start();
         document.FamilyManager.Set(parameter, value);
         transaction.Commit();
     }
@@ -127,12 +160,14 @@ internal static class SizeTableTestDocuments
         transaction.Commit();
     }
 
-    private static FamilyParameter AddLengthParameter(FamilyManager manager, string name)
+    private static FamilyParameter AddLengthParameter(
+        FamilyManager manager, string name, bool isInstance = false)
     {
 #if IS2021
-        return manager.AddParameter(name, BuiltInParameterGroup.PG_DATA, ParameterType.Length, false);
+        return manager.AddParameter(
+            name, BuiltInParameterGroup.PG_DATA, ParameterType.Length, isInstance);
 #else
-        return manager.AddParameter(name, GroupTypeId.Data, SpecTypeId.Length, false);
+        return manager.AddParameter(name, GroupTypeId.Data, SpecTypeId.Length, isInstance);
 #endif
     }
 

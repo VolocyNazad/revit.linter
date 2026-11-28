@@ -1,15 +1,14 @@
-using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+using Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.UnusedSizeTables;
 
-internal sealed class UnusedSizeTablesDiagnostic(SizeTableReferenceCollector collector)
-    : IDocumentDiagnostic
+internal sealed class UnusedSizeTablesDiagnostic : IDocumentDiagnostic
 {
-    public DocumentDiagnosticId Identity => DocumentDiagnosticIdCollector.UnusedSizeTables;
+    public DocumentDiagnosticId Identity => SizeTableDiagnosticIdCollector.UnusedSizeTables;
 
     public IEnumerable<DiagnosticFeedback> Execute(Document targetDocument)
     {
-        SizeTableReferenceCollection references = collector.Collect(targetDocument);
+        SizeTableReferenceCollection references = SizeTableReferenceCollector.Collect(targetDocument);
         if (references.Manager is null || references.TableNames.Count == 0) yield break;
 
         // A formula whose table argument cannot be resolved statically may refer to any table.

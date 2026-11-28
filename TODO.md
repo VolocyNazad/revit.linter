@@ -21,11 +21,19 @@
 ## Asset-based RevitTests for built-in diagnostics
 
 - [ ] Cover the LargeArray (SHRD0032) family size boundary (49 versus 50 members) with a checked-in binary test asset. Live runs proved it cannot be built deterministically through the API: `LinearArray.Create` on an extrusion in a model family template silently drops the association with no warnings (counts 3/5/10 persist as `BaseArray`, counts 20/50 leave plain copies), and the `NumMembers` setter silently keeps the old value. Project boundaries (99 versus 100) and the family label branch are covered by code-built `ArrayDiagnosticsTests`.
+- [ ] Cover the built-in lookup table name (`RBS_LOOKUP_TABLE_NAME`) paths of `DOC002` and `DOC005` with a checked-in pipe fitting family. `DOC002` must report a table named only by a family type and not read by any formula; `DOC005` must resolve the parameter when a formula uses it. No pipe fitting template or library family is installed, and the parameter is not exposed for window, duct, or generic families; the text-parameter path is covered by `MissingSizeTableTests`.
 - [ ] Cover SYST001 with the code-built `ConnectorDiagnosticsTests` (cube families carrying pipe/duct/cable-tray/conduit/electrical connectors, the full connector-type matrix and the project-only filter — so far only compiled, needs a live Revit run) and SHRD0016 (imported CAD file) with a checked-in binary test asset. The `MEPCurve` branch still needs a project asset or a way to build MEP types in code. SHRD0020 title blocks are built in code (`FamilyTestDocuments.LoadTitleblockSymbol`: an annotation template reassigned to `OST_TitleBlocks`).
 - [ ] SHRD003 has no fix: `FamilyInstance.Mirrored` is get-only, and no in-place API mirror clears the flag (verified live: re-mirroring a mirrored instance about the same plane and about an orthogonal plane through its origin leaves `Mirrored` set); any odd-mirror alternative displaces the element, so there is no safe automatic unmirror.
 - [ ] Cover ARCH003 (zero-area room with boundaries) and SHRD0022 (materials cannot be created through the Revit API and empty documents have none to duplicate): no deterministic API construction is known; revisit if one is found.
 - [ ] Cover SHRD0009 when floor types become available in empty test documents.
 - [ ] Cover the CAD branches of SHRD0042 with a checked-in binary test asset: `ImportInstance` needs a real CAD file that the Revit API cannot create, so neither a linked CAD file on a dedicated workset nor an embedded CAD file that shares the workset can be built in code. `LinkOnSharedWorksetTests` compiles but still needs a live Revit run: it relies on `Document.EnableWorksharing` on a new project document and on elements created through the API landing on the active workset.
+
+## Size lookup table checks
+
+- [ ] Decide whether to check values that instances override at project level. `DOC005` and `DOC006` see only the family default value of an instance parameter; an override on a placed instance is not checked.
+- [x] Record the formula rank rule for the linter: Revit rejects a type parameter formula that uses an instance parameter, so no diagnostic is needed for that case; an instance formula may use type and instance parameters. `FamilyFormulaRankTests` covers it.
+- [x] Report a formula whose table or column name cannot be determined statically (`DOC007`, message level). The table checks still skip it.
+- [ ] Decide whether to add an evaluator for an inline expression in a `size_lookup` argument, or leave these cases to manual review. A text parameter with a formula is read through its computed value; an inline `IF(...)` or a text concatenation inside the call is not evaluated.
 
 ## Material performance diagnostics
 

@@ -296,6 +296,8 @@ internal sealed partial class DiagnosticReportViewModel
             string documentTitle = document.Title;
             return GetCatalogSnapshot().DocumentDiagnostics.SelectMany(registration => registration.Fixes)
                 .Where(i => i.Identity.Code == report.Code)
+                .Where(i => i is not IDocumentFixAvailability availability
+                    || availability.IsAvailable(document))
                 .Select(i =>
                 {
                     PathIcon icon = CreateLightbulbIcon();

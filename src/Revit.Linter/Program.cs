@@ -14,6 +14,7 @@ using Revit.Linter.DiagnosticReportPresenter.DI;
 using Revit.Linter.DiagnosticReportProvider.DI;
 using Revit.Linter.DialogPresenter.DI;
 using Revit.Linter.DocumentDiagnostics.DI;
+using Revit.Linter.SizeTableDiagnostics.DI;
 using Revit.Linter.DocumentQueries.DI;
 using Revit.Linter.ElementAccentor.DI;
 using Revit.Linter.ElementChangesMonitor.DI;
@@ -129,7 +130,7 @@ internal sealed class Program
                 .AddElementAccentor().AddElementFixing().AddElementVisualization()
                 .AddConfigurationPathModule()
                 .AddDiagnosticModule().AddElementChangesMonitorModule().AddElementIgnoringModule().AddProjectParameterManagingModule()
-                .AddElementDiagnostics().AddDocumentDiagnostics()
+                .AddElementDiagnostics().AddDocumentDiagnostics().AddSizeTableDiagnostics()
                 .AddUserDiagnostics()
                 .AddCollisionDiagnostics()
                 .AddParameterElementDiagnostics()

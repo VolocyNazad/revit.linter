@@ -1,9 +1,7 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
-using Revit.Linter.DocumentDiagnostics.Diagnostics.UnusedSizeTables;
-using Revit.Linter.Testing;
+using Revit.Linter.SizeTableDiagnostics.Diagnostics.UnusedSizeTables;
 using TUnit.Core.Executors;
 
 namespace Revit.Linter.Diagnostic.RevitTests;
@@ -39,8 +37,7 @@ public sealed class DeleteUnusedSizeTablesFixTests : RevitApiTest
         FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
         SizeTableTestDocuments.SetFormula(
             familyDocument, result, $"size_lookup(\"{usedTable}\", \"Length\", Width, Length)");
-        var fix = new DeleteUnusedSizeTablesFix(
-            new SizeTableReferenceCollector(TestDocumentQueries.Create()));
+        var fix = new DeleteUnusedSizeTablesFix();
 
         bool applied = Execute(familyDocument, fix);
         string[] names = SizeTableTestDocuments.GetManager(familyDocument)!
@@ -63,8 +60,7 @@ public sealed class DeleteUnusedSizeTablesFixTests : RevitApiTest
         FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
         SizeTableTestDocuments.SetFormula(
             familyDocument, result, $"size_lookup(\"{tableName}\", \"Length\", Width, Length)");
-        var fix = new DeleteUnusedSizeTablesFix(
-            new SizeTableReferenceCollector(TestDocumentQueries.Create()));
+        var fix = new DeleteUnusedSizeTablesFix();
 
         bool applied = Execute(familyDocument, fix);
         string[] names = SizeTableTestDocuments.GetManager(familyDocument)!
@@ -76,10 +72,71 @@ public sealed class DeleteUnusedSizeTablesFixTests : RevitApiTest
     }
 
     [Test]
+    public async Task Is_available_when_all_table_names_are_literal()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, $"size_lookup(\"{tableName}\", \"Length\", Width, Length)");
+        var fix = new DeleteUnusedSizeTablesFix();
+
+        bool available = fix.IsAvailable(familyDocument);
+
+        await Assert.That(available).IsTrue();
+    }
+
+    [Test]
+    public async Task Is_unavailable_when_a_table_name_comes_from_a_parameter()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string tableName = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter table = SizeTableTestDocuments.AddTextParameter(familyDocument, "Table");
+        SizeTableTestDocuments.SetText(familyDocument, table, tableName);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument, result, "size_lookup(Table, \"Length\", Width, Length)");
+        var fix = new DeleteUnusedSizeTablesFix();
+
+        bool available = fix.IsAvailable(familyDocument);
+        bool applied = Execute(familyDocument, fix);
+
+        await Assert.That(available).IsFalse();
+        await Assert.That(applied).IsFalse();
+    }
+
+    [Test]
+    public async Task Is_unavailable_when_a_table_name_is_an_expression()
+    {
+        await Assert.That(_familyDocument).IsNotNull();
+        Document familyDocument = _familyDocument!;
+        string firstTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        string secondTable = SizeTableTestDocuments.ImportTable(
+            familyDocument, SizeTableTestDocuments.ProbeTableCsv);
+        SizeTableTestDocuments.EnsureCurrentType(familyDocument);
+        FamilyParameter result = SizeTableTestDocuments.AddLengthParameter(familyDocument, "L");
+        SizeTableTestDocuments.SetFormula(
+            familyDocument,
+            result,
+            $"size_lookup(if(Length > 0 mm, \"{firstTable}\", \"{secondTable}\"), \"Length\", Width, Length)");
+        var fix = new DeleteUnusedSizeTablesFix();
+
+        bool available = fix.IsAvailable(familyDocument);
+
+        await Assert.That(available).IsFalse();
+    }
+
+    [Test]
     public async Task Exposes_confirmation_text()
     {
-        var fix = new DeleteUnusedSizeTablesFix(
-            new SizeTableReferenceCollector(TestDocumentQueries.Create()));
+        var fix = new DeleteUnusedSizeTablesFix();
 
         await Assert.That(fix.ConfirmationMessage).IsNotEmpty();
         await Assert.That(fix.ConfirmationButtonText).IsNotEmpty();

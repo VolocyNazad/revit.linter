@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Revit.Linter.DocumentDiagnostics.Diagnostics.SizeTables;
+namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 /// <summary>Finds the size lookup calls in a family formula.</summary>
 internal static class SizeLookupFormulaParser
@@ -38,8 +38,8 @@ internal static class SizeLookupFormulaParser
 
         SizeLookupArgument table = ParseArgument(parts[0]);
         SizeLookupArgument column = ParseArgument(parts[1]);
-        if (!table.IsResolved && !column.IsResolved) return;
-
+        // Both arguments can be expressions; the call is kept so DOC007 can report that
+        // neither the table nor the column name can be determined.
         calls.Add(new SizeLookupCall(formulaParameterName, table, column));
     }
 
@@ -248,6 +248,9 @@ internal static class SizeLookupFormulaParser
 
     private static SizeLookupArgument ParseArgument(string text)
     {
+        // Only a quoted value or a single parameter is resolved statically. An expression such
+        // as IF(...) or a text concatenation stays unresolved; DOC007 reports it, and the table
+        // checks leave it to manual review.
         string value = text.Trim();
         if (value.Length == 0) return SizeLookupArgument.Unresolved;
 

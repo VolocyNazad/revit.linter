@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DOC002_description" xml:space="preserve"><value>Checks whether family lookup tables are referenced by formulas.</value></data>
+  <data name="DOC002_message" xml:space="preserve"><value>Lookup table '{tableName}' in family '{documentTitle}' is not referenced by any formula.</value></data>
+  <data name="DOC005_description" xml:space="preserve"><value>Checks whether family formulas reference a lookup table that exists in the family.</value></data>
+  <data name="DOC005_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references lookup table '{tableName}', which is not in the family.</value></data>
+  <data name="DOC006_description" xml:space="preserve"><value>Checks whether family formulas reference columns that exist in the lookup table.</value></data>
+  <data name="DOC006_message" xml:space="preserve"><value>Formula of parameter '{parameterName}' in family '{documentTitle}' references column '{columnName}', which is not in lookup table '{tableName}'.</value></data>
+  <data name="DOC007_description" xml:space="preserve"><value>Checks whether a size lookup formula uses a table or column name that cannot be determined statically.</value></data>
+  <data name="DOC007_message" xml:space="preserve"><value>The {argument} of the formula of parameter '{parameterName}' in family '{documentTitle}' cannot be determined statically. The table checks cannot verify this formula; check it by hand.</value></data>
+  <data name="DOC007_tableArgument" xml:space="preserve"><value>lookup table name</value></data>
+  <data name="DOC007_columnArgument" xml:space="preserve"><value>column name</value></data>
+  <data name="deleteUnusedSizeTables_fix" xml:space="preserve"><value>Delete all unused lookup tables</value></data>
+  <data name="deleteUnusedSizeTables_confirmationMessage" xml:space="preserve"><value>Every unused lookup table will be deleted from the family. Continue?</value></data>
+  <data name="deleteUnusedSizeTables_confirmationButton" xml:space="preserve"><value>Delete tables</value></data>
+</root>

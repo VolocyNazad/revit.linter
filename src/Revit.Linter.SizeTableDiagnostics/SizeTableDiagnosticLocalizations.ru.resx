@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DOC002_description" xml:space="preserve"><value>Проверяет, ссылаются ли формулы семейства на таблицы выбора.</value></data>
+  <data name="DOC002_message" xml:space="preserve"><value>Таблица выбора «{tableName}» в семействе «{documentTitle}» не используется ни в одной формуле.</value></data>
+  <data name="DOC005_description" xml:space="preserve"><value>Проверяет, что формулы семейства ссылаются на существующие таблицы выбора.</value></data>
+  <data name="DOC005_message" xml:space="preserve"><value>Формула параметра «{parameterName}» в семействе «{documentTitle}» ссылается на таблицу выбора «{tableName}», которой нет в семействе.</value></data>
+  <data name="DOC006_description" xml:space="preserve"><value>Проверяет, что формулы семейства ссылаются на существующие столбцы таблицы выбора.</value></data>
+  <data name="DOC006_message" xml:space="preserve"><value>Формула параметра «{parameterName}» в семействе «{documentTitle}» ссылается на столбец «{columnName}», которого нет в таблице выбора «{tableName}».</value></data>
+  <data name="DOC007_description" xml:space="preserve"><value>Проверяет, использует ли формула таблицы выбора имя таблицы или столбца, которое не удаётся определить статически.</value></data>
+  <data name="DOC007_message" xml:space="preserve"><value>В формуле параметра «{parameterName}» в семействе «{documentTitle}» {argument} нельзя определить статически. Проверки таблиц не могут проверить эту формулу; проверьте её вручную.</value></data>
+  <data name="DOC007_tableArgument" xml:space="preserve"><value>имя таблицы выбора</value></data>
+  <data name="DOC007_columnArgument" xml:space="preserve"><value>имя столбца</value></data>
+  <data name="deleteUnusedSizeTables_fix" xml:space="preserve"><value>Удалить все неиспользуемые таблицы выбора</value></data>
+  <data name="deleteUnusedSizeTables_confirmationMessage" xml:space="preserve"><value>Все неиспользуемые таблицы выбора будут удалены из семейства. Продолжить?</value></data>
+  <data name="deleteUnusedSizeTables_confirmationButton" xml:space="preserve"><value>Удалить таблицы</value></data>
+</root>
