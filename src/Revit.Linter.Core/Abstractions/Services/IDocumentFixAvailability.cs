@@ -1,5 +1,3 @@
-using Autodesk.Revit.DB;
-
 namespace Revit.Linter.Core.Abstractions.Services;
 
 /// <summary>Answers whether a document fix can be offered for a document.</summary>

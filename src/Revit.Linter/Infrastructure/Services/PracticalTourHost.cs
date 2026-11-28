@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Revit.Context.Abstractions.Services;
-using Revit.Linter.Core.Abstractions;
-using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.DiagnosticListPresenter.Abstractions.Services;
 using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
@@ -10,7 +8,6 @@ using Revit.Linter.DialogPresenter.Abstractions;
 using Revit.Linter.Infrastructure.Utils;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions.Models;
-using Revit.Linter.Presentation;
 using Revit.Linter.Presentation.Abstractions.Services;
 using Revit.Linter.Presentation.Models;
 

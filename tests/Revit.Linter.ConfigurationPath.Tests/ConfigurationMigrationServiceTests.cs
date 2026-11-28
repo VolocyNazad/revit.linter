@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
-using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.ConfigurationPath.Services;
 
 namespace Revit.Linter.ConfigurationPath.Tests;

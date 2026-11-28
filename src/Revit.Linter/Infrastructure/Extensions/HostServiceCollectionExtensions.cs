@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions.Services;
-using Revit.Linter.DiagnosticReportPresenter.Interactions.Abstractions.Services;
 using Revit.Linter.Infrastructure.Services;
 using Revit.Linter.PracticalTourPresenter.Interactions.Abstractions;
 using Revit.Linter.RunDiagnosticPresenter.Abstractions;

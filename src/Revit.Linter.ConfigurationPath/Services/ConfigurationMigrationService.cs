@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Revit.Linter.ConfigurationPath.Abstractions.Models;
 using Revit.Linter.ConfigurationPath.Abstractions.Services;
 using Revit.Linter.Core.Abstractions;
-using System.IO;
 
 namespace Revit.Linter.ConfigurationPath.Services;
 

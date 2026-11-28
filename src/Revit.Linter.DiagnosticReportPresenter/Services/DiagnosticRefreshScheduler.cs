@@ -1,4 +1,3 @@
-using Autodesk.Revit.DB;
 using System.Windows.Threading;
 
 namespace Revit.Linter.DiagnosticReportPresenter.Services;

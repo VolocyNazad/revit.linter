@@ -2,7 +2,6 @@ using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
-using Revit.Linter.SizeTableDiagnostics;
 using Revit.Linter.SizeTableDiagnostics.Diagnostics.UnresolvedSizeTableArgument;
 using Revit.Linter.Testing;
 using TUnit.Core.Executors;

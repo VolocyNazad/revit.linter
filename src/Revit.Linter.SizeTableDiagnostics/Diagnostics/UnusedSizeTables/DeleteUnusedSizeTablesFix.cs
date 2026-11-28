@@ -1,4 +1,3 @@
-using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.SizeTableDiagnostics.Diagnostics.SizeTables;
 
 namespace Revit.Linter.SizeTableDiagnostics.Diagnostics.UnusedSizeTables;
