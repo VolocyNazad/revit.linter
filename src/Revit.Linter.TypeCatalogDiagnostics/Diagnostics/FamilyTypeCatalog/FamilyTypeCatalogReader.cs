@@ -5,9 +5,21 @@ internal static class FamilyTypeCatalogReader
     // Revit pairs a family file with a type catalog only for a saved .rfa: the catalog is the .txt
     // file with the same base name in the same folder. A family document being edited has no path,
     // and a template is not loaded through a catalog, so both stay unchecked.
-    public static bool IsSavedFamilyFile(Document document) =>
-        !string.IsNullOrWhiteSpace(document.PathName)
-        && string.Equals(Path.GetExtension(document.PathName), ".rfa", StringComparison.OrdinalIgnoreCase);
+    public static bool IsSavedFamilyFile(Document document) => IsSavedFamilyFile(document.PathName);
+
+    public static bool IsSavedFamilyFile(string? path) =>
+        !string.IsNullOrWhiteSpace(path)
+        && string.Equals(Path.GetExtension(path), ".rfa", StringComparison.OrdinalIgnoreCase);
+
+    // The path is built even when the file does not exist: a check that reads the catalog treats a
+    // missing file as an absent catalog, and the watcher has to see the file being created.
+    public static string CatalogPathFor(string familyPath) => Path.ChangeExtension(familyPath, ".txt");
+
+    // A changed file belongs to the family when it is that family's catalog in the same folder.
+    public static bool IsCatalogOf(string? familyPath, string changedPath) =>
+        familyPath is not null
+        && IsSavedFamilyFile(familyPath)
+        && string.Equals(CatalogPathFor(familyPath), changedPath, StringComparison.OrdinalIgnoreCase);
 
     // A family names itself after its file: OwnerFamily.Name stays empty in a family document.
     public static string ReadFamilyName(Document document) =>
@@ -54,7 +66,7 @@ internal static class FamilyTypeCatalogReader
     public static string? ReadCatalogPath(Document document)
     {
         if (!IsSavedFamilyFile(document)) return null;
-        string catalogPath = Path.ChangeExtension(document.PathName, ".txt");
+        string catalogPath = CatalogPathFor(document.PathName);
         return File.Exists(catalogPath) ? catalogPath : null;
     }
 
