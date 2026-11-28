@@ -9,6 +9,8 @@ problem elements, run available fixes, and export the currently displayed result
 self-contained HTML report. The HTML report includes a severity summary, counts by diagnostic code, and the
 detailed findings table.
 
+Revit shows this pane as **Warnings** in English and **Предупреждения** in Russian.
+
 Type in the search box to show only the findings whose code or message holds the text. The **Aa** button next to the box matches case, and the **ab|** button matches whole words; both are off by default. The list is updated when you leave the field.
 
 ## Automatic updates

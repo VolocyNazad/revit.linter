@@ -121,7 +121,7 @@
     <value>Diagnostic list</value>
   </data>
   <data name="diagnosticReport_dockablePane_title" xml:space="preserve">
-    <value>Error list</value>
+    <value>Warnings</value>
   </data>
   <data name="practicalTour_dockablePane_title" xml:space="preserve">
     <value>Practical tour</value>

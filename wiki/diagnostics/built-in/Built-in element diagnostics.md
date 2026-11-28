@@ -61,7 +61,7 @@ lang: en
 | **SHRD0048** | Checks whether a family stores its own types inside the family and in a type catalog at the same time (family documents only). | 💬 Message | `Family 'Шкаф' (ID:99002) uses its own types and the type catalog 'Шкаф.txt' at the same time (types of its own: 3, catalog types: 5). (6 ms)` |
 | **SHRD0049** | Checks whether the type catalog lists every family type parameter (family documents only). | ⚠️ Warning | `Family 'Шкаф' (ID:99002): type catalog 'Шкаф.txt' does not list parameters: Height, Depth. A type loaded from the catalog keeps the default values for them. (6 ms)` |
 
-> \* `SHRD009` is only available in Revit versions **AFTER2023**.
+> \* `SHRD009` is available in Revit 2022 and later (`AFTER2022`).
 
 > **Note:** For a built-in check that reports a view or a sheet (**SHRD004**, **SHRD0017**, **SHRD0018**, **SHRD0019**, **SHRD0020**, **SHRD0041**), the eye button opens that view or sheet instead of the `Revit Linter — Visualization` 3D view.
 

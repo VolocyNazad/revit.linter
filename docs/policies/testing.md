@@ -25,7 +25,9 @@ configurations declared in the root `Directory.Build.props`; that file feeds the
 it. Today the set is `Release_2021.1.100`, `Release_2022.1.80`, `Release_2023.1.90`,
 `Release_2024.3.60`, `Release_2025.4.60`, `Release_2026.4.10` and `Release_2027.3.0`.
 
-- Build and headless tests run on every supported configuration in CI, for every pull request.
+- Build and headless tests run on every supported configuration in CI, for every pull request
+  that changes code. A documentation-only pull request skips the Windows jobs, as the
+  [repository guide](../repository.md#continuous-integration) describes.
 - `*.RevitTests` run outside CI. CI compiles them; they are executed on a machine with Revit
   installed.
 - Before a release tag the full matrix is executed: every `*.RevitTests` project on every supported

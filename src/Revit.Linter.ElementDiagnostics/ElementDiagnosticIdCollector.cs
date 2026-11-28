@@ -19,7 +19,7 @@ internal static class ElementDiagnosticIdCollector
     public static readonly ElementDiagnosticId LocationLineElementWithTolerantCoordinates = Create("SHRD006", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId LocationLineElementWithTolerantLength = Create("SHRD007", DiagnosticSeverity.Warning, DiagnosticTags.Project);
     public static readonly ElementDiagnosticId LevelHeightIsTolerant = Create("SHRD008", DiagnosticSeverity.Warning, DiagnosticTags.Project);
-#if AFTER2023
+#if AFTER2022
     public static readonly ElementDiagnosticId FloorWithTolerantSketchCoordinates = Create("SHRD009", DiagnosticSeverity.Warning, DiagnosticTags.Project);
 #endif
     public static readonly ElementDiagnosticId FamilyInstanceElevationIsTolerant = Create("SHRD0010", DiagnosticSeverity.Warning, DiagnosticTags.Project);

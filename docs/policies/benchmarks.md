@@ -10,10 +10,10 @@ A claim about speed is backed by numbers from a repeatable run on a stated envir
 
 | Kind | Project | Runs in | May touch |
 | --- | --- | --- | --- |
-| Headless | `benchmarks/<Project>.Benchmarks` | a normal process, with BenchmarkDotNet | pure code, collections, parsing, serialization, start-up of components that do not call the Revit API |
-| Revit | `benchmarks/<Project>.RevitBenchmarks` | Revit, through Nice3point.BenchmarkDotNet.Revit | Revit API, `Document`, collectors, transactions |
+| Headless | `benchmark/<Project>.Benchmarks` | a normal process, with BenchmarkDotNet | pure code, collections, parsing, serialization, start-up of components that do not call the Revit API |
+| Revit | `benchmark/<Project>.Benchmark` | Revit, through Nice3point.BenchmarkDotNet.Revit | Revit API, `Document`, collectors, transactions |
 
-A project without `Benchmarks` or `RevitBenchmarks` is not a benchmark project.
+A project without a `Benchmarks/` folder is not a benchmark project.
 
 ## When
 
@@ -30,7 +30,7 @@ Code that does not need a running Revit is benchmarked with plain
 
 - add `[MemoryDiagnoser]` when allocations matter and run in `Release`, without a debugger,
   on an otherwise idle machine;
-- run with `dotnet run -c Release --project benchmarks/<Project>.Benchmarks -- --filter
+- run with `dotnet run -c Release --project benchmark/<Project>.Benchmarks -- --filter
   "*<Benchmarks>*"`;
 - a headless benchmark that compiles differently per Revit version runs on each of those
   configurations;
