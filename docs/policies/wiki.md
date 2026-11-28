@@ -41,12 +41,4 @@ This repository uses **page per file**: every `wiki/**/*.md` becomes a wiki page
   a staging directory without changing the Obsidian sources.
 - Keep shared content and navigation in Markdown.
 
-## Enabling the wiki in a new repository
-
-1. Enable Wiki in the repository settings.
-2. Create the first page manually.
-3. Add the source file or folder.
-4. Add `publish-wiki.yml` that publishes from `main` only.
-5. Link this policy from `AGENTS.md` and `README.md`.
-
 The rest of the workflow is defined by the [development policy](development.md).

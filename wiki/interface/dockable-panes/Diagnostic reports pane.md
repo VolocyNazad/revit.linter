@@ -11,7 +11,7 @@ detailed findings table.
 
 Revit shows this pane as **Warnings** in English and **Предупреждения** in Russian.
 
-Type in the search box to show only the findings whose code or message holds the text. The **Aa** button next to the box matches case, and the **ab|** button matches whole words; both are off by default. The list is updated when you leave the field.
+Type in the search box to show only the findings whose code or message holds the text. The list is updated when you leave the field. The search switches follow the shared table controls in [[Dockable panes#Shared table controls]].
 
 ## Automatic updates
 
@@ -27,7 +27,7 @@ The button belongs to the shared diagnostic controls, so every pane shows it, bu
 - Click the question-mark button to open the documentation of the finding's diagnostic in the default browser: the page of built-in element or document diagnostics, or the page of the module whose configuration file defines the rule.
 - Click an element link inside the message to locate that element in the active Revit document.
 - A list of element names or identifiers is folded in the message: only its first items are shown, followed by a `+N` counter. Every name in the folded list is quoted, so a name that itself contains a comma stays readable. Click the counter to open the complete list in a popup, which shows one element per line. Only a list value is folded: a long scalar text such as a Revit warning description is never shortened. The search, the sort and the exported report use the complete message.
-- Click a tag in the **Tags** column to put `#tag` in the search box and narrow the list to the diagnostics that carry it. A word with `#` matches a tag exactly, ignoring case; several tags narrow the list. The **Aa** and **ab|** buttons do not change the tag search. Without `#`, the search looks only at the code and the message. The exported report includes the tags of every finding.
+- Click a tag in the **Tags** column to put `#tag` in the search box and narrow the list to the diagnostics that carry it; see [[Diagnostic tags]] for the matching rules. The exported report includes the tags of every finding.
 - Select text in the code, message, document, or time columns and copy it normally. The grid is read-only, but text selection and copying remain available.
 
 ## Findings heat map
@@ -58,9 +58,7 @@ button is pressed again.
 
 ## Columns
 
-The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column. The width you drag a column divider to is remembered the same way. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
-
-The search text, the search switches, the filter choice and the sort order are also remembered for every Revit version and restored when Revit starts.
+The **Columns** button chooses which data columns the table shows; see [[Dockable panes#Shared table controls]]. The exported report still carries every column.
 
 > **Note:** An ignored finding disappears from the report immediately and is not reported again. Ignored findings are listed in the [[Ignoring pane|Ignore list]] pane, where an entry can be removed to report the finding again.
 

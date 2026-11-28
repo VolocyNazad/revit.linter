@@ -91,9 +91,4 @@ The formats are intentionally version-specific. Store each configuration in the 
 
 ---
 
-**Notes:**
-- If the `message` field is not specified, it defaults to the localized generic template
-- If the `severity` field is not specified, it defaults to `Message`
-- If the `isActive` field is not specified, it defaults to `true`
-- If the `isObsolete` field is not specified, it defaults to `false`
-- Tags are free text; a tag search uses `#` and matches the name exactly, ignoring case. The document-kind tags `Project` (runs in project documents) and `Family` (runs in family documents) are ordinary tags a rule declares in `tags`; see [[Diagnostic tags]] for the product's reserved tags
+Defaults for `message`, `severity`, `isActive` and `isObsolete`, and the tag rules, are in [[Diagnostic parameters]] and [[Diagnostic tags]].
