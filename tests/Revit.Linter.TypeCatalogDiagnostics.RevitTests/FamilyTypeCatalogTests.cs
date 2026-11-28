@@ -6,7 +6,6 @@ using Nice3point.TUnit.Revit.Executors;
 using Revit.Linter.Core.Abstractions.Models;
 using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.Testing;
-using Revit.Linter.TypeCatalogDiagnostics;
 using Revit.Linter.TypeCatalogDiagnostics.Diagnostics.FamilyTypeCatalog;
 using Revit.Linter.TypeCatalogDiagnostics.Diagnostics.FamilyTypeCatalogInUse;
 using Revit.Linter.TypeCatalogDiagnostics.Diagnostics.FamilyTypeCatalogMissingParameters;
@@ -449,7 +448,9 @@ public sealed class FamilyTypeCatalogTests : RevitApiTest
             (height, UnitUtils.ConvertToInternalUnits(1000, UnitTypeId.Millimeters)));
         WriteCatalog("LinterCatalogFamily");
 
-        bool applied = ExecuteFix(new AddMissingParametersToCatalog(), document);
+        var fix = new AddMissingParametersToCatalog();
+        await Assert.That(fix is IElementFixConfirmation).IsTrue();
+        bool applied = ExecuteFix(fix, document);
 
         await Assert.That(applied).IsTrue();
         IReadOnlyList<string> lines = ReadCatalogLines();

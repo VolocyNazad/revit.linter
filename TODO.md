@@ -14,6 +14,10 @@
 - [ ] Show the user a visible warning when a collision rule skips selected elements without geometry (today this is only a `Warning` in the log from `ElementDiagnostic.BuildGroups`): after the run, report the skipped count per rule and advise narrowing the `take`/`andTake` filters, since skipped elements cannot collide but still cost a geometry read each.
 - [ ] Cover the `ignoreNestedFamilies` pair exclusion with a checked-in family asset: only nested families marked as shared become separate project elements, and the Revit API cannot set that flag, so a programmatic fixture cannot produce the parent/nested pair. Add a `.rfa` asset with one parent and two overlapping shared nested components, and build the `RevitTests` case on it.
 
+## Fix confirmation
+
+- [ ] Add a guard test: a built-in fix that creates, changes or deletes a file outside the document implements the matching confirmation interface, and its message and button text are not empty.
+
 ## Diagnostic tags (idea, needs a consumer first)
 
 - [ ] Add an optional `tags` field to diagnostic rules only together with a concrete consumer (filter chips in the Diagnostics pane, tour selection by tag, or discipline packs replacing `section` comments). Without a consumer, a curated dictionary, validation, UI, and localization, freeform tags rot and duplicate the existing substring search.

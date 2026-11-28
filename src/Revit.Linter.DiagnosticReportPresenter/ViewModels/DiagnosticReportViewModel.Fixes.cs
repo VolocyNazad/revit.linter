@@ -171,7 +171,9 @@ internal sealed partial class DiagnosticReportViewModel
                             if (i is IElementFixConfirmation confirmation
                                 && !await _confirmationDialog.Show(
                                     new ConfirmationDialogRequest(
-                                        confirmation.ConfirmationMessage,
+                                        i is IElementFixConfirmationDetails details
+                                            ? details.GetConfirmationMessage(element)
+                                            : confirmation.ConfirmationMessage,
                                         confirmation.ConfirmationButtonText),
                                     cancellationToken))
                             {

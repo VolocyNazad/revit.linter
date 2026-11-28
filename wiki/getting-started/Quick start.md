@@ -16,7 +16,7 @@ The normal workflow is:
 2. In **Diagnostics**, select the checks that fit the model. Start with [[Built-in diagnostics and user rules|built-in diagnostics]]; they need no configuration.
 3. In **Diagnostic results**, select the active document and press **Run**.
 4. Select a finding, read its message, and use **Show** to locate the affected element.
-5. Apply a suggested fix only after reviewing the confirmation. Export the displayed findings when you need a shareable report.
+5. Apply a suggested fix after reviewing what it changes. A fix that writes or deletes a file outside the document, or keeps one of several equal elements, asks for confirmation first. Export the displayed findings when you need a shareable report.
 
 ## No document is open
 

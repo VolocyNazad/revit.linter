@@ -26,4 +26,6 @@
   <data name="moveFamilyTypesToCatalog_confirmationMessage" xml:space="preserve"><value>Family types that the catalog does not list will be added to it, and all family types except the active one will be removed from the family. Continue?</value></data>
   <data name="moveFamilyTypesToCatalog_confirmationButton" xml:space="preserve"><value>Move to the catalog</value></data>
   <data name="addMissingParametersToCatalog_fix" xml:space="preserve"><value>Add the missing parameters to the catalog</value></data>
+  <data name="addMissingParametersToCatalog_confirmationMessage" xml:space="preserve"><value>The type catalog file next to the family will be rewritten with the missing parameter columns. Revit Undo does not restore the file. Continue?</value></data>
+  <data name="addMissingParametersToCatalog_confirmationButton" xml:space="preserve"><value>Update the catalog</value></data>
 </root>

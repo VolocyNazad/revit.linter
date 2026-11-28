@@ -35,3 +35,9 @@ _Avoid_: Sample configuration, preset, template configuration
 **Tutorial sample**:
 A disposable copy of an official Autodesk sample model that the practical tour starts from; the official sample itself is never opened for modification.
 _Avoid_: Demo model, example project, training file
+
+## Fixing
+
+**Opaque fix**:
+A fix whose effect the finding and the fix name do not tell: it creates, changes or deletes a file outside the document, or it makes a choice the name does not describe, such as keeping one of several equal elements. It asks for confirmation before it opens a transaction.
+_Avoid_: Hidden fix, destructive fix, surprising fix

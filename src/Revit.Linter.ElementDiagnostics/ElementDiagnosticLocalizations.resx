@@ -23,6 +23,9 @@
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Delete unused reference line</value></data>
   <data name="attachToNearestLevel_fix" xml:space="preserve"><value>Attach to nearest level</value></data>
   <data name="keepFirstTitleBlock_fix" xml:space="preserve"><value>Delete extra title blocks</value></data>
+  <data name="keepFirstTitleBlock_confirmationMessage" xml:space="preserve"><value>The sheet keeps the first title block and deletes the others. Continue?</value></data>
+  <data name="keepFirstTitleBlock_confirmationMessageForSheet" xml:space="preserve"><value>The sheet keeps the title block '{0}' (ID {1}) and deletes the other title blocks. Continue?</value></data>
+  <data name="keepFirstTitleBlock_confirmationButton" xml:space="preserve"><value>Keep one title block</value></data>
   <data name="ungroupGroup_fix" xml:space="preserve"><value>Ungroup</value></data>
   <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Ungroup nested group</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Select</value></data>

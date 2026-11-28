@@ -1,6 +1,7 @@
 using Autodesk.Revit.DB;
 using Nice3point.TUnit.Revit;
 using Nice3point.TUnit.Revit.Executors;
+using Revit.Linter.Core.Abstractions.Services;
 using Revit.Linter.ElementDiagnostics.Diagnostics.SheetWithMultipleTitleBlocks;
 using TUnit.Core.Executors;
 
@@ -25,6 +26,15 @@ public sealed class TitleBlockFixTests : RevitApiTest
         ViewSheet sheet = CreateSheet(document);
         FamilyTestDocuments.PlaceTitleBlocks(document, sheet, 2);
         var fix = new KeepFirstTitleBlock();
+
+        await Assert.That(fix is IElementFixConfirmation).IsTrue();
+        await Assert.That(fix is IElementFixConfirmationDetails).IsTrue();
+        ElementId keptId = sheet.GetDependentElements(
+            new ElementCategoryFilter(BuiltInCategory.OST_TitleBlocks))[0];
+        string keptName = document.GetElement(keptId)!.Name;
+        string warning = ((IElementFixConfirmationDetails)fix).GetConfirmationMessage(sheet);
+        await Assert.That(warning.Contains(keptName, StringComparison.Ordinal)).IsTrue();
+        await Assert.That(warning.Contains(keptId.ToString(), StringComparison.Ordinal)).IsTrue();
 
         bool result;
         using (Transaction transaction = new(document, "Delete extra title blocks"))

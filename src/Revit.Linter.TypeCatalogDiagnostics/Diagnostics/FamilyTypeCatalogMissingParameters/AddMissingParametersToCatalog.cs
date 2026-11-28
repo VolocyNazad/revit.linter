@@ -3,11 +3,17 @@ using Revit.Linter.TypeCatalogDiagnostics.Diagnostics.FamilyTypeCatalog;
 namespace Revit.Linter.TypeCatalogDiagnostics.Diagnostics.FamilyTypeCatalogMissingParameters;
 
 /// <summary>Adds the family parameters the catalog header lacks and fills their values.</summary>
-internal sealed class AddMissingParametersToCatalog : IElementFix
+internal sealed class AddMissingParametersToCatalog : IElementFix, IElementFixConfirmation
 {
     public ElementDiagnosticId Identity => TypeCatalogDiagnosticIdCollector.FamilyTypeCatalogMissingParameters;
 
     public string Value => TypeCatalogDiagnosticLocalizations.GetString("addMissingParametersToCatalog_fix");
+
+    public string ConfirmationMessage =>
+        TypeCatalogDiagnosticLocalizations.GetString("addMissingParametersToCatalog_confirmationMessage");
+
+    public string ConfirmationButtonText =>
+        TypeCatalogDiagnosticLocalizations.GetString("addMissingParametersToCatalog_confirmationButton");
 
     public bool Execute(Element targetElement)
     {

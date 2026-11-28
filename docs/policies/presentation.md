@@ -2,7 +2,7 @@
 
 Paths mentioned in this policy are relative to the repository root unless a Markdown link specifies otherwise.
 
-Read when: adding or changing a WPF view, view model or design-time data.
+Read when: adding or changing a WPF view, view model or design-time data, or adding a fix that asks for confirmation.
 
 The presenter module inventory and project contents belong to the [repository guide](../repository.md);
 the stable module boundaries and the decisions behind them belong to
@@ -33,11 +33,17 @@ the stable module boundaries and the decisions behind them belong to
 
 ## Fix confirmation
 
-- A built-in fix that deletes data, or changes more than its name promises, asks for confirmation
-  before it opens a transaction. The dialog states what will change; declining changes nothing.
-- A built-in element fix implements `IElementFixConfirmation`; a built-in document fix implements
-  `IDocumentFixConfirmation`. A user-defined fix pipeline is named by its author, and that name is
-  its contract.
+- A fix asks for confirmation when the finding and the fix name do not tell the user what will
+  change: the fix creates, changes or deletes a file outside the document, or it makes a choice the
+  name does not describe, such as keeping one of several equal elements.
+- The dialog states what will change and, when the fix chooses, which element stays; declining
+  changes nothing.
+- Revit Undo restores the document, not a file, so the dialog says that a file change stays.
+- An opaque element fix implements `IElementFixConfirmation`; an opaque document fix implements
+  `IDocumentFixConfirmation`. A warning whose text depends on the finding also implements
+  `IElementFixConfirmationDetails`, which names the elements the fix keeps or deletes.
+- The report asks once for a fix-all run, not once per finding.
+- A fix whose name and finding already tell the user what it changes needs no dialog.
 
 ## Composition and navigation
 

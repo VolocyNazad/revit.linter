@@ -23,6 +23,9 @@
   <data name="deleteUnusedReferenceLine_fix" xml:space="preserve"><value>Удалить неиспользуемую опорную линию</value></data>
   <data name="attachToNearestLevel_fix" xml:space="preserve"><value>Привязать к ближайшему уровню</value></data>
   <data name="keepFirstTitleBlock_fix" xml:space="preserve"><value>Удалить лишние основные надписи</value></data>
+  <data name="keepFirstTitleBlock_confirmationMessage" xml:space="preserve"><value>На листе останется первая основная надпись, остальные будут удалены. Продолжить?</value></data>
+  <data name="keepFirstTitleBlock_confirmationMessageForSheet" xml:space="preserve"><value>На листе останется основная надпись «{0}» (ID {1}), остальные основные надписи будут удалены. Продолжить?</value></data>
+  <data name="keepFirstTitleBlock_confirmationButton" xml:space="preserve"><value>Оставить одну надпись</value></data>
   <data name="ungroupGroup_fix" xml:space="preserve"><value>Разгруппировать</value></data>
   <data name="ungroupNestedGroup_fix" xml:space="preserve"><value>Разгруппировать вложенную группу</value></data>
   <data name="select_visualization" xml:space="preserve"><value>Выбрать</value></data>
