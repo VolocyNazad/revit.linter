@@ -39,7 +39,8 @@ Ready-made example: [diagnostics.config.yaml](../../examples/configuration/diagn
       isInstance: true
       categories: ["-2008000"]
       allowVaryBetweenGroups: true
-- code: "PRMTR002"
+- type: "parameter"
+  code: "PRMTR002"
   ...
 ```
 
