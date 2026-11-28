@@ -25,8 +25,12 @@ internal static class SizeTableParameterCatalog
             lookupTableName = null;
         }
 
-        if (lookupTableName is not null)
-            parameters.TryAdd(lookupTableName.Definition.Name, lookupTableName);
+        // Dictionary<TKey, TValue>.TryAdd is not available on net48; keep the same first-wins rule.
+        if (lookupTableName is not null
+            && !parameters.ContainsKey(lookupTableName.Definition.Name))
+        {
+            parameters.Add(lookupTableName.Definition.Name, lookupTableName);
+        }
 
         return parameters;
     }

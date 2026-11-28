@@ -34,9 +34,17 @@ internal sealed class SizeLookupCallResolver(
                 (string? columnName, bool columnRead) = ReadValue(call.Column, columnParameter, type);
                 if (!tableRead) tableAllTypesRead = false;
                 if (!columnRead) columnAllTypesRead = false;
-                if (!string.IsNullOrWhiteSpace(tableName)) tableNames.Add(tableName.Trim());
-                if (!string.IsNullOrWhiteSpace(columnName)) columnNames.Add(columnName.Trim());
-                if (string.IsNullOrWhiteSpace(tableName) || string.IsNullOrWhiteSpace(columnName)) continue;
+                // Explicit null checks: string.IsNullOrWhiteSpace carries no NotNullWhen contract
+                // on net48, so it alone does not narrow the nullable on every target framework.
+                if (tableName is not null && !string.IsNullOrWhiteSpace(tableName))
+                    tableNames.Add(tableName.Trim());
+                if (columnName is not null && !string.IsNullOrWhiteSpace(columnName))
+                    columnNames.Add(columnName.Trim());
+                if (tableName is null || string.IsNullOrWhiteSpace(tableName)
+                    || columnName is null || string.IsNullOrWhiteSpace(columnName))
+                {
+                    continue;
+                }
 
                 string tableValue = tableName.Trim();
                 string columnValue = columnName.Trim();
