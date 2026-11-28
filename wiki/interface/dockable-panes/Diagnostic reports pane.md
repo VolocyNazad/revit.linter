@@ -56,7 +56,7 @@ button is pressed again.
 
 ## Columns
 
-The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
+The **Columns** button of the tool bar chooses which data columns the table shows. The row action buttons stay visible, and the choice is remembered for every Revit version. Hiding a column keeps the current sort order, at least one data column always stays visible, and the exported report still carries every column. The width you drag a column divider to is remembered the same way. The **Code** column sorts by the text of the code and by its numbers, so `CSTM2` comes before `CSTM10`.
 
 The search text, the search switches, the filter choice and the sort order are also remembered for every Revit version and restored when Revit starts.
 

@@ -1,27 +1,30 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Revit.Linter.Presentation.ViewModels;
 using VolocyNazad.Wpf.DependencyProperties;
 
 namespace Revit.Linter.Presentation;
 
 /// <summary>
-/// Applies the remembered column visibility to a table.
+/// Applies the remembered column visibility and widths to a table.
 /// </summary>
 /// <remarks>
 /// Set <see cref="SourceProperty"/> on the <see cref="DataGrid"/> to its pane view model and
 /// <see cref="KeyProperty"/> on each data column. A column without a key, such as an action icon column,
-/// is never hidden. When the stretching column is hidden, the next visible data column takes the leftover
-/// space until the stretching column returns. Hiding a column does not change the current sort.
+/// is never hidden and keeps its declared width. A column keeps its declared width until the user drags
+/// its header; the finished drag is stored, so the next session opens the table with that width. When the
+/// stretching column is hidden, the next visible data column takes the leftover space until the
+/// stretching column returns. Hiding a column does not change the current sort.
 /// </remarks>
 [GenerateAttachedDependencyProperty<TableColumnsViewModel>(
     "Source",
     IsNullable = true,
     OnChanged = nameof(OnSourceChanged),
-    XmlDocumentation = "Identifies the column visibility of a table.",
-    GetterXmlDocumentation = "<summary>Gets the column visibility applied to a table.</summary>",
-    SetterXmlDocumentation = "<summary>Sets the column visibility applied to a table.</summary>")]
+    XmlDocumentation = "Identifies the column visibility and widths of a table.",
+    GetterXmlDocumentation = "<summary>Gets the column visibility and widths applied to a table.</summary>",
+    SetterXmlDocumentation = "<summary>Sets the column visibility and widths applied to a table.</summary>")]
 [GenerateAttachedDependencyProperty<string>(
     "Key",
     IsNullable = true,
@@ -52,6 +55,18 @@ public static partial class TableColumns
         if (sender is DataGrid grid) Apply(grid);
     }
 
+    private static void SaveWidths(DataGrid grid, TableState state)
+    {
+        if (state.Source is null) return;
+
+        foreach (DataGridColumn column in grid.Columns)
+        {
+            string? key = GetKey(column);
+            if (key is null || key.Length == 0 || !column.Width.IsAbsolute) continue;
+            state.Source.SetWidth(key, column.Width.Value);
+        }
+    }
+
     private static void Apply(DataGrid grid)
     {
         if (!States.TryGetValue(grid, out TableState? state) || state.Source is null) return;
@@ -67,6 +82,12 @@ public static partial class TableColumns
             .Where(column => !string.IsNullOrEmpty(GetKey(column)))
             .ToArray();
         if (keyed.Length == 0) return;
+
+        foreach (DataGridColumn column in keyed)
+        {
+            if (state.Source.GetWidth(GetKey(column)!) is { } pixels)
+                column.Width = new DataGridLength(pixels);
+        }
 
         foreach (DataGridColumn column in keyed)
         {
@@ -99,8 +120,11 @@ public static partial class TableColumns
     private sealed class TableState
     {
         private EventHandler? _changed;
+        private DragCompletedEventHandler? _resizeCompleted;
 
         public TableColumnsViewModel? Source { get; private set; }
+
+        public DataGrid? Grid { get; private set; }
 
         public DataGridColumn? Promoted { get; set; }
 
@@ -109,10 +133,17 @@ public static partial class TableColumns
         public void Attach(TableColumnsViewModel source, DataGrid grid)
         {
             Source = source;
+            Grid = grid;
             _changed = (_, _) => Apply(grid);
             source.VisibilityChanged += _changed;
             grid.Loaded -= Grid_Loaded;
             grid.Loaded += Grid_Loaded;
+
+            // A header grip is a Thumb: its completed drag is one finished resize, so the width is
+            // written once instead of on every mouse move. Other Thumbs of the grid write nothing
+            // because their drag leaves every column width unchanged.
+            _resizeCompleted = (_, _) => SaveWidths(grid, this);
+            grid.AddHandler(Thumb.DragCompletedEvent, _resizeCompleted, handledEventsToo: true);
         }
 
         public void Detach()
@@ -120,12 +151,17 @@ public static partial class TableColumns
             if (Source is not null && _changed is not null)
                 Source.VisibilityChanged -= _changed;
 
+            if (Grid is { } grid && _resizeCompleted is not null)
+                grid.RemoveHandler(Thumb.DragCompletedEvent, _resizeCompleted);
+
             // The promoted column belongs to the table, not to the visibility model: give its own width
             // back even when the table is detached from the model mid-session.
             if (Promoted is { } promoted) promoted.Width = PromotedWidth;
 
             Source = null;
+            Grid = null;
             _changed = null;
+            _resizeCompleted = null;
             Promoted = null;
         }
     }

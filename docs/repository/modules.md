@@ -87,11 +87,12 @@ host-published `IRevitEventSource` events and reports them as `RevitEventType`),
 for the diagnostic and fix row state, `FilteredRowCollection` for the collection-view, sort and filter
 plumbing shared by the list panes, and `BindingProxy` for bindings outside the visual tree.
 
-The project also remembers which data columns of the four tables the user hides: `Abstractions` and
-`Services` hold `ITableColumnsService`, which stores the `columns.yml` choice and the temporary reveal
-of a guided step, `ViewModels` holds the popup of one table, `Models` holds the table and column keys
-and the stored settings, and the `TableColumns` attached properties at the project root apply the
-choice to a `DataGrid`. Only data columns carry a key, so the action icon columns always stay visible.
+The project also remembers which data columns of the four tables the user hides and how wide the user
+dragged each column: `Abstractions` and `Services` hold `ITableColumnsService`, which stores the
+`columns.yml` choice and widths and the temporary reveal of a guided step, `ViewModels` holds the popup
+of one table, `Models` holds the table and column keys and the stored settings, and the `TableColumns`
+attached properties at the project root apply the choice and the widths to a `DataGrid`. Only data
+columns carry a key, so the action icon columns always stay visible and keep their fixed width.
 
 `ITableStateService` in the same `Abstractions` and `Services` folders stores the search text, the
 search switches, the disabled filters and the sort order of each table in `tables.yml`. The panes

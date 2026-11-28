@@ -27,7 +27,7 @@ The **Code** column sorts by the text of the code and by its numbers, so `CSTM2`
 - **Remove** (trash can in the row) stops ignoring that entry. The results pane brings its finding back without a manual run.
 - **Clear all** (toolbar) removes every entry of the active document after a confirmation. The results pane brings their findings back too.
 - **Refresh** (toolbar) reloads the list.
-- **Columns** (toolbar) chooses which data columns the table shows; the row action buttons stay visible, and the choice is remembered for every Revit version.
+- **Columns** (toolbar) chooses which data columns the table shows; the row action buttons stay visible, and the choice is remembered for every Revit version. The width you drag a column divider to is remembered the same way.
 - The search text, the search switches and the sort order are remembered for every Revit version and restored when Revit starts.
 - The tool bar also carries the shared diagnostic controls (run, pause, on active view) and shows the title of the active document.
 - The search box filters the list by code and target. The **Aa** button next to the box matches case, and the **ab|** button matches whole words; both are off by default, so the search ignores case and finds the text inside a longer word. The list is updated when you leave the field.

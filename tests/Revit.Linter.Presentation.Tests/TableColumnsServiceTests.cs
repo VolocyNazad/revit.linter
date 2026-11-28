@@ -5,8 +5,9 @@ using Toolkit.ValueStore.Abstractions;
 namespace Revit.Linter.Presentation.Tests;
 
 /// <summary>
-/// Covers the column visibility a pane remembers: hiding a column stores only that column, showing every
-/// column forgets the choice of one table, and the guided reveal returns the column afterwards.
+/// Covers the column state a pane remembers: hiding a column stores only that column, showing every
+/// column forgets the visibility choice of one table, dragging a column stores its width, and the guided
+/// reveal returns the column afterwards.
 /// </summary>
 public sealed class TableColumnsServiceTests
 {
@@ -62,6 +63,95 @@ public sealed class TableColumnsServiceTests
         using TableColumnsService service = new(store);
 
         Assert.False(service.IsVisible(TableColumnIds.IgnoreList, TableColumnKeys.Scope));
+    }
+
+    [Fact]
+    public void A_saved_width_is_read_by_a_new_service()
+    {
+        TestStore store = new()
+        {
+            CurrentValue = new TableColumnsSettings
+            {
+                Widths =
+                [
+                    new TableColumnWidth
+                    {
+                        Table = TableColumnIds.Diagnostics,
+                        Column = TableColumnKeys.Description,
+                        Pixels = 320,
+                    },
+                ],
+            },
+        };
+
+        using TableColumnsService service = new(store);
+
+        Assert.Equal(320d, service.GetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description));
+        Assert.Null(service.GetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Tags));
+    }
+
+    [Fact]
+    public void Setting_a_width_stores_only_that_column()
+    {
+        TestStore store = new();
+        using TableColumnsService service = new(store);
+
+        service.SetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description, 320);
+
+        Assert.Equal(320d, service.GetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description));
+        TableColumnWidth width = Assert.Single(store.CurrentValue.Widths);
+        Assert.Equal(TableColumnIds.Diagnostics, width.Table);
+        Assert.Equal(TableColumnKeys.Description, width.Column);
+        Assert.Equal(320d, width.Pixels);
+    }
+
+    [Fact]
+    public void Setting_a_width_keeps_the_stored_hidden_columns()
+    {
+        TestStore store = new();
+        using TableColumnsService service = new(store);
+        service.SetVisibility(TableColumnIds.Diagnostics, TableColumnKeys.Code, isVisible: false);
+
+        service.SetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description, 320);
+
+        Assert.False(service.IsVisible(TableColumnIds.Diagnostics, TableColumnKeys.Code));
+        Assert.Single(store.CurrentValue.Hidden);
+        Assert.Single(store.CurrentValue.Widths);
+    }
+
+    [Fact]
+    public void A_width_change_made_elsewhere_updates_the_service()
+    {
+        TestStore store = new();
+        using TableColumnsService service = new(store);
+        List<string?> reported = [];
+        service.Changed += (_, args) => reported.Add(args.TableId);
+
+        store.Update(settings => settings.Widths =
+        [
+            new TableColumnWidth
+            {
+                Table = TableColumnIds.IgnoreList,
+                Column = TableColumnKeys.Target,
+                Pixels = 240,
+            },
+        ]);
+
+        Assert.Equal(240d, service.GetWidth(TableColumnIds.IgnoreList, TableColumnKeys.Target));
+        Assert.Equal(new string?[] { null }, reported);
+    }
+
+    [Fact]
+    public void A_width_that_is_not_a_positive_number_is_ignored()
+    {
+        TestStore store = new();
+        using TableColumnsService service = new(store);
+
+        service.SetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description, double.NaN);
+        service.SetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description, 0);
+
+        Assert.Null(service.GetWidth(TableColumnIds.Diagnostics, TableColumnKeys.Description));
+        Assert.Empty(store.CurrentValue.Widths);
     }
 
     [Fact]

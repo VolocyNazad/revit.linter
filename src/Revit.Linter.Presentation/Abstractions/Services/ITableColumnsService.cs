@@ -4,7 +4,8 @@ using Revit.Linter.Presentation.Models;
 namespace Revit.Linter.Presentation.Abstractions.Services;
 
 /// <summary>
-/// Remembers which data columns of the linter tables are visible and notifies the open panes about a change.
+/// Remembers which data columns of the linter tables are visible, how wide the user made them, and
+/// notifies the open panes about a change.
 /// </summary>
 public interface ITableColumnsService
 {
@@ -16,6 +17,21 @@ public interface ITableColumnsService
     /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
     /// <returns><see langword="true"/> when the column is visible or was never hidden.</returns>
     bool IsVisible(string tableId, string columnKey);
+
+    /// <summary>Gets the width the user dragged a column to.</summary>
+    /// <param name="tableId">The table identifier, one of <see cref="TableColumnIds"/>.</param>
+    /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
+    /// <returns>
+    /// The saved width in device-independent pixels, or <see langword="null"/> when the column keeps the
+    /// width its table declares.
+    /// </returns>
+    double? GetWidth(string tableId, string columnKey);
+
+    /// <summary>Stores the width the user dragged a column to.</summary>
+    /// <param name="tableId">The table identifier, one of <see cref="TableColumnIds"/>.</param>
+    /// <param name="columnKey">The column key, one of <see cref="TableColumnKeys"/>.</param>
+    /// <param name="pixels">The column width in device-independent pixels.</param>
+    void SetWidth(string tableId, string columnKey, double pixels);
 
     /// <summary>Hides or shows a column and stores the choice for the user.</summary>
     /// <param name="tableId">The table identifier, one of <see cref="TableColumnIds"/>.</param>
